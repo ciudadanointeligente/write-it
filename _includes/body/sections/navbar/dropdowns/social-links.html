@@ -1,0 +1,47 @@
+{% if site.navbar.social_links.enabled %}
+	{% assign navbar_dropdown_social_links_html = null %}
+	{% capture navbar_dropdown_social_links_html %}
+		{% assign navbar_enabled_social_link = false %}
+
+		{% for navbar_l in site.social_links.links %}
+			{% if navbar_l.enabled %}
+				{% assign navbar_enabled_social_link = true %}
+			{% endif %}
+		{% endfor %}
+
+		{% if navbar_enabled_social_link %}
+			<ul class="nav pull-left">
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+						{% if site.font_awesome.enabled %}
+							<i class="icon-circle-blank"></i> 
+						{% endif %}
+
+						{% if site.social_links.follow_name %}
+							Follow {{ site.social_links.follow_name }} 
+						{% else %}
+							Follow Me 
+						{% endif %}
+
+						<b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu">
+						{% for navbar_social_link in site.social_links.links %}
+							{% if navbar_social_link.enabled %}
+							<li>
+								<a href="{{ navbar_social_link.url }}" target="_blank">
+									{% if site.font_awesome.enabled and navbar_social_link.font_awesome_icon %}
+										<i class="{{ navbar_social_link.font_awesome_icon }}"></i> 
+									{% endif %}
+									{{ navbar_social_link.name }}
+								</a>
+							</li>
+							{% endif %}
+						{% endfor %}
+					</ul>
+				</li>
+			</ul>
+		{% endif %}
+	{% endcapture %}
+	{{ navbar_dropdown_social_links_html | strip_newlines | remove:'	' }}
+{% endif %}

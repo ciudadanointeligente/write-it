@@ -1,0 +1,23 @@
+{% assign body_page_html = null %}
+{% capture body_page_html %}
+	<body>
+		{% include body/sections/navbar.html %}
+		{% include body/sections/alerts_and_notices/site.html %}
+		<div class="container">
+			<div class="row">
+				<div class="span8">
+					{% include body/sections/header/page.html %}
+					{% include body/sections/alerts_and_notices/page.html %}
+					{{ content }}
+				</div>
+				<div class="span3 offset1">
+					{% include body/sections/brief-bio.html %}
+					{% include body/sections/navlists.html %}
+				</div>
+			</div>
+			{% include body/sections/footer.html %}
+		</div>
+		{% include body/sections/javascript.html %}
+	</body>
+{% endcapture %}
+{{ body_page_html | remove:'	' }}

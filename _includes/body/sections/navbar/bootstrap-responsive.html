@@ -1,0 +1,22 @@
+{% if site.bootstrap.responsive.enabled %}
+	{% assign navbar_bootstrap_responsive_html = null %}
+	{% capture navbar_bootstrap_responsive_html %}
+		<div class="navbar navbar-inverse">
+			<div class="navbar-inner">
+				<div class="container">
+					<a class="btn btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</a>
+					{% include body/sections/navbar/brand.html %}
+					<div class="nav-collapse collapse">
+						{% include body/sections/navbar/dropdowns.html %}
+						{% include body/sections/navbar/pages.html %}
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endcapture %}
+	{{ navbar_bootstrap_responsive_html | strip_newlines | remove:'	' }}
+{% endif %}

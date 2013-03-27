@@ -1,0 +1,30 @@
+{% if site.sections.brief_bio.github_projects.enabled %}
+	{% assign brief_bio_enabled_github_projects_html = null %}
+	{% capture brief_bio_enabled_github_projects_html %}
+
+		{% assign brief_bio_enabled_github_project = false %}
+
+		{% for brief_bio_github_projects_p in site.github_projects.projects %}
+			{% assign brief_bio_enabled_github_project = true %}
+		{% endfor %}
+
+		{% if brief_bio_enabled_github_project %}
+			<br>
+			<p class="text-center"><small><strong>{{ site.github_projects.header | upcase }}</strong></small></p>
+
+			<div class="text-center">
+				<div class="btn-group btn-group-vertical">
+					{% for brief_bio_github_project in site.github_projects.projects %}
+						<a class="btn" href="{{ brief_bio_github_project.url }}" target="_blank">
+							{% if site.font_awesome.enabled %}
+								<i class="icon-github"></i> 
+							{% endif %}
+							{{ brief_bio_github_project.name }}
+						</a>
+					{% endfor %}
+				</div>
+			</div>
+		{% endif %}
+	{% endcapture %}
+	{{ brief_bio_enabled_github_projects_html | strip_newlines | remove:'	' }}
+{% endif %}

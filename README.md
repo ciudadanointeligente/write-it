@@ -1,71 +1,50 @@
-Blogging template for GitHub pages
-==================================
+# gh-pages-blog #
+=============
 
-	buzzwords:
-	- jekyll
-	- responsive web design (initializr-template)
-	assets:
-	- jquery 1.7.1
-	- twitter bootstrap 2.0.2
-	- modernizr 2.5.3
-	seo:
-	- microformats
-	- rich snippets
-	- page-specific title and description
-	sosials:
-	- +1
-	- tweet
+The simple way to use GitHub Pages as your account or project blog and website.
 
-Usage
------
 
-- Fork.
-- Rename the repo to username.github.com.
-- Push something to your renamed repo to trig GitHub to generate the page, for example, edit _configs.yml and set the correct url. You should do this anyway to setup seo.
-- Browse to http://username.github.com to see the result.
+## About ##
 
-If you like to polish the default design or know some awesome Jekyll magic, I'm happy to merge pull requests.
+gh-pages-blog is built upon the existing GitHub:Pages technologies, adding responsive Bootstrap, Font Awesome, JQuery, Disqus, Google Analytics, and some custom javascript to the mix to provide a fairly complete blogging solution.
 
-__Try locally__
+For more information, visit the GitHub Page for the gh-pages-blog project. [http://thedereck.github.com/gh-pages-blog/](http://thedereck.github.com/gh-pages-blog/)
 
-	git clone https://kblomqvist@github.com/kblomqvist/ghblog-template.git
-	cd ghblog-template
-	jekyll --server --auto --url=""
 
-Now open your browser and go to _localhost:4000_. The url param tells the jekyll to override the url specified in _config.yml. Overwriting url with empty string gives us baseurl, which is "/". This way the links, for example in archive list, link to their local copies -- not to our production version, which would otherwise be the case because of the seo.
+## Credit ##
 
-Did not have Jekyll? To install Jekyll you have to have Ruby and Ruby gems installed. If you do not have these yet, it is recommended to install Ruby locally:
+There are definitely a few projects that I need to give credit to:
 
-	# MANDATORY! Install a bunch of support software
-	sudo aptitude install build-essential curl autoconf \
-	zlib1g zlib1g-dev bison openssl libssl-dev \
-	libsqlite3-0 libsqlite3-dev sqlite3 libxml2-dev
+[GitHub:Pages](http://pages.github.com) by GitHub
 
-	# Install RVM locally (no sudo!)
-	bash < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
+[Bootstrap](http://twitter.github.com/bootstrap/) by Twitter
 
-	# Install Ruby 1.9.3 locally (no sudo!)
-	rvm install 1.9.3
+[jQuery](http://jquery.com/) by jQuery Foundation
 
-	# If you got ssl cert errors
-	#echo insecure >> ~/.curlrc
+[Font Awesome 3.0](http://fortawesome.github.com/Font-Awesome/) by Dave Gandy
 
-	# Use Ruby in this login session
-	rvm use 1.9.3
+Without the above projects, gh-pages-blog probably wouldn't exist. Thanks to everyone working on those projects for all of their hard work and for releasing the code so that the rest of us can focus on other aspects of our sotware.
 
-Now you are ready to install Jekyll (do not use sudo)
+## License ##
 
-	gem install jekyll 
+Except where noted below and elsewhere in the code and repository, the gh-pages-blog code is &copy; Copyright 2013 by Dereck Curry and is licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+   
+You may obtain a copy of the License at
 
-## License
+[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-The code that this project consists of is licensed under MIT and is based of MIT-licensed work by [Tom Preston-Werner](http://github.com/mojombo/jekyll).
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
-### Assets
 
-- Twitter Bootstrap: Apache License, Version 2.0.
-- jQuery: MIT/GPL license.
-- Modernizr: MIT/BSD license.
-- Normalize.css: Public Domain.
-- Icons from Glyphicons Free, licensed under CC BY 3.0.
-- The template design is based on [initializr-template](https://github.com/verekia/initializr-template).
+[Bootstrap](http://twitter.github.com/bootstrap/) - &copy; Copyright 2012, Twitter, Inc.
+* Bootstrap code is licensed under Apache License v2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0).
+* Bootstrap documentation is licensed under CC BY 3.0 - [http://creativecommons.org/licenses/by/3.0/](http://creativecommons.org/licenses/by/3.0/).
+* Glyphicons Free licensed under CC BY 3.0 - [http://creativecommons.org/licenses/by/3.0/](http://creativecommons.org/licenses/by/3.0/).
+
+[jQuery](http://jquery.com/) - &copy; Copyright 2013 jQuery Foundation and other contributors
+* jQuery is licensed under MIT License - [https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt](https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt).
+
+[Font Awesome](http://fortawesome.github.com/Font-Awesome/)
+* The Font Awesome font is licensed under the SIL Open Font License - [http://scripts.sil.org/OFL](http://scripts.sil.org/OFL).
+* Font Awesome CSS, LESS, and SASS files are licensed under the MIT License - [http://opensource.org/licenses/mit-license.html](http://opensource.org/licenses/mit-license.html).
+* The Font Awesome pictograms are licensed under the CC BY 3.0 License - [http://creativecommons.org/licenses/by/3.0/](http://creativecommons.org/licenses/by/3.0/).

@@ -1,0 +1,55 @@
+{% if site.navbar.archive.enabled and site.posts.size > 0 %}
+	{% assign navbar_archive_html = null %}
+	{% capture navbar_archive_html %}
+		<ul class="nav pull-left">
+			<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+					{% if site.font_awesome.enabled %}
+						<i class="icon-calendar"></i> 
+					{% endif %}
+					Archive 
+					<b class="caret"></b>
+				</a>
+				<ul class="dropdown-menu">
+					{% assign navbar_archive_first_year = true %}
+					{% assign navbar_archive_prev_year = '' %}
+					{% for navbar_archive_p in site.posts %}
+						{% assign navbar_archive_year = null %}
+						{% capture navbar_archive_year %}
+							{{ navbar_archive_p.date | date: "%Y" }}
+						{% endcapture %}
+
+						{% if navbar_archive_year != navbar_archive_prev_year %}
+							{% if navbar_archive_first_year == true %}
+								{% assign navbar_archive_first_year = false %}
+							{% else %}
+								</ul>
+							</li>
+							{% endif %}
+							{% assign navbar_archive_prev_year = navbar_archive_year %}
+							<li class="dropdown-submenu">
+								<a tabindex="-1" href="#">
+									{% if site.font_awesome.enabled %}
+										<i class="icon-calendar"></i> 
+									{% endif %}
+									{{ navbar_archive_year }} 
+								</a>
+								<ul class="dropdown-menu">
+						{% endif %}
+						<li>
+							<a href="{{ site.url }}{{ navbar_archive_p.url }}">
+								{% if site.font_awesome.enabled %}
+									<i class="icon-pencil"></i> 
+								{% endif %}
+								{{ navbar_archive_p.title }}
+							</a>
+						</li>
+					{% endfor %}
+						</li>
+					</ul>
+				</ul>
+			</li>
+		</ul>
+	{% endcapture %}
+	{{ navbar_archive_html | strip_newlines | remove:'	' }}
+{% endif %}

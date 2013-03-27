@@ -1,0 +1,78 @@
+{% if site.sections.tags.enabled and site.tags.size > 0 %}
+	{% assign section_tags_html = null %}
+	{% capture section_tags_html %}
+
+		{% assign section_tag_names = null %}
+		{% capture section_tag_names %}
+			{% for section_t in site.tags %}
+				{{ section_t[0] | replace: ' ', '___' }}
+			{% endfor %}
+		{% endcapture %}
+
+		{% assign section_sorted_tag_names = null %}
+		{% capture section_sorted_tag_names %}
+			{{ section_tag_names | split:' ' | sort | join:' ' }}
+		{% endcapture %}
+
+		{% assign section_number_of_tags = null %}
+		{% capture section_number_of_tags %}
+			{{ section_sorted_tag_names | number_of_words }}
+		{% endcapture %}
+
+		<div class="well ghpb-well-navlist">
+			<ul class="nav nav-list ghpb-nav-list">
+				<li class="nav-header ghpb-nav-header">
+					{% if site.font_awesome.enabled %}
+						<i class="icon-tags"></i> 
+					{% endif %}
+					Tags
+				</li>
+				{% assign section_prev_tag = '' %}
+				{% for section_tag_i in (1..section_number_of_tags) %}
+					{% assign section_tag = null %}
+					{% capture section_tag %}{{ section_sorted_tag_names | truncatewords:section_tag_i | remove:'...' | split:' ' | last | downcase }}{% endcapture %}
+
+					{% if section_prev_tag != section_tag %}
+						{% assign section_prev_tag = section_tag %}
+						<li data-toggle="collapse" data-target="#{{ section_tag }}">
+							<a href="javascript:void(0);">
+								{% if site.font_awesome.enabled %}
+									<i class="icon-tag"></i> 
+								{% endif %}
+								{{ section_tag | replace: '___', ' ' }}
+							</a>
+						</li>
+						<div id="{{ section_tag }}" class="collapse">
+							<ul class="nav nav-list ghpb-nav-list">
+								{% for navlist_tag_p in site.posts %}
+
+									{% assign navlist_tag_p_match = false %}
+									{% for navlist_tag_p_tag in navlist_tag_p.tags %}
+
+										{% assign navlist_tag_p_tag_name = null %}
+										{% capture navlist_tag_p_tag_name %}{{ navlist_tag_p_tag | replace: ' ', '___' | downcase }}{% endcapture %}
+
+										{% if navlist_tag_p_tag_name == section_tag %}
+											{% if navlist_tag_p_match == false %}
+												{% assign navlist_tag_p_match = true %}
+												<li>
+														<a href="{{ site.url }}{{ navlist_tag_p.url }}">
+															{% if site.font_awesome.enabled %}
+																<i class="icon-pencil"></i> 
+															{% endif %}
+															{{ navlist_tag_p.title }}
+														</a>
+												</li>
+											{% endif %}
+										{% endif %}
+									{% endfor %}
+								{% endfor %}
+							</ul>
+						</div>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
+	{% endcapture %}
+	{{ section_tags_html | strip_newlines | remove:'	' }}
+{% endif %}

@@ -1,0 +1,72 @@
+{% if site.sections.categories.enabled and site.categories.size > 0 %}
+	{% assign section_categories_html = null %}
+	{% capture section_categories_html %}
+
+		{% assign section_category_names = null %}
+		{% capture section_category_names %}
+			{% for section_c in site.categories %}
+				{{ section_c[0] | replace: ' ', '___' }}
+			{% endfor %}
+		{% endcapture %}
+
+		{% assign section_sorted_category_names = null %}
+		{% capture section_sorted_category_names %}
+			{{ section_category_names | split:' ' | sort | join:' ' }}
+		{% endcapture %}
+
+		{% assign section_number_of_categories = null %}
+		{% capture section_number_of_categories %}
+			{{ section_sorted_category_names | number_of_words }}
+		{% endcapture %}
+
+		<div class="well ghpb-well-navlist">
+			<ul class="nav nav-list ghpb-nav-list">
+				<li class="nav-header ghpb-nav-header">
+					{% if site.font_awesome.enabled %}
+						<i class="icon-folder-close"></i> 
+					{% endif %}
+					Categories
+				</li>
+				{% assign section_prev_category = '' %}
+				{% for section_category_i in (1..section_number_of_categories) %}
+
+					{% assign section_category = null %}
+					{% capture section_category %}{{ section_sorted_category_names | truncatewords:section_category_i | remove:'...' | split:' ' | last | downcase | capitalize }}{% endcapture %}
+
+					{% if section_prev_category != section_category %}
+						{% assign section_prev_category = section_category %}
+						<li data-toggle="collapse" data-target="#{{ section_category }}">
+							<a href="javascript:void(0);">
+								{% if site.font_awesome.enabled %}
+									<i class="icon-folder-open"></i> 
+								{% endif %}
+								{{ section_category | replace: '___', ' ' }}
+							</a>
+						</li>
+						<div id="{{ section_category }}" class="collapse">
+							<ul class="nav nav-list ghpb-nav-list">
+								{% for navlist_category_p in site.posts %}
+
+									{% assign navlist_category_p_category = null %}
+									{% capture navlist_category_p_category %}{{ navlist_category_p.category | replace: ' ', '___' | downcase | capitalize }}{% endcapture %}
+
+									{% if navlist_category_p_category == section_category %}
+										<li>
+											<a href="{{ site.url }}{{ navlist_category_p.url }}">
+												{% if site.font_awesome.enabled %}
+													<i class="icon-pencil"></i> 
+												{% endif %}
+												{{ navlist_category_p.title }}
+											</a>
+										</li>
+									{% endif %}
+								{% endfor %}
+							</ul>
+						</div>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
+	{% endcapture %}
+	{{ section_categories_html | strip_newlines | remove:'	' }}
+{% endif %}

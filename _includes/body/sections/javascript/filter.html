@@ -1,0 +1,147 @@
+{% assign javascript_tag_html = null %}
+{% capture javascript_tag_html %}
+	<script type="text/javascript">
+		var posts = [
+			{% for javascript_post in site.posts %}
+				{% if forloop.first %}
+					{
+				{% else %}
+					, {
+				{% endif %}
+						"title" : "{{ javascript_post.title | replace: '"', '\"' }}" , 
+						"subtitle" : "{{ javascript_post.subtitle | replace: '"', '\"' }}" , 
+						"author" : "{{ javascript_post.author | replace '"', '\"' }}" , 
+						"description" : "{{ javascript_post.description | replace: '"', '\"' }}" , 
+						"url" : "{{ site.url }}{{ javascript_post.url | replace: '"', '\"' }}" , 
+						"date" : "{{ javascript_post.date | date_to_long_string | replace: '"', '\"' }}" , 
+						"category" : "{{ javascript_post.category | replace: ' ', '___' | capitalize | replace: '"', '\"' }}" , 
+						"tags" : 
+							[
+								{% for javascript_post_tag in javascript_post.tags %}
+									{% if forloop.first %}
+										"{{ javascript_post_tag | replace: ' ', '___' | replace: '"', '\"' | downcase }}"
+									{% else %}
+										, "{{ javascript_post_tag | replace: ' ', '___' | replace: '"', '\"' | downcase }}"
+									{% endif %}
+								{% endfor %}
+							]
+					}
+			{% endfor %}
+		];
+
+		var create_post_div = function(post) {
+			var post_div = '<div class="ghpb-post"><div class="well ghpb-well-outline">';
+			post_div = post_div + '<h2><a href="' + post.url + '">' + post.title + '</a></h2>';
+
+			if (post.subtitle !== null && post.subtitle.length > 0) {
+				post_div = post_div + '<p>' + post.subtitle + '</p>';
+			}
+
+			if (post.description !== null && post.description.length > 0) {
+				post_div = post_div + '<p>&nbsp;</p><p>' + post.description + '</p>';
+			}
+
+			post_div = post_div + '<br><div class="row">';
+			post_div = post_div + '<small><div class="span3 offset1">';
+
+			{% if site.font_awesome.enabled %}
+				post_div = post_div + '<i class="icon-user"></i> ';
+			{% endif %}
+			post_div = post_div + 'Authored by ';
+			{% if page.author %}
+				post_div = post_div + post.author +'.';
+			{% else %}
+				post_div = post_div + "{{ site.author }}.";
+			{% endif %}
+			post_div = post_div + "<br>";
+
+			{% if site.font_awesome.enabled %}
+				post_div = post_div + '<i class="icon-pencil"></i> ';
+			{% endif %}
+			post_div = post_div + 'Published on ' + post.date + '.<br></div><div class="span3">';
+
+			if (post.category !== null && post.category.length > 0) {
+				{% if site.font_awesome.enabled %}
+					post_div = post_div + '<i class="icon-folder-open"></i> ';
+				{% endif %}
+				post_div = post_div + 'Category: ' +
+					'<a href="{{ site.url }}/filter.html?category=' +
+					post.category.toLowerCase() + '">' +
+					post.category.replace(/___/g, ' ') +
+					'</a><br>';
+			}
+
+			if (post.tags !== null && post.tags.length > 0) {
+				{% if site.font_awesome.enabled %}
+					post_div = post_div + '<i class="icon-tags"></i> ';
+				{% endif %}
+				post_div = post_div + 'Tags: ';
+				var prev_tag = '';
+				var first_tag = true ;
+				for (var k = 0; k < post.tags.length; k++) {
+					if (prev_tag !== post.tags[k]) {
+						prev_tag = post.tags[k];
+						if (first_tag === true) {
+							first_tag = false;
+						} else {
+							post_div = post_div + ', ';
+						}
+						post_div = post_div +
+							'<a href="{{ site.url }}/filter.html?tag=' + 
+							post.tags[k] + '">'+
+							post.tags[k].replace(/___/g, ' ') +
+							'</a>';
+					}
+				}
+				post_div = post_div + '<br>';
+			}
+
+			post_div = post_div + '</div><div class="span1"></div></small></div>';
+			post_div = post_div + '</div></div>';
+
+			return post_div;
+		};
+
+		var requested_tag = null;
+		var url_tag_params = $(location).attr('href').match(/\?tag=.+/);
+		if (url_tag_params !== null) {
+			requested_tag = url_tag_params[0].split('&')[0].split('?tag=')[1];
+		}
+
+		var requested_category = null;
+		var url_category_params = $(location).attr('href').match(/\?category=.+/);
+		if (url_category_params !== null) {
+			requested_category = url_category_params[0].split('&')[0].split('?category=')[1];
+		}
+
+		if (requested_tag === null && requested_category === null) {
+			$('div.page-header > h1').html('No category or tag supplied');
+			$('div[name="filter-body"]').html('<p>A category or a tag must be supplied as a parameter in order to get a filtered list of posts.</p>');
+		} else if (requested_tag !== null) {
+			$('div.page-header > h1').append(' a tag of "' + requested_tag.replace(/___/g, ' ') + '"');
+			for (var i = 0; i < posts.length; i++) {
+				if (posts[i].tags !== null) {
+					for (var j = 0; j < posts[i].tags.length; j++) {
+						if (posts[i].tags[j] === requested_tag) {
+							$('div[name="filter-body"]').append(create_post_div(posts[i]));
+							$('div[name="filter-body"]').append('<br><br>');
+							break;
+						}
+					}
+				}
+			}
+		} else {
+			$('div.page-header > h1').append(' a category of "' + requested_category.replace(/___/g, ' ') + '"');
+			for (var i = 0; i < posts.length; i++) {
+				if (posts[i].category !== null) {
+					if (posts[i].category.toLowerCase() === requested_category.toLowerCase()) {
+						$('div[name="filter-body"]').append(create_post_div(posts[i]));
+						$('div[name="filter-body"]').append('<br><br>');
+						break;
+					}
+				}
+			}
+		};
+	</script>
+{% endcapture %}
+{{ javascript_tag_html | strip_newlines | remove:'	' }}

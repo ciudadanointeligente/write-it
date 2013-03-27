@@ -1,0 +1,26 @@
+{% assign navbar_pages_html = null %}
+{% capture navbar_pages_html %}
+	<ul class="nav pull-right">
+		{% for pages_order in (0..100) %}
+			{% for pages_p in site.pages %}
+				{% if pages_p.order == pages_order %}
+					{% unless pages_p.exclude %}
+						<li>
+							<a href="{{site.url}}{{ pages_p.url }}">{{ pages_p.title }}</a>
+						</li>
+					{% endunless %}
+				{% endif %}
+			{% endfor %}
+		{% endfor %}
+		{% for pages_p_null in site.pages %}
+			{% if pages_p_null.order == null %}
+				{% unless pages_p_null.exclude %}
+					<li>
+						<a href="{{site.url}}{{ pages_p_null.url }}">{{ pages_p_null.title }}</a>
+					</li>
+				{% endunless %}
+			{% endif %}
+		{% endfor %}
+	</ul>
+{% endcapture %}
+{{ navbar_pages_html | strip_newlines | remove:'	' }}

@@ -1,0 +1,26 @@
+{% if site.sections.github_projects.enabled and site.github_projects.projects.size > 0 %}
+	{% assign section_github_projects_html = null %}
+	{% capture section_github_projects_html %}
+		<div class="well ghpb-well-navlist">
+			<ul class="nav nav-list ghpb-nav-list">
+				<li class="nav-header ghpb-nav-header">
+					{% if site.font_awesome.enabled %}
+						<i class="icon-github-alt"></i> 
+					{% endif %}
+					{{ site.github_projects.header }}
+				</li>
+				{% for section_github_project in site.github_projects.projects %}
+					<li>
+						<a href="{{ section_github_project.url }}" target="_blank">
+							{% if site.font_awesome.enabled %}
+								<i class="icon-github"></i> 
+							{% endif %}
+							{{ section_github_project.name }}
+						</a>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	{% endcapture %}
+	{{ section_github_projects_html | strip_newlines | remove:'	' }}
+{% endif %}

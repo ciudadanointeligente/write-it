@@ -1,0 +1,98 @@
+{% assign header_post_html = null %}
+{% capture header_post_html %}
+	{% assign page_tags_present = false %}
+
+	{% if page.tags.size > 0 %}
+		{% assign page_tags_present = true %}
+
+		{% assign page_tag_name = null %}
+		{% capture page_tag_names %}
+			{% for page_t in page.tags %}
+				{{ page_t | replace: ' ', '___' }}
+			{% endfor %}
+		{% endcapture %}
+
+		{% assign sorted_page_tag_names = null %}
+		{% capture sorted_page_tag_names %}
+			{{ page_tag_names | split:' ' | sort | join:' ' }}
+		{% endcapture %}
+
+		{% assign number_of_page_tags = null %}
+		{% capture number_of_page_tags %}
+			{{ sorted_page_tag_names | number_of_words }}
+		{% endcapture %}
+	{% endif %}
+
+	<div class="page-header">
+		{% if page.title %}
+			<h1>{{ page.title }}</h1>
+		{% elsif site.description %}
+			<h1>{{ site.description }}</h1>
+		{% endif %}
+
+		{% if page.subtitle %}
+			<h4>{{ page.subtitle }}</h4>
+		{% endif %}
+
+		<div class="row">
+			<small>
+				<div class="span3 offset1">
+					{% if site.font_awesome.enabled %}
+						<i class="icon-user"></i> 
+					{% endif %}
+					Authored by 
+					{% if page.author %}
+						{{ p.author }}.
+					{% else %}
+						{{ site.author }}.
+					{% endif %}
+					<br>
+
+					{% if site.font_awesome.enabled %}
+						<i class="icon-pencil"></i> 
+					{% endif %}
+					Published on {{ page.date | date_to_long_string }}.
+					<br>
+				</div>
+
+				<div class="span3">
+					{% if page.category.size > 0 %}
+					{% if site.font_awesome.enabled %}
+						<i class="icon-folder-open"></i> 
+					{% endif %}
+					Category: 
+					<a href="{{ site.url }}/filter.html?category={{ page.category | replace: ' ', '___' | downcase }}">
+						{{ page.category | capitalize }}
+					</a>
+					<br>
+					{% endif %}
+
+					{% if page_tags_present %}
+						{% if site.font_awesome.enabled %}
+							<i class="icon-tags"></i> 
+						{% endif %}
+						Tags: 
+						{% assign page_tag_first = true %}
+						{% assign prev_page_tag = '' %}
+						{% for page_i in (1..number_of_page_tags) %}
+							{% assign page_tag = null %}
+							{% capture page_tag %}{{ sorted_page_tag_names | truncatewords:page_i | remove:'...' | split:' ' | last | downcase }}{% endcapture %}
+							{% if prev_page_tag != page_tag %}
+								{% if page_tag_first %}
+									{% assign page_tag_first = false %}
+								{% else %}
+									, 
+								{% endif %}
+								{% assign prev_page_tag = page_tag %}
+								<a href="{{ site.url }}/filter.html?tag={{ page_tag }}">{{ page_tag | replace: '___', ' ' }}</a>
+							{% endif %}
+						{% endfor %}
+						<br>
+					{% endif %}
+				</div>
+				<div class="span1"></div>
+			</small>
+		</div>
+	</div>
+{% endcapture %}
+{{ header_post_html | strip_newlines | remove:'	' }}

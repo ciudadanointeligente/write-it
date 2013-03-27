@@ -1,0 +1,12 @@
+{% assign head_page_html = null %}
+{% capture head_page_html %}
+	<head>
+		{% if page.title %}
+			<title>{{ site.name }} - {{ page.title }}</title>
+		{% else %}
+			<title>{{ site.name }} - {{ site.description }}</title>
+		{% endif %}
+		{% include head/common/common.html %}
+	</head>
+{% endcapture %}
+{{ head_page_html | strip_newlines | remove:'	' }}

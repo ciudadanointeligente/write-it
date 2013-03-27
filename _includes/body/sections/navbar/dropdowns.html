@@ -1,0 +1,10 @@
+{% assign navbar_dropdowns_html = null %}
+{% capture navbar_dropdowns_html %}
+	{% include body/sections/navbar/dropdowns/archive.html %}
+	{% include body/sections/navbar/dropdowns/categories.html %}
+	{% include body/sections/navbar/dropdowns/tags.html %}
+	{% include body/sections/navbar/dropdowns/social-links.html %}
+	{% include body/sections/navbar/dropdowns/github-projects.html %}
+	{% include body/sections/navbar/dropdowns/external-links.html %}
+{% endcapture %}
+{{ navbar_dropdowns_html | strip_newlines | remove:'	' }}

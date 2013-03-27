@@ -1,0 +1,42 @@
+{% if site.alert or site.notice %}
+	{% assign site_alerts_and_notices_html = null %}
+	{% capture site_alerts_and_notices_html %}
+		{% if site.alert and site.notice %}
+			<div class="container">
+				<div class="row">
+					<div class="span6">
+						<div class="alert alert-block alert-error">
+							{{ site.alert }}
+						</div>
+					</div>
+					<div class="span6">
+						<div class="alert alert-block alert-info">
+							{{ site.notice }}
+						</div>
+					</div>
+				</div>
+			</div>
+		{% elsif site.alert %}
+			<div class="container">
+				<div class="row">
+					<div class="span12">
+						<div class="alert alert-block alert-error">
+							{{ site.alert }}
+						</div>
+					</div>
+				</div>
+			</div>
+		{% elsif site.notice %}
+			<div class="container">
+				<div class="row">
+					<div class="span12">
+						<div class="alert alert-block alert-info">
+							{{ site.notice }}
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	{% endcapture %}
+	{{ site_alerts_and_notices_html | strip_newlines | remove:'	' }}
+{% endif %}

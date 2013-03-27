@@ -1,0 +1,12 @@
+Current version: 0.1.1
+
+
+Changelog:
+
+Version 0.1.1 - 21 March 2013
+- Fixed pre rendering issue
+- Added more information to the README.md
+- Added more whitespace between paragraphs in blog posts
+
+Version 0.1.0 - 20 March 2013
+- Initial release

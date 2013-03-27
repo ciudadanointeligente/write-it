@@ -1,0 +1,7 @@
+{% assign javascript_bootstrap_html = null %}
+{% capture javascript_bootstrap_html %}
+	{% if site.bootstrap.js.enabled %}
+		<script src="{{ site.url }}/js/{{ site.bootstrap.js.src }}"></script>
+	{% endif %}
+{% endcapture %}
+{{ javascript_bootstrap_html | strip_newlines | remove:'	' }}
