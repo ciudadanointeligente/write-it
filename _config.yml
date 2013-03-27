@@ -1,4 +1,12 @@
-auto: true
+title: Write-it development blog
+#url: http://www.mydomain.com
+
 markdown: rdiscount
 pygments: true
-permalink: /blog/:title
+permalink: /:year/:month/:day/:title
+
+lsi: true
+paginate: 20
+
+exclude:
+- CNAME

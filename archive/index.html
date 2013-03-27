@@ -1,0 +1,24 @@
+---
+layout: default
+title: My blog's archive
+description: All posts are gathered here
+---
+
+<article>
+	<ul class="posts-list hfeed">
+	{% for post in paginator.posts %}
+	{% include post-list-item.html %}
+	{% endfor %}
+	</ul>
+</article>
+
+{% if site.tags.size > 0 %}
+<aside>
+	<h3>Posts' tags list</h3>
+	<ul class="tags-list">
+	{% for tag in site.tags %}
+	<li><a href="/tag#{{ tag[0] }}">{{ tag[0] }}</a> ({{ tag[1].size }})</li>
+	{% endfor %}
+	</ul>
+</aside>
+{% endif %}

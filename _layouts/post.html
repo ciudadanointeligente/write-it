@@ -1,9 +1,16 @@
 ---
 layout: default
 ---
+{% assign post = page %}
+<div class="hfeed">{% include post-article.html %}</div>
 
-<div class="content">    
-	{% include post_header.html %}
-    {{ content }}		
-</div>
-    
+{% if site.related_posts.size > 0 %}
+<aside>
+	<h3>Related posts</h3>
+	<ul class="posts-list hfeed">
+		{% for post in site.related_posts %}
+		{% include post-list-item.html %}
+		{% endfor %}
+	</ul>
+</aside>
+{% endif %}

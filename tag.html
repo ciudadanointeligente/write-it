@@ -1,0 +1,16 @@
+---
+layout: default
+title: Blog tags
+description: This page contains posts' tags list
+---
+
+{% for tag in site.tags %}
+<section>
+	<h3 name="#{{ tag[0] }}">{{ tag[0] }}</h3>
+	<ul class="posts-list hfeed">
+		{% for post in tag[1] %}
+		{% include post-list-item.html %}
+		{% endfor %}
+	</ul>
+</section>
+{% endfor %}
