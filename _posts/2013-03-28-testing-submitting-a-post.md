@@ -8,4 +8,4 @@ title : Hello from design team
 - Kathe Malis
 - Cata Margozzini
 - Fierita
-![Alt Fierita](../img/fierita.jpg)
+![Alt Fierita](../write-it/img/fierita.jpg)
