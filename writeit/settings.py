@@ -120,7 +120,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'messages',
+    'nuntium',
     
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
@@ -156,6 +156,7 @@ LOGGING = {
         },
     }
 }
+EXTRA_APPS = ()
 
 try:
     from local_settings import *
