@@ -1,3 +1,2 @@
 Django==1.5
 -e git+https://github.com/mysociety/popit-django.git#egg=popit-django
-django-plugins==0.2.2

@@ -1,3 +1,7 @@
 from django.db import models
 
-# Create your models here.
+class Message(models.Model):
+	"""Message: Class that contain the info for a model, despite the inputo and the output channels."""
+	content = models.TextField()
+	
+		
