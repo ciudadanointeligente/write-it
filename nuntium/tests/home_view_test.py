@@ -7,3 +7,4 @@ class HomeViewTestCase(TestCase):
         response = self.client.get(url)
 
         self.assertTemplateUsed(response, "home.html")
+
