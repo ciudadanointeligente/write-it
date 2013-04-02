@@ -2,3 +2,6 @@
 *.pot
 *.pyc
 local_settings.py
+*.DS_store
+*.mo
+*.db

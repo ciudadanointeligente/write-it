@@ -1,1 +1,2 @@
 Django==1.5
+django-plugins==0.2.2

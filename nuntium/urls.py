@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
+from django.views.generic import TemplateView
 
-from django.conf.urls.i18n import i18n_patterns
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -8,7 +8,7 @@ from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', 'writeit.views.home', name='home'),
+    url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
     # url(r'^writeit/', include('writeit.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
@@ -16,10 +16,4 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
-    
-)
-
-
-urlpatterns += i18n_patterns('',
-    url(r'^', include('nuntium.urls')),
 )
