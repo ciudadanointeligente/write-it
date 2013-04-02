@@ -11,8 +11,7 @@ class HomeViewTestCase(TestCase):
 
 
     def test_it_translates_correctly(self):
-        activate('es_CL')
+        activate('es')
         url = reverse("home")
-
-        self.assertEquals(url, "/es-cl/")
+        self.assertTrue("/es/" in url)
 
