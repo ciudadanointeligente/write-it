@@ -141,7 +141,8 @@ INSTALLED_APPS = (
     'nuntium',
     'djangoplugins',
     'popit',
-    'south'
+    'south',
+    'contactos'
     
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
