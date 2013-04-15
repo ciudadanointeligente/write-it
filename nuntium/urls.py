@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
+from nuntium.views import HomeTemplateView
 
 
 # Uncomment the next two lines to enable the admin:
@@ -8,7 +9,7 @@ from django.views.generic import TemplateView
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
+    url(r'^$', HomeTemplateView.as_view(template_name='home.html'), name='home'),
     # url(r'^writeit/', include('writeit.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
