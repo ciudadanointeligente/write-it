@@ -1,5 +1,5 @@
 # Create your views here.
-from django.views.generic import TemplateView, CreateView
+from django.views.generic import TemplateView, CreateView, DetailView
 from nuntium.models import Instance
 from nuntium.forms import MessageCreateForm
 
@@ -16,4 +16,11 @@ class HomeTemplateView(TemplateView):
 
 class InstanceDetailView(CreateView):
     form_class = MessageCreateForm
-    
+    model = Instance
+
+    def get_form_kwargs(self):
+        kwargs = super(InstanceDetailView, self).get_form_kwargs()
+        self.object = self.get_object()
+        kwargs['instance'] = self.object
+        
+        return kwargs
