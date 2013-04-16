@@ -45,3 +45,6 @@ class InstanceDetailView(TestCase):
         response = self.client.get(url)
         self.assertEquals(response.context['instance'], self.instance1)
         self.assertEquals(response.status_code, 200)
+
+
+
