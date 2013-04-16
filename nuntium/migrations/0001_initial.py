@@ -25,13 +25,13 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'nuntium', ['Instance'])
 
-        # Adding model 'MessageOutbox'
-        db.create_table(u'nuntium_messageoutbox', (
+        # Adding model 'OutboundMessage'
+        db.create_table(u'nuntium_outboundmessage', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('contact', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contactos.Contact'])),
             ('message', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['nuntium.Message'])),
         ))
-        db.send_create_signal(u'nuntium', ['MessageOutbox'])
+        db.send_create_signal(u'nuntium', ['OutboundMessage'])
 
 
     def backwards(self, orm):
@@ -41,8 +41,8 @@ class Migration(SchemaMigration):
         # Deleting model 'Instance'
         db.delete_table(u'nuntium_instance')
 
-        # Deleting model 'MessageOutbox'
-        db.delete_table(u'nuntium_messageoutbox')
+        # Deleting model 'OutboundMessage'
+        db.delete_table(u'nuntium_outboundmessage')
 
 
     models = {
@@ -72,8 +72,8 @@ class Migration(SchemaMigration):
             'instance': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['nuntium.Instance']"}),
             'subject': ('django.db.models.fields.CharField', [], {'max_length': '512'})
         },
-        u'nuntium.messageoutbox': {
-            'Meta': {'object_name': 'MessageOutbox'},
+        u'nuntium.outboundmessage': {
+            'Meta': {'object_name': 'OutboundMessage'},
             'contact': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contactos.Contact']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'message': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['nuntium.Message']"})

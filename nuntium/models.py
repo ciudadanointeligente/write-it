@@ -14,7 +14,7 @@ class MessageManager(models.Manager):
             raise TypeError('A message needs contacts to be sent')
         message = super(MessageManager, self).create(**kwargs)
         for contact in contacts:
-            messageoutbox = MessageOutbox.objects.create(contact=contact, message=message)
+            outbound_message = OutboundMessage.objects.create(contact=contact, message=message)
         return message
 
 class Message(models.Model):
@@ -36,8 +36,8 @@ class Instance(models.Model):
     def get_absolute_url(self):
         return ('instance.views.details', self.slug)
 
-class MessageOutbox(models.Model):
-    """docstring for MessageOutbox: This class is the message delivery unit. The MessageOutbox is the one that will be tracked in order 
+class OutboundMessage(models.Model):
+    """docstring for OutboundMessage: This class is the message delivery unit. The OutboundMessage is the one that will be tracked in order 
     to know the actual status of the message"""
     contact = models.ForeignKey(Contact)
     message = models.ForeignKey(Message)

@@ -1,5 +1,5 @@
 from django.test import TestCase
-from nuntium.models import Message, Instance, MessageOutbox
+from nuntium.models import Message, Instance, OutboundMessage
 from contactos.models import Contact, ContactType
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
@@ -20,7 +20,7 @@ class TestMessages(TestCase):
         message = Message.objects.create(content = 'Content 1', subject='Subject 1', instance= self.instance, contacts = [self.contact1])
         self.assertTrue(message)
 
-        self.assertEquals(message.messageoutbox_set.count(), 1)
+        self.assertEquals(message.outboundmessage_set.count(), 1)
 
         #Validation test pending
         # self.assertRaises(ValidationError, Message, content='Content') # subject missing
@@ -37,7 +37,7 @@ class TestMessages(TestCase):
 
 
 
-class MessageOutboxTestCase(TestCase):
+class OutboundMessageTestCase(TestCase):
     def setUp(self):
         self.api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
         self.person1 = Person.objects.create(api_instance=self.api_instance1, name= 'Person 1')
@@ -47,9 +47,9 @@ class MessageOutboxTestCase(TestCase):
         self.message = Message.objects.create(content = 'Content 1', subject='Subject 1', instance= self.instance, contacts = [self.contact1])
 
 
-    def test_create_a_message_outbox(self):
-        messageoutbox = MessageOutbox.objects.create(message = self.message, contact=self.contact1)
+    def test_create_a_outbound_message(self):
+        outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact1)
 
         #This means that there is a link between a contact and a message
 
-        self.assertTrue(messageoutbox)
+        self.assertTrue(outbound_message)

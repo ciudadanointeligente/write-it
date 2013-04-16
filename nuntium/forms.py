@@ -18,9 +18,12 @@ class MessageCreateForm(ModelForm):
 
         if 'instance' not in kwargs:
             raise ValidationError(_('Instance not present'))
-        self.instance = kwargs['instance']
-        persons = Person.objects.filter(api_instance=self.instance.api_instance)
+        instance = kwargs['instance']
+        persons = Person.objects.filter(api_instance=instance.api_instance)
         self.fields['persons'].queryset = persons
+
+
+
 
     class Meta:
         model = Message

@@ -2,7 +2,7 @@
 from django.test import TestCase
 from popit.models import Person, ApiInstance
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, Instance, MessageOutbox
+from nuntium.models import Message, Instance, OutboundMessage
 from nuntium.forms import MessageCreateForm
 from django.forms import ValidationError
 
@@ -40,12 +40,32 @@ class MessageFormTestCase(TestCase):
         form = MessageCreateForm(instance = self.instance1)
         self.assertTrue(form)
 
-    def test_the_form_only_has_its_contacts(self):
+    def test_form_only_has_contacts_from_its_instance(self):
         form = MessageCreateForm(instance = self.instance1)
         persons = form.fields['persons'].queryset
         self.assertEquals(len(persons), 1) #person 1 only
         self.assertEquals(persons[0], self.person1) #person 1
 
+    def test_message_creation_on_form_save(self):
+        #spanish
+        data = {
+        'subject':u'Fiera no está',
+        'content':u'¿Dónde está Fiera Feroz? en la playa?',
+        'instance': self.instance1.id,
+        'persons': [self.person1.id]
+        }
+        form = MessageCreateForm(data)
+        form.save()
+
+        new_messages = Message.objects.all()
+        new_outbound_messages= OutboundMessage.objects.all()
+        self.assertTrue(new_messages.count()>0)
+        self.assertEquals(new_messages[0].subject, data['subject'])
+        self.assertEquals(new_messages[0].content, data['content'])
+        self.assertEquals(new_messages[0].instance, self.instance1)
+        self.assertEquals(new_outbound_messages.count(),1)
+        self.assertEquals(new_outbound_messages[0].contact, self.contact1)
+        self.assertEquals(new_outbound_messages[0].message, new_messages[0])
 
     #there should be a test to prove that it does something when like sending 
     #a mental message or save it for later when we save the message
