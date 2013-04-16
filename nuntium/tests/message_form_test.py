@@ -45,3 +45,8 @@ class MessageFormTestCase(TestCase):
         persons = form.fields['persons'].queryset
         self.assertEquals(len(persons), 1) #person 1 only
         self.assertEquals(persons[0], self.person1) #person 1
+
+
+    #there should be a test to prove that it does something when like sending 
+    #a mental message or save it for later when we save the message
+    #we save it
