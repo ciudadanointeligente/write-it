@@ -10,6 +10,7 @@ class HomeViewTestCase(TestCase):
         response = self.client.get(url)
 
         self.assertTemplateUsed(response, "home.html")
+        self.assertEquals(response.status_code,200)
 
 
     def test_it_translates_correctly(self):
@@ -25,3 +26,4 @@ class HomeViewTestCase(TestCase):
         self.assertTrue(response.context['instances'])
         self.assertEquals(response.context['instances'].count(),1)
         self.assertEquals(response.context['instances'][0],instance1)
+        

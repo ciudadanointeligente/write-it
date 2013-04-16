@@ -29,7 +29,12 @@ class Message(models.Model):
 class Instance(models.Model):
     """Instance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
     name = models.CharField(max_length=255)
+    slug = models.CharField(max_length=255)
     api_instance = models.ForeignKey(ApiInstance)
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('instance.views.details', self.slug)
 
 class MessageOutbox(models.Model):
     """docstring for MessageOutbox: This class is the message delivery unit. The MessageOutbox is the one that will be tracked in order 

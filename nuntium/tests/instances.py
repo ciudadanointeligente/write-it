@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.core.urlresolvers import reverse
 from nuntium.models import Instance, Message
 from contactos.models import Contact, ContactType
 from popit.models import ApiInstance, Person
@@ -15,7 +16,7 @@ class InstanceTestCase(TestCase):
 
 
     def test_create_instance(self):
-        instance = Instance.objects.create(name='instance 1', api_instance= self.api_instance1)
+        instance = Instance.objects.create(name='instance 1', api_instance= self.api_instance1, slug='instance-1')
         self.assertTrue(instance)
 
     def test_instance_containning_several_messages(self):
@@ -29,3 +30,18 @@ class InstanceTestCase(TestCase):
         self.assertEquals(message2.instance, instance1)
         self.assertEquals(instance2.message_set.count(),1)
         self.assertEquals(message3.instance, instance2)
+
+class InstanceDetailView(TestCase):
+    def setUp(self):
+        self.api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
+        self.instance1 = Instance.objects.create(name='instance 1', api_instance= self.api_instance1, slug='instance-1')
+    
+    def test_detail_instance_view(self):
+        url = reverse('instance_detail', kwargs={
+            'slug':self.instance1.slug
+            })
+        self.assertTrue(url)
+
+        response = self.client.get(url)
+        self.assertEquals(response.context['instance'], self.instance1)
+        self.assertEquals(response.status_code, 200)

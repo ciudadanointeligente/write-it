@@ -1,5 +1,5 @@
 # Create your views here.
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, DetailView
 from nuntium.models import Instance
 
 
@@ -12,3 +12,7 @@ class HomeTemplateView(TemplateView):
 
         context['instances'] = all_instances
         return context
+
+class InstanceDetailView(DetailView):
+    model = Instance
+    
