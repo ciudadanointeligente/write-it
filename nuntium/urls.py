@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView, DetailView
-from nuntium.views import HomeTemplateView, InstanceDetailView
+from nuntium.views import HomeTemplateView, WriteItInstanceDetailView
 
 
 # Uncomment the next two lines to enable the admin:
@@ -10,7 +10,7 @@ from nuntium.views import HomeTemplateView, InstanceDetailView
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', HomeTemplateView.as_view(template_name='home.html'), name='home'),
-    url(r'^instances/(?P<slug>[-\w]+)/?$', InstanceDetailView.as_view(), name = 'instance_detail'),
+    url(r'^instances/(?P<slug>[-\w]+)/?$', WriteItInstanceDetailView.as_view(), name = 'instance_detail'),
     # url(r'^writeit/', include('writeit.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

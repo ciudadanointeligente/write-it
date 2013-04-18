@@ -2,7 +2,7 @@
 from django.test import TestCase
 from popit.models import Person, ApiInstance
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, Instance, OutboundMessage
+from nuntium.models import Message, WriteItInstance, OutboundMessage
 from nuntium.forms import MessageCreateForm
 from django.forms import ValidationError
 
@@ -17,31 +17,30 @@ class MessageFormTestCase(TestCase):
         self.contact_type1 = ContactType.objects.create(name= 'e-mail',label_name='Electronic Mail')
         self.contact1 = Contact.objects.create(person=self.person1, contact_type=self.contact_type1, value= 'test@test.com')
         self.contact2 = Contact.objects.create(person=self.person2, contact_type=self.contact_type1, value= 'test@test.com')
-        self.instance1 = Instance.objects.create(name='instance 1', slug= 'instance-1', api_instance= self.api_instance1)
-        self.instance2 = Instance.objects.create(name='instance 2', slug= 'instance-2', api_instance= self.api_instance2)
+        self.writeitinstance1 = WriteItInstance.objects.create(name='instance 1', slug= 'instance-1', api_instance= self.api_instance1)
+        self.writeitinstance2 = WriteItInstance.objects.create(name='instance 2', slug= 'instance-2', api_instance= self.api_instance2)
 
     def test_create_form(self):
         #spanish
         data = {
         'subject':u'Fiera no está',
         'content':u'¿Dónde está Fiera Feroz? en la playa?',
-        'instance': self.instance1.id,
         'persons': [self.person1.id]
         }
 
 
-        form = MessageCreateForm(data)
+        form = MessageCreateForm(data, writeitinstance = self.writeitinstance1)
         self.assertTrue(form)
         self.assertTrue(form.is_valid())
 
 
     def test_instance_is_always_required(self):
         self.assertRaises(ValidationError, MessageCreateForm)
-        form = MessageCreateForm(instance = self.instance1)
+        form = MessageCreateForm(writeitinstance = self.writeitinstance1)
         self.assertTrue(form)
 
     def test_form_only_has_contacts_from_its_instance(self):
-        form = MessageCreateForm(instance = self.instance1)
+        form = MessageCreateForm(writeitinstance = self.writeitinstance1)
         persons = form.fields['persons'].queryset
         self.assertEquals(len(persons), 1) #person 1 only
         self.assertEquals(persons[0], self.person1) #person 1
@@ -51,10 +50,11 @@ class MessageFormTestCase(TestCase):
         data = {
         'subject':u'Fiera no está',
         'content':u'¿Dónde está Fiera Feroz? en la playa?',
-        'instance': self.instance1.id,
         'persons': [self.person1.id]
         }
-        form = MessageCreateForm(data)
+        form = MessageCreateForm(data, writeitinstance=self.writeitinstance1)
+        form.full_clean()
+        self.assertTrue(form.is_valid())
         form.save()
 
         new_messages = Message.objects.all()
@@ -62,7 +62,7 @@ class MessageFormTestCase(TestCase):
         self.assertTrue(new_messages.count()>0)
         self.assertEquals(new_messages[0].subject, data['subject'])
         self.assertEquals(new_messages[0].content, data['content'])
-        self.assertEquals(new_messages[0].instance, self.instance1)
+        self.assertEquals(new_messages[0].writeitinstance, self.writeitinstance1)
         self.assertEquals(new_outbound_messages.count(),1)
         self.assertEquals(new_outbound_messages[0].contact, self.contact1)
         self.assertEquals(new_outbound_messages[0].message, new_messages[0])
