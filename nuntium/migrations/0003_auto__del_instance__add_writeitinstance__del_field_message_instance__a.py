@@ -25,7 +25,7 @@ class Migration(SchemaMigration):
 
         # Adding field 'Message.writeitinstance'
         db.add_column(u'nuntium_message', 'writeitinstance',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default='', to=orm['nuntium.WriteItInstance']),
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=0, to=orm['nuntium.WriteItInstance']),
                       keep_default=False)
 
 
@@ -42,9 +42,12 @@ class Migration(SchemaMigration):
         # Deleting model 'WriteItInstance'
         db.delete_table(u'nuntium_writeitinstance')
 
+        # Adding field 'Message.instance'
+        db.add_column(u'nuntium_message', 'instance',
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=0, to=orm['nuntium.Instance']),
+                      keep_default=False)
 
-        # User chose to not deal with backwards NULL issues for 'Message.instance'
-        raise RuntimeError("Cannot reverse this migration. 'Message.instance' and its values cannot be restored.")
+
         # Deleting field 'Message.writeitinstance'
         db.delete_column(u'nuntium_message', 'writeitinstance_id')
 
