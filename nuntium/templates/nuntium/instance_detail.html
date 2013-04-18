@@ -1,0 +1,6 @@
+{% load i18n %}
+<form method='post'>
+{% csrf_token %}
+{{ form.as_p }}
+<input type='submit' value= "{% trans 'Submit Message' %}"/>
+</form>
