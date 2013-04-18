@@ -8,41 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Message'
-        db.create_table(u'nuntium_message', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('subject', self.gf('django.db.models.fields.CharField')(max_length=512)),
-            ('content', self.gf('django.db.models.fields.TextField')()),
-            ('instance', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['nuntium.Instance'])),
-        ))
-        db.send_create_signal(u'nuntium', ['Message'])
-
-        # Adding model 'Instance'
-        db.create_table(u'nuntium_instance', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('api_instance', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['popit.ApiInstance'])),
-        ))
-        db.send_create_signal(u'nuntium', ['Instance'])
-
-        # Adding model 'OutboundMessage'
-        db.create_table(u'nuntium_outboundmessage', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('contact', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contactos.Contact'])),
-            ('message', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['nuntium.Message'])),
-        ))
-        db.send_create_signal(u'nuntium', ['OutboundMessage'])
+        # Adding field 'Instance.slug'
+        db.add_column(u'nuntium_instance', 'slug',
+                      self.gf('django.db.models.fields.CharField')(default='', max_length=255),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'Message'
-        db.delete_table(u'nuntium_message')
-
-        # Deleting model 'Instance'
-        db.delete_table(u'nuntium_instance')
-
-        # Deleting model 'OutboundMessage'
-        db.delete_table(u'nuntium_outboundmessage')
+        # Deleting field 'Instance.slug'
+        db.delete_column(u'nuntium_instance', 'slug')
 
 
     models = {
@@ -63,7 +37,8 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Instance'},
             'api_instance': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['popit.ApiInstance']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
+            'slug': ('django.db.models.fields.CharField', [], {'max_length': '255'})
         },
         u'nuntium.message': {
             'Meta': {'object_name': 'Message'},
