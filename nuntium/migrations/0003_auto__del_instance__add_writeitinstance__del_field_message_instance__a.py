@@ -47,6 +47,7 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.related.ForeignKey')(default=0, to=orm['nuntium.Instance']),
                       keep_default=False)
 
+
         # Deleting field 'Message.writeitinstance'
         db.delete_column(u'nuntium_message', 'writeitinstance_id')
 
