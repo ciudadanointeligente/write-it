@@ -67,6 +67,7 @@ class MessageFormTestCase(TestCase):
         self.assertEquals(new_outbound_messages[0].contact, self.contact1)
         self.assertEquals(new_outbound_messages[0].message, new_messages[0])
 
+
     #there should be a test to prove that it does something when like sending 
     #a mental message or save it for later when we save the message
     #we save it

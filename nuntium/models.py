@@ -5,17 +5,19 @@ from popit.models import ApiInstance
 from contactos.models import Contact
 
 
+
 class MessageManager(models.Manager):
     def create(self, **kwargs):
-        if 'contacts' in kwargs:
-            contacts = kwargs['contacts']
-            del kwargs['contacts']
+        if 'persons' in kwargs:
+            persons = kwargs.pop('persons')
         else:
-            raise TypeError('A message needs contacts to be sent')
+            raise TypeError('A message needs persons to be sent')
         message = super(MessageManager, self).create(**kwargs)
-        for contact in contacts:
-            outbound_message = OutboundMessage.objects.create(contact=contact, message=message)
+        for person in persons:
+            for contact in person.contact_set.all():
+                outbound_message = OutboundMessage.objects.create(contact=contact, message=message)
         return message
+
 
 class Message(models.Model):
     """Message: Class that contain the info for a model, despite of the input and the output channels. Subject and content are mandatory fields"""
@@ -24,6 +26,24 @@ class Message(models.Model):
     instance = models.ForeignKey('Instance')
 
     objects = MessageManager()
+
+
+    def __init__(self, *args, **kwargs):
+        self.persons = None
+        if 'persons' in kwargs:
+            self.persons = kwargs.pop('persons')
+        super(Message, self).__init__(*args, **kwargs)
+
+
+    def save(self, *args, **kwargs):
+
+        super(Message, self).save(*args, **kwargs)
+        if self.persons:
+            for person in self.persons:
+                for contact in person.contact_set.all():
+                    outbound_message = OutboundMessage.objects.create(contact=contact, message=self)
+
+
 
 		
 class Instance(models.Model):

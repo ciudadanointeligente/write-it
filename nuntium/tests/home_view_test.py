@@ -19,10 +19,11 @@ class HomeViewTestCase(TestCase):
         self.assertTrue("/es/" in url)
 
     def test_list_instances(self):
+        api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
+        instance1 = Instance.objects.create(name = 'Instance 1', api_instance= api_instance1, slug='instance-1')
         url = reverse("home")
         response = self.client.get(url)
-        api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
-        instance1 = Instance.objects.create(name = 'Instance 1', api_instance= api_instance1)
+        self.assertEquals(response.status_code,200)
         self.assertTrue(response.context['instances'])
         self.assertEquals(response.context['instances'].count(),1)
         self.assertEquals(response.context['instances'][0],instance1)
