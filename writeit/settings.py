@@ -178,6 +178,10 @@ LOGGING = {
         },
     }
 }
+
+#setting to avoid db changes during test
+SOUTH_TESTS_MIGRATE = False
+
 EXTRA_APPS = ()
 
 try:
