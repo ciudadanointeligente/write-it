@@ -1,3 +1,14 @@
 {% load i18n %}
-<h1>Write-it exists!</h1>
-<p>this is the proof</p>
+
+
+<h1>{% trans "Write-it exists!" %}</h1>
+<p>{% trans "this is the proof" %}</p>
+
+<ul>
+{% for instance in instances %}
+<li><a href="{% url 'instance_detail' instance.slug %}"> {{ instance.name }}</a></li>
+{% endfor %}
+</ul>
+
+
+

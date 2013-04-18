@@ -1,0 +1,7 @@
+{% load i18n %}
+
+<form method='post' action="{% url 'instance_detail' instance.slug %}">
+{% csrf_token %}
+    {{ form.as_p }}
+    <input type='submit' value='{% trans "Submit message" %}' />
+</form>
