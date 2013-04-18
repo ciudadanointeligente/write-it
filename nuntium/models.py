@@ -23,7 +23,7 @@ class Message(models.Model):
     """Message: Class that contain the info for a model, despite of the input and the output channels. Subject and content are mandatory fields"""
     subject = models.CharField(max_length=512)
     content = models.TextField()
-    instance = models.ForeignKey('Instance')
+    writeitinstance = models.ForeignKey('WriteItInstance')
 
     objects = MessageManager()
 
@@ -46,8 +46,8 @@ class Message(models.Model):
 
 
 		
-class Instance(models.Model):
-    """Instance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
+class WriteItInstance(models.Model):
+    """WriteItInstance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
     name = models.CharField(max_length=255)
     slug = models.CharField(max_length=255)
     api_instance = models.ForeignKey(ApiInstance)
