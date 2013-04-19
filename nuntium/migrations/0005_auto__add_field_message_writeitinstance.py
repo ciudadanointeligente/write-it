@@ -8,46 +8,13 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting model 'Instance'
-        db.delete_table(u'nuntium_instance')
-
-        # Adding model 'WriteItInstance'
-        db.create_table(u'nuntium_writeitinstance', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('slug', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('api_instance', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['popit.ApiInstance'])),
-        ))
-        db.send_create_signal(u'nuntium', ['WriteItInstance'])
-
-        # Deleting field 'Message.instance'
-        db.delete_column(u'nuntium_message', 'instance_id')
-
         # Adding field 'Message.writeitinstance'
         db.add_column(u'nuntium_message', 'writeitinstance',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default=0, to=orm['nuntium.WriteItInstance']),
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['nuntium.WriteItInstance']),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Adding model 'Instance'
-        db.create_table(u'nuntium_instance', (
-            ('api_instance', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['popit.ApiInstance'])),
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('slug', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=255)),
-        ))
-        db.send_create_signal(u'nuntium', ['Instance'])
-
-        # Deleting model 'WriteItInstance'
-        db.delete_table(u'nuntium_writeitinstance')
-
-        # Adding field 'Message.instance'
-        db.add_column(u'nuntium_message', 'instance',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default=0, to=orm['nuntium.Instance']),
-                      keep_default=False)
-
-
         # Deleting field 'Message.writeitinstance'
         db.delete_column(u'nuntium_message', 'writeitinstance_id')
 
