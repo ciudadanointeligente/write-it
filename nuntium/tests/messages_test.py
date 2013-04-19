@@ -73,6 +73,11 @@ class OutboundMessageTestCase(TestCase):
 
 
 
+class PluginMessageTestCase(TestCase):
+    def setUp(self):
+        pass
+
+
 
 
 
