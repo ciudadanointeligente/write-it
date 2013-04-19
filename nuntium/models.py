@@ -17,13 +17,23 @@ class MessageManager(models.Manager):
             for contact in person.contact_set.all():
                 outbound_message = OutboundMessage.objects.create(contact=contact, message=message)
         return message
+		
+class WriteItInstance(models.Model):
+    """WriteItInstance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
+    name = models.CharField(max_length=255)
+    slug = models.CharField(max_length=255)
+    api_instance = models.ForeignKey(ApiInstance)
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('instance.views.details', self.slug)
 
 
 class Message(models.Model):
     """Message: Class that contain the info for a model, despite of the input and the output channels. Subject and content are mandatory fields"""
     subject = models.CharField(max_length=512)
     content = models.TextField()
-    writeitinstance = models.ForeignKey('WriteItInstance')
+    writeitinstance = models.ForeignKey(WriteItInstance)
 
     objects = MessageManager()
 
@@ -42,19 +52,6 @@ class Message(models.Model):
             for person in self.persons:
                 for contact in person.contact_set.all():
                     outbound_message = OutboundMessage.objects.create(contact=contact, message=self)
-
-
-
-		
-class WriteItInstance(models.Model):
-    """WriteItInstance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
-    name = models.CharField(max_length=255)
-    slug = models.CharField(max_length=255)
-    api_instance = models.ForeignKey(ApiInstance)
-
-    @models.permalink
-    def get_absolute_url(self):
-        return ('instance.views.details', self.slug)
 
 class OutboundMessage(models.Model):
     """docstring for OutboundMessage: This class is the message delivery unit. The OutboundMessage is the one that will be tracked in order 
