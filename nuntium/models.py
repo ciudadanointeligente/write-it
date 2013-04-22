@@ -31,11 +31,20 @@ class WriteItInstance(models.Model):
 
 class Message(models.Model):
     """Message: Class that contain the info for a model, despite of the input and the output channels. Subject and content are mandatory fields"""
+    STATUS_CHOICES = (
+        ("new",_("Newly created")),
+        ("sent",_("Sent")),
+        )
+
+
     subject = models.CharField(max_length=512)
     content = models.TextField()
     writeitinstance = models.ForeignKey(WriteItInstance)
+    status = models.CharField(max_length="4", choices=STATUS_CHOICES, default="new")
 
     objects = MessageManager()
+
+
 
 
     def __init__(self, *args, **kwargs):
@@ -52,6 +61,11 @@ class Message(models.Model):
             for person in self.persons:
                 for contact in person.contact_set.all():
                     outbound_message = OutboundMessage.objects.create(contact=contact, message=self)
+
+
+    def send(self):
+        self.status = "sent"
+        self.save()
 
 class OutboundMessage(models.Model):
     """docstring for OutboundMessage: This class is the message delivery unit. The OutboundMessage is the one that will be tracked in order 
