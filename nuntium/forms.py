@@ -35,4 +35,4 @@ class MessageCreateForm(ModelForm):
 
     class Meta:
         model = Message
-        exclude = ("writeitinstance")
+        exclude = ("writeitinstance", "status")
