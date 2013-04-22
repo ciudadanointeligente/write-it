@@ -10,3 +10,6 @@ env:
   - DJANGO_VERSION=1.5
 script:
   - coverage run --source=nuntium,contactos manage.py test nuntium contactos
+  - coverage report -m
+after_script:
+  - coveralls --verbose
