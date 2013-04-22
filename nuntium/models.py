@@ -3,6 +3,7 @@ from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
 from popit.models import ApiInstance
 from contactos.models import Contact
+from nuntium.plugins import OutputPlugin
 
 
 
@@ -66,6 +67,9 @@ class Message(models.Model):
     def send(self):
         self.status = "sent"
         self.save()
+        plugins = OutputPlugin.get_plugins()
+        for plugin in plugins:
+            plugin.send(self)
 
 class OutboundMessage(models.Model):
     """docstring for OutboundMessage: This class is the message delivery unit. The OutboundMessage is the one that will be tracked in order 

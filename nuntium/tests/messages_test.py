@@ -80,8 +80,8 @@ class OutboundMessageTestCase(TestCase):
         outbound_messages = OutboundMessage.objects.filter(message=message_to_3)
         self.assertEquals(outbound_messages.count(), 3)
 
-from mental_message_plugin import MentalMessage
 
+from mental_message_plugin import *
 class PluginMentalMessageTestCase(TestCase):
     def setUp(self):
         self.api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
@@ -94,8 +94,33 @@ class PluginMentalMessageTestCase(TestCase):
         self.message = Message.objects.create(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1,\
             self.person2])
 
+    def test_it_has_a_send_method_and_does_whatever(self):
+        the_mental_channel = MentalMessage()
+        #it sends the message
+        the_mental_channel.send(self.message)
+        #And I'm gonna prove it by testing that the message has changed
 
-    #It should do something right after the creation of the message
+        reloaded_message = Message.objects.get(id=self.message.id)
+        self.assertTrue(reloaded_message.content, u"bz-bz sent using psychokinesis")
 
+
+
+    #It should send using all the channels available
     def test_it_should_create_a_new_kind_of_outbox_message(self):
-        pass
+        #I'm gonna define some variable in here and try to access it from 
+        #the mental_message_plugin 
+
+        self.message.send()
+        #reload the message that should have been changed by the mental_message_plugin
+        reloaded_message = Message.objects.get(id=self.message.id)
+        # the mental message should have been sent, in other words its content should have been modified
+        # or something
+        self.assertEquals(reloaded_message.content, u"bz-bz sent using psychokinesis")
+        #TODO: implement logging of sent messages or something cause 
+        #this way of testing makes no sense
+        #So everytime a message is sent using any channel it should log
+        #that has been sent and I'm proving the sending of that using the log instead
+        #of modiying the message.
+        #The message should not be modified in any way, just do whatever you want with it
+        #but do not modify it.
+
