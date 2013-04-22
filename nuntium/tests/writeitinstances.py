@@ -33,6 +33,14 @@ class InstanceTestCase(TestCase):
         self.assertEquals(writeitinstance2.message_set.count(),1)
         self.assertEquals(message3.writeitinstance, writeitinstance2)
 
+    def test_get_absolute_url(self):
+        writeitinstance1 = WriteItInstance.objects.create(name='instance 1', api_instance= self.api_instance1, slug=u"the-slug")
+        expected_url = reverse('instance_detail', kwargs={
+            'slug':writeitinstance1.slug
+            })
+
+        self.assertEquals(expected_url, writeitinstance1.get_absolute_url())
+
 class InstanceDetailView(TestCase):
     def setUp(self):
         self.api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')

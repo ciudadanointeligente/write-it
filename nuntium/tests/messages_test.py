@@ -25,19 +25,12 @@ class TestMessages(TestCase):
         self.assertEquals(message.writeitinstance, self.writeitinstance1)
         self.assertEquals(message.status, "new")
 
-
-
     def test_outboundmessage_create_without_manager(self):
         message = Message(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])
         message.save()
 
         
         self.assertEquals(message.outboundmessage_set.count(), 1)
-
-
-
-
-
 
     def test_it_raises_typeerror_when_no_contacts_are_present(self):
 

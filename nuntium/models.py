@@ -26,7 +26,7 @@ class WriteItInstance(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('instance.views.details', self.slug)
+        return ('instance_detail', (), {'slug': self.slug})
 
 
 class Message(models.Model):
