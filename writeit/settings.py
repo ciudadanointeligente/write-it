@@ -142,7 +142,8 @@ INSTALLED_APPS = (
     'djangoplugins',
     'popit',
     'south',
-    'contactos'
+    'contactos',
+    'mailit',
     
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
