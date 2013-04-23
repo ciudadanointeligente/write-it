@@ -1,10 +1,12 @@
 from django.test import TestCase
 from django.utils.unittest import skip
-from nuntium.models import Message, WriteItInstance, OutboundMessage
+from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord
 from contactos.models import Contact, ContactType
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from popit.models import Person, ApiInstance
+from django.contrib.contenttypes.models import ContentType
+
 
 class TestMessages(TestCase):
 
@@ -15,6 +17,7 @@ class TestMessages(TestCase):
         self.contact_type1 = ContactType.objects.create(name= 'e-mail',label_name='Electronic Mail')
         self.contact1 = Contact.objects.create(person=self.person1, contact_type=self.contact_type1, value= 'test@test.com')
         self.writeitinstance1 = WriteItInstance.objects.create(name='instance 1', api_instance= self.api_instance1)
+
 
     def test_create_message(self):
         
@@ -32,6 +35,13 @@ class TestMessages(TestCase):
         
         self.assertEquals(message.outboundmessage_set.count(), 1)
 
+
+    def test_it_creates_outbound_messages_only_once(self):
+        message = Message.objects.create(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])
+        message.save()
+
+        self.assertEquals(OutboundMessage.objects.count(), 1)
+
     def test_it_raises_typeerror_when_no_contacts_are_present(self):
 
         try:
@@ -41,11 +51,21 @@ class TestMessages(TestCase):
 
     def test_when_a_message_is_sent_it_changes_its_status(self):
         message = Message.objects.create(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])
-        message.send()
+        sent = message.send()
         message = Message.objects.get(id=message.id)
+
+        self.assertTrue(sent)
         self.assertEquals(message.status, "sent")
 
+    def test_it_does_not_send_a_message_twice(self):
+        message = Message.objects.create(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])
+        first_time = message.send()
+        second_time = message.send()
 
+        #Once again we should have a logging system, the tests
+        #are getting hard to write
+
+        self.assertFalse(second_time)
 
 
 class OutboundMessageTestCase(TestCase):
@@ -93,34 +113,19 @@ class PluginMentalMessageTestCase(TestCase):
         self.writeitinstance1 = WriteItInstance.objects.create(name='instance 1', api_instance= self.api_instance1)
         self.message = Message.objects.create(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1,\
             self.person2])
+        self.message_type = ContentType.objects.get(app_label="nuntium", model="message")
+
 
     def test_it_has_a_send_method_and_does_whatever(self):
         the_mental_channel = MentalMessage()
         #it sends the message
         the_mental_channel.send(self.message)
-        #And I'm gonna prove it by testing that the message has changed
+        #And I'm gonna prove it by testing that a new record was created
+        the_records = MessageRecord.objects.filter(content_type=self.message_type, object_id=self.message.id, status="sent using mental messages")
 
-        reloaded_message = Message.objects.get(id=self.message.id)
-        self.assertTrue(reloaded_message.content, u"bz-bz sent using psychokinesis")
-
-
-
+        self.assertEquals(the_records.count(),1)
     #It should send using all the channels available
     def test_it_should_create_a_new_kind_of_outbox_message(self):
-        #I'm gonna define some variable in here and try to access it from 
-        #the mental_message_plugin 
-
         self.message.send()
-        #reload the message that should have been changed by the mental_message_plugin
-        reloaded_message = Message.objects.get(id=self.message.id)
-        # the mental message should have been sent, in other words its content should have been modified
-        # or something
-        self.assertEquals(reloaded_message.content, u"bz-bz sent using psychokinesis")
-        #TODO: implement logging of sent messages or something cause 
-        #this way of testing makes no sense
-        #So everytime a message is sent using any channel it should log
-        #that has been sent and I'm proving the sending of that using the log instead
-        #of modiying the message.
-        #The message should not be modified in any way, just do whatever you want with it
-        #but do not modify it.
-
+        the_records = MessageRecord.objects.filter(content_type=self.message_type, object_id=self.message.id, status="sent using mental messages")
+        self.assertEquals(the_records.count(),1)
