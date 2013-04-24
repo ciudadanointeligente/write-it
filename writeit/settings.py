@@ -1,5 +1,5 @@
 # Django settings for writeit project.
-
+import sys
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -130,6 +130,7 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
+TESTING = 'test' in sys.argv
 
 INSTALLED_APPS = (
     'django.contrib.auth',
