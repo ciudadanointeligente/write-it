@@ -1,5 +1,5 @@
 # .coveragerc to control coverage.py
 [run]
-source=nuntium,contactos
+source=nuntium,contactos,mailit
 omit = ../*migrations*
 
