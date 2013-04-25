@@ -12,9 +12,10 @@ class PluginsStructure(TestCase):
 
     def test_output_plugins(self):
         plugins = OutputPlugin.get_plugins()
-        plugins_counter = 0
+        plugin_names = []
 
         for plugin in plugins:
-            plugins_counter += 1
+            plugin_names.append(plugin.name)
 
-        self.assertEquals(plugins_counter, 1)
+
+        self.assertTrue("mental-message" in plugin_names)
