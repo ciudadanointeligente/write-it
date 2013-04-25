@@ -1,10 +1,10 @@
 from nuntium.plugins import OutputPlugin
+from nuntium.models import MessageRecord
 
 class MentalMessage(OutputPlugin):
     name = 'mental-message'
     title = 'Mental Message'
 
     def send(self, message):
-        message.content = u"bz-bz sent using psychokinesis"
-        message.save()
+        MessageRecord.objects.create(content_object= message, status="sent using mental messages")
         return

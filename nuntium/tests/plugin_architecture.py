@@ -1,21 +1,21 @@
 from django.test import TestCase
 from nuntium.plugins import OutputPlugin
-from mental_message_plugin import MentalMessage
+
 from contactos.models import Contact, ContactType
 
 
 
 class PluginsStructure(TestCase):
+    def setUp(self):
+        from mental_message_plugin import MentalMessage
+
+
     def test_output_plugins(self):
         plugins = OutputPlugin.get_plugins()
-        plugins_counter = 0
+        plugin_names = []
 
         for plugin in plugins:
-            plugins_counter += 1
+            plugin_names.append(plugin.name)
 
-        self.assertEquals(plugins_counter, 1)
-        
-    # def test_it_loads_a_contact_type(self):
-    #     contacts = ContactType.objects.filter(name='mental-message', label_name='Mental Message')
 
-    #     self.assertEquals(contacts.count(), 1)
+        self.assertTrue("mental-message" in plugin_names)

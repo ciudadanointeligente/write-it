@@ -1,9 +1,13 @@
+from django.db.models.signals import post_save
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
 from popit.models import ApiInstance
 from contactos.models import Contact
 from nuntium.plugins import OutputPlugin
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
+import datetime
 
 
 
@@ -18,6 +22,11 @@ class MessageManager(models.Manager):
             for contact in person.contact_set.all():
                 outbound_message = OutboundMessage.objects.create(contact=contact, message=message)
         return message
+
+
+    def to_send(self, **kwargs):
+        return super(MessageManager, self).filter(status="new")
+
 		
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
@@ -28,6 +37,13 @@ class WriteItInstance(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('instance_detail', (), {'slug': self.slug})
+
+class MessageRecord(models.Model):
+    status = models.CharField(max_length=255)
+    datetime = models.DateField(default=datetime.datetime.now())
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
 
 
 class Message(models.Model):
@@ -65,11 +81,24 @@ class Message(models.Model):
 
 
     def send(self):
+        if self.status == "sent":
+            return False
         self.status = "sent"
         self.save()
+        MessageRecord.objects.create(content_object= self, status=self.status)
         plugins = OutputPlugin.get_plugins()
         for plugin in plugins:
             plugin.send(self)
+        
+        return True
+
+def create_a_message_record(sender,instance, created, **kwargs):
+    message = instance
+    if created:
+        MessageRecord.objects.create(content_object= message, status=message.status)
+post_save.connect(create_a_message_record, sender=Message)
+
+
 
 class OutboundMessage(models.Model):
     """docstring for OutboundMessage: This class is the message delivery unit. The OutboundMessage is the one that will be tracked in order 
