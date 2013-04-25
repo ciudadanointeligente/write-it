@@ -22,6 +22,11 @@ class MessageManager(models.Manager):
             for contact in person.contact_set.all():
                 outbound_message = OutboundMessage.objects.create(contact=contact, message=message)
         return message
+
+
+    def to_send(self, **kwargs):
+        return super(MessageManager, self).filter(status="new")
+
 		
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
