@@ -69,6 +69,18 @@ class TestMessages(TestCase):
         self.assertFalse(second_time)
 
 
+    def test_manager_has_a_method_to_retrieve_to_send_messages(self):
+        message1 = Message.objects.create(content = 'Content 1', subject='Subject 1', \
+            writeitinstance= self.writeitinstance1, persons = [self.person1])
+        message2 = Message.objects.create(content = 'Content 1', subject='Subject 1', \
+            writeitinstance= self.writeitinstance1, persons = [self.person1])
+
+        message1.send()
+
+        self.assertEquals(Message.objects.to_send().count(), 1)#message2 that has not been sent yet
+        self.assertEquals(Message.objects.to_send()[0], message2)
+
+
 class OutboundMessageTestCase(TestCase):
     def setUp(self):
         self.api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
