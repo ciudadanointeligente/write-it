@@ -7,6 +7,7 @@ from popit.models import Person, ApiInstance
 from nuntium.plugins import OutputPlugin
 from mailit.models import MailItTemplate
 from django.core import mail
+from django.conf import settings
 
 class MailChannelTestCase(TestCase):
 
@@ -68,9 +69,10 @@ class MailSendingTestCase(TestCase):
         self.person2 = Person.objects.create(api_instance=self.api_instance1, name= 'Person 2')
         self.person3 = Person.objects.create(api_instance=self.api_instance2, name= 'Person 3')
         self.contact_type1 = ContactType.objects.create(name= 'e-mail',label_name='Electronic Mail')
-        self.contact1 = Contact.objects.create(person=self.person1, contact_type=self.contact_type1, value= 'test@test.com')
-        self.contact2 = Contact.objects.create(person=self.person2, contact_type=self.contact_type1, value= 'test@test.com')
-        self.contact3 = Contact.objects.create(person=self.person3, contact_type=self.contact_type1, value= 'test@test.com')
+        self.contact_type2 = ContactType.objects.create(name= 'Uninvented one',label_name='bzbzbzb')
+        self.contact1 = Contact.objects.create(person=self.person1, contact_type=self.contact_type1, value= 'test1@test.com')
+        self.contact2 = Contact.objects.create(person=self.person2, contact_type=self.contact_type1, value= 'test2@test.com')
+        self.contact3 = Contact.objects.create(person=self.person3, contact_type=self.contact_type2, value= '123456789')
         self.writeitinstance1 = WriteItInstance.objects.create(name='instance 1', api_instance= self.api_instance1)
         self.writeitinstance2 = WriteItInstance.objects.create(name='instance 2', api_instance= self.api_instance2)
         self.message = Message.objects.create(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1,\
@@ -87,12 +89,30 @@ class MailSendingTestCase(TestCase):
         self.assertEquals(len(mail.outbox), 2)
         self.assertEquals(mail.outbox[0].subject, 'subject Subject 1 Content 1 Person 1')
         self.assertEquals(mail.outbox[0].body, 'content Subject 1 Content 1 Person 1')
+        self.assertEquals(len(mail.outbox[0].to), 1)
+        self.assertTrue("test1@test.com" in mail.outbox[0].to)
+        self.assertEquals(mail.outbox[0].from_email, settings.DEFAULT_FROM_EMAIL)
 
     def test_it_fails_if_there_is_no_template(self):
-
         channel = MailChannel()
         result_of_sending = channel.send(self.message2)
 
         self.assertFalse(result_of_sending)
+
+
+    def test_it_only_sends_mails_to_email_contacts(self):
+        template = MailItTemplate.objects.create(writeitinstance=self.writeitinstance2
+            ,subject_template=u"subject %(subject)s %(content)s %(person)s",
+            content_template=u"content %(subject)s %(content)s %(person)s")
+        message = Message.objects.create(content="The content", subject="the subject",
+            writeitinstance=self.writeitinstance2, persons = [self.person3],
+            )
+        channel = MailChannel()
+        result_of_sending = channel.send(message)
+
+        self.assertTrue(result_of_sending)
+        self.assertEquals(len(mail.outbox), 0)#because none has been sent
+
+
 
 

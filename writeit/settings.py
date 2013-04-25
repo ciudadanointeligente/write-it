@@ -181,6 +181,9 @@ LOGGING = {
     }
 }
 
+#Email settings
+DEFAULT_FROM_EMAIL = 'mailer@example.com'
+
 #setting to avoid db changes during test
 SOUTH_TESTS_MIGRATE = False
 
