@@ -1,9 +1,10 @@
 from django.test import TestCase
 from django.utils.unittest import skip
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord
-from contactos.models import Contact, ContactType
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
+
+from contactos.models import Contact, ContactType
+from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord
 from popit.models import Person, ApiInstance
 from django.contrib.contenttypes.models import ContentType
 

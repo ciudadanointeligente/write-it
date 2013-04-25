@@ -1,5 +1,5 @@
 # Django settings for writeit project.
-
+import sys
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -130,6 +130,7 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
+TESTING = 'test' in sys.argv
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -142,7 +143,8 @@ INSTALLED_APPS = (
     'djangoplugins',
     'popit',
     'south',
-    'contactos'
+    'contactos',
+    'mailit',
     
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
@@ -178,6 +180,9 @@ LOGGING = {
         },
     }
 }
+
+#Email settings
+DEFAULT_FROM_EMAIL = 'mailer@example.com'
 
 #setting to avoid db changes during test
 SOUTH_TESTS_MIGRATE = False
