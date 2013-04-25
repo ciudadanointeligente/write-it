@@ -30,13 +30,9 @@ class MailChannel(OutputPlugin):
                 'content':message.content,
                 'person':outbound_message.contact.person.name
             }
-            try:
-                subject = template.subject_template % format
-                content = template.content_template % format
-                send_mail(subject, content, settings.DEFAULT_FROM_EMAIL,[outbound_message.contact.value], fail_silently=False)
-
-            except:
-                return False
+            subject = template.subject_template % format
+            content = template.content_template % format
+            send_mail(subject, content, settings.DEFAULT_FROM_EMAIL,[outbound_message.contact.value], fail_silently=False)
             
         return True
 
