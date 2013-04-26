@@ -3,9 +3,27 @@ from django.test import TestCase
 from popit.models import Person, ApiInstance
 from contactos.models import Contact, ContactType
 from nuntium.models import Message, WriteItInstance, OutboundMessage
-from nuntium.forms import MessageCreateForm
-from django.forms import ValidationError
+from nuntium.forms import MessageCreateForm, PersonMultipleChoiceField
+from django.forms import ValidationError,CheckboxSelectMultiple
 
+class PersonMultipleChoiceFieldTestCase(TestCase):
+    def setUp(self):
+        self.api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
+        self.api_instance2 = ApiInstance.objects.create(url='http://popit.org/api/v2')
+        self.person1 = Person.objects.create(api_instance=self.api_instance1, name= 'Person 1')
+        self.person2 = Person.objects.create(api_instance=self.api_instance2, name= 'Person 2')
+
+    def test_get_widget(self):
+        field = PersonMultipleChoiceField(queryset=Person.objects.none())
+        widget = field.widget
+
+        self.assertTrue(isinstance(widget, CheckboxSelectMultiple))
+
+    def test_get_label_from_instance(self):
+        field = PersonMultipleChoiceField(queryset=Person.objects.all())
+        label = field.label_from_instance(self.person1)
+
+        self.assertEquals(label, self.person1.name)
 
 class MessageFormTestCase(TestCase):
 
@@ -32,6 +50,13 @@ class MessageFormTestCase(TestCase):
         form = MessageCreateForm(data, writeitinstance = self.writeitinstance1)
         self.assertTrue(form)
         self.assertTrue(form.is_valid())
+
+
+    def test_person_multiple_choice_field(self):
+        form = MessageCreateForm(writeitinstance = self.writeitinstance1)
+        persons_field = form.fields['persons']
+
+        self.assertTrue(isinstance(persons_field, PersonMultipleChoiceField))
 
 
     def test_instance_is_always_required(self):
