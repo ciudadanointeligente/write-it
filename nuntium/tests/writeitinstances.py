@@ -20,6 +20,10 @@ class InstanceTestCase(TestCase):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', api_instance= self.api_instance1, slug='instance-1')
         self.assertTrue(writeitinstance)
 
+    def test_instance_unicode(self):
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', api_instance= self.api_instance1, slug='instance-1')
+        self.assertEquals(writeitinstance.__unicode__() , writeitinstance.name)
+
     def test_instance_containning_several_messages(self):
         writeitinstance1 = WriteItInstance.objects.create(name='instance 1', api_instance= self.api_instance1)
         writeitinstance2 = WriteItInstance.objects.create(name='instance 2', api_instance= self.api_instance2)

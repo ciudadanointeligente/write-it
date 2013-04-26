@@ -4,6 +4,7 @@ from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRec
 from django.contrib.contenttypes.models import ContentType
 from popit.models import Person, ApiInstance
 from contactos.models import Contact, ContactType
+from django.utils.translation import ugettext as _
 import datetime
 
 
@@ -24,6 +25,17 @@ class MessageRecordTestCase(TestCase):
         self.assertEquals(record.object_id, self.message.id)
         self.assertEquals(record.status, "something")
         self.assertEquals(record.datetime.date(), datetime.datetime.today().date() )
+
+
+    def test_record_unicode(self):
+        record = MessageRecord.objects.create(content_object= self.message, status="something")
+        expected_unicode = _('The message "%(subject)s" at %(instance)s turned %(status)s at %(date)s') % {
+            'subject': self.message.subject,
+            'instance': self.writeitinstance1,
+            'status': record.status,
+            'date' : str(record.datetime)
+            }
+        self.assertEquals(record.__unicode__(), expected_unicode)
 
 
     def test_creates_a_record_when_creating_a_message(self):
