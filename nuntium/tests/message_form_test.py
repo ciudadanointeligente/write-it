@@ -8,10 +8,7 @@ from django.forms import ValidationError,CheckboxSelectMultiple
 
 class PersonMultipleChoiceFieldTestCase(TestCase):
     def setUp(self):
-        self.api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
-        self.api_instance2 = ApiInstance.objects.create(url='http://popit.org/api/v2')
-        self.person1 = Person.objects.create(api_instance=self.api_instance1, name= 'Person 1')
-        self.person2 = Person.objects.create(api_instance=self.api_instance2, name= 'Person 2')
+        self.person1 = Person.objects.all()[0]
 
     def test_get_widget(self):
         field = PersonMultipleChoiceField(queryset=Person.objects.none())
@@ -28,15 +25,9 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
 class MessageFormTestCase(TestCase):
 
     def setUp(self):
-        self.api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
-        self.api_instance2 = ApiInstance.objects.create(url='http://popit.org/api/v2')
-        self.person1 = Person.objects.create(api_instance=self.api_instance1, name= 'Person 1')
-        self.person2 = Person.objects.create(api_instance=self.api_instance2, name= 'Person 2')
-        self.contact_type1 = ContactType.objects.create(name= 'e-mail',label_name='Electronic Mail')
-        self.contact1 = Contact.objects.create(person=self.person1, contact_type=self.contact_type1, value= 'test@test.com')
-        self.contact2 = Contact.objects.create(person=self.person2, contact_type=self.contact_type1, value= 'test@test.com')
-        self.writeitinstance1 = WriteItInstance.objects.create(name='instance 1', slug= 'instance-1', api_instance= self.api_instance1)
-        self.writeitinstance2 = WriteItInstance.objects.create(name='instance 2', slug= 'instance-2', api_instance= self.api_instance2)
+        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.person1 = Person.objects.all()[0]
+        self.contact1 = Contact.objects.all()[0]
 
     def test_create_form(self):
         #spanish
@@ -82,9 +73,9 @@ class MessageFormTestCase(TestCase):
         self.assertTrue(form.is_valid())
         form.save()
 
-        new_messages = Message.objects.all()
-        new_outbound_messages= OutboundMessage.objects.all()
-        self.assertTrue(new_messages.count()>0)
+        new_messages = Message.objects.filter(subject=data['subject'], content=data['content'])
+        new_outbound_messages= OutboundMessage.objects.filter(message=new_messages[0])
+        self.assertEquals(new_messages.count(),1)
         self.assertEquals(new_messages[0].subject, data['subject'])
         self.assertEquals(new_messages[0].content, data['content'])
         self.assertEquals(new_messages[0].writeitinstance, self.writeitinstance1)
