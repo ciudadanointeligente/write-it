@@ -48,6 +48,15 @@ class MessageRecord(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
+    def __unicode__(self):
+        message = self.content_object
+        return _('The message "%(subject)s" at %(instance)s turned %(status)s at %(date)s') % {
+            'subject': message.subject,
+            'instance': message.writeitinstance,
+            'status': self.status,
+            'date' : str(self.datetime)
+            }
+
 
 class Message(models.Model):
     """Message: Class that contain the info for a model, despite of the input and the output channels. Subject and content are mandatory fields"""
@@ -94,6 +103,12 @@ class Message(models.Model):
             plugin.send(self)
         
         return True
+
+    def __unicode__(self):
+        return _('%(subject)s at %(instance)s') % {
+            'subject':self.subject,
+            'instance':self.writeitinstance.name
+            }
 
 def create_a_message_record(sender,instance, created, **kwargs):
     message = instance
