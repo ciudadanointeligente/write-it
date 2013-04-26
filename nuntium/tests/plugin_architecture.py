@@ -1,4 +1,4 @@
-from django.test import TestCase
+from global_test_case import GlobalTestCase as TestCase
 from nuntium.plugins import OutputPlugin
 
 from contactos.models import Contact, ContactType
@@ -7,6 +7,7 @@ from contactos.models import Contact, ContactType
 
 class PluginsStructure(TestCase):
     def setUp(self):
+    	super(PluginsStructure,self).setUp()
         from mental_message_plugin import MentalMessage
 
 

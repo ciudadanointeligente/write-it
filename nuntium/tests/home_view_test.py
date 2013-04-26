@@ -1,10 +1,14 @@
-from django.test import TestCase
+from global_test_case import GlobalTestCase as TestCase
 from django.core.urlresolvers import reverse
 from django.utils.translation import activate
 from popit.models import ApiInstance
 from nuntium.models import WriteItInstance
 
 class HomeViewTestCase(TestCase):
+    def setUp(self):
+        super(HomeViewTestCase,self).setUp()
+
+        
     def test_it_is_reachable(self):
         url = reverse("home")
         response = self.client.get(url)

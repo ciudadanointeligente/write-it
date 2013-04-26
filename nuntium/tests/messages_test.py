@@ -1,4 +1,4 @@
-from django.test import TestCase
+from global_test_case import GlobalTestCase as TestCase
 from django.utils.unittest import skip
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
@@ -12,6 +12,7 @@ from django.contrib.contenttypes.models import ContentType
 class TestMessages(TestCase):
 
     def setUp(self):
+        super(TestMessages,self).setUp()
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
         self.person1 = Person.objects.all()[0]
 
@@ -76,6 +77,7 @@ class TestMessages(TestCase):
 
 class OutboundMessageTestCase(TestCase):
     def setUp(self):
+        super(OutboundMessageTestCase,self).setUp()
         self.api_instance1 = ApiInstance.objects.all()[0]
         self.contact1 = Contact.objects.all()[0]
         self.message = Message.objects.all()[0]
@@ -104,6 +106,7 @@ class OutboundMessageTestCase(TestCase):
 from mental_message_plugin import *
 class PluginMentalMessageTestCase(TestCase):
     def setUp(self):
+        super(PluginMentalMessageTestCase,self).setUp()
         self.message = Message.objects.all()[0]
         self.message_type = ContentType.objects.all()[0]
 

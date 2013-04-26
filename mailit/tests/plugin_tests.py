@@ -1,4 +1,4 @@
-from django.test import TestCase
+from global_test_case import GlobalTestCase as TestCase
 from django.utils.unittest import skip
 from mailit import MailChannel
 from contactos.models import Contact, ContactType
@@ -12,7 +12,7 @@ from django.conf import settings
 class MailChannelTestCase(TestCase):
 
     def setUp(self):
-        pass
+        super(MailChannelTestCase,self).setUp()
 
     def test_instaciate_mail_channel(self):
         channel = MailChannel()
@@ -37,6 +37,7 @@ class MailChannelTestCase(TestCase):
 
 class MailTemplateTestCase(TestCase):
     def setUp(self):
+        super(MailTemplateTestCase,self).setUp()
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
 
     def test_it_has_a_template(self):
@@ -47,7 +48,7 @@ class MailTemplateTestCase(TestCase):
 
 class MailSendingTestCase(TestCase):
     def setUp(self):
-        
+        super(MailSendingTestCase,self).setUp()
         self.person3 = Person.objects.all()[2]
         self.contact_type2 = ContactType.objects.create(name= 'Uninvented one',label_name='bzbzbzb')
         self.contact3 = Contact.objects.create(person=self.person3, contact_type=self.contact_type2, value= '123456789')

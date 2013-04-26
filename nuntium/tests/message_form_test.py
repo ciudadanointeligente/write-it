@@ -1,5 +1,5 @@
 # coding=utf-8
-from django.test import TestCase
+from global_test_case import GlobalTestCase as TestCase
 from popit.models import Person, ApiInstance
 from contactos.models import Contact, ContactType
 from nuntium.models import Message, WriteItInstance, OutboundMessage
@@ -8,6 +8,7 @@ from django.forms import ValidationError,CheckboxSelectMultiple
 
 class PersonMultipleChoiceFieldTestCase(TestCase):
     def setUp(self):
+        super(PersonMultipleChoiceFieldTestCase,self).setUp()
         self.person1 = Person.objects.all()[0]
 
     def test_get_widget(self):
@@ -25,6 +26,7 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
 class MessageFormTestCase(TestCase):
 
     def setUp(self):
+        super(MessageFormTestCase,self).setUp()
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
         self.person1 = Person.objects.all()[0]
         self.contact1 = Contact.objects.all()[0]

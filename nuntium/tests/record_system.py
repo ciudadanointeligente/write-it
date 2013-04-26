@@ -1,4 +1,4 @@
-from django.test import TestCase
+from global_test_case import GlobalTestCase as TestCase
 from django.utils.unittest import skip
 from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord
 from django.contrib.contenttypes.models import ContentType
@@ -9,6 +9,7 @@ import datetime
 
 class MessageRecordTestCase(TestCase):
     def setUp(self):
+        super(MessageRecordTestCase,self).setUp()
         self.message = Message.objects.all()[0]
         self.message_type = ContentType.objects.get(app_label="nuntium", model="message")
         self.writeitinstance1 = WriteItInstance.objects.all()[0]

@@ -1,5 +1,5 @@
 # coding=utf-8
-from django.test import TestCase
+from global_test_case import GlobalTestCase as TestCase
 from django.core.urlresolvers import reverse
 from nuntium.models import WriteItInstance, Message
 from nuntium.views import MessageCreateForm
@@ -10,6 +10,7 @@ from django.utils.unittest import skip
 class InstanceTestCase(TestCase):
 
     def setUp(self):
+        super(InstanceTestCase,self).setUp()
         self.api_instance1 = ApiInstance.objects.all()[0]
         self.api_instance2 = ApiInstance.objects.all()[1]
         self.person1 = Person.objects.all()[0]
@@ -41,6 +42,7 @@ class InstanceTestCase(TestCase):
 
 class InstanceDetailView(TestCase):
     def setUp(self):
+        super(InstanceDetailView,self).setUp()
         self.api_instance1 = ApiInstance.objects.all()[0]
         self.api_instance2 = ApiInstance.objects.all()[1]
         self.person1 = Person.objects.all()[0]
