@@ -43,3 +43,8 @@
 - fields: {contact_type: 1, person: 2, value: test2@test.com}
   model: contactos.contact
   pk: 2
+- fields: {content_template: "Hello %(person)s:\r\nYou have a new message:\r\nsubject:\
+      \ %(subject)s \r\ncontent: %(content)s\r\n\r\nSeeya\r\n--\r\nYou writeIt and\
+      \ we deliverit.", subject_template: 'WriteIT Message: %(subject)s', writeitinstance: 1}
+  model: mailit.mailittemplate
+  pk: 1

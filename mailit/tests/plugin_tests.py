@@ -38,13 +38,13 @@ class MailChannelTestCase(TestCase):
 class MailTemplateTestCase(TestCase):
     def setUp(self):
         super(MailTemplateTestCase,self).setUp()
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.writeitinstance2 = WriteItInstance.objects.all()[1]#the other one already has a template
 
     def test_it_has_a_template(self):
-        template = MailItTemplate.objects.create(writeitinstance=self.writeitinstance1,subject_template=u"hello somebody %(thing)s",content_template=u"content thing %(another)s asdas")
+        template = MailItTemplate.objects.create(writeitinstance=self.writeitinstance2,subject_template=u"hello somebody %(thing)s",content_template=u"content thing %(another)s asdas")
 
         self.assertTrue(template)
-        self.assertEquals(self.writeitinstance1.mailit_template, template)
+        self.assertEquals(self.writeitinstance2.mailit_template, template)
 
 class MailSendingTestCase(TestCase):
     def setUp(self):
@@ -56,7 +56,7 @@ class MailSendingTestCase(TestCase):
         self.writeitinstance2 = WriteItInstance.objects.all()[1]
         self.message = Message.objects.all()[0]
         self.message_to_another_contact = Message.objects.create(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance2, persons = [self.person3])
-        self.template1 = MailItTemplate.objects.create(writeitinstance=self.writeitinstance1,subject_template=u"subject %(subject)s %(content)s %(person)s",content_template=u"content %(subject)s %(content)s %(person)s")
+        self.template1 = MailItTemplate.objects.all()[0]
 
 
     def test_sending_email(self):
@@ -65,8 +65,8 @@ class MailSendingTestCase(TestCase):
 
         self.assertTrue(result_of_sending)
         self.assertEquals(len(mail.outbox), 2)
-        self.assertEquals(mail.outbox[0].subject, 'subject Subject 1 Content 1 Person 1')
-        self.assertEquals(mail.outbox[0].body, 'content Subject 1 Content 1 Person 1')
+        self.assertEquals(mail.outbox[0].subject, 'WriteIT Message: Subject 1')
+        self.assertEquals(mail.outbox[0].body, u'Hello Person 1:\r\nYou have a new message:\r\nsubject: Subject 1 \r\ncontent: Content 1\r\n\r\nSeeya\r\n--\r\nYou writeIt and we deliverit.')
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue("test1@test.com" in mail.outbox[0].to)
         self.assertEquals(mail.outbox[0].from_email, settings.DEFAULT_FROM_EMAIL)
