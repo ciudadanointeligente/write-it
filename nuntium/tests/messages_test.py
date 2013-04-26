@@ -2,7 +2,7 @@ from global_test_case import GlobalTestCase as TestCase
 from django.utils.unittest import skip
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
-
+from django.utils.translation import ugettext as _
 from contactos.models import Contact, ContactType
 from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord
 from popit.models import Person, ApiInstance
@@ -24,6 +24,14 @@ class TestMessages(TestCase):
         self.assertEquals(message.subject, "Subject 1")
         self.assertEquals(message.writeitinstance, self.writeitinstance1)
         self.assertEquals(message.status, "new")
+
+    def test_message_unicode(self):
+        message = Message.objects.create(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])
+
+        self.assertEquals(message.__unicode__(), _('%(subject)s at %(instance)s') % {
+            'subject':message.subject,
+            'instance':self.writeitinstance1.name
+            })
 
     def test_outboundmessage_create_without_manager(self):
         message = Message(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])
@@ -87,6 +95,17 @@ class OutboundMessageTestCase(TestCase):
         outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact1)
         #This means that there is a link between a contact and a message
         self.assertTrue(outbound_message)
+
+
+    def test_outbound_message_unicode(self):
+        outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact1)
+        expected_unicode = _('%(subject)s sent to %(person)s (%(contact)s) at %(instance)s') % {
+            'subject': self.message.subject,
+            'person':self.contact1.person.name,
+            'contact':self.contact1.value,
+            'instance':self.message.writeitinstance.name
+        }
+        self.assertEquals(outbound_message.__unicode__(), expected_unicode)
 
     def test_outbound_messsages_creation_on_message_save(self):
         # si new message then x neew outbound TestMessages
