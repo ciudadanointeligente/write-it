@@ -1,4 +1,4 @@
-from django.test import TestCase
+from global_test_case import GlobalTestCase as TestCase
 from django.utils.unittest import skip
 from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord
 from django.contrib.contenttypes.models import ContentType
@@ -9,16 +9,12 @@ import datetime
 
 class MessageRecordTestCase(TestCase):
     def setUp(self):
-        self.api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
-        self.person1 = Person.objects.create(api_instance=self.api_instance1, name= 'Person 1')
-        self.person2 = Person.objects.create(api_instance=self.api_instance1, name= 'Person 2')
-        self.contact_type1 = ContactType.objects.create(name= 'e-mail',label_name='Electronic Mail')
-        self.contact1 = Contact.objects.create(person=self.person1, contact_type=self.contact_type1, value= 'test@test.com')
-        self.contact2 = Contact.objects.create(person=self.person2, contact_type=self.contact_type1, value= 'test@test.com')
-        self.writeitinstance1 = WriteItInstance.objects.create(name='instance 1', api_instance= self.api_instance1)
-        self.message = Message.objects.create(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1,\
-            self.person2])
+        super(MessageRecordTestCase,self).setUp()
+        self.message = Message.objects.all()[0]
         self.message_type = ContentType.objects.get(app_label="nuntium", model="message")
+        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.person1 = Person.objects.all()[0]
+        self.person2 = Person.objects.all()[1]
 
     def test_create_a_record(self):
         record = MessageRecord.objects.create(content_object= self.message, status="something")

@@ -1,4 +1,4 @@
-from django.test import TestCase
+from global_test_case import GlobalTestCase as TestCase
 from django.utils.unittest import skip
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
@@ -12,16 +12,12 @@ from django.contrib.contenttypes.models import ContentType
 class TestMessages(TestCase):
 
     def setUp(self):
-        self.api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
-        self.api_instance2 = ApiInstance.objects.create(url='http://popit.org/api/v2')
-        self.person1 = Person.objects.create(api_instance=self.api_instance1, name= 'Person 1')
-        self.contact_type1 = ContactType.objects.create(name= 'e-mail',label_name='Electronic Mail')
-        self.contact1 = Contact.objects.create(person=self.person1, contact_type=self.contact_type1, value= 'test@test.com')
-        self.writeitinstance1 = WriteItInstance.objects.create(name='instance 1', api_instance= self.api_instance1)
+        super(TestMessages,self).setUp()
+        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.person1 = Person.objects.all()[0]
 
 
     def test_create_message(self):
-        
         message = Message.objects.create(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])
         self.assertTrue(message)
         self.assertEquals(message.content, "Content 1")
@@ -41,7 +37,7 @@ class TestMessages(TestCase):
         message = Message.objects.create(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])
         message.save()
 
-        self.assertEquals(OutboundMessage.objects.count(), 1)
+        self.assertEquals(OutboundMessage.objects.filter(message=message).count(), 1)
 
     def test_it_raises_typeerror_when_no_contacts_are_present(self):
 
@@ -70,10 +66,8 @@ class TestMessages(TestCase):
 
 
     def test_manager_has_a_method_to_retrieve_to_send_messages(self):
-        message1 = Message.objects.create(content = 'Content 1', subject='Subject 1', \
-            writeitinstance= self.writeitinstance1, persons = [self.person1])
-        message2 = Message.objects.create(content = 'Content 1', subject='Subject 1', \
-            writeitinstance= self.writeitinstance1, persons = [self.person1])
+        message1 = Message.objects.all()[0]
+        message2 = Message.objects.all()[1]
 
         message1.send()
 
@@ -83,15 +77,10 @@ class TestMessages(TestCase):
 
 class OutboundMessageTestCase(TestCase):
     def setUp(self):
-        self.api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
-        self.person1 = Person.objects.create(api_instance=self.api_instance1, name= 'Person 1')
-        self.person2 = Person.objects.create(api_instance=self.api_instance1, name= 'Person 2')
-        self.contact_type1 = ContactType.objects.create(name= 'e-mail',label_name='Electronic Mail')
-        self.contact1 = Contact.objects.create(person=self.person1, contact_type=self.contact_type1, value= 'test@test.com')
-        self.contact2 = Contact.objects.create(person=self.person2, contact_type=self.contact_type1, value= 'test@test.com')
-        self.writeitinstance1 = WriteItInstance.objects.create(name='instance 1', api_instance= self.api_instance1)
-        self.message = Message.objects.create(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1,\
-            self.person2])
+        super(OutboundMessageTestCase,self).setUp()
+        self.api_instance1 = ApiInstance.objects.all()[0]
+        self.contact1 = Contact.objects.all()[0]
+        self.message = Message.objects.all()[0]
 
 
     def test_create_a_outbound_message(self):
@@ -117,16 +106,9 @@ class OutboundMessageTestCase(TestCase):
 from mental_message_plugin import *
 class PluginMentalMessageTestCase(TestCase):
     def setUp(self):
-        self.api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
-        self.person1 = Person.objects.create(api_instance=self.api_instance1, name= 'Person 1')
-        self.person2 = Person.objects.create(api_instance=self.api_instance1, name= 'Person 2')
-        self.contact_type1 = ContactType.objects.create(name= 'e-mail',label_name='Electronic Mail')
-        self.contact1 = Contact.objects.create(person=self.person1, contact_type=self.contact_type1, value= 'test@test.com')
-        self.contact2 = Contact.objects.create(person=self.person2, contact_type=self.contact_type1, value= 'test@test.com')
-        self.writeitinstance1 = WriteItInstance.objects.create(name='instance 1', api_instance= self.api_instance1)
-        self.message = Message.objects.create(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1,\
-            self.person2])
-        self.message_type = ContentType.objects.get(app_label="nuntium", model="message")
+        super(PluginMentalMessageTestCase,self).setUp()
+        self.message = Message.objects.all()[0]
+        self.message_type = ContentType.objects.all()[0]
 
 
     def test_it_has_a_send_method_and_does_whatever(self):
@@ -134,11 +116,10 @@ class PluginMentalMessageTestCase(TestCase):
         #it sends the message
         the_mental_channel.send(self.message)
         #And I'm gonna prove it by testing that a new record was created
-        the_records = MessageRecord.objects.filter(content_type=self.message_type, object_id=self.message.id, status="sent using mental messages")
-
+        the_records = MessageRecord.objects.filter(object_id=self.message.id, status="sent using mental messages")
         self.assertEquals(the_records.count(),1)
     #It should send using all the channels available
     def test_it_should_create_a_new_kind_of_outbox_message(self):
         self.message.send()
-        the_records = MessageRecord.objects.filter(content_type=self.message_type, object_id=self.message.id, status="sent using mental messages")
+        the_records = MessageRecord.objects.filter(object_id=self.message.id, status="sent using mental messages")
         self.assertEquals(the_records.count(),1)

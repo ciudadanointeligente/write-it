@@ -1,13 +1,12 @@
-
-from django.test import TestCase
+from global_test_case import GlobalTestCase as TestCase
 from django.utils.unittest import skip
 from contactos.models import ContactType, Contact
 from popit.models import Person, ApiInstance
 
-class contactTestCase(TestCase):
+class ContactTestCase(TestCase):
     def setUp(self):
-        self.api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
-        self.person = Person.objects.create(api_instance=self.api_instance1, name= 'Person 1')
+        super(ContactTestCase,self).setUp()
+        self.person = Person.objects.all()[0]
 
     def test_create_contact_type(self):
         contact_type = ContactType.objects.create(name='mental message', label_name = 'mental address id')
