@@ -38,6 +38,9 @@ class WriteItInstance(models.Model):
     def get_absolute_url(self):
         return ('instance_detail', (), {'slug': self.slug})
 
+    def __unicode__(self):
+        return self.name
+
 class MessageRecord(models.Model):
     status = models.CharField(max_length=255)
     datetime = models.DateField(default=datetime.datetime.now())
