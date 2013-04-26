@@ -96,6 +96,17 @@ class OutboundMessageTestCase(TestCase):
         #This means that there is a link between a contact and a message
         self.assertTrue(outbound_message)
 
+
+    def test_outbound_message_unicode(self):
+        outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact1)
+        expected_unicode = _('%(subject)s sent to %(person)s (%(contact)s) at %(instance)s') % {
+            'subject': self.message.subject,
+            'person':self.contact1.person.name,
+            'contact':self.contact1.value,
+            'instance':self.message.writeitinstance.name
+        }
+        self.assertEquals(outbound_message.__unicode__(), expected_unicode)
+
     def test_outbound_messsages_creation_on_message_save(self):
         # si new message then x neew outbound TestMessages
         new_outbound_messages = OutboundMessage.objects.all()

@@ -123,4 +123,12 @@ class OutboundMessage(models.Model):
     to know the actual status of the message"""
     contact = models.ForeignKey(Contact)
     message = models.ForeignKey(Message)
+
+    def __unicode__(self):
+        return _('%(subject)s sent to %(person)s (%(contact)s) at %(instance)s') % {
+            'subject': self.message.subject,
+            'person':self.contact.person.name,
+            'contact':self.contact.value,
+            'instance':self.message.writeitinstance.name
+        }
 		
