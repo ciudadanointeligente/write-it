@@ -5,10 +5,15 @@ from django.forms import ValidationError
 from django.utils.translation import ugettext as _
 from popit.models import Person
 
+class PersonMultipleChoiceField(ModelMultipleChoiceField):
+    widget = CheckboxSelectMultiple()
+
+    def label_from_instance(self, obj):
+        return obj.name
+
 class MessageCreateForm(ModelForm):
     ''' docstring for MessageCreateForm'''
-    persons = ModelMultipleChoiceField(queryset=Person.objects.none(), \
-                                        widget=CheckboxSelectMultiple())
+    persons = PersonMultipleChoiceField(queryset=Person.objects.none())
 
 
     def __init__(self, *args, **kwargs):
