@@ -121,8 +121,15 @@ post_save.connect(create_a_message_record, sender=Message)
 class OutboundMessage(models.Model):
     """docstring for OutboundMessage: This class is the message delivery unit. The OutboundMessage is the one that will be tracked in order 
     to know the actual status of the message"""
+
+    STATUS_CHOICES = (
+        ("new",_("Newly created")),
+        ("sent",_("Sent")),
+        )
+
     contact = models.ForeignKey(Contact)
     message = models.ForeignKey(Message)
+    status = models.CharField(max_length="4", choices=STATUS_CHOICES, default="new")
 
     def __unicode__(self):
         return _('%(subject)s sent to %(person)s (%(contact)s) at %(instance)s') % {

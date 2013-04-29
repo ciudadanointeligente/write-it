@@ -23,7 +23,6 @@ class TestMessages(TestCase):
         self.assertEquals(message.content, "Content 1")
         self.assertEquals(message.subject, "Subject 1")
         self.assertEquals(message.writeitinstance, self.writeitinstance1)
-        self.assertEquals(message.status, "new")
 
     def test_message_unicode(self):
         message = Message.objects.create(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])
@@ -95,6 +94,7 @@ class OutboundMessageTestCase(TestCase):
         outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact1)
         #This means that there is a link between a contact and a message
         self.assertTrue(outbound_message)
+        self.assertEquals(outbound_message.status, "new")
 
 
     def test_outbound_message_unicode(self):
