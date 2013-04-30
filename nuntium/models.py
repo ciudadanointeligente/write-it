@@ -23,10 +23,6 @@ class MessageManager(models.Manager):
                 outbound_message = OutboundMessage.objects.create(contact=contact, message=message)
         return message
 
-
-    def to_send(self, **kwargs):
-        return super(MessageManager, self).filter(status="new")
-
 		
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
@@ -49,10 +45,10 @@ class MessageRecord(models.Model):
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
     def __unicode__(self):
-        message = self.content_object
+        outbound_message = self.content_object
         return _('The message "%(subject)s" at %(instance)s turned %(status)s at %(date)s') % {
-            'subject': message.subject,
-            'instance': message.writeitinstance,
+            'subject': outbound_message.message.subject,
+            'instance': outbound_message.message.writeitinstance,
             'status': self.status,
             'date' : str(self.datetime)
             }
@@ -69,7 +65,7 @@ class Message(models.Model):
     subject = models.CharField(max_length=512)
     content = models.TextField()
     writeitinstance = models.ForeignKey(WriteItInstance)
-    status = models.CharField(max_length="4", choices=STATUS_CHOICES, default="new")
+    #status = models.CharField(max_length="4", choices=STATUS_CHOICES, default="new")
 
     objects = MessageManager()
 
@@ -91,30 +87,17 @@ class Message(models.Model):
                 for contact in person.contact_set.all():
                     outbound_message = OutboundMessage.objects.create(contact=contact, message=self)
 
-
-    def send(self):
-        if self.status == "sent":
-            return False
-        self.status = "sent"
-        self.save()
-        MessageRecord.objects.create(content_object= self, status=self.status)
-        plugins = OutputPlugin.get_plugins()
-        for plugin in plugins:
-            plugin.send(self)
-        
-        return True
-
     def __unicode__(self):
         return _('%(subject)s at %(instance)s') % {
             'subject':self.subject,
             'instance':self.writeitinstance.name
             }
 
-def create_a_message_record(sender,instance, created, **kwargs):
-    message = instance
-    if created:
-        MessageRecord.objects.create(content_object= message, status=message.status)
-post_save.connect(create_a_message_record, sender=Message)
+
+class OutboundMessageManager(models.Manager):
+    def to_send(self, *args, **kwargs):
+        query = super(OutboundMessageManager, self).filter(*args, **kwargs)
+        return query.filter(status="ready")
 
 
 
@@ -124,12 +107,15 @@ class OutboundMessage(models.Model):
 
     STATUS_CHOICES = (
         ("new",_("Newly created")),
+        ("ready",_("Ready to send")),
         ("sent",_("Sent")),
         )
 
     contact = models.ForeignKey(Contact)
     message = models.ForeignKey(Message)
-    status = models.CharField(max_length="4", choices=STATUS_CHOICES, default="new")
+    status = models.CharField(max_length="4", choices=STATUS_CHOICES, default="ready")
+
+    objects = OutboundMessageManager()
 
     def __unicode__(self):
         return _('%(subject)s sent to %(person)s (%(contact)s) at %(instance)s') % {
@@ -138,4 +124,21 @@ class OutboundMessage(models.Model):
             'contact':self.contact.value,
             'instance':self.message.writeitinstance.name
         }
-		
+	
+    def send(self):
+        if self.status == "sent":
+            return False
+        self.status="sent"
+        self.save()
+        plugins = OutputPlugin.get_plugins()
+        MessageRecord.objects.create(content_object= self, status=self.status)
+        for plugin in plugins:
+            plugin.send(self)
+        return True
+
+
+def create_a_message_record(sender,instance, created, **kwargs):
+    outbound_message = instance
+    if created:
+        MessageRecord.objects.create(content_object= outbound_message, status=outbound_message.status)
+post_save.connect(create_a_message_record, sender=OutboundMessage)

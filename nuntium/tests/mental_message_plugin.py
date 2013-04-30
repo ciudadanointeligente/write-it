@@ -5,6 +5,6 @@ class MentalMessage(OutputPlugin):
     name = 'mental-message'
     title = 'Mental Message'
 
-    def send(self, message):
-        record = MessageRecord.objects.create(content_object= message, status="sent using mental messages")
+    def send(self, outbound_message):
+        record = MessageRecord.objects.create(content_object= outbound_message, status="sent using mental messages")
         return
