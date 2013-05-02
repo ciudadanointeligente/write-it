@@ -164,9 +164,6 @@ class OutboundMessage(models.Model):
             self.status = "sent"
             self.save()
         MessageRecord.objects.create(content_object= self, status=self.status)
-        #I have an error right here why is it returning true all the time
-
-        return True
 
 
 def create_a_message_record(sender,instance, created, **kwargs):

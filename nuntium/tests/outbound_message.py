@@ -41,9 +41,8 @@ class OutboundMessageTestCase(TestCase):
 
     def test_successful_send(self):
         outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact1)
-        result = outbound_message.send()
+        outbound_message.send()
 
-        self.assertTrue(result)
         outbound_message = OutboundMessage.objects.get(id=outbound_message.id)
         self.assertEquals(outbound_message.status, "sent")
 
