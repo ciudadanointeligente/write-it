@@ -118,10 +118,11 @@ class PluginMentalMessageTestCase(TestCase):
 
         the_mental_channel = MentalMessage()
         result = the_mental_channel.send(outbound_message)
+        successfully_sent = result[0]
+        fatal_error = result[1]
 
-        outbound_message = OutboundMessage.objects.get(id=outbound_message.id)
-        self.assertFalse(result)
-        self.assertEquals(outbound_message.status,"error")
+        self.assertFalse(successfully_sent)
+        self.assertTrue(fatal_error)
 
 
 
@@ -136,10 +137,11 @@ class PluginMentalMessageTestCase(TestCase):
 
         the_mental_channel = MentalMessage()
         result = the_mental_channel.send(outbound_message)
+        successfully_sent = result[0]
+        fatal_error = result[1]
 
-        outbound_message = OutboundMessage.objects.get(id=outbound_message.id)
-        self.assertEquals(outbound_message.status,"ready")
-        self.assertFalse(result)
+        self.assertFalse(successfully_sent)
+        self.assertFalse(fatal_error)
 
 
     def test_success_sending_a_message(self):
@@ -151,5 +153,10 @@ class PluginMentalMessageTestCase(TestCase):
 
         the_mental_channel = MentalMessage()
         result = the_mental_channel.send(outbound_message)
-        self.assertTrue(result)
+        successfully_sent = result[0]
+        fatal_error = result[1]
+
+
+        self.assertTrue(successfully_sent)
+        self.assertTrue(fatal_error is None)
 

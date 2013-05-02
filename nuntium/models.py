@@ -130,19 +130,42 @@ class OutboundMessage(models.Model):
     def send(self):
         if self.status == "sent":
             return False
-        self.status="sent"
-        self.save()
         plugins = OutputPlugin.get_plugins()
-        MessageRecord.objects.create(content_object= self, status=self.status)
+        
+        sent_completely = True
         for plugin in plugins:
             #I should keep a record of what has been sent to someone trough which channel
             #and know if I should send again
-            plugin.send(self)
+            outbound_record, created = OutboundMessagePluginRecord.objects.get_or_create(outbound_message=self, plugin=plugin.get_model())
+            if not outbound_record.try_again:
+                continue
+
+            successfully_sent, fatal_error = plugin.send(self)
+            try_again = True
+            
+            if successfully_sent:
+
+                try_again = False
+            else:
+                sent_completely = False
+                if fatal_error:
+                    try_again = False
+
+
+            
+            outbound_record.sent = successfully_sent
+            outbound_record.try_again = try_again
+            outbound_record.number_of_attempts += 1
+            outbound_record.save()
             #Also here comes what should be any priorization on the channels
-            #that I'm not workin on right now
-            #and it should send to all of them
+            #that I'm not workin on right now and it should send to all of them
             #should I have another state "partly sent"? or is it enough when I say "ready"?
+        if sent_completely:
+            self.status = "sent"
+            self.save()
+        MessageRecord.objects.create(content_object= self, status=self.status)
         #I have an error right here why is it returning true all the time
+
         return True
 
 
@@ -157,3 +180,5 @@ class OutboundMessagePluginRecord(models.Model):
     outbound_message = models.ForeignKey(OutboundMessage)
     plugin = models.ForeignKey(Plugin)
     sent = models.BooleanField()
+    number_of_attempts = models.PositiveIntegerField(default=0)
+    try_again = models.BooleanField(default=True)
