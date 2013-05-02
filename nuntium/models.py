@@ -114,7 +114,7 @@ class OutboundMessage(models.Model):
 
     contact = models.ForeignKey(Contact)
     message = models.ForeignKey(Message)
-    status = models.CharField(max_length="4", choices=STATUS_CHOICES, default="ready")
+    status = models.CharField(max_length="10", choices=STATUS_CHOICES, default="ready")
 
     objects = OutboundMessageManager()
 
