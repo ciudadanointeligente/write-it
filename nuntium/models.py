@@ -109,6 +109,7 @@ class OutboundMessage(models.Model):
         ("new",_("Newly created")),
         ("ready",_("Ready to send")),
         ("sent",_("Sent")),
+        ("error",_("Error sending it")),
         )
 
     contact = models.ForeignKey(Contact)
@@ -133,7 +134,14 @@ class OutboundMessage(models.Model):
         plugins = OutputPlugin.get_plugins()
         MessageRecord.objects.create(content_object= self, status=self.status)
         for plugin in plugins:
+            #I should keep a record of what has been sent to someone trough which channel
+            #and know if I should send again
             plugin.send(self)
+            #Also here comes what should be any priorization on the channels
+            #that I'm not workin on right now
+            #and it should send to all of them
+            #should I have another state of "partly sent"
+        #I have an error right here why is it returning true all the time
         return True
 
 

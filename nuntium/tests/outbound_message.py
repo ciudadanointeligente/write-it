@@ -64,12 +64,19 @@ class OutboundMessageTestCase(TestCase):
         self.assertEquals(OutboundMessage.objects.to_send().filter(id=outbound_message.id).count(),1)
 
 
-from mental_message_plugin import *
+from mental_message_plugin import MentalMessage, FatalException, TryAgainException
 class PluginMentalMessageTestCase(TestCase):
+    '''
+    This testcase is going to be used as an example for the creation
+    of new plugins MentalMessage is the plugin for sending messages in
+    a telepathic way
+    '''
     def setUp(self):
         super(PluginMentalMessageTestCase,self).setUp()
         self.outbound_message = OutboundMessage.objects.all()[0]
         self.message_type = ContentType.objects.all()[0]
+        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.person1 = Person.objects.all()[0]
 
 
     def test_it_has_a_send_method_and_does_whatever(self):
@@ -85,3 +92,50 @@ class PluginMentalMessageTestCase(TestCase):
         self.outbound_message.send()
         the_records = MessageRecord.objects.filter(object_id=self.outbound_message.id, status="sent using mental messages")
         self.assertEquals(the_records.count(),1)
+
+    def test_fatal_exception_when_sending_a_mental_message(self):
+        '''
+        This type of error is when there is not much to do, like an inexisting email address
+        and in Mental message it raises a fatal error when you send the message RaiseFatalErrorPlz
+        '''
+        the_mental_channel = MentalMessage()
+        with self.assertRaises(FatalException) as cm:
+            the_mental_channel.send_mental_message("RaiseFatalErrorPlz")
+
+    def test_non_fatal_exception(self):
+        the_mental_channel = MentalMessage()
+        with self.assertRaises(TryAgainException) as cm:
+            the_mental_channel.send_mental_message("RaiseTryAgainErrorPlz")
+
+    def test_it_raises_an_error_when_sending_error_in_the_subject(self):
+        #this is a test for when you send a message with RaiseFatalErrorPlz in subject then is going
+        #to raise an exception
+        
+
+        error_message = Message.objects.create(content = 'Content 1', subject='RaiseFatalErrorPlz', 
+            writeitinstance= self.writeitinstance1, persons = [self.person1])
+        outbound_message = OutboundMessage.objects.filter(message=error_message)[0]
+
+        the_mental_channel = MentalMessage()
+        the_mental_channel.send(outbound_message)
+
+        outbound_message = OutboundMessage.objects.get(id=outbound_message.id)        
+        self.assertEquals(outbound_message.status,"error")
+
+
+
+    def test_non_fatal_error_keeps_outbound_message_status_as_ready(self):
+        '''
+        This type of error is a soft error, like someone having full inbox and we should retry
+        sending the message
+        '''
+        error_message = Message.objects.create(content = 'Content 1', subject='RaiseTryAgainErrorPlz', 
+            writeitinstance= self.writeitinstance1, persons = [self.person1])
+        outbound_message = OutboundMessage.objects.filter(message=error_message)[0]
+
+        the_mental_channel = MentalMessage()
+        the_mental_channel.send(outbound_message)
+
+        outbound_message = OutboundMessage.objects.get(id=outbound_message.id)
+        self.assertEquals(outbound_message.status,"ready")
+
