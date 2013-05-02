@@ -64,7 +64,7 @@ class OutboundMessageTestCase(TestCase):
         self.assertEquals(OutboundMessage.objects.to_send().filter(id=outbound_message.id).count(),1)
 
 
-from mental_message_plugin import MentalMessage, FatalException, TryAgainException
+from plugin_mock.mental_message_plugin import MentalMessage, FatalException, TryAgainException
 class PluginMentalMessageTestCase(TestCase):
     '''
     This testcase is going to be used as an example for the creation
@@ -117,9 +117,10 @@ class PluginMentalMessageTestCase(TestCase):
         outbound_message = OutboundMessage.objects.filter(message=error_message)[0]
 
         the_mental_channel = MentalMessage()
-        the_mental_channel.send(outbound_message)
+        result = the_mental_channel.send(outbound_message)
 
-        outbound_message = OutboundMessage.objects.get(id=outbound_message.id)        
+        outbound_message = OutboundMessage.objects.get(id=outbound_message.id)
+        self.assertFalse(result)
         self.assertEquals(outbound_message.status,"error")
 
 
@@ -134,8 +135,21 @@ class PluginMentalMessageTestCase(TestCase):
         outbound_message = OutboundMessage.objects.filter(message=error_message)[0]
 
         the_mental_channel = MentalMessage()
-        the_mental_channel.send(outbound_message)
+        result = the_mental_channel.send(outbound_message)
 
         outbound_message = OutboundMessage.objects.get(id=outbound_message.id)
         self.assertEquals(outbound_message.status,"ready")
+        self.assertFalse(result)
+
+
+    def test_success_sending_a_message(self):
+        '''
+        '''
+        error_message = Message.objects.create(content = 'Content 1', subject='Come on! send me!', 
+            writeitinstance= self.writeitinstance1, persons = [self.person1])
+        outbound_message = OutboundMessage.objects.filter(message=error_message)[0]
+
+        the_mental_channel = MentalMessage()
+        result = the_mental_channel.send(outbound_message)
+        self.assertTrue(result)
 

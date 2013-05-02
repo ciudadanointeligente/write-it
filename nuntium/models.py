@@ -8,6 +8,7 @@ from nuntium.plugins import OutputPlugin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 import datetime
+from djangoplugins.models import Plugin
 
 
 
@@ -140,7 +141,7 @@ class OutboundMessage(models.Model):
             #Also here comes what should be any priorization on the channels
             #that I'm not workin on right now
             #and it should send to all of them
-            #should I have another state of "partly sent"
+            #should I have another state "partly sent"? or is it enough when I say "ready"?
         #I have an error right here why is it returning true all the time
         return True
 
@@ -150,3 +151,9 @@ def create_a_message_record(sender,instance, created, **kwargs):
     if created:
         MessageRecord.objects.create(content_object= outbound_message, status=outbound_message.status)
 post_save.connect(create_a_message_record, sender=OutboundMessage)
+
+
+class OutboundMessagePluginRecord(models.Model):
+    outbound_message = models.ForeignKey(OutboundMessage)
+    plugin = models.ForeignKey(Plugin)
+    sent = models.BooleanField()

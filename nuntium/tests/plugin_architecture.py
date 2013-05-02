@@ -8,7 +8,7 @@ from contactos.models import Contact, ContactType
 class PluginsStructure(TestCase):
     def setUp(self):
     	super(PluginsStructure,self).setUp()
-        from mental_message_plugin import MentalMessage
+        from plugin_mock.mental_message_plugin import MentalMessage
 
 
     def test_output_plugins(self):

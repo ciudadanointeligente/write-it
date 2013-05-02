@@ -9,14 +9,17 @@ class MentalMessage(OutputPlugin):
     	try:
     		self.send_mental_message(outbound_message.message.subject)
     	except FatalException:
+            #This is right what it should not be doing
+            #There could be an error with emails
+            #but no error with phone call or fax
     		outbound_message.status = "error"
     		outbound_message.save()
-    		return
+    		return False
     	except TryAgainException:
-    		return
+    		return False
 
         record = MessageRecord.objects.create(content_object= outbound_message, status="sent using mental messages")
-        return
+        return True
 
     def send_mental_message(self, subject):
     	if subject == "RaiseFatalErrorPlz":
