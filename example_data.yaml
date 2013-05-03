@@ -25,22 +25,22 @@
 - fields: {url: 'http://popit.org/api/v2'}
   model: popit.apiinstance
   pk: 2
-- fields: {api_instance: 1, name: Person 1, popit_url: ''}
+- fields: {api_instance: 1, name: Pedro, popit_url: ''}
   model: popit.person
   pk: 1
-- fields: {api_instance: 2, name: Person 2, popit_url: ''}
+- fields: {api_instance: 2, name: Marcel, popit_url: ''}
   model: popit.person
   pk: 2
-- fields: {api_instance: 2, name: Person 3, popit_url: ''}
+- fields: {api_instance: 2, name: Felipe, popit_url: ''}
   model: popit.person
   pk: 3
 - fields: {label_name: Electronic Mail, name: e-mail}
   model: contactos.contacttype
   pk: 1
-- fields: {contact_type: 1, person: 1, value: test1@test.com}
+- fields: {contact_type: 1, person: 1, value: pdaire@ciudadanointeligente.org}
   model: contactos.contact
   pk: 1
-- fields: {contact_type: 1, person: 2, value: test2@test.com}
+- fields: {contact_type: 1, person: 2, value: maugsburger@ciudadanointeligente.org}
   model: contactos.contact
   pk: 2
 - fields: {content_template: "Hello %(person)s:\r\nYou have a new message:\r\nsubject:\
