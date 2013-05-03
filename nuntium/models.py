@@ -57,16 +57,11 @@ class MessageRecord(models.Model):
 
 class Message(models.Model):
     """Message: Class that contain the info for a model, despite of the input and the output channels. Subject and content are mandatory fields"""
-    STATUS_CHOICES = (
-        ("new",_("Newly created")),
-        ("sent",_("Sent")),
-        )
 
 
     subject = models.CharField(max_length=512)
     content = models.TextField()
     writeitinstance = models.ForeignKey(WriteItInstance)
-    #status = models.CharField(max_length="4", choices=STATUS_CHOICES, default="new")
 
     objects = MessageManager()
 
@@ -115,7 +110,7 @@ class OutboundMessage(models.Model):
 
     contact = models.ForeignKey(Contact)
     message = models.ForeignKey(Message)
-    status = models.CharField(max_length="10", choices=STATUS_CHOICES, default="ready")
+    status = models.CharField(max_length="10", choices=STATUS_CHOICES, default="new")
 
     objects = OutboundMessageManager()
 

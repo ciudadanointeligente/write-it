@@ -7,6 +7,9 @@ from contactos.models import ContactType, Contact
 class SendMessagesTestCaseTestCase(TestCase):
     def setUp(self):
         super(SendMessagesTestCaseTestCase,self).setUp()
+        for outbound_message in OutboundMessage.objects.all():
+            outbound_message.status="ready"
+            outbound_message.save()
 
 
 

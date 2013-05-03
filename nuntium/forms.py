@@ -1,4 +1,4 @@
-from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple
+from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, CharField, EmailField
 from nuntium.models import Message, WriteItInstance, OutboundMessage
 from contactos.models import Contact
 from django.forms import ValidationError
@@ -13,7 +13,10 @@ class PersonMultipleChoiceField(ModelMultipleChoiceField):
 
 class MessageCreateForm(ModelForm):
     ''' docstring for MessageCreateForm'''
+    author_name = CharField()
+    author_email = EmailField()
     persons = PersonMultipleChoiceField(queryset=Person.objects.none())
+
 
 
     def __init__(self, *args, **kwargs):
