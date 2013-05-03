@@ -1,5 +1,5 @@
 from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, CharField, EmailField
-from nuntium.models import Message, WriteItInstance, OutboundMessage
+from nuntium.models import Message, WriteItInstance, OutboundMessage, Confirmation
 from contactos.models import Contact
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
@@ -13,8 +13,8 @@ class PersonMultipleChoiceField(ModelMultipleChoiceField):
 
 class MessageCreateForm(ModelForm):
     ''' docstring for MessageCreateForm'''
-    author_name = CharField()
-    author_email = EmailField()
+    
+    
     persons = PersonMultipleChoiceField(queryset=Person.objects.none())
 
 
@@ -38,6 +38,13 @@ class MessageCreateForm(ModelForm):
             for person in persons:
                 for contact in person.contact_set.all():
                     OutboundMessage.objects.create(contact=contact, message=message)
+        #I know I have to move the previous code
+
+
+        ## It creates a confirmation, a confirmation is sent automatically
+        ## when created
+        Confirmation.objects.create(message=message)
+
 
         return message
 

@@ -10,6 +10,8 @@ from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
 import datetime
 from djangoplugins.models import Plugin
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 
@@ -58,8 +60,8 @@ class MessageRecord(models.Model):
 
 class Message(models.Model):
     """Message: Class that contain the info for a model, despite of the input and the output channels. Subject and content are mandatory fields"""
-
-
+    author_name = models.CharField(max_length=512)
+    author_email = models.EmailField()
     subject = models.CharField(max_length=512)
     content = models.TextField()
     writeitinstance = models.ForeignKey(WriteItInstance)
@@ -173,7 +175,20 @@ class OutboundMessagePluginRecord(models.Model):
 
 
 class Confirmation(models.Model):
-    message = models.ForeignKey(Message)
+    message = models.OneToOneField(Message)
     key = models.CharField(max_length=64, default=User.objects.make_random_password(32), unique=True)
     created = models.DateField(default=datetime.datetime.now())
     confirmated_at = models.DateField(default=None, null=True)
+
+
+def send_an_email_to_the_author(sender,instance, created, **kwargs):
+    confirmation = instance
+    if created:
+        send_mail(
+            _('Confirmation email for a message in WriteIt'), 
+            _('Hello %(person)s:\r\n Please confirm that you have sent this email by clicking on the next link\r\n(uuupps no link yet).\r\nThanks\r\nThe writeit team.')
+            %{'person':confirmation.message.author_name}, 
+            settings.DEFAULT_FROM_EMAIL,
+            [confirmation.message.author_email], 
+            fail_silently=False)
+post_save.connect(send_an_email_to_the_author, sender=Confirmation)

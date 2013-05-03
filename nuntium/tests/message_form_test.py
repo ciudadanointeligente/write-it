@@ -2,9 +2,10 @@
 from global_test_case import GlobalTestCase as TestCase
 from popit.models import Person, ApiInstance
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, WriteItInstance, OutboundMessage
+from nuntium.models import Message, Confirmation, WriteItInstance, OutboundMessage
 from nuntium.forms import MessageCreateForm, PersonMultipleChoiceField
 from django.forms import ValidationError,CheckboxSelectMultiple
+
 
 class PersonMultipleChoiceFieldTestCase(TestCase):
     def setUp(self):
@@ -98,6 +99,28 @@ class MessageFormTestCase(TestCase):
         self.assertEquals(new_outbound_messages[0].contact, self.contact1)
         self.assertEquals(new_outbound_messages[0].message, new_message)
         self.assertEquals(new_outbound_messages[0].status, "new")
+
+
+    def test_it_creates_a_confirmation(self):
+        #spanish
+        data = {
+        'subject':u'Amor a la fiera',
+        'content':u'Todos sabemos que quieres mucho a la Fiera pero... es verdad?',
+        'author_name':u"Felipe",
+        'author_email':u"falvarez@votainteligente.cl",
+        'persons': [self.person1.id]
+        }
+        form = MessageCreateForm(data, writeitinstance=self.writeitinstance1)
+        form.full_clean()
+        self.assertTrue(form.is_valid())
+        form.save()
+
+        new_message = Message.objects.get(subject=data['subject'], content=data['content'])
+        confirmation = Confirmation.objects.get(message=new_message)
+
+
+        self.assertEquals(len(confirmation.key.strip()),32)
+        self.assertTrue(confirmation.confirmated_at is None)
 
 
     #there should be a test to prove that it does something when like sending 
