@@ -70,9 +70,9 @@ class MailSendingTestCase(TestCase):
         self.assertTrue(fatal_error is None)
         self.assertEquals(len(mail.outbox), 1) #it is sent to one person pointed in the contact
         self.assertEquals(mail.outbox[0].subject, 'WriteIT Message: Subject 1')
-        self.assertEquals(mail.outbox[0].body, u'Hello Person 1:\r\nYou have a new message:\r\nsubject: Subject 1 \r\ncontent: Content 1\r\n\r\nSeeya\r\n--\r\nYou writeIt and we deliverit.')
+        self.assertEquals(mail.outbox[0].body, u'Hello Pedro:\r\nYou have a new message:\r\nsubject: Subject 1 \r\ncontent: Content 1\r\n\r\nSeeya\r\n--\r\nYou writeIt and we deliverit.')
         self.assertEquals(len(mail.outbox[0].to), 1)
-        self.assertTrue("test1@test.com" in mail.outbox[0].to)
+        self.assertTrue("pdaire@ciudadanointeligente.org" in mail.outbox[0].to)
         self.assertEquals(mail.outbox[0].from_email, settings.DEFAULT_FROM_EMAIL)
 
     def test_it_fails_if_there_is_no_template(self):

@@ -129,37 +129,32 @@ class OutboundMessage(models.Model):
 	
     def send(self):
         if self.status == "sent":
-            return False
+            return
         plugins = OutputPlugin.get_plugins()
-        
         sent_completely = True
+        #This is not the way it should be done
+        #there should be some way to get the plugin from a contact_type
         for plugin in plugins:
-            #I should keep a record of what has been sent to someone trough which channel
-            #and know if I should send again
-            outbound_record, created = OutboundMessagePluginRecord.objects.get_or_create(outbound_message=self, plugin=plugin.get_model())
-            if not outbound_record.try_again:
-                continue
-
-            successfully_sent, fatal_error = plugin.send(self)
-            try_again = True
-            
-            if successfully_sent:
-
+            if self.contact.contact_type == plugin.get_contact_type():
+                break
+        outbound_record, created = OutboundMessagePluginRecord.objects.get_or_create(outbound_message=self, plugin=plugin.get_model())
+        if not outbound_record.try_again:
+            return
+        successfully_sent, fatal_error = plugin.send(self)
+        try_again = True
+        if successfully_sent:
+            try_again = False
+        else:
+            sent_completely = False
+            if fatal_error:
                 try_again = False
-            else:
-                sent_completely = False
-                if fatal_error:
-                    try_again = False
-
-
-            
-            outbound_record.sent = successfully_sent
-            outbound_record.try_again = try_again
-            outbound_record.number_of_attempts += 1
-            outbound_record.save()
-            #Also here comes what should be any priorization on the channels
-            #that I'm not workin on right now and it should send to all of them
-            #should I have another state "partly sent"? or is it enough when I say "ready"?
+        outbound_record.sent = successfully_sent
+        outbound_record.try_again = try_again
+        outbound_record.number_of_attempts += 1
+        outbound_record.save()
+        #Also here comes what should be any priorization on the channels
+        #that I'm not workin on right now and it should send to all of them
+        #should I have another state "partly sent"? or is it enough when I say "ready"?
         if sent_completely:
             self.status = "sent"
             self.save()

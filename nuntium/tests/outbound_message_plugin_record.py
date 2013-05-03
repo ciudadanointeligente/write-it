@@ -2,6 +2,7 @@ from global_test_case import GlobalTestCase as TestCase
 from django.utils.unittest import skip
 from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, OutboundMessagePluginRecord
 from plugin_mock.mental_message_plugin import MentalMessage, FatalException, TryAgainException
+from contactos.models import Contact, ContactType
 from djangoplugins.models import Plugin
 from popit.models import Person
 '''
@@ -16,21 +17,28 @@ what plugin an outbound message has been sent
 class OutboundMessageRecordTestCase(TestCase):
     def setUp(self):
         super(OutboundMessageRecordTestCase,self).setUp()
+        self.channel = MentalMessage()
+
         self.person1 = Person.objects.all()[0]
+
+        self.mental_contact1 = Contact.objects.create(person=self.person1, contact_type=self.channel.get_contact_type())
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
 
 
         self.fatal_error_message = Message.objects.create(content = 'Content 1', subject='RaiseFatalErrorPlz', 
             writeitinstance= self.writeitinstance1, persons = [self.person1])
-        self.fatal_error_outboundmessage = OutboundMessage.objects.filter(message=self.fatal_error_message)[0]
+        self.fatal_error_outboundmessage = OutboundMessage.objects.get(message=self.fatal_error_message,
+            contact=self.mental_contact1)
 
         self.try_again_error_message = Message.objects.create(content = 'Content 1', subject='RaiseTryAgainErrorPlz', 
             writeitinstance= self.writeitinstance1, persons = [self.person1])
-        self.try_again_outbound_message = OutboundMessage.objects.filter(message=self.try_again_error_message)[0]
+        self.try_again_outbound_message = OutboundMessage.objects.get(message=self.try_again_error_message,
+            contact=self.mental_contact1)
 
         self.successful_message = Message.objects.create(content = 'Content 1', subject='Come on! send me!', 
             writeitinstance= self.writeitinstance1, persons = [self.person1])
-        self.successful_outbound_message = OutboundMessage.objects.filter(message=self.successful_message)[0]
+        self.successful_outbound_message = OutboundMessage.objects.get(message=self.successful_message,
+            contact=self.mental_contact1)
         self.channel = MentalMessage()
         self.plugin_model = self.channel.get_model()
 
@@ -99,10 +107,4 @@ class OutboundMessageRecordTestCase(TestCase):
         record = OutboundMessagePluginRecord.objects.get(outbound_message=self.fatal_error_outboundmessage, 
             plugin=self.plugin_model)
 
-
         self.assertEquals(record.number_of_attempts, 1)
-
-
-
-
-

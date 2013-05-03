@@ -1,5 +1,6 @@
 from nuntium.plugins import OutputPlugin
 from nuntium.models import MessageRecord
+from contactos.models import Contact, ContactType
 '''
 This is a mock and should not be used anywhere but as a joke to tell your friends,
 One day this kind of messages are going to be normal 
@@ -8,6 +9,11 @@ One day this kind of messages are going to be normal
 class MentalMessage(OutputPlugin):
     name = 'mental-message'
     title = 'Mental Message'
+
+
+    def get_contact_type(self):
+        contact_type, created = ContactType.objects.get_or_create(label_name="The Mind", name="mind")
+        return contact_type
 
     def send(self, outbound_message):
         '''

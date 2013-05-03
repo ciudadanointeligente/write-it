@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord
+from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, OutboundMessagePluginRecord
 from popit.models import Person, ApiInstance
 from django.contrib.contenttypes.models import ContentType
 
@@ -73,23 +73,36 @@ class PluginMentalMessageTestCase(TestCase):
     def setUp(self):
         super(PluginMentalMessageTestCase,self).setUp()
         self.outbound_message = OutboundMessage.objects.all()[0]
+        self.message = Message.objects.all()[0]
         self.message_type = ContentType.objects.all()[0]
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
         self.person1 = Person.objects.all()[0]
+        self.channel = MentalMessage()
+        self.mental_contact1 = Contact.objects.create(person=self.person1, contact_type=self.channel.get_contact_type())
+
+    def test_it_only_sends_messages_to_contacts_of_the_same_channel(self):
+        otubound_message = OutboundMessage.objects.create(contact=self.mental_contact1, message=self.message)
+        otubound_message.send()
+
+        record = OutboundMessagePluginRecord.objects.get(outbound_message=otubound_message)
+        self.assertEquals(record.plugin, self.channel.get_model())
+
+
 
 
     def test_it_has_a_send_method_and_does_whatever(self):
-        the_mental_channel = MentalMessage()
         #it sends the message
-        the_mental_channel.send(self.outbound_message)
+        self.channel.send(self.outbound_message)
         #And I'm gonna prove it by testing that a new record was created
         the_records = MessageRecord.objects.filter(object_id=self.outbound_message.id, status="sent using mental messages")
         self.assertEquals(the_records.count(),1)
         #It should send using all the channels available
 
     def test_it_should_create_a_new_kind_of_outbox_message(self):
-        self.outbound_message.send()
-        the_records = MessageRecord.objects.filter(object_id=self.outbound_message.id, status="sent using mental messages")
+        otubound_message = OutboundMessage.objects.create(contact=self.mental_contact1, message=self.message)
+        otubound_message.send()
+        the_records = MessageRecord.objects.filter(object_id=otubound_message.id
+            , status="sent using mental messages")
         self.assertEquals(the_records.count(),1)
 
     def test_fatal_exception_when_sending_a_mental_message(self):
@@ -97,14 +110,12 @@ class PluginMentalMessageTestCase(TestCase):
         This type of error is when there is not much to do, like an inexisting email address
         and in Mental message it raises a fatal error when you send the message RaiseFatalErrorPlz
         '''
-        the_mental_channel = MentalMessage()
         with self.assertRaises(FatalException) as cm:
-            the_mental_channel.send_mental_message("RaiseFatalErrorPlz")
+            self.channel.send_mental_message("RaiseFatalErrorPlz")
 
     def test_non_fatal_exception(self):
-        the_mental_channel = MentalMessage()
         with self.assertRaises(TryAgainException) as cm:
-            the_mental_channel.send_mental_message("RaiseTryAgainErrorPlz")
+            self.channel.send_mental_message("RaiseTryAgainErrorPlz")
 
     def test_it_raises_an_error_when_sending_error_in_the_subject(self):
         #this is a test for when you send a message with RaiseFatalErrorPlz in subject then is going
@@ -114,9 +125,7 @@ class PluginMentalMessageTestCase(TestCase):
         error_message = Message.objects.create(content = 'Content 1', subject='RaiseFatalErrorPlz', 
             writeitinstance= self.writeitinstance1, persons = [self.person1])
         outbound_message = OutboundMessage.objects.filter(message=error_message)[0]
-
-        the_mental_channel = MentalMessage()
-        result = the_mental_channel.send(outbound_message)
+        result = self.channel.send(outbound_message)
         successfully_sent = result[0]
         fatal_error = result[1]
 
@@ -133,9 +142,7 @@ class PluginMentalMessageTestCase(TestCase):
         error_message = Message.objects.create(content = 'Content 1', subject='RaiseTryAgainErrorPlz', 
             writeitinstance= self.writeitinstance1, persons = [self.person1])
         outbound_message = OutboundMessage.objects.filter(message=error_message)[0]
-
-        the_mental_channel = MentalMessage()
-        result = the_mental_channel.send(outbound_message)
+        result = self.channel.send(outbound_message)
         successfully_sent = result[0]
         fatal_error = result[1]
 
@@ -149,13 +156,19 @@ class PluginMentalMessageTestCase(TestCase):
         error_message = Message.objects.create(content = 'Content 1', subject='Come on! send me!', 
             writeitinstance= self.writeitinstance1, persons = [self.person1])
         outbound_message = OutboundMessage.objects.filter(message=error_message)[0]
-
-        the_mental_channel = MentalMessage()
-        result = the_mental_channel.send(outbound_message)
+        result = self.channel.send(outbound_message)
         successfully_sent = result[0]
         fatal_error = result[1]
 
 
         self.assertTrue(successfully_sent)
         self.assertTrue(fatal_error is None)
+
+    def test_plugin_gets_contact_type(self):
+        the_mental_channel = MentalMessage()
+        contact_type = the_mental_channel.get_contact_type()
+
+        self.assertEquals(contact_type.label_name, "The Mind")
+        self.assertEquals(contact_type.name, "mind")
+
 
