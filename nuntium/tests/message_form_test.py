@@ -1,30 +1,53 @@
 # coding=utf-8
-from django.test import TestCase
+from global_test_case import GlobalTestCase as TestCase
 from popit.models import Person, ApiInstance
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, WriteItInstance, OutboundMessage
-from nuntium.forms import MessageCreateForm
-from django.forms import ValidationError
+from nuntium.models import Message, Confirmation, WriteItInstance, OutboundMessage
+from nuntium.forms import MessageCreateForm, PersonMultipleChoiceField
+from django.forms import ValidationError,CheckboxSelectMultiple
 
+
+class PersonMultipleChoiceFieldTestCase(TestCase):
+    def setUp(self):
+        super(PersonMultipleChoiceFieldTestCase,self).setUp()
+        self.person1 = Person.objects.all()[0]
+
+    def test_get_widget(self):
+        field = PersonMultipleChoiceField(queryset=Person.objects.none())
+        widget = field.widget
+
+        self.assertTrue(isinstance(widget, CheckboxSelectMultiple))
+
+    def test_get_label_from_instance(self):
+        field = PersonMultipleChoiceField(queryset=Person.objects.all())
+        label = field.label_from_instance(self.person1)
+
+        self.assertEquals(label, self.person1.name)
 
 class MessageFormTestCase(TestCase):
 
     def setUp(self):
-        self.api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
-        self.api_instance2 = ApiInstance.objects.create(url='http://popit.org/api/v2')
-        self.person1 = Person.objects.create(api_instance=self.api_instance1, name= 'Person 1')
-        self.person2 = Person.objects.create(api_instance=self.api_instance2, name= 'Person 2')
-        self.contact_type1 = ContactType.objects.create(name= 'e-mail',label_name='Electronic Mail')
-        self.contact1 = Contact.objects.create(person=self.person1, contact_type=self.contact_type1, value= 'test@test.com')
-        self.contact2 = Contact.objects.create(person=self.person2, contact_type=self.contact_type1, value= 'test@test.com')
-        self.writeitinstance1 = WriteItInstance.objects.create(name='instance 1', slug= 'instance-1', api_instance= self.api_instance1)
-        self.writeitinstance2 = WriteItInstance.objects.create(name='instance 2', slug= 'instance-2', api_instance= self.api_instance2)
+        super(MessageFormTestCase,self).setUp()
+        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.person1 = Person.objects.all()[0]
+        self.contact1 = Contact.objects.all()[0]
+
+
+    def test_form_fields(self):
+        form = MessageCreateForm(writeitinstance = self.writeitinstance1)
+        self.assertTrue("persons" in form.fields)
+        self.assertTrue("subject" in form.fields)
+        self.assertTrue("content" in form.fields)
+        self.assertTrue("author_name" in form.fields)
+        self.assertTrue("author_email" in form.fields)
 
     def test_create_form(self):
         #spanish
         data = {
         'subject':u'Fiera no está',
         'content':u'¿Dónde está Fiera Feroz? en la playa?',
+        'author_name':u"Felipe",
+        'author_email':u"falvarez@votainteligente.cl",
         'persons': [self.person1.id]
         }
 
@@ -32,6 +55,13 @@ class MessageFormTestCase(TestCase):
         form = MessageCreateForm(data, writeitinstance = self.writeitinstance1)
         self.assertTrue(form)
         self.assertTrue(form.is_valid())
+
+
+    def test_person_multiple_choice_field(self):
+        form = MessageCreateForm(writeitinstance = self.writeitinstance1)
+        persons_field = form.fields['persons']
+
+        self.assertTrue(isinstance(persons_field, PersonMultipleChoiceField))
 
 
     def test_instance_is_always_required(self):
@@ -50,6 +80,8 @@ class MessageFormTestCase(TestCase):
         data = {
         'subject':u'Fiera no está',
         'content':u'¿Dónde está Fiera Feroz? en la playa?',
+        'author_name':u"Felipe",
+        'author_email':u"falvarez@votainteligente.cl",
         'persons': [self.person1.id]
         }
         form = MessageCreateForm(data, writeitinstance=self.writeitinstance1)
@@ -57,15 +89,38 @@ class MessageFormTestCase(TestCase):
         self.assertTrue(form.is_valid())
         form.save()
 
-        new_messages = Message.objects.all()
-        new_outbound_messages= OutboundMessage.objects.all()
-        self.assertTrue(new_messages.count()>0)
-        self.assertEquals(new_messages[0].subject, data['subject'])
-        self.assertEquals(new_messages[0].content, data['content'])
-        self.assertEquals(new_messages[0].writeitinstance, self.writeitinstance1)
+        new_message = Message.objects.get(subject=data['subject'], content=data['content'])
+
+        new_outbound_messages= OutboundMessage.objects.filter(message=new_message)
+        self.assertEquals(new_message.subject, data['subject'])
+        self.assertEquals(new_message.content, data['content'])
+        self.assertEquals(new_message.writeitinstance, self.writeitinstance1)
         self.assertEquals(new_outbound_messages.count(),1)
         self.assertEquals(new_outbound_messages[0].contact, self.contact1)
-        self.assertEquals(new_outbound_messages[0].message, new_messages[0])
+        self.assertEquals(new_outbound_messages[0].message, new_message)
+        self.assertEquals(new_outbound_messages[0].status, "new")
+
+
+    def test_it_creates_a_confirmation(self):
+        #spanish
+        data = {
+        'subject':u'Amor a la fiera',
+        'content':u'Todos sabemos que quieres mucho a la Fiera pero... es verdad?',
+        'author_name':u"Felipe",
+        'author_email':u"falvarez@votainteligente.cl",
+        'persons': [self.person1.id]
+        }
+        form = MessageCreateForm(data, writeitinstance=self.writeitinstance1)
+        form.full_clean()
+        self.assertTrue(form.is_valid())
+        form.save()
+
+        new_message = Message.objects.get(subject=data['subject'], content=data['content'])
+        confirmation = Confirmation.objects.get(message=new_message)
+
+
+        self.assertEquals(len(confirmation.key.strip()),32)
+        self.assertTrue(confirmation.confirmated_at is None)
 
 
     #there should be a test to prove that it does something when like sending 

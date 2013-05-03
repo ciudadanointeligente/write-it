@@ -1,5 +1,5 @@
 # coding=utf-8
-from django.test import TestCase
+from global_test_case import GlobalTestCase as TestCase
 from django.core.urlresolvers import reverse
 from nuntium.models import WriteItInstance, Message
 from nuntium.views import MessageCreateForm
@@ -10,16 +10,19 @@ from django.utils.unittest import skip
 class InstanceTestCase(TestCase):
 
     def setUp(self):
-        self.api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
-        self.api_instance2 = ApiInstance.objects.create(url='http://popit.org/api/v2')
-        self.person1 = Person.objects.create(api_instance=self.api_instance1, name= 'Person 1')
-        self.contact_type1 = ContactType.objects.create(name= 'e-mail',label_name='Electronic Mail')
-        self.contact1 = Contact.objects.create(person=self.person1, contact_type=self.contact_type1, value= 'test@test.com')
+        super(InstanceTestCase,self).setUp()
+        self.api_instance1 = ApiInstance.objects.all()[0]
+        self.api_instance2 = ApiInstance.objects.all()[1]
+        self.person1 = Person.objects.all()[0]
 
 
     def test_create_instance(self):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', api_instance= self.api_instance1, slug='instance-1')
         self.assertTrue(writeitinstance)
+
+    def test_instance_unicode(self):
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', api_instance= self.api_instance1, slug='instance-1')
+        self.assertEquals(writeitinstance.__unicode__() , writeitinstance.name)
 
     def test_instance_containning_several_messages(self):
         writeitinstance1 = WriteItInstance.objects.create(name='instance 1', api_instance= self.api_instance1)
@@ -33,13 +36,22 @@ class InstanceTestCase(TestCase):
         self.assertEquals(writeitinstance2.message_set.count(),1)
         self.assertEquals(message3.writeitinstance, writeitinstance2)
 
+    def test_get_absolute_url(self):
+        writeitinstance1 = WriteItInstance.objects.create(name='instance 1', api_instance= self.api_instance1, slug=u"the-slug")
+        expected_url = reverse('instance_detail', kwargs={
+            'slug':writeitinstance1.slug
+            })
+
+        self.assertEquals(expected_url, writeitinstance1.get_absolute_url())
+
 class InstanceDetailView(TestCase):
     def setUp(self):
-        self.api_instance1 = ApiInstance.objects.create(url='http://popit.org/api/v1')
-        self.writeitinstance1 = WriteItInstance.objects.create(name='instance 1', api_instance= self.api_instance1, slug='instance-1')
-        self.person1 = Person.objects.create(api_instance=self.api_instance1, name= 'Person 1')
-        self.contact_type1 = ContactType.objects.create(name= 'e-mail',label_name='Electronic Mail')
-        self.contact1 = Contact.objects.create(person=self.person1, contact_type=self.contact_type1, value= 'test@test.com')
+        super(InstanceDetailView,self).setUp()
+        self.api_instance1 = ApiInstance.objects.all()[0]
+        self.api_instance2 = ApiInstance.objects.all()[1]
+        self.person1 = Person.objects.all()[0]
+        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+
     
     def test_detail_instance_view(self):
         url = reverse('instance_detail', kwargs={
@@ -74,6 +86,8 @@ class InstanceDetailView(TestCase):
         data = {
         'subject':u'Fiera no está',
         'content':u'¿Dónde está Fiera Feroz? en la playa?',
+        'author_name':u"Felipe",
+        'author_email':u"falvarez@votainteligente.cl",
         'persons': [self.person1.id]
         }
         url = reverse('instance_detail', kwargs={
