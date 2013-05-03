@@ -8,6 +8,7 @@ from nuntium.plugins import OutputPlugin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 import datetime
+from djangoplugins.models import Plugin
 
 
 
@@ -114,7 +115,7 @@ class OutboundMessage(models.Model):
 
     contact = models.ForeignKey(Contact)
     message = models.ForeignKey(Message)
-    status = models.CharField(max_length="4", choices=STATUS_CHOICES, default="ready")
+    status = models.CharField(max_length="10", choices=STATUS_CHOICES, default="ready")
 
     objects = OutboundMessageManager()
 
@@ -128,21 +129,36 @@ class OutboundMessage(models.Model):
 	
     def send(self):
         if self.status == "sent":
-            return False
-        self.status="sent"
-        self.save()
+            return
         plugins = OutputPlugin.get_plugins()
-        MessageRecord.objects.create(content_object= self, status=self.status)
+        sent_completely = True
+        #This is not the way it should be done
+        #there should be some way to get the plugin from a contact_type
         for plugin in plugins:
-            #I should keep a record of what has been sent to someone trough which channel
-            #and know if I should send again
-            plugin.send(self)
-            #Also here comes what should be any priorization on the channels
-            #that I'm not workin on right now
-            #and it should send to all of them
-            #should I have another state of "partly sent"
-        #I have an error right here why is it returning true all the time
-        return True
+            if self.contact.contact_type == plugin.get_contact_type():
+                break
+        outbound_record, created = OutboundMessagePluginRecord.objects.get_or_create(outbound_message=self, plugin=plugin.get_model())
+        if not outbound_record.try_again:
+            return
+        successfully_sent, fatal_error = plugin.send(self)
+        try_again = True
+        if successfully_sent:
+            try_again = False
+        else:
+            sent_completely = False
+            if fatal_error:
+                try_again = False
+        outbound_record.sent = successfully_sent
+        outbound_record.try_again = try_again
+        outbound_record.number_of_attempts += 1
+        outbound_record.save()
+        #Also here comes what should be any priorization on the channels
+        #that I'm not workin on right now and it should send to all of them
+        #should I have another state "partly sent"? or is it enough when I say "ready"?
+        if sent_completely:
+            self.status = "sent"
+            self.save()
+        MessageRecord.objects.create(content_object= self, status=self.status)
 
 
 def create_a_message_record(sender,instance, created, **kwargs):
@@ -150,3 +166,11 @@ def create_a_message_record(sender,instance, created, **kwargs):
     if created:
         MessageRecord.objects.create(content_object= outbound_message, status=outbound_message.status)
 post_save.connect(create_a_message_record, sender=OutboundMessage)
+
+
+class OutboundMessagePluginRecord(models.Model):
+    outbound_message = models.ForeignKey(OutboundMessage)
+    plugin = models.ForeignKey(Plugin)
+    sent = models.BooleanField()
+    number_of_attempts = models.PositiveIntegerField(default=0)
+    try_again = models.BooleanField(default=True)

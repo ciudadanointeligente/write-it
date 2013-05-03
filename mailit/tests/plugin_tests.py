@@ -55,27 +55,32 @@ class MailSendingTestCase(TestCase):
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
         self.writeitinstance2 = WriteItInstance.objects.all()[1]
         self.message = Message.objects.all()[0]
-        self.message_to_another_contact = Message.objects.create(content = 'Content 1', subject='Subject 1', writeitinstance= self.writeitinstance2, persons = [self.person3])
+        self.outbound_message1 = OutboundMessage.objects.filter(message=self.message)[0]
+        self.message_to_another_contact = Message.objects.create(content = 'Content 1', 
+            subject='Subject 1', writeitinstance= self.writeitinstance2, persons = [self.person3])
+        self.outbound_message2 = OutboundMessage.objects.get(message=self.message_to_another_contact)
         self.template1 = MailItTemplate.objects.all()[0]
 
 
     def test_sending_email(self):
         channel = MailChannel()
-        result_of_sending = channel.send(self.message)
+        result_of_sending, fatal_error = channel.send(self.outbound_message1)
 
         self.assertTrue(result_of_sending)
-        self.assertEquals(len(mail.outbox), 2)
+        self.assertTrue(fatal_error is None)
+        self.assertEquals(len(mail.outbox), 1) #it is sent to one person pointed in the contact
         self.assertEquals(mail.outbox[0].subject, 'WriteIT Message: Subject 1')
-        self.assertEquals(mail.outbox[0].body, u'Hello Person 1:\r\nYou have a new message:\r\nsubject: Subject 1 \r\ncontent: Content 1\r\n\r\nSeeya\r\n--\r\nYou writeIt and we deliverit.')
+        self.assertEquals(mail.outbox[0].body, u'Hello Pedro:\r\nYou have a new message:\r\nsubject: Subject 1 \r\ncontent: Content 1\r\n\r\nSeeya\r\n--\r\nYou writeIt and we deliverit.')
         self.assertEquals(len(mail.outbox[0].to), 1)
-        self.assertTrue("test1@test.com" in mail.outbox[0].to)
+        self.assertTrue("pdaire@ciudadanointeligente.org" in mail.outbox[0].to)
         self.assertEquals(mail.outbox[0].from_email, settings.DEFAULT_FROM_EMAIL)
 
     def test_it_fails_if_there_is_no_template(self):
         channel = MailChannel()
-        result_of_sending = channel.send(self.message_to_another_contact)
+        result_of_sending, fatal_error = channel.send(self.message_to_another_contact)
 
         self.assertFalse(result_of_sending)
+        self.assertFalse(fatal_error)
 
 
     def test_it_only_sends_mails_to_email_contacts(self):
@@ -90,6 +95,7 @@ class MailSendingTestCase(TestCase):
 
         self.assertTrue(result_of_sending)
         self.assertEquals(len(mail.outbox), 0)#because none has been sent
+
 
 
 
