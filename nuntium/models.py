@@ -12,6 +12,8 @@ import datetime
 from djangoplugins.models import Plugin
 from django.core.mail import send_mail
 from django.conf import settings
+from django.core.urlresolvers import reverse
+from django.contrib.sites.models import Site
 
 
 
@@ -184,10 +186,18 @@ class Confirmation(models.Model):
 def send_an_email_to_the_author(sender,instance, created, **kwargs):
     confirmation = instance
     if created:
+        url = reverse('confirm', kwargs={
+            'slug':confirmation.key
+            })
+        current_site = Site.objects.get_current()
+        confirmation_full_url = "http://"+current_site.domain+url
         send_mail(
             _('Confirmation email for a message in WriteIt'), 
-            _('Hello %(person)s:\r\n Please confirm that you have sent this email by clicking on the next link\r\n(uuupps no link yet).\r\nThanks\r\nThe writeit team.')
-            %{'person':confirmation.message.author_name}, 
+            _('Hello %(person)s:\r\n Please confirm that you have sent this email by clicking on the next link\r\n%(link)s.\r\nThanks\r\nThe writeit team.')
+            %{
+            'person':confirmation.message.author_name,
+            'link':confirmation_full_url
+            }, 
             settings.DEFAULT_FROM_EMAIL,
             [confirmation.message.author_email], 
             fail_silently=False)
