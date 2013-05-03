@@ -7,6 +7,7 @@ from datetime import datetime
 from django.core import mail
 from plugin_mock.mental_message_plugin import MentalMessage
 from django.core.urlresolvers import reverse
+from django.contrib.sites.models import Site
 
 
 class ConfirmationTestCase(TestCase):
@@ -32,10 +33,16 @@ class ConfirmationTestCase(TestCase):
 
     def test_it_sends_an_email_to_the_author_asking_for_confirmation(self):
         confirmation = Confirmation.objects.create(message=self.message)
+        url = reverse('confirm', kwargs={
+            'slug':confirmation.key
+            })
+        current_site = Site.objects.get_current()
+        confirmation_full_url = "http://"+current_site.domain+url
 
         self.assertEquals(len(mail.outbox), 1) #it is sent to one person pointed in the contact
         self.assertEquals(mail.outbox[0].subject, 'Confirmation email for a message in WriteIt')
         self.assertTrue(self.message.author_name in mail.outbox[0].body)
+        self.assertTrue(confirmation_full_url in mail.outbox[0].body)
 
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue(self.message.author_email in mail.outbox[0].to)
