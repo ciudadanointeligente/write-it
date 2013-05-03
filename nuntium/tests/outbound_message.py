@@ -20,7 +20,7 @@ class OutboundMessageTestCase(TestCase):
         outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact1)
         #This means that there is a link between a contact and a message
         self.assertTrue(outbound_message)
-        self.assertEquals(outbound_message.status, "ready")
+        self.assertEquals(outbound_message.status, "new")
 
 
     def test_outbound_message_unicode(self):
@@ -58,7 +58,7 @@ class OutboundMessageTestCase(TestCase):
 
 
     def test_there_is_a_manager_that_retrieves_all_the_available_messages(self):
-        outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact1)
+        outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact1, status="ready")
 
         self.assertEquals(OutboundMessage.objects.to_send().filter(id=outbound_message.id).count(),1)
 
