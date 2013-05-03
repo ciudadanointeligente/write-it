@@ -1,0 +1,50 @@
+- fields: {api_instance: 1, name: instance 1, slug: instance-1}
+  model: nuntium.writeitinstance
+  pk: 1
+- fields: {api_instance: 2, name: instance 2, slug: instance-2}
+  model: nuntium.writeitinstance
+  pk: 2
+- fields: {content_type: 13, datetime: 2013-04-26, object_id: 1, status: new}
+  model: nuntium.messagerecord
+  pk: 1
+- fields: {content: Content 1, subject: Subject 1, writeitinstance: 1}
+  model: nuntium.message
+  pk: 1
+- fields: {content: Content 2, subject: Subject 2, writeitinstance: 1}
+  model: nuntium.message
+  pk: 2
+- fields: {contact: 1, message: 1}
+  model: nuntium.outboundmessage
+  pk: 1
+- fields: {contact: 2, message: 1}
+  model: nuntium.outboundmessage
+  pk: 2
+- fields: {url: 'http://popit.org/api/v1'}
+  model: popit.apiinstance
+  pk: 1
+- fields: {url: 'http://popit.org/api/v2'}
+  model: popit.apiinstance
+  pk: 2
+- fields: {api_instance: 1, name: Pedro, popit_url: ''}
+  model: popit.person
+  pk: 1
+- fields: {api_instance: 2, name: Marcel, popit_url: ''}
+  model: popit.person
+  pk: 2
+- fields: {api_instance: 2, name: Felipe, popit_url: ''}
+  model: popit.person
+  pk: 3
+- fields: {label_name: Electronic Mail, name: e-mail}
+  model: contactos.contacttype
+  pk: 1
+- fields: {contact_type: 1, person: 1, value: pdaire@ciudadanointeligente.org}
+  model: contactos.contact
+  pk: 1
+- fields: {contact_type: 1, person: 2, value: maugsburger@ciudadanointeligente.org}
+  model: contactos.contact
+  pk: 2
+- fields: {content_template: "Hello %(person)s:\r\nYou have a new message:\r\nsubject:\
+      \ %(subject)s \r\ncontent: %(content)s\r\n\r\nSeeya\r\n--\r\nYou writeIt and\
+      \ we deliverit.", subject_template: 'WriteIT Message: %(subject)s', writeitinstance: 1}
+  model: mailit.mailittemplate
+  pk: 1

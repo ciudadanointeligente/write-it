@@ -8,6 +8,7 @@ from nuntium.plugins import OutputPlugin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 import datetime
+from djangoplugins.models import Plugin
 
 
 
@@ -23,10 +24,6 @@ class MessageManager(models.Manager):
                 outbound_message = OutboundMessage.objects.create(contact=contact, message=message)
         return message
 
-
-    def to_send(self, **kwargs):
-        return super(MessageManager, self).filter(status="new")
-
 		
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
@@ -38,12 +35,24 @@ class WriteItInstance(models.Model):
     def get_absolute_url(self):
         return ('instance_detail', (), {'slug': self.slug})
 
+    def __unicode__(self):
+        return self.name
+
 class MessageRecord(models.Model):
     status = models.CharField(max_length=255)
     datetime = models.DateField(default=datetime.datetime.now())
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
+
+    def __unicode__(self):
+        outbound_message = self.content_object
+        return _('The message "%(subject)s" at %(instance)s turned %(status)s at %(date)s') % {
+            'subject': outbound_message.message.subject,
+            'instance': outbound_message.message.writeitinstance,
+            'status': self.status,
+            'date' : str(self.datetime)
+            }
 
 
 class Message(models.Model):
@@ -57,7 +66,7 @@ class Message(models.Model):
     subject = models.CharField(max_length=512)
     content = models.TextField()
     writeitinstance = models.ForeignKey(WriteItInstance)
-    status = models.CharField(max_length="4", choices=STATUS_CHOICES, default="new")
+    #status = models.CharField(max_length="4", choices=STATUS_CHOICES, default="new")
 
     objects = MessageManager()
 
@@ -79,30 +88,89 @@ class Message(models.Model):
                 for contact in person.contact_set.all():
                     outbound_message = OutboundMessage.objects.create(contact=contact, message=self)
 
+    def __unicode__(self):
+        return _('%(subject)s at %(instance)s') % {
+            'subject':self.subject,
+            'instance':self.writeitinstance.name
+            }
 
-    def send(self):
-        if self.status == "sent":
-            return False
-        self.status = "sent"
-        self.save()
-        MessageRecord.objects.create(content_object= self, status=self.status)
-        plugins = OutputPlugin.get_plugins()
-        for plugin in plugins:
-            plugin.send(self)
-        
-        return True
 
-def create_a_message_record(sender,instance, created, **kwargs):
-    message = instance
-    if created:
-        MessageRecord.objects.create(content_object= message, status=message.status)
-post_save.connect(create_a_message_record, sender=Message)
+class OutboundMessageManager(models.Manager):
+    def to_send(self, *args, **kwargs):
+        query = super(OutboundMessageManager, self).filter(*args, **kwargs)
+        return query.filter(status="ready")
 
 
 
 class OutboundMessage(models.Model):
     """docstring for OutboundMessage: This class is the message delivery unit. The OutboundMessage is the one that will be tracked in order 
     to know the actual status of the message"""
+
+    STATUS_CHOICES = (
+        ("new",_("Newly created")),
+        ("ready",_("Ready to send")),
+        ("sent",_("Sent")),
+        ("error",_("Error sending it")),
+        )
+
     contact = models.ForeignKey(Contact)
     message = models.ForeignKey(Message)
-		
+    status = models.CharField(max_length="10", choices=STATUS_CHOICES, default="ready")
+
+    objects = OutboundMessageManager()
+
+    def __unicode__(self):
+        return _('%(subject)s sent to %(person)s (%(contact)s) at %(instance)s') % {
+            'subject': self.message.subject,
+            'person':self.contact.person.name,
+            'contact':self.contact.value,
+            'instance':self.message.writeitinstance.name
+        }
+	
+    def send(self):
+        if self.status == "sent":
+            return
+        plugins = OutputPlugin.get_plugins()
+        sent_completely = True
+        #This is not the way it should be done
+        #there should be some way to get the plugin from a contact_type
+        for plugin in plugins:
+            if self.contact.contact_type == plugin.get_contact_type():
+                break
+        outbound_record, created = OutboundMessagePluginRecord.objects.get_or_create(outbound_message=self, plugin=plugin.get_model())
+        if not outbound_record.try_again:
+            return
+        successfully_sent, fatal_error = plugin.send(self)
+        try_again = True
+        if successfully_sent:
+            try_again = False
+        else:
+            sent_completely = False
+            if fatal_error:
+                try_again = False
+        outbound_record.sent = successfully_sent
+        outbound_record.try_again = try_again
+        outbound_record.number_of_attempts += 1
+        outbound_record.save()
+        #Also here comes what should be any priorization on the channels
+        #that I'm not workin on right now and it should send to all of them
+        #should I have another state "partly sent"? or is it enough when I say "ready"?
+        if sent_completely:
+            self.status = "sent"
+            self.save()
+        MessageRecord.objects.create(content_object= self, status=self.status)
+
+
+def create_a_message_record(sender,instance, created, **kwargs):
+    outbound_message = instance
+    if created:
+        MessageRecord.objects.create(content_object= outbound_message, status=outbound_message.status)
+post_save.connect(create_a_message_record, sender=OutboundMessage)
+
+
+class OutboundMessagePluginRecord(models.Model):
+    outbound_message = models.ForeignKey(OutboundMessage)
+    plugin = models.ForeignKey(Plugin)
+    sent = models.BooleanField()
+    number_of_attempts = models.PositiveIntegerField(default=0)
+    try_again = models.BooleanField(default=True)

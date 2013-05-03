@@ -15,24 +15,27 @@ class MailChannel(OutputPlugin):
 
     contact_type = property(get_contact_type)
 
-    def send(self, message):
+    def send(self, outbound_message):
+        #Here there should be somewhere the contacts
         contact_type = self.contact_type
 
         try:
-            template = message.writeitinstance.mailit_template
-        except:
-            return False
+            template = outbound_message.message.writeitinstance.mailit_template
 
-        outbound_messages = message.outboundmessage_set.filter(contact__contact_type=contact_type)
-        for outbound_message in outbound_messages:
-            format = {
-                'subject':message.subject,
-                'content':message.content,
-                'person':outbound_message.contact.person.name
-            }
-            subject = template.subject_template % format
-            content = template.content_template % format
-            send_mail(subject, content, settings.DEFAULT_FROM_EMAIL,[outbound_message.contact.value], fail_silently=False)
+        except:
+            return False, False
+
+        format = {
+            'subject':outbound_message.message.subject,
+            'content':outbound_message.message.content,
+            'person':outbound_message.contact.person.name
+        }
+        subject = template.subject_template % format
+        content = template.content_template % format
+
+        #here there should be a try and except looking
+        #for errors and stuff
+        send_mail(subject, content, settings.DEFAULT_FROM_EMAIL,[outbound_message.contact.value], fail_silently=False)
             
-        return True
+        return (True,None)
 
