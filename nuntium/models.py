@@ -7,6 +7,7 @@ from contactos.models import Contact
 from nuntium.plugins import OutputPlugin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
+from django.contrib.auth.models import User
 import datetime
 from djangoplugins.models import Plugin
 
@@ -169,3 +170,10 @@ class OutboundMessagePluginRecord(models.Model):
     sent = models.BooleanField()
     number_of_attempts = models.PositiveIntegerField(default=0)
     try_again = models.BooleanField(default=True)
+
+
+class Confirmation(models.Model):
+    message = models.ForeignKey(Message)
+    key = models.CharField(max_length=64, default=User.objects.make_random_password(32), unique=True)
+    created = models.DateField(default=datetime.datetime.now())
+    confirmated_at = models.DateField(default=None, null=True)
