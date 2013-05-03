@@ -86,6 +86,8 @@ class InstanceDetailView(TestCase):
         data = {
         'subject':u'Fiera no está',
         'content':u'¿Dónde está Fiera Feroz? en la playa?',
+        'author_name':u"Felipe",
+        'author_email':u"falvarez@votainteligente.cl",
         'persons': [self.person1.id]
         }
         url = reverse('instance_detail', kwargs={

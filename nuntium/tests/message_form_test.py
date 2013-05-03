@@ -2,9 +2,10 @@
 from global_test_case import GlobalTestCase as TestCase
 from popit.models import Person, ApiInstance
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, WriteItInstance, OutboundMessage
+from nuntium.models import Message, Confirmation, WriteItInstance, OutboundMessage
 from nuntium.forms import MessageCreateForm, PersonMultipleChoiceField
 from django.forms import ValidationError,CheckboxSelectMultiple
+
 
 class PersonMultipleChoiceFieldTestCase(TestCase):
     def setUp(self):
@@ -31,11 +32,22 @@ class MessageFormTestCase(TestCase):
         self.person1 = Person.objects.all()[0]
         self.contact1 = Contact.objects.all()[0]
 
+
+    def test_form_fields(self):
+        form = MessageCreateForm(writeitinstance = self.writeitinstance1)
+        self.assertTrue("persons" in form.fields)
+        self.assertTrue("subject" in form.fields)
+        self.assertTrue("content" in form.fields)
+        self.assertTrue("author_name" in form.fields)
+        self.assertTrue("author_email" in form.fields)
+
     def test_create_form(self):
         #spanish
         data = {
         'subject':u'Fiera no está',
         'content':u'¿Dónde está Fiera Feroz? en la playa?',
+        'author_name':u"Felipe",
+        'author_email':u"falvarez@votainteligente.cl",
         'persons': [self.person1.id]
         }
 
@@ -68,6 +80,8 @@ class MessageFormTestCase(TestCase):
         data = {
         'subject':u'Fiera no está',
         'content':u'¿Dónde está Fiera Feroz? en la playa?',
+        'author_name':u"Felipe",
+        'author_email':u"falvarez@votainteligente.cl",
         'persons': [self.person1.id]
         }
         form = MessageCreateForm(data, writeitinstance=self.writeitinstance1)
@@ -75,15 +89,38 @@ class MessageFormTestCase(TestCase):
         self.assertTrue(form.is_valid())
         form.save()
 
-        new_messages = Message.objects.filter(subject=data['subject'], content=data['content'])
-        new_outbound_messages= OutboundMessage.objects.filter(message=new_messages[0])
-        self.assertEquals(new_messages.count(),1)
-        self.assertEquals(new_messages[0].subject, data['subject'])
-        self.assertEquals(new_messages[0].content, data['content'])
-        self.assertEquals(new_messages[0].writeitinstance, self.writeitinstance1)
+        new_message = Message.objects.get(subject=data['subject'], content=data['content'])
+
+        new_outbound_messages= OutboundMessage.objects.filter(message=new_message)
+        self.assertEquals(new_message.subject, data['subject'])
+        self.assertEquals(new_message.content, data['content'])
+        self.assertEquals(new_message.writeitinstance, self.writeitinstance1)
         self.assertEquals(new_outbound_messages.count(),1)
         self.assertEquals(new_outbound_messages[0].contact, self.contact1)
-        self.assertEquals(new_outbound_messages[0].message, new_messages[0])
+        self.assertEquals(new_outbound_messages[0].message, new_message)
+        self.assertEquals(new_outbound_messages[0].status, "new")
+
+
+    def test_it_creates_a_confirmation(self):
+        #spanish
+        data = {
+        'subject':u'Amor a la fiera',
+        'content':u'Todos sabemos que quieres mucho a la Fiera pero... es verdad?',
+        'author_name':u"Felipe",
+        'author_email':u"falvarez@votainteligente.cl",
+        'persons': [self.person1.id]
+        }
+        form = MessageCreateForm(data, writeitinstance=self.writeitinstance1)
+        form.full_clean()
+        self.assertTrue(form.is_valid())
+        form.save()
+
+        new_message = Message.objects.get(subject=data['subject'], content=data['content'])
+        confirmation = Confirmation.objects.get(message=new_message)
+
+
+        self.assertEquals(len(confirmation.key.strip()),32)
+        self.assertTrue(confirmation.confirmated_at is None)
 
 
     #there should be a test to prove that it does something when like sending 

@@ -51,7 +51,7 @@ class MessageRecordTestCase(TestCase):
         self.assertEquals(the_records.count(), 2) #the message has been created
 
         the_record = the_records[0]
-        self.assertEquals(the_record.status, "ready")
+        self.assertEquals(the_record.status, "new")
 
         #TODO: The default status should be new but for now because we don't yet have the confirmation email 
         #flow it is going to be ready
