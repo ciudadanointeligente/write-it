@@ -14,6 +14,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
+import uuid
 
 
 
@@ -178,7 +179,7 @@ class OutboundMessagePluginRecord(models.Model):
 
 class Confirmation(models.Model):
     message = models.OneToOneField(Message)
-    key = models.CharField(max_length=64, default=User.objects.make_random_password(32), unique=True)
+    key = models.CharField(max_length=64, default=str(uuid.uuid1().hex), unique=True)
     created = models.DateField(default=datetime.datetime.now())
     confirmated_at = models.DateField(default=None, null=True)
 
