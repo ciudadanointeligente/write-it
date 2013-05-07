@@ -20,3 +20,17 @@ class PluginsStructure(TestCase):
 
 
         self.assertTrue("mental-message" in plugin_names)
+
+
+class OutputPluginTestCase(TestCase):
+	def setUp(self):
+		pass
+
+	def test_it_returns_contact_type(self):
+		plugin = OutputPlugin()
+		plugin.name = "name"
+		plugin.title = "The title thing"
+		contact_type = plugin.get_contact_type()
+
+		self.assertEquals(contact_type.name, plugin.name)
+		self.assertEquals(contact_type.label_name, plugin.title)

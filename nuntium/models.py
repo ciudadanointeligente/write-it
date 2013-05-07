@@ -14,6 +14,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
+import uuid
 
 
 
@@ -128,18 +129,27 @@ class OutboundMessage(models.Model):
         }
 	
     def send(self):
+
         if self.status == "sent":
             return
         plugins = OutputPlugin.get_plugins()
         sent_completely = True
+
         #This is not the way it should be done
         #there should be some way to get the plugin from a contact_type
+        outbound_message_plugin = None
         for plugin in plugins:
             if self.contact.contact_type == plugin.get_contact_type():
+                outbound_message_plugin = plugin
                 break
         outbound_record, created = OutboundMessagePluginRecord.objects.get_or_create(outbound_message=self, plugin=plugin.get_model())
+
         if not outbound_record.try_again:
             return
+
+        if outbound_message_plugin is None:
+            return
+
         successfully_sent, fatal_error = plugin.send(self)
         try_again = True
         if successfully_sent:
@@ -178,7 +188,7 @@ class OutboundMessagePluginRecord(models.Model):
 
 class Confirmation(models.Model):
     message = models.OneToOneField(Message)
-    key = models.CharField(max_length=64, default=User.objects.make_random_password(32), unique=True)
+    key = models.CharField(max_length=64, default=str(uuid.uuid1().hex), unique=True)
     created = models.DateField(default=datetime.datetime.now())
     confirmated_at = models.DateField(default=None, null=True)
 
