@@ -28,7 +28,8 @@ class MailChannel(OutputPlugin):
         format = {
             'subject':outbound_message.message.subject,
             'content':outbound_message.message.content,
-            'person':outbound_message.contact.person.name
+            'person':outbound_message.contact.person.name,
+            'author':outbound_message.message.author_name
         }
         subject = template.subject_template % format
         content = template.content_template % format
