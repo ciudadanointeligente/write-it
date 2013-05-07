@@ -2,7 +2,7 @@ from django.db.models.signals import post_save
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
-from popit.models import ApiInstance
+from popit.models import Person
 from contactos.models import Contact
 from nuntium.plugins import OutputPlugin
 from django.contrib.contenttypes.models import ContentType
@@ -30,11 +30,11 @@ class MessageManager(models.Manager):
                 outbound_message = OutboundMessage.objects.create(contact=contact, message=message)
         return message
 
-		
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
     name = models.CharField(max_length=255)
     slug = models.CharField(max_length=255)
+    persons = models.ManyToManyField(Person, related_name='writeit_instances', through='Membership')
 
     @models.permalink
     def get_absolute_url(self):
@@ -42,6 +42,10 @@ class WriteItInstance(models.Model):
 
     def __unicode__(self):
         return self.name
+
+class Membership(models.Model):
+    person = models.ForeignKey(Person)
+    writeitinstance = models.ForeignKey(WriteItInstance)
 
 class MessageRecord(models.Model):
     status = models.CharField(max_length=255)

@@ -34,6 +34,9 @@
 - fields: {api_instance: 2, name: Felipe, popit_url: ''}
   model: popit.person
   pk: 3
+- fields: {person: 1, writeitinstance: 1}
+  model: nuntium.membership
+  pk: 1
 - fields: {label_name: Electronic Mail, name: e-mail}
   model: contactos.contacttype
   pk: 1

@@ -1,7 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
 from django.core.urlresolvers import reverse
-from nuntium.models import WriteItInstance, Message
+from nuntium.models import WriteItInstance, Message, Membership
 from nuntium.views import MessageCreateForm
 from contactos.models import Contact, ContactType
 from popit.models import ApiInstance, Person
@@ -43,6 +43,14 @@ class InstanceTestCase(TestCase):
             })
 
         self.assertEquals(expected_url, writeitinstance1.get_absolute_url())
+
+
+    def test_membership(self):
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1')
+
+        Membership.objects.create(writeitinstance=writeitinstance, person=self.person1)
+        self.assertEquals(writeitinstance.persons.get(id=self.person1.id), self.person1)
+        self.assertEquals(self.person1.writeit_instances.get(id=writeitinstance.id), writeitinstance)
 
 class InstanceDetailView(TestCase):
     def setUp(self):
