@@ -8,6 +8,7 @@ from django.core import mail
 from plugin_mock.mental_message_plugin import MentalMessage
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
+from django.utils.unittest import skip
 
 
 class ConfirmationTestCase(TestCase):
@@ -21,8 +22,15 @@ class ConfirmationTestCase(TestCase):
 
         self.message = Message.objects.create(content = 'hello there', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Wow!',
          writeitinstance= self.writeitinstance1, persons = [felipe])
+        self.message2 = Message.objects.create(content = 'hello there', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Wow!',
+         writeitinstance= self.writeitinstance1, persons = [self.Marcel])
 
-    def test_creation(self):
+    def test_instanciate(self):
+        confirmation = Confirmation(message=self.message)
+        self.assertTrue(confirmation)
+        self.assertEquals(len(confirmation.key.strip()),0)
+
+    def test_creation_and_save(self):
         confirmation = Confirmation.objects.create(message=self.message)
 
         self.assertTrue(confirmation)
@@ -30,6 +38,21 @@ class ConfirmationTestCase(TestCase):
         self.assertEquals(len(confirmation.key.strip()),32)
         self.assertTrue(isinstance(confirmation.created,datetime))
         self.assertTrue(confirmation.confirmated_at is None)
+
+    def test_confirmation_has_a_key_generator(self):
+        key1 = Confirmation.key_generator()
+        key2 = Confirmation.key_generator()
+
+        self.assertNotEquals(key1, key2)
+
+    def test_duplication(self):
+        #Serioulsly I'm getting to many times Duplicate entry for key 'key'
+        confirmation1 = Confirmation.objects.create(message=self.message)
+        confirmation2 = Confirmation.objects.create(message=self.message2)
+
+
+        self.assertNotEquals(confirmation1.key, confirmation2.key)
+
 
     def test_it_sends_an_email_to_the_author_asking_for_confirmation(self):
         confirmation = Confirmation.objects.create(message=self.message)
@@ -54,6 +77,7 @@ class ConfirmationTestCase(TestCase):
             'slug':confirmation.key
             })
         response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'nuntium/confirm.html')
 
         confirmation = Confirmation.objects.get(id=confirmation.id)

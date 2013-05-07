@@ -188,9 +188,22 @@ class OutboundMessagePluginRecord(models.Model):
 
 class Confirmation(models.Model):
     message = models.OneToOneField(Message)
-    key = models.CharField(max_length=64, default=str(uuid.uuid1().hex), unique=True)
+    key = models.CharField(max_length=64, unique=True)
     created = models.DateField(default=datetime.datetime.now())
     confirmated_at = models.DateField(default=None, null=True)
+
+#, default=str(uuid.uuid1().hex)
+
+    def save(self, *args, **kwargs):
+        if not self.key:
+            self.key = str(uuid.uuid1().hex)
+        return super(Confirmation, self).save(*args, **kwargs)
+
+
+    @classmethod
+    def key_generator(cls):
+        return str(uuid.uuid1().hex)
+
 
 
 def send_an_email_to_the_author(sender,instance, created, **kwargs):
