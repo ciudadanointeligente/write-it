@@ -35,7 +35,6 @@ class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
     name = models.CharField(max_length=255)
     slug = models.CharField(max_length=255)
-    api_instance = models.ForeignKey(ApiInstance)
 
     @models.permalink
     def get_absolute_url(self):

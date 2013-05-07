@@ -1,7 +1,7 @@
-- fields: {api_instance: 1, name: instance 1, slug: instance-1}
+- fields: {name: instance 1, slug: instance-1}
   model: nuntium.writeitinstance
   pk: 1
-- fields: {api_instance: 2, name: instance 2, slug: instance-2}
+- fields: {name: instance 2, slug: instance-2}
   model: nuntium.writeitinstance
   pk: 2
 - fields: {content_type: 13, datetime: 2013-04-26, object_id: 1, status: new}
