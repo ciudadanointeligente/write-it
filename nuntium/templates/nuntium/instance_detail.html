@@ -2,10 +2,49 @@
 {% load i18n %}
 {% block content %}
 
-<h1>{% trans "You can now write your question" %}</h1>
-<form method='post'>
+<h2>{% trans "You can now write your question" %}</h2>
+<form method='post' class='form-horizontal'>
 {% csrf_token %}
-{{ form.as_p }}
-<input type='submit' class='btn' value= "{% trans 'Submit Message' %}"/>
+{{ form.non_field_errors }}
+	<div class="fieldWrapper">
+        {{ form.author_name.errors }}
+        <label for="id_author_name">{% trans "Your name *" %}</label>
+        {{ form.author_name }}
+    </div>
+    <div class="fieldWrapper">
+        {{ form.author_email.errors }}
+        <label for="id_author_email">{% trans "Your email *" %}</label>
+        {{ form.author_email }}
+    </div>
+    <div class="fieldWrapper">
+        {{ form.persons.errors }}
+        <label for="id_persons">{% trans "To whom *" %}</label>
+        {{ form.persons }}
+    </div>
+    <div class="fieldWrapper">
+        {{ form.subject.errors }}
+        <label for="id_subject">{% trans "Subject *" %}</label>
+        {{ form.subject }}
+    </div>
+    <div class="fieldWrapper">
+        {{ form.content.errors }}
+        <label for="id_content">{% trans "Content *" %}</label>
+        {{ form.content }}
+    </div>
+    
+<input type='submit' class='btn btn-primary' value= "{% trans 'Submit Message' %}"/>
 </form>
+<h2>{% trans "Messages" %}</h2>
+<dl class="dl-horizontal">
+{% for message in writeitinstance.message_set.all %}
+<div>
+	<h3>{{ message.subject }}</h3>
+	<h4>{{ message.content }}</h4>
+	<span class="author_name"><small>{% trans 'Asked by' %} {{ message.author_name }}</small></span><br />
+</div>
+{% if not forloop.last %}
+<hr />
+{% endif %}
+{% endfor %}
+</dl>
 {% endblock content%}

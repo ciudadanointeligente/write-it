@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Le styles -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
@@ -23,9 +24,15 @@
 
     
 
-    <div class="container">
-	{% block content %}
-	{% endblock content%}
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span3">
+        <!--Sidebar content-->
+      </div>
+      <div class="span9">
+      	{% block content %}
+      	{% endblock content%}
+      </div>
       
 
     </div> <!-- /container -->
