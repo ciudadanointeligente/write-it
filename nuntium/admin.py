@@ -1,5 +1,5 @@
 from django.contrib import admin
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord
+from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, Answer
 from popit.models import ApiInstance, Person
 from contactos.models import Contact, ContactType
 
@@ -16,8 +16,13 @@ class WriteItInstanceAdmin(admin.ModelAdmin):
     exclude = ('persons',)
 admin.site.register(WriteItInstance, WriteItInstanceAdmin)
 
+class AnswerInline(admin.TabularInline):
+    model = Answer
+
 class MessageAdmin(admin.ModelAdmin):
-    pass
+    inlines = [
+        AnswerInline
+    ]
 admin.site.register(Message, MessageAdmin)
 
 class OutboundMessageAdmin(admin.ModelAdmin):
