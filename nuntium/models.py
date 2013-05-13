@@ -98,6 +98,12 @@ class Message(models.Model):
             'instance':self.writeitinstance.name
             }
 
+class Answer(models.Model):
+    content = models.TextField()
+    person = models.ForeignKey(Person)
+    message = models.ForeignKey(Message)
+    created = models.DateField(default=datetime.datetime.now())
+
 
 class OutboundMessageManager(models.Manager):
     def to_send(self, *args, **kwargs):
