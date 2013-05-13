@@ -105,6 +105,14 @@ class Answer(models.Model):
     created = models.DateField(default=datetime.datetime.now())
 
 
+    def __unicode__(self):
+        return _("%(person)s said \"%(content)s\" to the message %(message)s") % {
+            'person': self.person.name,
+            'content': "the answer to that is ...",
+            'message': self.message.subject
+            }
+
+
 class OutboundMessageManager(models.Manager):
     def to_send(self, *args, **kwargs):
         query = super(OutboundMessageManager, self).filter(*args, **kwargs)
