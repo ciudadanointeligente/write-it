@@ -201,8 +201,6 @@ class Confirmation(models.Model):
     created = models.DateField(default=datetime.datetime.now())
     confirmated_at = models.DateField(default=None, null=True)
 
-#, default=str(uuid.uuid1().hex)
-
     def save(self, *args, **kwargs):
         if not self.key:
             self.key = str(uuid.uuid1().hex)
