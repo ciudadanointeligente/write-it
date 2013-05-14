@@ -104,6 +104,17 @@ class Answer(models.Model):
     message = models.ForeignKey(Message)
     created = models.DateField(default=datetime.datetime.now())
 
+    def __init__(self, *args, **kwargs):
+        super(Answer, self).__init__(*args, **kwargs)
+
+
+    def save(self, *args, **kwargs):
+        memberships = self.message.writeitinstance.membership_set.filter(person=self.person)
+        if memberships.count() == 0:
+            raise AttributeError(_("This guy does not belong here"))
+
+
+
 
     def __unicode__(self):
         return _("%(person)s said \"%(content)s\" to the message %(message)s") % {
