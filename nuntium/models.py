@@ -17,19 +17,6 @@ from django.contrib.sites.models import Site
 import uuid
 
 
-
-class MessageManager(models.Manager):
-    def create(self, **kwargs):
-        if 'persons' in kwargs:
-            persons = kwargs.pop('persons')
-        else:
-            raise TypeError('A message needs persons to be sent')
-        message = super(MessageManager, self).create(**kwargs)
-        for person in persons:
-            for contact in person.contact_set.all():
-                outbound_message = OutboundMessage.objects.create(contact=contact, message=message)
-        return message
-
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
     name = models.CharField(max_length=255)
@@ -72,11 +59,6 @@ class Message(models.Model):
     content = models.TextField()
     writeitinstance = models.ForeignKey(WriteItInstance)
 
-    objects = MessageManager()
-
-
-
-
     def __init__(self, *args, **kwargs):
         self.persons = None
         if 'persons' in kwargs:
@@ -85,12 +67,11 @@ class Message(models.Model):
 
 
     def save(self, *args, **kwargs):
-
         super(Message, self).save(*args, **kwargs)
         if self.persons:
             for person in self.persons:
                 for contact in person.contact_set.all():
-                    outbound_message = OutboundMessage.objects.create(contact=contact, message=self)
+                    outbound_message = OutboundMessage.objects.get_or_create(contact=contact, message=self)
 
     def __unicode__(self):
         return _('%(subject)s at %(instance)s') % {

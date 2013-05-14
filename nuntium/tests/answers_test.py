@@ -49,7 +49,3 @@ class AnswerTestCase(TestCase):
 			Answer.objects.create(message=self.message, \
 				person=self.person_not_in_the_instance, \
 				content="the answer to that is ...")
-
-
-
-		
