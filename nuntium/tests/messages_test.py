@@ -107,6 +107,12 @@ class MessageDetailView(TestCase):
         url = reverse('message_detail', kwargs={'slug':self.message.slug})
         self.assertTrue(url)
 
+        response = self.client.get(url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.context['message'], self.message)
+        
+
 
     
 
