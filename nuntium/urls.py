@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', HomeTemplateView.as_view(template_name='home.html'), name='home'),
     url(r'^instances/(?P<slug>[-\w]+)/?$', WriteItInstanceDetailView.as_view(), name = 'instance_detail'),
+    url(r'^messages/(?P<slug>[-\w]+)/?$', HomeTemplateView.as_view(template_name='home.html'), name = 'message_detail'),
     
     # url(r'^writeit/', include('writeit.foo.urls')),
 
