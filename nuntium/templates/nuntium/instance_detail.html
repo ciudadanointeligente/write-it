@@ -36,9 +36,10 @@
 </form>
 <h2>{% trans "Messages" %}</h2>
 <dl class="dl-horizontal">
+
 {% for message in writeitinstance.message_set.all %}
 <div>
-	<h3>{{ message.subject }}</h3>
+	<h3>{{ message.subject }}</h3> <a href="{% url 'message_detail' slug=message.slug %}">{% trans "Link" %}</a>
 	<h4>{{ message.content }}</h4>
 	<span class="author_name"><small>{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}</small></span><br />
     {% if message.answer_set.count > 0 %}
