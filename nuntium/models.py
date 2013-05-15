@@ -15,6 +15,8 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
 import uuid
+from django.template.defaultfilters import slugify
+import re
 
 
 class WriteItInstance(models.Model):
@@ -58,6 +60,7 @@ class Message(models.Model):
     subject = models.CharField(max_length=512)
     content = models.TextField()
     writeitinstance = models.ForeignKey(WriteItInstance)
+    slug = models.CharField(max_length=512)
 
     def __init__(self, *args, **kwargs):
         self.persons = None
@@ -67,6 +70,13 @@ class Message(models.Model):
 
 
     def save(self, *args, **kwargs):
+
+        if self.id is None:
+            self.slug = slugify(self.subject)
+            #Previously created messages with the same slug
+            previously = Message.objects.filter(subject=self.subject).count()
+            if previously > 0:
+                self.slug = self.slug + '-' + str(previously + 1)
         super(Message, self).save(*args, **kwargs)
         if self.persons:
             for person in self.persons:
@@ -95,6 +105,7 @@ class Answer(models.Model):
         memberships = self.message.writeitinstance.membership_set.filter(person=self.person)
         if memberships.count() == 0:
             raise AttributeError(_("This guy does not belong here"))
+        super(Answer, self).save(*args, **kwargs)
 
 
 

@@ -33,7 +33,7 @@ class ConfirmationTestCase(TestCase):
     def test_creation_and_save(self):
         confirmation = Confirmation.objects.create(message=self.message)
 
-        self.assertTrue(confirmation)
+        self.assertTrue(confirmation.id)
         self.assertEquals(confirmation.message, self.message)
         self.assertEquals(len(confirmation.key.strip()),32)
         self.assertTrue(isinstance(confirmation.created,datetime))

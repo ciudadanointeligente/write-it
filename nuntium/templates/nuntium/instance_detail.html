@@ -34,17 +34,35 @@
     
 <input type='submit' class='btn btn-primary' value= "{% trans 'Submit Message' %}"/>
 </form>
-<h2>{% trans "Messages" %}</h2>
-<dl class="dl-horizontal">
-{% for message in writeitinstance.message_set.all %}
-<div>
-	<h3>{{ message.subject }}</h3>
-	<h4>{{ message.content }}</h4>
-	<span class="author_name"><small>{% trans 'Asked by' %} {{ message.author_name }}</small></span><br />
-</div>
-{% if not forloop.last %}
-<hr />
+{% if writeitinstance.message_set.count == 0 %}
+    <h2>{% trans "There are no messages" %}</h2>
+{% else %}
+
+    <h2>{% trans "Messages" %}</h2>
+    <dl class="dl-horizontal">
+
+    {% for message in writeitinstance.message_set.all %}
+    <div>
+    	<h3>{{ message.subject }} <a href="{% url 'message_detail' slug=message.slug %}">{% trans "Link" %}</a></h3> 
+    	<h4>{{ message.content }}</h4>
+    	<span class="author_name"><small>{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}</small></span><br />
+        {% if message.answer_set.count > 0 %}
+        <div class="answers">
+            <h4>{% trans "Answers" %}</h4>
+            {% for answer in message.answer_set.all %}
+            <div class="answer">
+                <span class="content">{{ answer.content }} </span>
+                <small>{% blocktrans with answer.person.name as name %} by {{ name }}.{% endblocktrans %}</small>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    </dl>
+        {% if not forloop.last %}
+            <hr />
+        {% endif %}
+    {% endfor %}
 {% endif %}
-{% endfor %}
-</dl>
+
 {% endblock content%}
