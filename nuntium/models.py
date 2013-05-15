@@ -72,6 +72,8 @@ class Message(models.Model):
             for person in self.persons:
                 for contact in person.contact_set.all():
                     outbound_message = OutboundMessage.objects.get_or_create(contact=contact, message=self)
+        else:
+            raise TypeError(_('A message needs persons to be sent'))
 
     def __unicode__(self):
         return _('%(subject)s at %(instance)s') % {
