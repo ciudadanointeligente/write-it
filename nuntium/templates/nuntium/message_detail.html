@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+<h1>{{ message.subject }}</h1>
+<h2>{{ message.content }}</h2>
+<span class="author_name">
+	<small>
+		{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}
+	</small>
+</span><br />
+{% for answer in message.answer_set.all %}
+<div class="answers">
+    <h4>{% trans "Answers" %}</h4>
+    {% for answer in message.answer_set.all %}
+    <div class="answer">
+        <span class="content">{{ answer.content }} </span>
+        <small>{% blocktrans with answer.person.name as name %} by {{ name }}.{% endblocktrans %}</small>
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+
+
+<div class="getbacktotheinstance"> <a href="{% url 'instance_detail' message.writeitinstance.slug %}">< {% blocktrans %} Get back to the messages.{% endblocktrans %} </a></div>
+{% endblock %}

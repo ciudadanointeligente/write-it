@@ -7,10 +7,10 @@
 - fields: {content_type: 13, datetime: 2013-04-26, object_id: 1, status: new}
   model: nuntium.messagerecord
   pk: 1
-- fields: {content: Content 1, subject: Subject 1, writeitinstance: 1}
+- fields: {content: Content 1, subject: Subject 1, writeitinstance: 1, slug: subject-1 }
   model: nuntium.message
   pk: 1
-- fields: {content: Content 2, subject: Subject 2, writeitinstance: 1}
+- fields: {content: Content 2, subject: Subject 2, writeitinstance: 1, slug: subject-2}
   model: nuntium.message
   pk: 2
 - fields: {contact: 1, message: 1}
