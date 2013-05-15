@@ -22,6 +22,10 @@ admin.site.register(WriteItInstance, WriteItInstanceAdmin)
 #     def __init__(self, *args, **kwargs):
 #         super(AnswerInlineFormset, self).__init__(*args, **kwargs)
 
+class AnswerAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Answer, AnswerAdmin)
 
 
 class AnswerInline(admin.TabularInline):
@@ -29,6 +33,7 @@ class AnswerInline(admin.TabularInline):
     # formset = AnswerInlineFormset
 
 class MessageAdmin(admin.ModelAdmin):
+    exclude = ('slug', )
     inlines = [
         AnswerInline
     ]

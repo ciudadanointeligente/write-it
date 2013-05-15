@@ -18,7 +18,7 @@ class InstanceTestCase(TestCase):
 
     def test_create_instance(self):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1')
-        self.assertTrue(writeitinstance)
+        self.assertTrue(writeitinstance.id)
 
     def test_instance_unicode(self):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1')
