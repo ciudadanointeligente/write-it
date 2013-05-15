@@ -60,6 +60,24 @@ class TestMessages(TestCase):
         self.assertEquals(message3.slug, slugify(message3.subject)+"-3")
 
 
+    def test_resave_a_message_should_not_change_slug(self):
+        #There are a lot of good solutions for this problem but this
+        #is the easyest one
+        message1 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Same subject hey', 
+            writeitinstance= self.writeitinstance1, 
+            persons = [self.person1])
+        previous_slug = message1.slug
+        #message1 now has a slug
+        message1.subject = 'Some other subject and stuff'
+        message1.save()
+
+        self.assertEquals(message1.slug, previous_slug)
+
+
+
 
     def test_message_unicode(self):
         message = Message.objects.create(content = 'Content 1', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])
@@ -111,7 +129,7 @@ class MessageDetailView(TestCase):
 
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.context['message'], self.message)
-        
+
 
 
     
