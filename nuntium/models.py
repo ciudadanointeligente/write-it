@@ -17,19 +17,6 @@ from django.contrib.sites.models import Site
 import uuid
 
 
-
-class MessageManager(models.Manager):
-    def create(self, **kwargs):
-        if 'persons' in kwargs:
-            persons = kwargs.pop('persons')
-        else:
-            raise TypeError('A message needs persons to be sent')
-        message = super(MessageManager, self).create(**kwargs)
-        for person in persons:
-            for contact in person.contact_set.all():
-                outbound_message = OutboundMessage.objects.create(contact=contact, message=message)
-        return message
-
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
     name = models.CharField(max_length=255)
@@ -72,11 +59,6 @@ class Message(models.Model):
     content = models.TextField()
     writeitinstance = models.ForeignKey(WriteItInstance)
 
-    objects = MessageManager()
-
-
-
-
     def __init__(self, *args, **kwargs):
         self.persons = None
         if 'persons' in kwargs:
@@ -85,17 +67,43 @@ class Message(models.Model):
 
 
     def save(self, *args, **kwargs):
-
         super(Message, self).save(*args, **kwargs)
         if self.persons:
             for person in self.persons:
                 for contact in person.contact_set.all():
-                    outbound_message = OutboundMessage.objects.create(contact=contact, message=self)
+                    outbound_message = OutboundMessage.objects.get_or_create(contact=contact, message=self)
+        else:
+            raise TypeError(_('A message needs persons to be sent'))
 
     def __unicode__(self):
         return _('%(subject)s at %(instance)s') % {
             'subject':self.subject,
             'instance':self.writeitinstance.name
+            }
+
+class Answer(models.Model):
+    content = models.TextField()
+    person = models.ForeignKey(Person)
+    message = models.ForeignKey(Message)
+    created = models.DateField(default=datetime.datetime.now())
+
+    def __init__(self, *args, **kwargs):
+        super(Answer, self).__init__(*args, **kwargs)
+
+
+    def save(self, *args, **kwargs):
+        memberships = self.message.writeitinstance.membership_set.filter(person=self.person)
+        if memberships.count() == 0:
+            raise AttributeError(_("This guy does not belong here"))
+
+
+
+
+    def __unicode__(self):
+        return _("%(person)s said \"%(content)s\" to the message %(message)s") % {
+            'person': self.person.name,
+            'content': "the answer to that is ...",
+            'message': self.message.subject
             }
 
 
@@ -194,8 +202,6 @@ class Confirmation(models.Model):
     key = models.CharField(max_length=64, unique=True)
     created = models.DateField(default=datetime.datetime.now())
     confirmated_at = models.DateField(default=None, null=True)
-
-#, default=str(uuid.uuid1().hex)
 
     def save(self, *args, **kwargs):
         if not self.key:
