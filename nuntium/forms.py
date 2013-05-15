@@ -33,11 +33,9 @@ class MessageCreateForm(ModelForm):
         message = super(MessageCreateForm, self).save(commit=False)
         message.writeitinstance = self.writeitinstance
         if commit:
-            message.save()
             persons = self.cleaned_data['persons']
-            for person in persons:
-                for contact in person.contact_set.all():
-                    OutboundMessage.objects.create(contact=contact, message=message)
+            message.persons = persons
+            message.save()
         #I know I have to move the previous code
 
 
