@@ -47,11 +47,9 @@ class TestMessages(TestCase):
         self.assertEquals(OutboundMessage.objects.filter(message=message).count(), 1)
 
     def test_it_raises_typeerror_when_no_contacts_are_present(self):
-
-        try:
+        with self.assertRaises(TypeError):
             Message.objects.create(content = 'Content 1', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Subject 1', writeitinstance= self.writeitinstance1)
-        except TypeError as error:
-            self.assertEquals(str(error),'A message needs persons to be sent')
+    
 
 
 
