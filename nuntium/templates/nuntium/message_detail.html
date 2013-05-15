@@ -8,7 +8,7 @@
 		{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}
 	</small>
 </span><br />
-{% for answer in message.anser_set.all %}
+{% for answer in message.answer_set.all %}
 <div class="answers">
     <h4>{% trans "Answers" %}</h4>
     {% for answer in message.answer_set.all %}
@@ -19,4 +19,7 @@
     {% endfor %}
 </div>
 {% endfor %}
+
+
+<div class="getbacktotheinstance"> <a href="{% url 'instance_detail' message.writeitinstance.slug %}">< {% blocktrans %} Get back to the messages.{% endblocktrans %} </a></div>
 {% endblock %}
