@@ -40,7 +40,18 @@
 <div>
 	<h3>{{ message.subject }}</h3>
 	<h4>{{ message.content }}</h4>
-	<span class="author_name"><small>{% trans 'Asked by' %} {{ message.author_name }}</small></span><br />
+	<span class="author_name"><small>{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}</small></span><br />
+    {% if message.answer_set.count > 0 %}
+    <div class="answers">
+        <h4>{% trans "Answers" %}</h4>
+        {% for answer in message.answer_set.all %}
+        <div class="answer">
+            <span class="content">{{ answer.content }} </span>
+            <small>{% blocktrans with answer.person.name as name %} by {{ name }}.{% endblocktrans %}</small>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 </div>
 {% if not forloop.last %}
 <hr />
