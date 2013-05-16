@@ -83,13 +83,14 @@ class Message(models.Model):
             previously = Message.objects.filter(subject=self.subject).count()
             if previously > 0:
                 self.slug = self.slug + '-' + str(previously + 1)
+
+            if not self.persons:
+                raise TypeError(_('A message needs persons to be sent'))
         super(Message, self).save(*args, **kwargs)
         if self.persons:
             for person in self.persons:
                 for contact in person.contact_set.all():
                     outbound_message = OutboundMessage.objects.get_or_create(contact=contact, message=self)
-        else:
-            raise TypeError(_('A message needs persons to be sent'))
 
     def __unicode__(self):
         return _('%(subject)s at %(instance)s') % {
