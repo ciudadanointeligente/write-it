@@ -61,6 +61,7 @@ class Message(models.Model):
     content = models.TextField()
     writeitinstance = models.ForeignKey(WriteItInstance)
     slug = models.CharField(max_length=512)
+    public = models.BooleanField(default=True)
 
     def __init__(self, *args, **kwargs):
         self.persons = None

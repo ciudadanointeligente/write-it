@@ -32,6 +32,7 @@ class TestMessages(TestCase):
         self.assertEquals(message.subject, "Fiera es una perra feroz")
         self.assertEquals(message.writeitinstance, self.writeitinstance1)
         self.assertEquals(message.slug, slugify(message.subject))
+        self.assertTrue(message.public)
 
 
     def test_update_a_message_does_not_need_persons(self):
