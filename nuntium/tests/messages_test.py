@@ -17,6 +17,7 @@ class TestMessages(TestCase):
         super(TestMessages,self).setUp()
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
         self.person1 = Person.objects.all()[0]
+        self.person2 = Person.objects.all()[1]
 
 
     def test_create_message(self):
@@ -77,7 +78,15 @@ class TestMessages(TestCase):
         self.assertEquals(message1.slug, previous_slug)
 
 
+    def test_a_message_has_a_people_property(self):
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Same subject hey', 
+            writeitinstance= self.writeitinstance1, 
+            persons = [self.person1, self.person2])
 
+        self.assertEquals(message.people, [self.person1, self.person2])
 
     def test_message_unicode(self):
         message = Message.objects.create(content = 'Content 1', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])
