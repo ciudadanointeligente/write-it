@@ -72,7 +72,17 @@ class InstanceDetailView(TestCase):
         self.assertTrue(response.context['form'])
         self.assertTrue(isinstance(response.context['form'],MessageCreateForm))
         self.assertEquals(response.status_code, 200)
-    
+
+    def test_list_only_public_messages(self):
+        private_message = Message.objects.create(content='Content 1', subject='a private message', writeitinstance = self.writeitinstance1, persons=[self.person1], public=False)
+        url = reverse('instance_detail', kwargs={
+            'slug':self.writeitinstance1.slug
+            })
+        response = self.client.get(url)
+        self.assertTrue(response.context['public_messages'])
+        self.assertTrue(private_message not in response.context['public_messages'])
+
+
     def test_message_creation_on_post_form(self):
 
         #spanish

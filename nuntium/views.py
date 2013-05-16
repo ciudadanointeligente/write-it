@@ -30,8 +30,15 @@ class WriteItInstanceDetailView(CreateView):
         kwargs = super(WriteItInstanceDetailView, self).get_form_kwargs()
         self.object = self.get_object()
         kwargs['writeitinstance'] = self.object
+     
         
         return kwargs
+    def get_context_data(self, **kwargs):
+        context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
+        public_messages = self.object.message_set.filter(public=True)
+
+        context['public_messages'] = public_messages
+        return context
 
 
 class ConfirmView(DetailView):
