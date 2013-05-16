@@ -72,7 +72,8 @@ class Message(models.Model):
     def people(self):
         people = []
         for outbound_message in self.outboundmessage_set.all():
-            people.append(outbound_message.contact.person)
+            if outbound_message.contact.person not in people:
+                people.append(outbound_message.contact.person)
         return people
 
     def save(self, *args, **kwargs):

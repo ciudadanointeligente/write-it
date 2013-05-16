@@ -75,6 +75,22 @@ class TestMessages(TestCase):
         self.assertEquals(message3.slug, slugify(message3.subject)+"-3")
 
 
+    def test_a_person_with_two_contacts_method_people(self):
+        contact = Contact.objects.create(person=self.person1
+            , value=u"another@contact.cl"
+            , contact_type=self.person1.contact_set.all()[0].contact_type)
+        
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Same subject hey', 
+            writeitinstance= self.writeitinstance1, 
+            persons = [self.person1])
+
+
+        self.assertEquals(message.people, [self.person1])
+
+
     def test_resave_a_message_should_not_change_slug(self):
         #There are a lot of good solutions for this problem but this
         #is the easyest one
