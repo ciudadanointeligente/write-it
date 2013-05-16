@@ -88,6 +88,7 @@ class TestMessages(TestCase):
 
         self.assertEquals(message.people, [self.person1, self.person2])
 
+
     def test_message_unicode(self):
         message = Message.objects.create(content = 'Content 1', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])
 
