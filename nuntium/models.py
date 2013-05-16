@@ -67,7 +67,13 @@ class Message(models.Model):
         if 'persons' in kwargs:
             self.persons = kwargs.pop('persons')
         super(Message, self).__init__(*args, **kwargs)
-
+        
+    @property
+    def people(self):
+        people = []
+        for outbound_message in self.outboundmessage_set.all():
+            people.append(outbound_message.contact.person)
+        return people
 
     def save(self, *args, **kwargs):
 
