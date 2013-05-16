@@ -33,6 +33,20 @@ class TestMessages(TestCase):
         self.assertEquals(message.writeitinstance, self.writeitinstance1)
         self.assertEquals(message.slug, slugify(message.subject))
 
+
+    def test_update_a_message_does_not_need_persons(self):
+        message1 = Message.objects.all()[0]
+
+        previous_people = message1.people
+
+        message1.slug = 'a-new-slug1'
+
+        message1.save()
+
+        self.assertEquals(message1.people, previous_people)
+
+
+
     def test_two_messages_with_the_same_subject_but_different_slug(self):
         message1 = Message.objects.create(content = 'Content 1', 
             author_name='Felipe', 
