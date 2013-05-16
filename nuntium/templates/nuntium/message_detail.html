@@ -8,6 +8,14 @@
 		{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}
 	</small>
 </span><br />
+<div class="sent_to">
+    {% trans 'This message was sent to' %}
+    <ul>
+        {% for person in message.people %}
+        <li>{{ person.name }}</li>
+        {% endfor %}
+    </ul>
+</div>
 {% for answer in message.answer_set.all %}
 <div class="answers">
     <h4>{% trans "Answers" %}</h4>
