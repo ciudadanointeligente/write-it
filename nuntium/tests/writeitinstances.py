@@ -80,7 +80,7 @@ class InstanceDetailView(TestCase):
             'slug':self.writeitinstance1.slug
             })
         response = self.client.get(url)
-        self.assertTrue(response.context['public_messages'])
+        self.assertTrue('public_messages' in response.context)
         self.assertTrue(private_message not in response.context['public_messages'])
 
 

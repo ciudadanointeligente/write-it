@@ -35,8 +35,7 @@ class WriteItInstanceDetailView(CreateView):
         return kwargs
     def get_context_data(self, **kwargs):
         context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
-        public_messages = self.object.message_set.filter(public=True)
-
+        public_messages = self.object.message_set.filter(public=True).exclude(confirmation__confirmated_at=None)
         context['public_messages'] = public_messages
         return context
 
