@@ -1,10 +1,11 @@
 # Create your views here.
 from django.views.generic import TemplateView, CreateView, DetailView
 from django.core.urlresolvers import reverse
-from nuntium.models import WriteItInstance, Confirmation, OutboundMessage
+from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message
 from nuntium.forms import MessageCreateForm
 from datetime import datetime
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 
 
 
@@ -30,9 +31,25 @@ class WriteItInstanceDetailView(CreateView):
         kwargs = super(WriteItInstanceDetailView, self).get_form_kwargs()
         self.object = self.get_object()
         kwargs['writeitinstance'] = self.object
+     
         
         return kwargs
+    def get_context_data(self, **kwargs):
+        context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
+        public_messages = self.object.message_set.filter(public=True).exclude(confirmation__confirmated_at=None)
+        context['public_messages'] = public_messages
+        return context
 
+class MessageDetailView(DetailView):
+    template_name='nuntium/message_detail.html'
+    model=Message
+
+    def get_queryset(self):
+        #get_object_or_404(Message, slug__iexact=self.kwargs['slug'])
+        qs = Message.objects.filter(slug__iexact=self.kwargs['slug'])
+        if not qs[0].confirmation.is_confirmed:
+            raise Http404
+        return qs
 
 class ConfirmView(DetailView):
     template_name='nuntium/confirm.html'

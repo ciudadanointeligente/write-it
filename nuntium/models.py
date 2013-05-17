@@ -10,7 +10,10 @@ from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
 import datetime
 from djangoplugins.models import Plugin
-from django.core.mail import send_mail
+from django.core.mail import send_mail #Remove this when emailMultiAlternatives works
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template import Context
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
@@ -61,6 +64,7 @@ class Message(models.Model):
     content = models.TextField()
     writeitinstance = models.ForeignKey(WriteItInstance)
     slug = models.CharField(max_length=512)
+    public = models.BooleanField(default=True)
 
     def __init__(self, *args, **kwargs):
         self.persons = None
@@ -72,8 +76,13 @@ class Message(models.Model):
     def people(self):
         people = []
         for outbound_message in self.outboundmessage_set.all():
-            people.append(outbound_message.contact.person)
+            if outbound_message.contact.person not in people:
+                people.append(outbound_message.contact.person)
         return people
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('message_detail', (), {'slug': self.slug})
 
     def save(self, *args, **kwargs):
 
@@ -83,13 +92,14 @@ class Message(models.Model):
             previously = Message.objects.filter(subject=self.subject).count()
             if previously > 0:
                 self.slug = self.slug + '-' + str(previously + 1)
+
+            if not self.persons:
+                raise TypeError(_('A message needs persons to be sent'))
         super(Message, self).save(*args, **kwargs)
         if self.persons:
             for person in self.persons:
                 for contact in person.contact_set.all():
                     outbound_message = OutboundMessage.objects.get_or_create(contact=contact, message=self)
-        else:
-            raise TypeError(_('A message needs persons to be sent'))
 
     def __unicode__(self):
         return _('%(subject)s at %(instance)s') % {
@@ -225,6 +235,12 @@ class Confirmation(models.Model):
             self.key = str(uuid.uuid1().hex)
         return super(Confirmation, self).save(*args, **kwargs)
 
+    @property
+    def is_confirmed(self):
+        if self.confirmated_at is None:
+            return False
+        return True
+
 
     @classmethod
     def key_generator(cls):
@@ -240,14 +256,24 @@ def send_an_email_to_the_author(sender,instance, created, **kwargs):
             })
         current_site = Site.objects.get_current()
         confirmation_full_url = "http://"+current_site.domain+url
-        send_mail(
-            _('Confirmation email for a message in WriteIt'), 
-            _('Hello %(person)s:\r\n Please confirm that you have sent this email by clicking on the next link\r\n%(link)s.\r\nThanks\r\nThe writeit team.')
-            %{
-            'person':confirmation.message.author_name,
-            'link':confirmation_full_url
-            }, 
-            settings.DEFAULT_FROM_EMAIL,
-            [confirmation.message.author_email], 
-            fail_silently=False)
+        message_full_url = 'http://'+current_site.domain+confirmation.message.get_absolute_url()
+
+        plaintext = get_template('nuntium/mails/confirm.txt')
+        htmly     = get_template('nuntium/mails/confirm.html')
+
+        d = Context({ 'confirmation': confirmation, 
+            'confirmation_full_url': confirmation_full_url,
+            'message_full_url' : message_full_url
+             })
+
+        text_content = plaintext.render(d)
+        html_content = htmly.render(d)
+
+        msg = EmailMultiAlternatives( _('Confirmation email for a message in WriteIt'), 
+            text_content,#content
+            settings.DEFAULT_FROM_EMAIL,#From
+            [confirmation.message.author_email]#To
+            )
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
 post_save.connect(send_an_email_to_the_author, sender=Confirmation)
