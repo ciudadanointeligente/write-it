@@ -62,10 +62,13 @@ class ConfirmationTestCase(TestCase):
         current_site = Site.objects.get_current()
         confirmation_full_url = "http://"+current_site.domain+url
 
+        message_full_url = 'http://'+current_site.domain+self.message.get_absolute_url()
+
         self.assertEquals(len(mail.outbox), 1) #it is sent to one person pointed in the contact
         self.assertEquals(mail.outbox[0].subject, 'Confirmation email for a message in WriteIt')
         self.assertTrue(self.message.author_name in mail.outbox[0].body)
         self.assertTrue(confirmation_full_url in mail.outbox[0].body)
+        self.assertTrue(message_full_url in mail.outbox[0].body)
 
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue(self.message.author_email in mail.outbox[0].to)
@@ -86,6 +89,16 @@ class ConfirmationTestCase(TestCase):
 
         self.assertEquals(outbound_messages[0].status, "ready")
 
+    def test_confirmed_property(self):
+        confirmation = Confirmation.objects.create(message=self.message)
+
+        self.assertFalse(confirmation.is_confirmed)
+
+        confirmation.confirmated_at = datetime.now()
+        confirmation.save()
+
+
+        self.assertTrue(confirmation.is_confirmed)
 
     def test_it_does_not_confirm_twice(self):
         confirmation = Confirmation.objects.create(message=self.message)
@@ -98,3 +111,10 @@ class ConfirmationTestCase(TestCase):
 
         self.assertEquals(response1.status_code, 200)
         self.assertEquals(response2.status_code, 404)
+
+    def test_i_cannot_access_a_non_confirmed_message(self):
+        confirmation = Confirmation.objects.create(message=self.message)
+        url = reverse('message_detail', kwargs={'slug':self.message.slug})
+        response = self.client.get(url)
+
+        self.assertEquals(response.status_code, 404)
