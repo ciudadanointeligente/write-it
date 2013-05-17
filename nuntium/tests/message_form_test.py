@@ -41,6 +41,7 @@ class MessageFormTestCase(TestCase):
         self.assertTrue("author_name" in form.fields)
         self.assertTrue("author_email" in form.fields)
         self.assertTrue("slug" not in form.fields)
+        self.assertTrue("public"  in form.fields)
 
     def test_create_form(self):
         #spanish

@@ -1,11 +1,12 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
 from django.core.urlresolvers import reverse
-from nuntium.models import WriteItInstance, Message, Membership
+from nuntium.models import WriteItInstance, Message, Membership, Confirmation
 from nuntium.views import MessageCreateForm
 from contactos.models import Contact, ContactType
 from popit.models import ApiInstance, Person
 from django.utils.unittest import skip
+from datetime import datetime
 
 class InstanceTestCase(TestCase):
 
@@ -72,7 +73,46 @@ class InstanceDetailView(TestCase):
         self.assertTrue(response.context['form'])
         self.assertTrue(isinstance(response.context['form'],MessageCreateForm))
         self.assertEquals(response.status_code, 200)
-    
+
+    def test_list_only_public_messages(self):
+        private_message = Message.objects.create(content='Content 1', subject='a private message', writeitinstance = self.writeitinstance1, persons=[self.person1], public=False)
+        url = reverse('instance_detail', kwargs={
+            'slug':self.writeitinstance1.slug
+            })
+        response = self.client.get(url)
+        self.assertTrue('public_messages' in response.context)
+        self.assertTrue(private_message not in response.context['public_messages'])
+
+
+
+
+    def test_list_only_confirmed_and_public_messages(self):
+        message1 = self.writeitinstance1.message_set.all()[0]
+        message2 = self.writeitinstance1.message_set.all()[1]
+        private_message = Message.objects.create(content='Content 1', 
+            subject='a private message', 
+            writeitinstance = self.writeitinstance1, 
+            persons=[self.person1], 
+            public=False)
+
+        confirmation_for_message2 = Confirmation.objects.create(message=message2, confirmated_at=datetime.now())
+        confirmation_for_private_message = Confirmation.objects.create(message=private_message, confirmated_at=datetime.now())
+
+        url = reverse('instance_detail', kwargs={
+            'slug':self.writeitinstance1.slug
+            })
+        response = self.client.get(url)
+
+        #message1 is not confirmed so it should not be in the list
+        #private_message is not in the list either
+        #only message 2 is in the list because is public and confirmed
+
+        self.assertTrue(message2 in response.context['public_messages'])
+        self.assertTrue(message1 not in response.context['public_messages'])
+        self.assertTrue(private_message not in response.context['public_messages'])
+
+
+
     def test_message_creation_on_post_form(self):
 
         #spanish
