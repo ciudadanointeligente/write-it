@@ -46,7 +46,7 @@
     <h2>{% trans "Messages" %}</h2>
     <dl class="dl-horizontal">
 
-    {% for message in writeitinstance.message_set.all %}
+    {% for message in public_messages %}
     <div>
     	<h3>{{ message.subject }} <a href="{% url 'message_detail' slug=message.slug %}">{% trans "Link" %}</a></h3> 
     	<h4>{{ message.content }}</h4>
