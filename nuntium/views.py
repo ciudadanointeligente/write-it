@@ -1,7 +1,7 @@
 # Create your views here.
 from django.views.generic import TemplateView, CreateView, DetailView
 from django.core.urlresolvers import reverse
-from nuntium.models import WriteItInstance, Confirmation, OutboundMessage
+from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message
 from nuntium.forms import MessageCreateForm
 from datetime import datetime
 from django.http import Http404
@@ -39,6 +39,9 @@ class WriteItInstanceDetailView(CreateView):
         context['public_messages'] = public_messages
         return context
 
+class MessageDetailView(DetailView):
+    template_name='nuntium/message_detail.html'
+    model=Message
 
 class ConfirmView(DetailView):
     template_name='nuntium/confirm.html'
