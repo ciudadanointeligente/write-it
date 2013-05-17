@@ -48,6 +48,15 @@ class TestMessages(TestCase):
         self.assertEquals(message1.people, previous_people)
 
 
+    def test_message_has_a_permalink(self):
+        message1 = Message.objects.all()[0]
+        expected_url = reverse('message_detail', kwargs={'slug':message1.slug})
+
+        self.assertEquals(expected_url, message1.get_absolute_url())
+
+
+
+
 
     def test_two_messages_with_the_same_subject_but_different_slug(self):
         message1 = Message.objects.create(content = 'Content 1', 

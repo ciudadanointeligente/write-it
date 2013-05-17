@@ -62,10 +62,13 @@ class ConfirmationTestCase(TestCase):
         current_site = Site.objects.get_current()
         confirmation_full_url = "http://"+current_site.domain+url
 
+        message_full_url = 'http://'+current_site.domain+self.message.get_absolute_url()
+
         self.assertEquals(len(mail.outbox), 1) #it is sent to one person pointed in the contact
         self.assertEquals(mail.outbox[0].subject, 'Confirmation email for a message in WriteIt')
         self.assertTrue(self.message.author_name in mail.outbox[0].body)
         self.assertTrue(confirmation_full_url in mail.outbox[0].body)
+        self.assertTrue(message_full_url in mail.outbox[0].body)
 
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue(self.message.author_email in mail.outbox[0].to)

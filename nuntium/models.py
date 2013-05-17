@@ -80,6 +80,10 @@ class Message(models.Model):
                 people.append(outbound_message.contact.person)
         return people
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('message_detail', (), {'slug': self.slug})
+
     def save(self, *args, **kwargs):
 
         if self.id is None:
@@ -252,10 +256,15 @@ def send_an_email_to_the_author(sender,instance, created, **kwargs):
             })
         current_site = Site.objects.get_current()
         confirmation_full_url = "http://"+current_site.domain+url
+        message_full_url = 'http://'+current_site.domain+confirmation.message.get_absolute_url()
+
         plaintext = get_template('nuntium/mails/confirm.txt')
         htmly     = get_template('nuntium/mails/confirm.html')
 
-        d = Context({ 'confirmation': confirmation, 'confirmation_full_url': confirmation_full_url })
+        d = Context({ 'confirmation': confirmation, 
+            'confirmation_full_url': confirmation_full_url,
+            'message_full_url' : message_full_url
+             })
 
         text_content = plaintext.render(d)
         html_content = htmly.render(d)
