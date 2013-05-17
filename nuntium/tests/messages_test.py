@@ -4,11 +4,12 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord
+from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, Confirmation
 from popit.models import Person, ApiInstance
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.template.defaultfilters import slugify
+import datetime
 
 
 class TestMessages(TestCase):
@@ -32,6 +33,7 @@ class TestMessages(TestCase):
         self.assertEquals(message.subject, "Fiera es una perra feroz")
         self.assertEquals(message.writeitinstance, self.writeitinstance1)
         self.assertEquals(message.slug, slugify(message.subject))
+        self.assertTrue(message.public)
 
 
     def test_update_a_message_does_not_need_persons(self):
@@ -44,6 +46,15 @@ class TestMessages(TestCase):
         message1.save()
 
         self.assertEquals(message1.people, previous_people)
+
+
+    def test_message_has_a_permalink(self):
+        message1 = Message.objects.all()[0]
+        expected_url = reverse('message_detail', kwargs={'slug':message1.slug})
+
+        self.assertEquals(expected_url, message1.get_absolute_url())
+
+
 
 
 
@@ -73,6 +84,22 @@ class TestMessages(TestCase):
         self.assertEquals(message1.slug, slugify(message1.subject))
         self.assertEquals(message2.slug, slugify(message2.subject)+"-2")
         self.assertEquals(message3.slug, slugify(message3.subject)+"-3")
+
+
+    def test_a_person_with_two_contacts_method_people(self):
+        contact = Contact.objects.create(person=self.person1
+            , value=u"another@contact.cl"
+            , contact_type=self.person1.contact_set.all()[0].contact_type)
+        
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Same subject hey', 
+            writeitinstance= self.writeitinstance1, 
+            persons = [self.person1])
+
+
+        self.assertEquals(message.people, [self.person1])
 
 
     def test_resave_a_message_should_not_change_slug(self):
@@ -141,11 +168,13 @@ class MessageDetailView(TestCase):
             subject='Subject 1', 
             writeitinstance= self.writeitinstance1, 
             persons = [self.person1])
+        Confirmation.objects.create(message=self.message, confirmated_at = datetime.datetime.now())
 
 
     def test_get_message_detail_page(self):
         #I'm kind of feeling like I need 
         #something like rspec or cucumber
+        
         url = reverse('message_detail', kwargs={'slug':self.message.slug})
         self.assertTrue(url)
 

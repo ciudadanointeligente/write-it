@@ -27,6 +27,11 @@
         {{ form.subject }}
     </div>
     <div class="fieldWrapper">
+        {{ form.public.errors }}
+        <label for="id_public">{% trans "Public" %}</label>
+        {{ form.public }}
+    </div>
+    <div class="fieldWrapper">
         {{ form.content.errors }}
         <label for="id_content">{% trans "Content *" %}</label>
         {{ form.content }}
