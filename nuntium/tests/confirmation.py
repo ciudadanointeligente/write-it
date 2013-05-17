@@ -86,6 +86,16 @@ class ConfirmationTestCase(TestCase):
 
         self.assertEquals(outbound_messages[0].status, "ready")
 
+    def test_confirmed_property(self):
+        confirmation = Confirmation.objects.create(message=self.message)
+
+        self.assertFalse(confirmation.is_confirmed)
+
+        confirmation.confirmated_at = datetime.now()
+        confirmation.save()
+
+
+        self.assertTrue(confirmation.is_confirmed)
 
     def test_it_does_not_confirm_twice(self):
         confirmation = Confirmation.objects.create(message=self.message)

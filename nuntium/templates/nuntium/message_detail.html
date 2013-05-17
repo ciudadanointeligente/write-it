@@ -16,7 +16,7 @@
         {% endfor %}
     </ul>
 </div>
-{% for answer in message.answer_set.all %}
+{% for answer in public_messages %}
 <div class="answers">
     <h4>{% trans "Answers" %}</h4>
     {% for answer in message.answer_set.all %}

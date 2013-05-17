@@ -228,6 +228,12 @@ class Confirmation(models.Model):
             self.key = str(uuid.uuid1().hex)
         return super(Confirmation, self).save(*args, **kwargs)
 
+    @property
+    def is_confirmed(self):
+        if self.confirmated_at is None:
+            return False
+        return True
+
 
     @classmethod
     def key_generator(cls):
