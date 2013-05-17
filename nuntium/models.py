@@ -10,7 +10,10 @@ from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
 import datetime
 from djangoplugins.models import Plugin
-from django.core.mail import send_mail
+from django.core.mail import send_mail #Remove this when emailMultiAlternatives works
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template import Context
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
@@ -249,14 +252,19 @@ def send_an_email_to_the_author(sender,instance, created, **kwargs):
             })
         current_site = Site.objects.get_current()
         confirmation_full_url = "http://"+current_site.domain+url
-        send_mail(
-            _('Confirmation email for a message in WriteIt'), 
-            _('Hello %(person)s:\r\n Please confirm that you have sent this email by clicking on the next link\r\n%(link)s.\r\nThanks\r\nThe writeit team.')
-            %{
-            'person':confirmation.message.author_name,
-            'link':confirmation_full_url
-            }, 
-            settings.DEFAULT_FROM_EMAIL,
-            [confirmation.message.author_email], 
-            fail_silently=False)
+        plaintext = get_template('nuntium/mails/confirm.txt')
+        htmly     = get_template('nuntium/mails/confirm.html')
+
+        d = Context({ 'confirmation': confirmation, 'confirmation_full_url': confirmation_full_url })
+
+        text_content = plaintext.render(d)
+        html_content = htmly.render(d)
+
+        msg = EmailMultiAlternatives( _('Confirmation email for a message in WriteIt'), 
+            text_content,#content
+            settings.DEFAULT_FROM_EMAIL,#From
+            [confirmation.message.author_email]#To
+            )
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
 post_save.connect(send_an_email_to_the_author, sender=Confirmation)

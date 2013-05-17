@@ -1,0 +1,20 @@
+Hello {{ confirmation.message.author_name }}:<br />
+We have received a message written by you in {{ site.current_site.domain }}.<br />
+The message was:<br />
+<strong>Subject: </strong> {{ confirmation.message.subject }} <br/>
+<strong>Content: </strong> {{ confirmation.message.content }} <br />
+<strong>To: </strong>
+<ul>
+	{% for person in confirmation.message.people %}
+	<li>{{ person.name }}</li>
+	{% endfor %}
+</ul>
+<br />
+
+Please confirm that you have sent this message by clicking on the next link<br />
+
+<a href="{{ confirmation_full_url }}">{{ confirmation_full_url }}</a>.
+
+Thanks
+
+The writeit team.
