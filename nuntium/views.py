@@ -5,6 +5,7 @@ from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Messa
 from nuntium.forms import MessageCreateForm
 from datetime import datetime
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 
 
 
@@ -42,6 +43,13 @@ class WriteItInstanceDetailView(CreateView):
 class MessageDetailView(DetailView):
     template_name='nuntium/message_detail.html'
     model=Message
+
+    def get_queryset(self):
+        #get_object_or_404(Message, slug__iexact=self.kwargs['slug'])
+        qs = Message.objects.filter(slug__iexact=self.kwargs['slug'])
+        if not qs[0].confirmation.is_confirmed:
+            raise Http404
+        return qs
 
 class ConfirmView(DetailView):
     template_name='nuntium/confirm.html'

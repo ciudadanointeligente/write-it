@@ -4,11 +4,12 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord
+from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, Confirmation
 from popit.models import Person, ApiInstance
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.template.defaultfilters import slugify
+import datetime
 
 
 class TestMessages(TestCase):
@@ -158,11 +159,13 @@ class MessageDetailView(TestCase):
             subject='Subject 1', 
             writeitinstance= self.writeitinstance1, 
             persons = [self.person1])
+        Confirmation.objects.create(message=self.message, confirmated_at = datetime.datetime.now())
 
 
     def test_get_message_detail_page(self):
         #I'm kind of feeling like I need 
         #something like rspec or cucumber
+        
         url = reverse('message_detail', kwargs={'slug':self.message.slug})
         self.assertTrue(url)
 

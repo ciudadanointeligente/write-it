@@ -109,9 +109,8 @@ class ConfirmationTestCase(TestCase):
         self.assertEquals(response1.status_code, 200)
         self.assertEquals(response2.status_code, 404)
 
-
-    @skip("This is a failing test but im switching computers")
     def test_i_cannot_access_a_non_confirmed_message(self):
+        confirmation = Confirmation.objects.create(message=self.message)
         url = reverse('message_detail', kwargs={'slug':self.message.slug})
         response = self.client.get(url)
 
