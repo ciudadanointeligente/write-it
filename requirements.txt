@@ -3,3 +3,4 @@ django-plugins==0.2.2
 South
 coveralls
 -e git://github.com/mysociety/popit-django.git#egg=popit-django
+ludibrio

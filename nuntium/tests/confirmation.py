@@ -118,3 +118,42 @@ class ConfirmationTestCase(TestCase):
         response = self.client.get(url)
 
         self.assertEquals(response.status_code, 404)
+
+from ludibrio import Stub, Mock
+from ludibrio.matcher import *
+class EmailSendingErrorHandling(TestCase):
+    def setUp(self):
+        super(EmailSendingErrorHandling,self).setUp()
+        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.Marcel = Person.objects.all()[1]
+        felipe = Person.objects.all()[2]
+        self.channel = MentalMessage()
+        self.mental_contact1 = Contact.objects.create(person=felipe, contact_type=self.channel.get_contact_type())
+        self.message = Message.objects.create(content = 'hello there', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Wow!',
+         writeitinstance= self.writeitinstance1, persons = [felipe])
+        self.message2 = Message.objects.create(content = 'hello there', author_name='Marcel', author_email="maugsburger@votainteligente.cl", subject='Wow!',
+         writeitinstance= self.writeitinstance1, persons = [self.Marcel])
+
+    def test_confirmation_sending_error_destroys_message(self):
+        
+        with Stub() as email_sending:
+            from django.core.mail import EmailMultiAlternatives
+            msg = EmailMultiAlternatives(any(), 
+                any(),#content
+                any(),#From
+                ['maugsburger@votainteligente.cl']#To
+                )
+            msg.attach_alternative(any(), "text/html")
+            msg.send() >> Exception("The message was not sent")
+
+
+        
+
+        confirmation = Confirmation.objects.create(message=self.message2)
+        email_sending.restore_import()
+        
+        #
+        self.assertEquals(len(mail.outbox), 0)
+
+
+

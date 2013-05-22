@@ -275,5 +275,8 @@ def send_an_email_to_the_author(sender,instance, created, **kwargs):
             [confirmation.message.author_email]#To
             )
         msg.attach_alternative(html_content, "text/html")
-        msg.send()
+        try:
+            msg.send()
+        except:
+            pass
 post_save.connect(send_an_email_to_the_author, sender=Confirmation)
