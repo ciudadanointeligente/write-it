@@ -278,5 +278,7 @@ def send_an_email_to_the_author(sender,instance, created, **kwargs):
         try:
             msg.send()
         except:
-            pass
+            confirmation.message.delete()
+
+
 post_save.connect(send_an_email_to_the_author, sender=Confirmation)

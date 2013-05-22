@@ -152,8 +152,16 @@ class EmailSendingErrorHandling(TestCase):
         confirmation = Confirmation.objects.create(message=self.message2)
         email_sending.restore_import()
         
-        #
+        
         self.assertEquals(len(mail.outbox), 0)
 
+        #ok I'm taking the desition that a message with a confirmation error
+        #will be deleted and also the confirmation
+        #this is obviously subjected to change
+        #but I see no point on keeping the message or the confirmation
 
+        messages = Message.objects.filter(id=self.message2.id)
+        confirmations = Confirmation.objects.filter(id=confirmation.id)
 
+        self.assertEquals(messages.count(), 0)
+        self.assertEquals(confirmations.count(), 0)
