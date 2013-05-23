@@ -132,8 +132,7 @@ class SmtpErrorHandling(TestCase):
         self.email_sending = None
 
     def tearDown(self):
-        if self.email_sending is not None:
-            self.email_sending.restore_import()
+        self.email_sending.restore_import()
 
 
     def make_stub(self, exception):
@@ -145,7 +144,7 @@ class SmtpErrorHandling(TestCase):
                 any(),
                 any(), fail_silently=False) >> exception
 
-        return email_sending
+        self.email_sending = email_sending
 
 
     def test_server_disconnected(self):
