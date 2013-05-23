@@ -3,7 +3,7 @@ from nuntium.plugins import OutputPlugin
 from django.core.mail import send_mail
 from contactos.models import ContactType
 from django.conf import settings
-
+from smtplib import SMTPServerDisconnected, SMTPRecipientsRefused, SMTPResponseException
 
 class MailChannel(OutputPlugin):
     name = 'mail-channel'
@@ -17,6 +17,9 @@ class MailChannel(OutputPlugin):
 
     def send(self, outbound_message):
         #Here there should be somewhere the contacts
+        #Returns a tuple with the result_of_sending, fatal_error
+        # so False, True means that there was an error sending and you should not try again
+        
         contact_type = self.contact_type
 
         try:
@@ -36,7 +39,14 @@ class MailChannel(OutputPlugin):
 
         #here there should be a try and except looking
         #for errors and stuff
-        send_mail(subject, content, settings.DEFAULT_FROM_EMAIL,[outbound_message.contact.value], fail_silently=False)
+        try:
+            send_mail(subject, content, settings.DEFAULT_FROM_EMAIL,[outbound_message.contact.value], fail_silently=False)
+        except SMTPServerDisconnected, e:
+            return False, False
+        except SMTPResponseException, e:
+            if e.smtp_code == 552:
+                return False, False
+            return False, True
             
         return (True,None)
 

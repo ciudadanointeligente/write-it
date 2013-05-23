@@ -119,6 +119,144 @@ class MailSendingTestCase(TestCase):
 
         self.assertTrue(message.author_name in mail.outbox[0].body)
         self.assertTrue(message.author_email not in mail.outbox[0].body)
+
+from ludibrio import Stub, Mock
+from ludibrio.matcher import *
+from smtplib import SMTPRecipientsRefused, SMTPServerDisconnected, SMTPResponseException
+class SmtpErrorHandling(TestCase):
+    def setUp(self):
+        super(SmtpErrorHandling, self).setUp()
+        self.outbound_message1 = OutboundMessage.objects.all()[0]
+        self.channel = MailChannel()
+
+        self.email_sending = None
+
+    def tearDown(self):
+        if self.email_sending is not None:
+            self.email_sending.restore_import()
+
+
+    def make_stub(self, exception):
+        with Stub() as email_sending:
+            from django.core.mail import send_mail
+
+            send_mail(any(), 
+                any(), 
+                any(),
+                any(), fail_silently=False) >> exception
+
+        return email_sending
+
+
+    def test_server_disconnected(self):
+        #to handle this kind of error
+        #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPServerDisconnected
+        self.make_stub(SMTPServerDisconnected())
+
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+
+        self.assertFalse(result_of_sending)
+        self.assertFalse(fatal_error)
+
+    def test_smpt_error_code_500(self):
+        #to handle this kind of error
+        #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
+        exception = SMTPResponseException(500,"")
+        self.make_stub(exception)
+
+
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+
+        self.assertFalse(result_of_sending)
+        self.assertTrue(fatal_error)
+        #I'm not sure if this kind of error is definitive but
+        #I'm taking it as if we should not try to send this
+        #message again, but for example 
+
+
+    def test_smpt_error_code_501(self):
+        #to handle this kind of error
+        #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
+        exception = SMTPResponseException(501,"")
+        self.make_stub(exception)
+
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+        
+
+        self.assertFalse(result_of_sending)
+        self.assertTrue(fatal_error)
+
+    def test_smpt_error_code_502(self):
+        #to handle this kind of error
+        #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
+        exception = SMTPResponseException(502,"")
+        self.make_stub(exception)
+
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+        
+
+        self.assertFalse(result_of_sending)
+        self.assertTrue(fatal_error)
+
+    def test_smpt_error_code_503(self):
+        #to handle this kind of error
+        #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
+        exception = SMTPResponseException(503,"")
+        self.make_stub(exception)
+
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+        
+
+        self.assertFalse(result_of_sending)
+        self.assertTrue(fatal_error)
+        
+    def test_smpt_error_code_504(self):
+        #to handle this kind of error
+        #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
+        exception = SMTPResponseException(504,"")
+        self.make_stub(exception)
+
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+        
+
+        self.assertFalse(result_of_sending)
+        self.assertTrue(fatal_error)
+
+    def test_smpt_error_code_550(self):
+        #to handle this kind of error
+        #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
+        exception = SMTPResponseException(550,"")
+        self.make_stub(exception)
+
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+        
+
+        self.assertFalse(result_of_sending)
+        self.assertTrue(fatal_error)
+
+    def test_smpt_error_code_551(self):
+        #to handle this kind of error
+        #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
+        exception = SMTPResponseException(551,"")
+        self.make_stub(exception)
+
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+        
+
+        self.assertFalse(result_of_sending)
+        self.assertTrue(fatal_error)
+
+    def test_smpt_error_code_552(self):
+        #to handle this kind of error
+        #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
+        exception = SMTPResponseException(552,"")
+        self.make_stub(exception)
+
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+        
+
+        self.assertFalse(result_of_sending)
+        self.assertFalse(fatal_error)
         
 
 
