@@ -120,19 +120,13 @@ class MailSendingTestCase(TestCase):
         self.assertTrue(message.author_name in mail.outbox[0].body)
         self.assertTrue(message.author_email not in mail.outbox[0].body)
 
-from ludibrio import Stub, Mock
-from ludibrio.matcher import *
 from smtplib import SMTPRecipientsRefused, SMTPServerDisconnected, SMTPResponseException
+from mock import patch
 class SmtpErrorHandling(TestCase):
     def setUp(self):
         super(SmtpErrorHandling, self).setUp()
         self.outbound_message1 = OutboundMessage.objects.all()[0]
         self.channel = MailChannel()
-
-        self.email_sending = None
-
-    def tearDown(self):
-        self.email_sending.restore_import()
 
 
     def make_stub(self, exception):
@@ -150,24 +144,22 @@ class SmtpErrorHandling(TestCase):
     def test_server_disconnected(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPServerDisconnected
-        self.make_stub(SMTPServerDisconnected())
 
-        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
-
-        self.assertFalse(result_of_sending)
-        self.assertFalse(fatal_error)
+        with patch("django.core.mail.send_mail") as send_mail:
+            send_mail.side_effect = SMTPServerDisconnected()
+            result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+            self.assertFalse(result_of_sending)
+            self.assertFalse(fatal_error)
 
     def test_smpt_error_code_500(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        exception = SMTPResponseException(500,"")
-        self.make_stub(exception)
+        with patch("django.core.mail.send_mail") as send_mail:
+            send_mail.side_effect = SMTPResponseException(500,"")
+            result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+            self.assertFalse(result_of_sending)
+            self.assertTrue(fatal_error)
 
-
-        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
-
-        self.assertFalse(result_of_sending)
-        self.assertTrue(fatal_error)
         #I'm not sure if this kind of error is definitive but
         #I'm taking it as if we should not try to send this
         #message again, but for example 
@@ -176,86 +168,88 @@ class SmtpErrorHandling(TestCase):
     def test_smpt_error_code_501(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        exception = SMTPResponseException(501,"")
-        self.make_stub(exception)
 
-        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+        with patch("django.core.mail.send_mail") as send_mail:
+            send_mail.side_effect = SMTPResponseException(501,"")
+
+            result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
         
 
-        self.assertFalse(result_of_sending)
-        self.assertTrue(fatal_error)
+            self.assertFalse(result_of_sending)
+            self.assertTrue(fatal_error)
 
     def test_smpt_error_code_502(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        exception = SMTPResponseException(502,"")
-        self.make_stub(exception)
+        with patch("django.core.mail.send_mail") as send_mail:
+            send_mail.side_effect = SMTPResponseException(502,"")
+            result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+            
 
-        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
-        
-
-        self.assertFalse(result_of_sending)
-        self.assertTrue(fatal_error)
+            self.assertFalse(result_of_sending)
+            self.assertTrue(fatal_error)
 
     def test_smpt_error_code_503(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        exception = SMTPResponseException(503,"")
-        self.make_stub(exception)
 
-        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
-        
+        with patch("django.core.mail.send_mail") as send_mail:
 
-        self.assertFalse(result_of_sending)
-        self.assertTrue(fatal_error)
+            send_mail.side_effect = SMTPResponseException(503,"")
+
+            result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+            
+
+            self.assertFalse(result_of_sending)
+            self.assertTrue(fatal_error)
         
     def test_smpt_error_code_504(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        exception = SMTPResponseException(504,"")
-        self.make_stub(exception)
+        with patch("django.core.mail.send_mail") as send_mail:
+            send_mail.side_effect = SMTPResponseException(504,"")
 
-        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
-        
+            result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+            
 
-        self.assertFalse(result_of_sending)
-        self.assertTrue(fatal_error)
+            self.assertFalse(result_of_sending)
+            self.assertTrue(fatal_error)
 
     def test_smpt_error_code_550(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        exception = SMTPResponseException(550,"")
-        self.make_stub(exception)
+        with patch("django.core.mail.send_mail") as send_mail:
+            send_mail.side_effect = SMTPResponseException(550,"")
 
-        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
-        
+            result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+            
 
-        self.assertFalse(result_of_sending)
-        self.assertTrue(fatal_error)
+            self.assertFalse(result_of_sending)
+            self.assertTrue(fatal_error)
 
     def test_smpt_error_code_551(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        exception = SMTPResponseException(551,"")
-        self.make_stub(exception)
+        with patch("django.core.mail.send_mail") as send_mail:
+            send_mail.side_effect = SMTPResponseException(551,"")
 
-        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
-        
+            result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+            
 
-        self.assertFalse(result_of_sending)
-        self.assertTrue(fatal_error)
+            self.assertFalse(result_of_sending)
+            self.assertTrue(fatal_error)
 
     def test_smpt_error_code_552(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        exception = SMTPResponseException(552,"")
-        self.make_stub(exception)
+        with patch("django.core.mail.send_mail") as send_mail:
+            send_mail.side_effect = SMTPResponseException(552,"")
 
-        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
-        
+            result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+            
 
-        self.assertFalse(result_of_sending)
-        self.assertFalse(fatal_error)
+            self.assertFalse(result_of_sending)
+            self.assertFalse(fatal_error)
         
 
 

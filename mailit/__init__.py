@@ -39,6 +39,7 @@ class MailChannel(OutputPlugin):
 
         #here there should be a try and except looking
         #for errors and stuff
+        from django.core.mail import send_mail
         try:
             send_mail(subject, content, settings.DEFAULT_FROM_EMAIL,[outbound_message.contact.value], fail_silently=False)
         except SMTPServerDisconnected, e:
