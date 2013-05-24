@@ -119,8 +119,9 @@ class ConfirmationTestCase(TestCase):
 
         self.assertEquals(response.status_code, 404)
 
-from ludibrio import Stub, Mock
-from ludibrio.matcher import *
+# from ludibrio import Stub, Mock
+# from ludibrio.matcher import *
+from mock import patch
 class EmailSendingErrorHandling(TestCase):
     def setUp(self):
         super(EmailSendingErrorHandling,self).setUp()
@@ -135,25 +136,11 @@ class EmailSendingErrorHandling(TestCase):
          writeitinstance= self.writeitinstance1, persons = [self.Marcel])
 
     def test_confirmation_sending_error_destroys_message(self):
-        
-        with Stub() as email_sending:
-            from django.core.mail import EmailMultiAlternatives
-            msg = EmailMultiAlternatives(any(), 
-                any(),#content
-                any(),#From
-                ['maugsburger@votainteligente.cl']#To
-                )
-            msg.attach_alternative(any(), "text/html")
-            msg.send() >> Exception("The message was not sent")
-
-
-        
-
-        confirmation = Confirmation.objects.create(message=self.message2)
-        email_sending.restore_import()
-        
-        
-        self.assertEquals(len(mail.outbox), 0)
+        from django.core.mail import EmailMultiAlternatives
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
+            send_mail.side_effect = Exception("The message was not sent")
+            confirmation = Confirmation.objects.create(message=self.message2)
+            self.assertEquals(len(mail.outbox), 0)
 
         #ok I'm taking the desition that a message with a confirmation error
         #will be deleted and also the confirmation
