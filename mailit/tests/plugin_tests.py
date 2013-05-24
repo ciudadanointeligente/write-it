@@ -129,18 +129,6 @@ class SmtpErrorHandling(TestCase):
         self.channel = MailChannel()
 
 
-    def make_stub(self, exception):
-        with Stub() as email_sending:
-            from django.core.mail import send_mail
-
-            send_mail(any(), 
-                any(), 
-                any(),
-                any(), fail_silently=False) >> exception
-
-        self.email_sending = email_sending
-
-
     def test_server_disconnected(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPServerDisconnected
