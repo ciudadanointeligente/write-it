@@ -1,10 +1,12 @@
 from django.conf.urls import patterns, include, url
 from nuntium.views import ConfirmView
 from django.conf.urls.i18n import i18n_patterns
-
+from tastypie.api import Api
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
+
+v1_api = Api(api_name='v1')
 
 urlpatterns = patterns('',
     # Examples:
@@ -17,6 +19,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
     url(r'^confirm_message/(?P<slug>[-\w]+)/?$', ConfirmView.as_view(), name = 'confirm'),
+    (r'^api/', include(v1_api.urls)),
 )
 
 
