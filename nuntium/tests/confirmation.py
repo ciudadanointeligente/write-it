@@ -118,3 +118,34 @@ class ConfirmationTestCase(TestCase):
         response = self.client.get(url)
 
         self.assertEquals(response.status_code, 404)
+
+from mock import patch
+class EmailSendingErrorHandling(TestCase):
+    def setUp(self):
+        super(EmailSendingErrorHandling,self).setUp()
+        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.Marcel = Person.objects.all()[1]
+        felipe = Person.objects.all()[2]
+        self.channel = MentalMessage()
+        self.mental_contact1 = Contact.objects.create(person=felipe, contact_type=self.channel.get_contact_type())
+        self.message = Message.objects.create(content = 'hello there', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Wow!',
+         writeitinstance= self.writeitinstance1, persons = [felipe])
+        self.message2 = Message.objects.create(content = 'hello there', author_name='Marcel', author_email="maugsburger@votainteligente.cl", subject='Wow!',
+         writeitinstance= self.writeitinstance1, persons = [self.Marcel])
+
+    def test_confirmation_sending_error_destroys_message(self):
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send:
+            send.side_effect = Exception("The message was not sent")
+            confirmation = Confirmation.objects.create(message=self.message2)
+            self.assertEquals(len(mail.outbox), 0)
+
+        #ok I'm taking the desition that a message with a confirmation error
+        #will be deleted and also the confirmation
+        #this is obviously subjected to change
+        #but I see no point on keeping the message or the confirmation
+
+        messages = Message.objects.filter(id=self.message2.id)
+        confirmations = Confirmation.objects.filter(id=confirmation.id)
+
+        self.assertEquals(messages.count(), 0)
+        self.assertEquals(confirmations.count(), 0)
