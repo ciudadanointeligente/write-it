@@ -8,7 +8,7 @@ Write-it is an application that aims to deliver messages to people whose contact
 
 Write-it is a layer on top of [popit](http://popit.mysociety.org) from where it takes the people and adds contacts. The way it delivers messages is using plugins for example: mailit. And this approach allows for future ways of delivering for example: twitter, whatsapp, fax or pager.
 
-Future uses are in [votainteligente](http://www.votainteligente.cl) to replace the old "preguntales" (You can [check here](http://municipales2012.votainteligente.cl/valdivia/preguntales) how it used to work) feature, could be in the way for the site [writetothem](http://www.writetothem.com/) and any parlamentary monitoring site.
+Future uses are in [votainteligente](http://www.votainteligente.cl) to replace the old "preguntales" (You can [check here](http://municipales2012.votainteligente.cl/valdivia/preguntales), to see how it used to work) feature, could be in the way for the site [writetothem](http://www.writetothem.com/) and any parlamentary monitoring site.
 
 
 
