@@ -49,7 +49,7 @@ class InstanceResourceTestCase(ResourceTestCase):
 
         self.assertValidJSONResponse(response)
 
-    #@skip("need the message Resource")
+    @skip("Need to filter messages per instance")
     def test_get_list_of_messages_per_instance(self):
         url = '/api/v1/instance/{0}/messages/'.format(self.writeitinstance.id)
         response = self.api_client.get(url,data = self.data)
