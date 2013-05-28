@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from tastypie.resources import ModelResource, ALL_WITH_RELATIONS
-from nuntium.models import WriteItInstance, Message
+from nuntium.models import WriteItInstance, Message, Answer
 from tastypie.authentication import ApiKeyAuthentication
 from django.conf.urls import url
 from tastypie import fields
+from django.http import HttpRequest
 
 class WriteItInstanceResource(ModelResource):
     class Meta:
@@ -34,3 +35,7 @@ class MessageResource(ModelResource):
         filtering = {
             'writeitinstance': ALL_WITH_RELATIONS
         }
+
+class AnswerResource(ModelResource):
+    class Meta:
+        queryset =  Answer.objects.all()

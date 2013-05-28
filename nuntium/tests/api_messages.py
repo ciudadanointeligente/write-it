@@ -51,7 +51,6 @@ class InstanceResourceTestCase(ResourceTestCase):
 
         self.assertValidJSONResponse(response)
 
-    #@skip("Need to filter messages per instance")
     def test_get_list_of_messages_per_instance(self):
         
         pedro = Person.objects.all()[0]
@@ -71,6 +70,7 @@ class InstanceResourceTestCase(ResourceTestCase):
 
         self.assertEqual(len(messages), Message.objects.filter(writeitinstance=self.writeitinstance).count()) #All the instances
         self.assertEqual(messages[0]['id'], message.id)
+        #assert that answers come in the 
 
 
 
@@ -94,8 +94,8 @@ class MessageResourceTestCase(ResourceTestCase):
 
         self.assertValidJSONResponse(response)
 
-        instances = self.deserialize(response)['objects']
-        self.assertEqual(len(instances), Message.objects.count()) #All the instances
+        messages = self.deserialize(response)['objects']
+        self.assertEqual(len(messages), Message.objects.count()) #All the instances
 
 
     def test_authentication(self):
@@ -104,3 +104,33 @@ class MessageResourceTestCase(ResourceTestCase):
 
 
         self.assertHttpUnauthorized(response)
+
+    @skip("AnswersResource")
+    def test_a_list_of_messages_have_answers(self):
+        url = '/api/v1/message/'
+        response = self.api_client.get(url,data = self.data)
+        messages = self.deserialize(response)['objects']
+
+        self.assertTrue('answers' in messages[0])
+
+
+from nuntium.api import AnswerResource
+from django.http import HttpRequest
+from nuntium.models import Answer
+class AnswersResourceTestCase(ResourceTestCase):
+    def setUp(self):
+        super(AnswersResourceTestCase,self).setUp()
+        call_command('loaddata', 'example_data', verbosity=0)
+        self.answer = Answer.objects.create(message=Message.objects.all()[0], person=Person.objects.all()[0])
+
+
+    def test_resource_get_all_answers(self):
+        resource = AnswerResource()
+
+        self.assertTrue(resource)
+
+        request = HttpRequest()
+        answers_json = self.deserialize(resource.get_list(request))['objects']
+        self.assertEquals(len(answers_json), Answer.objects.count())
+        self.assertEquals(answers_json[0]["id"], self.answer.id)
+
