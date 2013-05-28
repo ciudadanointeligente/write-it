@@ -24,10 +24,16 @@ class WriteItInstanceResource(ModelResource):
         resource = MessageResource()
         return resource.get_list(request, writeitinstance=obj)
 
-
+class AnswerResource(ModelResource):
+    #message = fields.ForeignKey('nuntium.api.MessageResource', 'message')
+    class Meta:
+        queryset =  Answer.objects.all()
+        resource_name = 'answer'
 
 class MessageResource(ModelResource):
     writeitinstance = fields.ToOneField(WriteItInstanceResource, 'writeitinstance')
+    answers = fields.ToManyField(AnswerResource, 'answers', null=True, full=True)
+
     class Meta:
         queryset = Message.objects.all()
         resource_name = 'message'
@@ -36,6 +42,4 @@ class MessageResource(ModelResource):
             'writeitinstance': ALL_WITH_RELATIONS
         }
 
-class AnswerResource(ModelResource):
-    class Meta:
-        queryset =  Answer.objects.all()
+

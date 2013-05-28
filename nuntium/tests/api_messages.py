@@ -105,10 +105,10 @@ class MessageResourceTestCase(ResourceTestCase):
 
         self.assertHttpUnauthorized(response)
 
-    @skip("AnswersResource")
     def test_a_list_of_messages_have_answers(self):
         url = '/api/v1/message/'
         response = self.api_client.get(url,data = self.data)
+        self.assertValidJSONResponse(response)
         messages = self.deserialize(response)['objects']
 
         self.assertTrue('answers' in messages[0])
