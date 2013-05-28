@@ -79,10 +79,14 @@ class MessageResourceTestCase(ResourceTestCase):
         super(MessageResourceTestCase,self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
         self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test")
+
         self.api_client = TestApiClient()
         self.user = User.objects.create_user(username='the_user',
                                                 password='joe',
-                                                email='doe@joe.cl')
+                                                email='doe@joe.cl'
+                                                )
+        self.user.is_staff = True
+        self.user.save()
         ApiKey.objects.create(user=self.user)
 
         self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
@@ -112,6 +116,30 @@ class MessageResourceTestCase(ResourceTestCase):
         messages = self.deserialize(response)['objects']
 
         self.assertTrue('answers' in messages[0])
+
+    def get_credentials(self):
+        credentials = self.create_apikey(username=self.user.username, api_key=self.user.api_key.key)
+        return credentials
+
+    def test_create_a_new_message(self):
+        writeitinstance = WriteItInstance.objects.all()[0]
+        message_data = {
+            'author_name' : 'Felipipoo',
+            'subject': 'new message',
+            'content': 'the content thing',
+            'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
+            'persons': [writeitinstance.persons.all()[0].pk]
+        }
+
+        url = '/api/v1/message/'
+        previous_amount_of_messages = Message.objects.count()
+        response = self.api_client.post(url, data = message_data, format='json', authentication=self.get_credentials())
+        self.assertHttpCreated(response)
+
+        post_amount_of_messages = Message.objects.count()
+        self.assertEquals(post_amount_of_messages, previous_amount_of_messages + 1)
+
+
 
 
 from nuntium.api import AnswerResource

@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from tastypie.resources import ModelResource, ALL_WITH_RELATIONS
 from nuntium.models import WriteItInstance, Message, Answer
-from tastypie.authentication import ApiKeyAuthentication
+from tastypie.authentication import ApiKeyAuthentication, Authentication
+from tastypie.authorization import Authorization
 from django.conf.urls import url
 from tastypie import fields
 from django.http import HttpRequest
+from popit.models import Person
 
 class WriteItInstanceResource(ModelResource):
     class Meta:
@@ -19,13 +21,11 @@ class WriteItInstanceResource(ModelResource):
 
     def handle_instance_messages(self,request, *args, **kwargs):
         basic_bundle = self.build_bundle(request=request)
-
         obj = self.cached_obj_get(bundle=basic_bundle, **self.remove_api_resource_names(kwargs))
         resource = MessageResource()
         return resource.get_list(request, writeitinstance=obj)
 
 class AnswerResource(ModelResource):
-    #message = fields.ForeignKey('nuntium.api.MessageResource', 'message')
     class Meta:
         queryset =  Answer.objects.all()
         resource_name = 'answer'
@@ -37,9 +37,18 @@ class MessageResource(ModelResource):
     class Meta:
         queryset = Message.objects.all()
         resource_name = 'message'
+        authorization = Authorization()
         authentication = ApiKeyAuthentication()
         filtering = {
             'writeitinstance': ALL_WITH_RELATIONS
         }
+
+    def hydrate(self, bundle):
+        persons = []
+        for person_id in bundle.data['persons']:
+            persons.append(Person.objects.get(pk=person_id))
+
+        bundle.obj.persons = persons
+        return bundle
 
 
