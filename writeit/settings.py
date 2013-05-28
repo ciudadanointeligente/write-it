@@ -145,6 +145,7 @@ INSTALLED_APPS = (
     'south',
     'contactos',
     'mailit',
+    'tastypie',
     
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',

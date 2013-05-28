@@ -9,3 +9,4 @@ from outbound_message import *
 from outbound_message_plugin_record import *
 from confirmation import *
 from answers_test import *
+from api_messages import *
