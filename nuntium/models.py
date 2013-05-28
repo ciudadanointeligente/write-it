@@ -110,7 +110,7 @@ class Message(models.Model):
 class Answer(models.Model):
     content = models.TextField()
     person = models.ForeignKey(Person)
-    message = models.ForeignKey(Message)
+    message = models.ForeignKey(Message, related_name='answers')
     created = models.DateField(default=datetime.datetime.now())
 
     def __init__(self, *args, **kwargs):
