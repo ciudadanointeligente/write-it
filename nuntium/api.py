@@ -1,12 +1,11 @@
-
-from tastypie.resources import ModelResource
+# -*- coding: utf-8 -*-
+from tastypie.resources import ModelResource, ALL_WITH_RELATIONS
 from nuntium.models import WriteItInstance, Message
 from tastypie.authentication import ApiKeyAuthentication
 from django.conf.urls import url
 from tastypie import fields
 
 class WriteItInstanceResource(ModelResource):
-
     class Meta:
         queryset = WriteItInstance.objects.all()
         resource_name = 'instance'
@@ -22,12 +21,16 @@ class WriteItInstanceResource(ModelResource):
 
         obj = self.cached_obj_get(bundle=basic_bundle, **self.remove_api_resource_names(kwargs))
         resource = MessageResource()
-        return resource.get_list(request, writeitinstance_id=obj.pk)
+        return resource.get_list(request, writeitinstance=obj)
 
 
 
 class MessageResource(ModelResource):
+    writeitinstance = fields.ToOneField(WriteItInstanceResource, 'writeitinstance')
     class Meta:
         queryset = Message.objects.all()
         resource_name = 'message'
         authentication = ApiKeyAuthentication()
+        filtering = {
+            'writeitinstance': ALL_WITH_RELATIONS
+        }

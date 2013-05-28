@@ -5,6 +5,7 @@ from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
 from tastypie.models import ApiKey
 from django.utils.unittest import skip
+from popit.models import Person
 
 class InstanceResourceTestCase(ResourceTestCase):
     def setUp(self):
@@ -18,6 +19,7 @@ class InstanceResourceTestCase(ResourceTestCase):
         ApiKey.objects.create(user=self.user)
 
         self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
+
 
 
     def test_api_exists(self):
@@ -49,16 +51,26 @@ class InstanceResourceTestCase(ResourceTestCase):
 
         self.assertValidJSONResponse(response)
 
-    @skip("Need to filter messages per instance")
+    #@skip("Need to filter messages per instance")
     def test_get_list_of_messages_per_instance(self):
+        
+        pedro = Person.objects.all()[0]
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Fiera es una perra feroz', 
+            writeitinstance= self.writeitinstance, 
+            persons = [pedro])
+
+
         url = '/api/v1/instance/{0}/messages/'.format(self.writeitinstance.id)
         response = self.api_client.get(url,data = self.data)
-
         self.assertValidJSONResponse(response)
-
         messages = self.deserialize(response)['objects']
+        
 
         self.assertEqual(len(messages), Message.objects.filter(writeitinstance=self.writeitinstance).count()) #All the instances
+        self.assertEqual(messages[0]['id'], message.id)
 
 
 
