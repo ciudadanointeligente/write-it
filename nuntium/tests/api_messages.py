@@ -128,7 +128,7 @@ class MessageResourceTestCase(ResourceTestCase):
             'subject': 'new message',
             'content': 'the content thing',
             'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
-            'persons': [writeitinstance.persons.all()[0].pk]
+            'persons': [writeitinstance.persons.all()[0].popit_url]
         }
 
         url = '/api/v1/message/'
