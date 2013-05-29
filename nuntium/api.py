@@ -45,8 +45,8 @@ class MessageResource(ModelResource):
 
     def hydrate(self, bundle):
         persons = []
-        for person_id in bundle.data['persons']:
-            persons.append(Person.objects.get(pk=person_id))
+        for popit_url in bundle.data['persons']:
+            persons.append(Person.objects.get(popit_url=popit_url))
 
         bundle.obj.persons = persons
         return bundle
