@@ -25,6 +25,13 @@ class WriteItInstanceResource(ModelResource):
         resource = MessageResource()
         return resource.get_list(request, writeitinstance=obj)
 
+
+    def dehydrate(self, bundle):
+        #not completely sure that this is the right way to get the messages
+        bundle.data['messages'] = bundle.data['resource_uri']+'messages/'
+        return bundle
+
+
 class AnswerResource(ModelResource):
     class Meta:
         queryset =  Answer.objects.all()
