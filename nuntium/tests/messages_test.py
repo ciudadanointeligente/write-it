@@ -156,6 +156,16 @@ class TestMessages(TestCase):
         with self.assertRaises(TypeError):
             Message.objects.create(content = 'Content 1', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Subject 1', writeitinstance= self.writeitinstance1)
 
+    def test_message_set_new_outbound_messages_to_ready(self):
+        message = Message.objects.create(content = 'Content 1', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])
+
+        message.from_new_to_ready()
+
+        outbound_message_to_pedro = OutboundMessage.objects.filter(message=message)[0]
+        self.assertEquals(outbound_message_to_pedro.status, 'ready')
+
+
+
 
 class MessageDetailView(TestCase):
     def setUp(self):

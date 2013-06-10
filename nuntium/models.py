@@ -71,6 +71,11 @@ class Message(models.Model):
         if 'persons' in kwargs:
             self.persons = kwargs.pop('persons')
         super(Message, self).__init__(*args, **kwargs)
+
+    def from_new_to_ready(self):
+        for outbound_message in self.outboundmessage_set.all():
+            outbound_message.status = 'ready'
+            outbound_message.save()
         
     @property
     def people(self):
