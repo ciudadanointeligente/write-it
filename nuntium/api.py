@@ -57,4 +57,9 @@ class MessageResource(ModelResource):
         bundle.obj.persons = persons
         return bundle
 
+    def obj_create(self, bundle, **kwargs):
+        bundle = super(MessageResource, self).obj_create(bundle, **kwargs)
+        bundle.obj.from_new_to_ready()
+        return bundle
+
 

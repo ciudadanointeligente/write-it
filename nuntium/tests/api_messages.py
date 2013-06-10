@@ -142,6 +142,14 @@ class MessageResourceTestCase(ResourceTestCase):
         self.assertEquals(post_amount_of_messages, previous_amount_of_messages + 1)
 
 
+        the_message = Message.objects.get(author_name='Felipipoo')
+
+        outbound_messages = the_message.outboundmessage_set.all()
+        self.assertTrue(outbound_messages.count() > 0)
+        for outbound_message in outbound_messages:
+            self.assertEquals(outbound_message.status, 'ready')
+
+
 
 
 from nuntium.api import AnswerResource
