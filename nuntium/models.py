@@ -72,6 +72,7 @@ class Message(models.Model):
             self.persons = kwargs.pop('persons')
         super(Message, self).__init__(*args, **kwargs)
 
+    #TODO: only new outbound_messages
     def from_new_to_ready(self):
         for outbound_message in self.outboundmessage_set.all():
             outbound_message.status = 'ready'
