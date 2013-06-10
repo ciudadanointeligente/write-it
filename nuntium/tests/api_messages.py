@@ -43,6 +43,8 @@ class InstanceResourceTestCase(ResourceTestCase):
 
         instances = self.deserialize(response)['objects']
         self.assertEqual(len(instances), WriteItInstance.objects.count()) #All the instances
+        first_instance = instances[0]
+        self.assertEqual(first_instance['messages'],'/api/v1/instance/{0}/messages/'.format(first_instance['id']))
 
 
     def test_get_detail_of_an_instance(self):
@@ -138,6 +140,14 @@ class MessageResourceTestCase(ResourceTestCase):
 
         post_amount_of_messages = Message.objects.count()
         self.assertEquals(post_amount_of_messages, previous_amount_of_messages + 1)
+
+
+        the_message = Message.objects.get(author_name='Felipipoo')
+
+        outbound_messages = the_message.outboundmessage_set.all()
+        self.assertTrue(outbound_messages.count() > 0)
+        for outbound_message in outbound_messages:
+            self.assertEquals(outbound_message.status, 'ready')
 
 
 

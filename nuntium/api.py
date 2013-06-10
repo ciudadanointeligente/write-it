@@ -25,6 +25,13 @@ class WriteItInstanceResource(ModelResource):
         resource = MessageResource()
         return resource.get_list(request, writeitinstance=obj)
 
+
+    def dehydrate(self, bundle):
+        #not completely sure that this is the right way to get the messages
+        bundle.data['messages'] = bundle.data['resource_uri']+'messages/'
+        return bundle
+
+
 class AnswerResource(ModelResource):
     class Meta:
         queryset =  Answer.objects.all()
@@ -47,8 +54,12 @@ class MessageResource(ModelResource):
         persons = []
         for popit_url in bundle.data['persons']:
             persons.append(Person.objects.get(popit_url=popit_url))
-
         bundle.obj.persons = persons
+        return bundle
+
+    def obj_create(self, bundle, **kwargs):
+        bundle = super(MessageResource, self).obj_create(bundle, **kwargs)
+        bundle.obj.from_new_to_ready()
         return bundle
 
 

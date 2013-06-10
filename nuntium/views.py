@@ -77,8 +77,5 @@ class ConfirmView(DetailView):
         confirmation = self.get_object()
         confirmation.confirmated_at = datetime.now()
         confirmation.save()
-        outbound_messages = OutboundMessage.objects.filter(message=confirmation.message)
-        for outbound_message in outbound_messages:
-            outbound_message.status="ready"
-            outbound_message.save()
+        confirmation.message.from_new_to_ready()
         return super(ConfirmView,self).get(*args, **kwargs)
