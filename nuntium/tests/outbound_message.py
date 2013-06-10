@@ -47,15 +47,6 @@ class OutboundMessageTestCase(TestCase):
         self.assertEquals(outbound_message.status, "sent")
 
 
-    @skip("There should be a link between a message and a person that now does not exist")
-    def test_it_should_create_an_output_message_for_person_without_contacts(self):
-        person_without_contacts = Person.objects.create(api_instance=self.api_instance1, name= 'I don\'t have any contacts')
-        message_to_3 = Message.objects.create(content = 'hello there', subject='Wow!', writeitinstance= self.writeitinstance1, persons = [self.person1,\
-            self.person2, person_without_contacts])
-
-        outbound_messages = OutboundMessage.objects.filter(message=message_to_3)
-        self.assertEquals(outbound_messages.count(), 3)
-
 
     def test_there_is_a_manager_that_retrieves_all_the_available_messages(self):
         outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact1, status="ready")
