@@ -20,6 +20,7 @@ from django.contrib.sites.models import Site
 import uuid
 from django.template.defaultfilters import slugify
 import re
+from django.contrib.auth.models import User
 
 
 class WriteItInstance(models.Model):
@@ -27,6 +28,7 @@ class WriteItInstance(models.Model):
     name = models.CharField(max_length=255)
     slug = models.CharField(max_length=255)
     persons = models.ManyToManyField(Person, related_name='writeit_instances', through='Membership')
+    owner = models.ForeignKey(User)
 
     @models.permalink
     def get_absolute_url(self):
