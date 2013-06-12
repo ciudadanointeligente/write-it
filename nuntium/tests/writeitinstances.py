@@ -23,11 +23,23 @@ class InstanceTestCase(TestCase):
         writeitinstance = WriteItInstance.objects.create(
             name='instance 1', 
             slug='instance-1',
+
             owner=self.owner)
         self.assertTrue(writeitinstance.id)
         self.assertEquals(writeitinstance.name, 'instance 1')
         self.assertEquals(writeitinstance.slug, 'instance-1')
         self.assertEquals(writeitinstance.owner, self.owner)
+
+    def test_moderation_needed_in_all_messages(self):
+        
+        writeitinstance = WriteItInstance.objects.create(
+            name='instance 1', 
+            slug='instance-1',
+            moderation_needed_in_all_messages=False, 
+            owner=self.owner)
+
+        self.assertTrue(writeitinstance)
+
 
     def test_instance_unicode(self):
         writeitinstance = WriteItInstance.objects.all()[0]

@@ -30,7 +30,7 @@ class TestMessages(TestCase):
             author_name='Felipe', 
             author_email="falvarez@votainteligente.cl", 
             subject='Fiera es una perra feroz', 
-            writeitinstance= self.writeitinstance1, 
+            writeitinstance= self.writeitinstance1,
             persons = [self.person1])
         self.assertTrue(message)
         self.assertEquals(message.content, "Content 1")
@@ -205,6 +205,38 @@ class MessageDetailView(TestCase):
 
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.context['message'], self.message)
+
+
+
+class AllMessagesWithModerationInAWriteItInstances(TestCase):
+    def setUp(self):
+        super(AllMessagesWithModerationInAWriteItInstances,self).setUp()
+        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.writeitinstance1.moderation_needed_in_all_messages = True
+        self.writeitinstance1.save()
+        self.person1 = Person.objects.all()[0]
+
+    @skip("error in field for writeitinstance")
+    def test_when_you_create_a_public_message_in_the_instance(self):
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Subject 1',
+            writeitinstance= self.writeitinstance1, 
+            persons = [self.person1])
+        #it does not have any confirmation previous to the confirmation
+        self.assertTrue(message.moderation is None)
+        #Cofirmation only
+        self.assertEquals(len(mail.outbox),1)
+        #the message is confirmated
+        message.recently_confirmated()
+
+        self.assertFalse(message.moderation is None)
+        self.assertEquals(len(mail.outbox),2)
+        #the second should be the confirmation thing
+        #just to make sure 
+        self.assertModerationMailSent(message, mail.outbox[1])
+
 
 
 

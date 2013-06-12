@@ -29,6 +29,7 @@ class WriteItInstance(models.Model):
     name = models.CharField(max_length=255)
     slug = models.CharField(max_length=255)
     persons = models.ManyToManyField(Person, related_name='writeit_instances', through='Membership')
+    moderation_needed_in_all_messages = models.BooleanField(help_text=_("Every message is going to have a moderation mail"))
     owner = models.ForeignKey(User)
 
     @models.permalink
