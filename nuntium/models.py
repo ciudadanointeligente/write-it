@@ -75,9 +75,12 @@ class Message(models.Model):
         super(Message, self).__init__(*args, **kwargs)
 
     #TODO: only new outbound_messages
-    def from_new_to_ready(self):
+    def recently_confirmated(self):
+        status = 'ready'
+        if not self.public:
+            status = 'needmodera'
         for outbound_message in self.outboundmessage_set.all():
-            outbound_message.status = 'ready'
+            outbound_message.status = status
             outbound_message.save()
         
     @property
@@ -158,6 +161,7 @@ class OutboundMessage(models.Model):
         ("ready",_("Ready to send")),
         ("sent",_("Sent")),
         ("error",_("Error sending it")),
+        ("needmodera",_("Needs moderation")),
         )
 
     contact = models.ForeignKey(Contact)

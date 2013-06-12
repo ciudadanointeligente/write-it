@@ -77,5 +77,5 @@ class ConfirmView(DetailView):
         confirmation = self.get_object()
         confirmation.confirmated_at = datetime.now()
         confirmation.save()
-        confirmation.message.from_new_to_ready()
+        confirmation.message.recently_confirmated()
         return super(ConfirmView,self).get(*args, **kwargs)

@@ -159,7 +159,7 @@ class TestMessages(TestCase):
     def test_message_set_new_outbound_messages_to_ready(self):
         message = Message.objects.create(content = 'Content 1', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])
 
-        message.from_new_to_ready()
+        message.recently_confirmated()
 
         outbound_message_to_pedro = OutboundMessage.objects.filter(message=message)[0]
         self.assertEquals(outbound_message_to_pedro.status, 'ready')
@@ -192,6 +192,42 @@ class MessageDetailView(TestCase):
 
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.context['message'], self.message)
+
+
+
+class PrivateMessagesTestCase(TestCase):
+    def setUp(self):
+        super(PrivateMessagesTestCase,self).setUp()
+        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.person1 = Person.objects.all()[0]
+        self.private_message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Subject 1', 
+            public=False,
+            writeitinstance= self.writeitinstance1, 
+            persons = [self.person1])
+        self.confirmation = Confirmation.objects.create(message=self.private_message)
+        
+
+    
+
+    def test_private_messages_confirmation_created_move_from_new_to_needs_moderation(self):
+        self.private_message.recently_confirmated()
+        outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message)
+        self.assertEquals(outbound_message_to_pedro.status, 'needmodera')
+
+    def test_outbound_messages_of_a_confirmed_message_are_waiting_for_moderation(self):
+        #I need to do a get to the confirmation url
+        url = reverse('confirm', kwargs={
+            'slug':self.confirmation.key
+            })
+        response = self.client.get(url)
+        #this works proven somewhere else
+        outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message)
+        self.assertEquals(outbound_message_to_pedro.status, 'needmodera')
+
+
 
 
 
