@@ -78,6 +78,7 @@ class Message(models.Model):
     def recently_confirmated(self):
         status = 'ready'
         if not self.public:
+            self.send_moderation_mail()
             status = 'needmodera'
         for outbound_message in self.outboundmessage_set.all():
             outbound_message.status = status
@@ -111,6 +112,25 @@ class Message(models.Model):
             for person in self.persons:
                 for contact in person.contact_set.all():
                     outbound_message = OutboundMessage.objects.get_or_create(contact=contact, message=self)
+
+
+    def send_moderation_mail(self):
+        plaintext = get_template('nuntium/mails/moderation_mail.txt')
+        htmly     = get_template('nuntium/mails/moderation_mail.html')
+        d = Context({ 
+            'message': self
+             })
+
+        text_content = plaintext.render(d)
+        html_content = htmly.render(d)
+
+        msg = EmailMultiAlternatives( _('Confirmation email for a message in WriteIt'), 
+            text_content,#content
+            settings.DEFAULT_FROM_EMAIL,#From
+            [self.writeitinstance.owner.email]#To
+            )
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
 
     def __unicode__(self):
         return _('%(subject)s at %(instance)s') % {

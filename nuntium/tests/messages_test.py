@@ -9,6 +9,7 @@ from popit.models import Person, ApiInstance
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.template.defaultfilters import slugify
+from django.core import mail
 import datetime
 
 
@@ -227,11 +228,44 @@ class PrivateMessagesTestCase(TestCase):
         outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message)
         self.assertEquals(outbound_message_to_pedro.status, 'needmodera')
 
+    def test_when_moderation_needed_a_mail_for_its_owner_is_sent(self):
+        self.private_message.recently_confirmated()
+        #There should be two 
+        #One is created for confirmation
+        #The other one is created for the moderation thing
+        self.assertEquals(len(mail.outbox),2)
+        moderation_mail = mail.outbox[1]
+        #it is sent to the owner of the instance
+        self.assertEquals(moderation_mail.to[0], self.private_message.writeitinstance.owner.email)
+        self.assertTrue(self.private_message.content in moderation_mail.body)
+        self.assertTrue(self.private_message.subject in moderation_mail.body)
+        self.assertTrue(self.private_message.author_name in moderation_mail.body)
+        self.assertTrue(self.private_message.author_email in moderation_mail.body)
+
+    def test_message_send_moderation_message(self):
+        self.private_message.send_moderation_mail()
+
+        self.assertEquals(len(mail.outbox),2)
+        moderation_mail = mail.outbox[1]
+        self.assertEquals(moderation_mail.to[0], self.private_message.writeitinstance.owner.email)
+        self.assertTrue(self.private_message.content in moderation_mail.body)
+        self.assertTrue(self.private_message.subject in moderation_mail.body)
+        self.assertTrue(self.private_message.author_name in moderation_mail.body)
+        self.assertTrue(self.private_message.author_email in moderation_mail.body)
+        self.assertTrue(self.person1.name in moderation_mail.body)
+
+
+
+
+
+
+
 
 
 
 
     
+
 
 
 

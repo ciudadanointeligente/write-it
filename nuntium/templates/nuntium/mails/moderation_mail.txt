@@ -1,0 +1,20 @@
+Hi {{ message.writeitinstance.owner.username }}:
+
+Please moderate this message:
+
+====================================
+From: {{ message.author_name }}
+From Email: {{ message.author_email }}
+Subject: {{ message.subject }}
+To:{% for person in message.people %}{{ person.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+The message:
+
+{{ message.content }}
+
+
+
+=============================
+
+Thanks
+--
+The WriteIt-team
