@@ -29,6 +29,7 @@ class WriteItInstance(models.Model):
     name = models.CharField(max_length=255)
     slug = models.CharField(max_length=255)
     persons = models.ManyToManyField(Person, related_name='writeit_instances', through='Membership')
+    moderation_needed_in_all_messages = models.BooleanField(help_text=_("Every message is going to have a moderation mail"))
     owner = models.ForeignKey(User)
 
     @models.permalink
@@ -84,6 +85,10 @@ class Message(models.Model):
         for outbound_message in self.outboundmessage_set.all():
             outbound_message.status = status
             outbound_message.save()
+
+        if self.writeitinstance.moderation_needed_in_all_messages:
+            Moderation.objects.create(message=self)
+            self.send_moderation_mail()
         
     @property
     def people(self):
@@ -97,32 +102,35 @@ class Message(models.Model):
     def get_absolute_url(self):
         return ('message_detail', (), {'slug': self.slug})
 
-    def save(self, *args, **kwargs):
+    def slugifyme(self):
+        self.slug = slugify(self.subject)
+        #Previously created messages with the same slug
+        previously = Message.objects.filter(subject=self.subject).count()
+        if previously > 0:
+            self.slug = self.slug + '-' + str(previously + 1)
+    def veryfy_people(self):
+        if not self.persons:
+            raise TypeError(_('A message needs persons to be sent'))
 
-        created = self.id is None
+    def create_moderation(self):
+        Moderation.objects.create(message=self)
 
-        if created:
-            self.slug = slugify(self.subject)
-            #Previously created messages with the same slug
-            previously = Message.objects.filter(subject=self.subject).count()
-            if previously > 0:
-                self.slug = self.slug + '-' + str(previously + 1)
-
-            if not self.persons:
-                raise TypeError(_('A message needs persons to be sent'))
-
-
-
-        super(Message, self).save(*args, **kwargs)
-        if created and not self.public:
-            Moderation.objects.create(message=self)
-
+    def create_outbound_messages(self):
         if self.persons:
             for person in self.persons:
                 for contact in person.contact_set.all():
                     outbound_message = OutboundMessage.objects.get_or_create(contact=contact, message=self)
 
-
+    def save(self, *args, **kwargs):
+        created = self.id is None
+        if created:
+            self.slugifyme()
+            self.veryfy_people()
+        super(Message, self).save(*args, **kwargs)
+        if created:
+            if not self.public:
+                self.create_moderation()
+        self.create_outbound_messages()
 
     def set_to_ready(self):
         for outbound_message in self.outboundmessage_set.all():
