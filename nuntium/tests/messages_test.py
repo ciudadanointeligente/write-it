@@ -215,8 +215,7 @@ class AllMessagesWithModerationInAWriteItInstances(TestCase):
         self.writeitinstance1.moderation_needed_in_all_messages = True
         self.writeitinstance1.save()
         self.person1 = Person.objects.all()[0]
-        
-    @skip("refactor message save method")
+
     def test_when_you_create_a_public_message_in_the_instance(self):
         message = Message.objects.create(content = 'Content 1', 
             author_name='Felipe', 
@@ -224,18 +223,17 @@ class AllMessagesWithModerationInAWriteItInstances(TestCase):
             subject='Subject 1',
             writeitinstance= self.writeitinstance1, 
             persons = [self.person1])
-        #it does not have any confirmation previous to the confirmation
-        self.assertTrue(message.moderation is None)
-        #Cofirmation only
-        self.assertEquals(len(mail.outbox),1)
+        #it does not have any moderation previous to the confirmation
+        self.assertEquals(Moderation.objects.filter(message=message).count(), 0)
+        self.assertEquals(len(mail.outbox),0)
         #the message is confirmated
         message.recently_confirmated()
 
         self.assertFalse(message.moderation is None)
-        self.assertEquals(len(mail.outbox),2)
+        self.assertEquals(len(mail.outbox),1)
         #the second should be the confirmation thing
         #just to make sure 
-        self.assertModerationMailSent(message, mail.outbox[1])
+        self.assertModerationMailSent(message, mail.outbox[0])
 
 
 

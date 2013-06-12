@@ -85,6 +85,10 @@ class Message(models.Model):
         for outbound_message in self.outboundmessage_set.all():
             outbound_message.status = status
             outbound_message.save()
+
+        if self.writeitinstance.moderation_needed_in_all_messages:
+            Moderation.objects.create(message=self)
+            self.send_moderation_mail()
         
     @property
     def people(self):
@@ -123,8 +127,9 @@ class Message(models.Model):
             self.slugifyme()
             self.veryfy_people()
         super(Message, self).save(*args, **kwargs)
-        if created and not self.public:
-            self.create_moderation()
+        if created:
+            if not self.public:
+                self.create_moderation()
         self.create_outbound_messages()
 
     def set_to_ready(self):
