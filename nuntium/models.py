@@ -99,7 +99,9 @@ class Message(models.Model):
 
     def save(self, *args, **kwargs):
 
-        if self.id is None:
+        created = self.id is None
+
+        if created:
             self.slug = slugify(self.subject)
             #Previously created messages with the same slug
             previously = Message.objects.filter(subject=self.subject).count()
@@ -108,11 +110,18 @@ class Message(models.Model):
 
             if not self.persons:
                 raise TypeError(_('A message needs persons to be sent'))
+
+
+
         super(Message, self).save(*args, **kwargs)
+        if created and not self.public:
+            Moderation.objects.create(message=self)
+
         if self.persons:
             for person in self.persons:
                 for contact in person.contact_set.all():
                     outbound_message = OutboundMessage.objects.get_or_create(contact=contact, message=self)
+
 
 
     def set_to_ready(self):

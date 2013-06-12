@@ -257,7 +257,7 @@ class ModerationMessagesTestCase(TestCase):
         with patch('uuid.uuid1') as string:
             string.return_value.hex = 'oliwi'
 
-            moderation = Moderation.objects.create(message=self.private_message)
+            moderation, created = Moderation.objects.get_or_create(message=self.private_message)
 
             self.assertTrue(moderation)
             self.assertEquals(moderation.message, self.private_message)
@@ -265,9 +265,8 @@ class ModerationMessagesTestCase(TestCase):
             string.assert_called()
 
     def test_there_is_a_moderation_url_that_sets_the_message_to_ready(self):
-        moderation = Moderation.objects.create(message=self.private_message)
         url = reverse('moderation_accept', kwargs={
-            'slug': moderation.key
+            'slug': self.private_message.moderation.key
             })
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
@@ -284,9 +283,8 @@ class ModerationMessagesTestCase(TestCase):
         think that the private message should not go anywhere
         and it should be deleted
         '''
-        moderation = Moderation.objects.create(message=self.private_message)
         url = reverse('moderation_rejected', kwargs={
-            'slug': moderation.key
+            'slug': self.private_message.moderation.key
             })
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
@@ -297,7 +295,6 @@ class ModerationMessagesTestCase(TestCase):
 
 
     def test_when_moderation_needed_a_mail_for_its_owner_is_sent(self):
-        moderation, created = Moderation.objects.get_or_create(message=self.private_message)
         self.private_message.recently_confirmated()
         #There should be two 
         #One is created for confirmation
@@ -313,14 +310,24 @@ class ModerationMessagesTestCase(TestCase):
         current_site = Site.objects.get_current()
         current_domain = 'http://'+current_site.domain
         url_rejected = reverse('moderation_rejected', kwargs={
-            'slug': moderation.key
+            'slug': self.private_message.moderation.key
             })
         url_rejected = current_domain+url_rejected
         url_accept = reverse('moderation_accept', kwargs={
-            'slug': moderation.key
+            'slug': self.private_message.moderation.key
             })
         url_accept = current_domain+url_accept
-
-
         self.assertTrue(url_rejected in moderation_mail.body)
         self.assertTrue(url_accept in moderation_mail.body)
+
+
+    def test_creates_automatically_a_moderation_when_a_private_message_is_created(self):
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Fiera es una perra feroz', 
+            public=False,
+            writeitinstance= self.writeitinstance1, 
+            persons = [self.person1])
+
+        self.assertFalse(message.moderation is None)
