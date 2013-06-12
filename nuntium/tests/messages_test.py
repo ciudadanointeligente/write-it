@@ -256,12 +256,16 @@ class ModerationMessagesTestCase(TestCase):
         #I make sure that uuid.uuid1 is called and I get a sort of random key
         with patch('uuid.uuid1') as string:
             string.return_value.hex = 'oliwi'
+            message = Message.objects.create(content = 'Content 1', 
+                author_name='Felipe', 
+                author_email="falvarez@votainteligente.cl", 
+                subject='Fiera es una perra feroz', 
+                public=False,
+                writeitinstance= self.writeitinstance1, 
+                persons = [self.person1])
 
-            moderation, created = Moderation.objects.get_or_create(message=self.private_message)
-
-            self.assertTrue(moderation)
-            self.assertEquals(moderation.message, self.private_message)
-            self.assertEquals(moderation.key, 'oliwi')
+            self.assertFalse(message.moderation is None)
+            self.assertEquals(message.moderation.key, 'oliwi')
             string.assert_called()
 
     def test_there_is_a_moderation_url_that_sets_the_message_to_ready(self):
@@ -331,3 +335,16 @@ class ModerationMessagesTestCase(TestCase):
             persons = [self.person1])
 
         self.assertFalse(message.moderation is None)
+
+
+    def test_a_moderation_does_not_change_its_key_on_save(self):
+        '''
+        I found that everytime I did resave a moderation
+        it key was regenerated
+        '''
+        previous_key = self.private_message.moderation.key
+        self.private_message.moderation.save()
+        moderation = Moderation.objects.get(message=self.private_message)
+        post_key = moderation.key
+
+        self.assertEquals(previous_key, post_key)

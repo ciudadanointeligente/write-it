@@ -349,6 +349,9 @@ class Moderation(models.Model):
     key = models.CharField(max_length=256)
 
 
-    def __init__(self, *args, **kwargs):
-        super(Moderation, self).__init__(*args, **kwargs)
-        self.key = str(uuid.uuid1().hex)
+    def save(self, *args, **kwargs):
+        created = self.id is None
+        if created:
+            self.key = str(uuid.uuid1().hex)
+        super(Moderation, self).save(*args, **kwargs)
+        
