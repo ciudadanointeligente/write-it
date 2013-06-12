@@ -21,6 +21,7 @@ import uuid
 from django.template.defaultfilters import slugify
 import re
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 
 
 class WriteItInstance(models.Model):
@@ -123,8 +124,20 @@ class Message(models.Model):
     def send_moderation_mail(self):
         plaintext = get_template('nuntium/mails/moderation_mail.txt')
         htmly     = get_template('nuntium/mails/moderation_mail.html')
+        current_site = Site.objects.get_current()
+        current_domain = 'http://'+current_site.domain
+        url_rejected = reverse('moderation_rejected', kwargs={
+            'slug': self.moderation.key
+            })
+        url_rejected = current_domain+url_rejected
+        url_accept = reverse('moderation_accept', kwargs={
+            'slug': self.moderation.key
+            })
+        url_accept = current_domain+url_accept
         d = Context({ 
-            'message': self
+            'message': self,
+            'url_rejected':url_rejected,
+            'url_accept':url_accept
              })
 
         text_content = plaintext.render(d)

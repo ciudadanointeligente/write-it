@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 
 
 
+
 class HomeTemplateView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(HomeTemplateView, self).get_context_data(**kwargs)
@@ -80,10 +81,13 @@ class ConfirmView(DetailView):
         confirmation.message.recently_confirmated()
         return super(ConfirmView,self).get(*args, **kwargs)
 
-class AcceptModerationView(DetailView):
-    template_name = "nuntium/moderation_accepted.html"
+class ModerationView(DetailView):
     model = Moderation
     slug_field = 'key'
+
+class AcceptModerationView(ModerationView):
+    template_name = "nuntium/moderation_accepted.html"
+    
 
     def get(self, *args, **kwargs):
         moderation = self.get_object()
@@ -91,17 +95,10 @@ class AcceptModerationView(DetailView):
         return super(AcceptModerationView, self).get(*args,**kwargs)
 
 
-class RejectModerationView(DetailView):
+class RejectModerationView(ModerationView):
     template_name = "nuntium/moderation_rejected.html"
-    model = Moderation
-    slug_field = 'key'
 
-    def dispatch(self, *args, **kwargs):
-        return super(RejectModerationView, self).dispatch(*args, **kwargs)
-
-    def get(self, *args, **kwargs):
-        
-        
+    def get(self, *args, **kwargs):        
         get = super(RejectModerationView, self).get(*args,**kwargs)
         self.get_object().message.delete()
         return get

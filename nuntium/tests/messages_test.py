@@ -12,6 +12,7 @@ from django.template.defaultfilters import slugify
 from django.core import mail
 from mock import patch
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.sites.models import Site
 import datetime
 
 
@@ -222,12 +223,14 @@ class ModerationMessagesTestCase(TestCase):
         self.confirmation = Confirmation.objects.create(message=self.private_message)    
 
     def test_private_messages_confirmation_created_move_from_new_to_needs_moderation(self):
+        moderation, created = Moderation.objects.get_or_create(message=self.private_message)
         self.private_message.recently_confirmated()
         outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message)
         self.assertEquals(outbound_message_to_pedro.status, 'needmodera')
 
     def test_outbound_messages_of_a_confirmed_message_are_waiting_for_moderation(self):
         #I need to do a get to the confirmation url
+        moderation, created = Moderation.objects.get_or_create(message=self.private_message)
         url = reverse('confirm', kwargs={
             'slug':self.confirmation.key
             })
@@ -236,21 +239,8 @@ class ModerationMessagesTestCase(TestCase):
         outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message)
         self.assertEquals(outbound_message_to_pedro.status, 'needmodera')
 
-    def test_when_moderation_needed_a_mail_for_its_owner_is_sent(self):
-        self.private_message.recently_confirmated()
-        #There should be two 
-        #One is created for confirmation
-        #The other one is created for the moderation thing
-        self.assertEquals(len(mail.outbox),2)
-        moderation_mail = mail.outbox[1]
-        #it is sent to the owner of the instance
-        self.assertEquals(moderation_mail.to[0], self.private_message.writeitinstance.owner.email)
-        self.assertTrue(self.private_message.content in moderation_mail.body)
-        self.assertTrue(self.private_message.subject in moderation_mail.body)
-        self.assertTrue(self.private_message.author_name in moderation_mail.body)
-        self.assertTrue(self.private_message.author_email in moderation_mail.body)
-
     def test_message_send_moderation_message(self):
+        moderation, created = Moderation.objects.get_or_create(message=self.private_message)
         self.private_message.send_moderation_mail()
 
         self.assertEquals(len(mail.outbox),2)
@@ -304,3 +294,33 @@ class ModerationMessagesTestCase(TestCase):
         #If someone knows how to do the DoesNotExist or where to extend from 
         #I could do a self.assertRaises but I'm not taking any more time in this
         self.assertEquals(Message.objects.filter(id=self.private_message.id).count(), 0)
+
+
+    def test_when_moderation_needed_a_mail_for_its_owner_is_sent(self):
+        moderation, created = Moderation.objects.get_or_create(message=self.private_message)
+        self.private_message.recently_confirmated()
+        #There should be two 
+        #One is created for confirmation
+        #The other one is created for the moderation thing
+        self.assertEquals(len(mail.outbox),2)
+        moderation_mail = mail.outbox[1]
+        #it is sent to the owner of the instance
+        self.assertEquals(moderation_mail.to[0], self.private_message.writeitinstance.owner.email)
+        self.assertTrue(self.private_message.content in moderation_mail.body)
+        self.assertTrue(self.private_message.subject in moderation_mail.body)
+        self.assertTrue(self.private_message.author_name in moderation_mail.body)
+        self.assertTrue(self.private_message.author_email in moderation_mail.body)
+        current_site = Site.objects.get_current()
+        current_domain = 'http://'+current_site.domain
+        url_rejected = reverse('moderation_rejected', kwargs={
+            'slug': moderation.key
+            })
+        url_rejected = current_domain+url_rejected
+        url_accept = reverse('moderation_accept', kwargs={
+            'slug': moderation.key
+            })
+        url_accept = current_domain+url_accept
+
+
+        self.assertTrue(url_rejected in moderation_mail.body)
+        self.assertTrue(url_accept in moderation_mail.body)
