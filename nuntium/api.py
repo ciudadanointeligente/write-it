@@ -59,7 +59,7 @@ class MessageResource(ModelResource):
 
     def obj_create(self, bundle, **kwargs):
         bundle = super(MessageResource, self).obj_create(bundle, **kwargs)
-        bundle.obj.from_new_to_ready()
+        bundle.obj.recently_confirmated()
         return bundle
 
 

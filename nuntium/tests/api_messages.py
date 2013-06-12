@@ -11,11 +11,10 @@ class InstanceResourceTestCase(ResourceTestCase):
     def setUp(self):
         super(InstanceResourceTestCase,self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
-        self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test")
+        self.user = User.objects.all()[0]
+        self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
         self.api_client = TestApiClient()
-        self.user = User.objects.create_user(username='the_user',
-                                                password='joe',
-                                                email='doe@joe.cl')
+        
         ApiKey.objects.create(user=self.user)
 
         self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
@@ -80,15 +79,11 @@ class MessageResourceTestCase(ResourceTestCase):
     def setUp(self):
         super(MessageResourceTestCase,self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
-        self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test")
-
+        self.user = User.objects.all()[0]
+        self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
         self.api_client = TestApiClient()
-        self.user = User.objects.create_user(username='the_user',
-                                                password='joe',
-                                                email='doe@joe.cl'
-                                                )
-        self.user.is_staff = True
-        self.user.save()
+        
+        
         ApiKey.objects.create(user=self.user)
 
         self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
