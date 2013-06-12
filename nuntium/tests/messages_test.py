@@ -215,25 +215,26 @@ class AllMessagesWithModerationInAWriteItInstances(TestCase):
         self.writeitinstance1.moderation_needed_in_all_messages = True
         self.writeitinstance1.save()
         self.person1 = Person.objects.all()[0]
-
-    def test_when_you_create_a_public_message_in_the_instance(self):
-        message = Message.objects.create(content = 'Content 1', 
+        self.message = Message.objects.create(content = 'Content 1', 
             author_name='Felipe', 
             author_email="falvarez@votainteligente.cl", 
             subject='Subject 1',
             writeitinstance= self.writeitinstance1, 
             persons = [self.person1])
-        #it does not have any moderation previous to the confirmation
-        self.assertEquals(Moderation.objects.filter(message=message).count(), 0)
+
+    def test_a_message_does_not_have_a_moderation_previous_to_confirmation(self):
+        self.assertEquals(Moderation.objects.filter(message=self.message).count(), 0)
+
+    def test_when_you_create_a_public_message_in_the_instance(self):
         self.assertEquals(len(mail.outbox),0)
         #the message is confirmated
-        message.recently_confirmated()
+        self.message.recently_confirmated()
 
-        self.assertFalse(message.moderation is None)
+        self.assertFalse(self.message.moderation is None)
         self.assertEquals(len(mail.outbox),1)
         #the second should be the confirmation thing
         #just to make sure 
-        self.assertModerationMailSent(message, mail.outbox[0])
+        self.assertModerationMailSent(self.message, mail.outbox[0])
 
 
 
@@ -275,13 +276,8 @@ class ModerationMessagesTestCase(TestCase):
 
         self.assertEquals(len(mail.outbox),2)
         moderation_mail = mail.outbox[1]
-        self.assertEquals(moderation_mail.to[0], self.private_message.writeitinstance.owner.email)
-        self.assertTrue(self.private_message.content in moderation_mail.body)
-        self.assertTrue(self.private_message.subject in moderation_mail.body)
-        self.assertTrue(self.private_message.author_name in moderation_mail.body)
-        self.assertTrue(self.private_message.author_email in moderation_mail.body)
-        self.assertTrue(self.person1.name in moderation_mail.body)
-
+        self.assertModerationMailSent(self.private_message, moderation_mail)
+        
     def test_create_a_moderation(self):
         #I make sure that uuid.uuid1 is called and I get a sort of random key
         with patch('uuid.uuid1') as string:
