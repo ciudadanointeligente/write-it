@@ -11,6 +11,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.template.defaultfilters import slugify
 from django.core import mail
 from mock import patch
+from django.core.exceptions import ObjectDoesNotExist
 import datetime
 
 
@@ -260,20 +261,6 @@ class ModerationMessagesTestCase(TestCase):
         self.assertTrue(self.private_message.author_name in moderation_mail.body)
         self.assertTrue(self.private_message.author_email in moderation_mail.body)
         self.assertTrue(self.person1.name in moderation_mail.body)
-        
-    def test_there_is_a_moderation_url_that_sets_the_message_to_ready(self):
-        Moderation.objects.create(message=self.private_message)
-        url = reverse('moderation_accept', kwargs={
-            'slug':self.private_message.moderation.key
-            })
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'nuntium/moderation_accepted.html')
-
-        #private_message = Message.objects.get(id=self.private_message.id)
-        outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message.id)
-        self.assertEquals(outbound_message_to_pedro.status, 'ready')
-
 
     def test_create_a_moderation(self):
         #I make sure that uuid.uuid1 is called and I get a sort of random key
@@ -287,20 +274,33 @@ class ModerationMessagesTestCase(TestCase):
             self.assertEquals(moderation.key, 'oliwi')
             string.assert_called()
 
+    def test_there_is_a_moderation_url_that_sets_the_message_to_ready(self):
+        moderation = Moderation.objects.create(message=self.private_message)
+        url = reverse('moderation_accept', kwargs={
+            'slug': moderation.key
+            })
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'nuntium/moderation_accepted.html')
+
+        #private_message = Message.objects.get(id=self.private_message.id)
+        outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message.id)
+        self.assertEquals(outbound_message_to_pedro.status, 'ready')
 
 
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+    def test_there_is_a_reject_moderation_url_that_deletes_the_message(self):
+        '''
+        This is the case when you proud owner of a writeitInstance 
+        think that the private message should not go anywhere
+        and it should be deleted
+        '''
+        moderation = Moderation.objects.create(message=self.private_message)
+        url = reverse('moderation_rejected', kwargs={
+            'slug': moderation.key
+            })
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'nuntium/moderation_rejected.html')
+        #If someone knows how to do the DoesNotExist or where to extend from 
+        #I could do a self.assertRaises but I'm not taking any more time in this
+        self.assertEquals(Message.objects.filter(id=self.private_message.id).count(), 0)

@@ -80,7 +80,7 @@ class ConfirmView(DetailView):
         confirmation.message.recently_confirmated()
         return super(ConfirmView,self).get(*args, **kwargs)
 
-class ModerationView(DetailView):
+class AcceptModerationView(DetailView):
     template_name = "nuntium/moderation_accepted.html"
     model = Moderation
     slug_field = 'key'
@@ -88,4 +88,20 @@ class ModerationView(DetailView):
     def get(self, *args, **kwargs):
         moderation = self.get_object()
         moderation.message.set_to_ready()
-        return super(ModerationView, self).get(*args,**kwargs)
+        return super(AcceptModerationView, self).get(*args,**kwargs)
+
+
+class RejectModerationView(DetailView):
+    template_name = "nuntium/moderation_rejected.html"
+    model = Moderation
+    slug_field = 'key'
+
+    def dispatch(self, *args, **kwargs):
+        return super(RejectModerationView, self).dispatch(*args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        
+        
+        get = super(RejectModerationView, self).get(*args,**kwargs)
+        self.get_object().message.delete()
+        return get
