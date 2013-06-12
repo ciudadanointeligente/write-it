@@ -215,8 +215,8 @@ class AllMessagesWithModerationInAWriteItInstances(TestCase):
         self.writeitinstance1.moderation_needed_in_all_messages = True
         self.writeitinstance1.save()
         self.person1 = Person.objects.all()[0]
-
-    @skip("error in field for writeitinstance")
+        
+    @skip("refactor message save method")
     def test_when_you_create_a_public_message_in_the_instance(self):
         message = Message.objects.create(content = 'Content 1', 
             author_name='Felipe', 
