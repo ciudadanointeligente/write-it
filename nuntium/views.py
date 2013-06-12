@@ -1,7 +1,7 @@
 # Create your views here.
 from django.views.generic import TemplateView, CreateView, DetailView
 from django.core.urlresolvers import reverse
-from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message
+from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation
 from nuntium.forms import MessageCreateForm
 from datetime import datetime
 from django.http import Http404
@@ -79,3 +79,13 @@ class ConfirmView(DetailView):
         confirmation.save()
         confirmation.message.recently_confirmated()
         return super(ConfirmView,self).get(*args, **kwargs)
+
+class ModerationView(DetailView):
+    template_name = "nuntium/moderation_accepted.html"
+    model = Moderation
+    slug_field = 'key'
+
+    def get(self, *args, **kwargs):
+        moderation = self.get_object()
+        moderation.message.set_to_ready()
+        return super(ModerationView, self).get(*args,**kwargs)

@@ -114,6 +114,12 @@ class Message(models.Model):
                     outbound_message = OutboundMessage.objects.get_or_create(contact=contact, message=self)
 
 
+    def set_to_ready(self):
+        for outbound_message in self.outboundmessage_set.all():
+            outbound_message.status = 'ready'
+            outbound_message.save()
+
+
     def send_moderation_mail(self):
         plaintext = get_template('nuntium/mails/moderation_mail.txt')
         htmly     = get_template('nuntium/mails/moderation_mail.html')
@@ -314,3 +320,13 @@ def send_an_email_to_the_author(sender,instance, created, **kwargs):
 
 
 post_save.connect(send_an_email_to_the_author, sender=Confirmation)
+
+
+class Moderation(models.Model):
+    message = models.OneToOneField(Message, related_name='moderation')
+    key = models.CharField(max_length=256)
+
+
+    def __init__(self, *args, **kwargs):
+        super(Moderation, self).__init__(*args, **kwargs)
+        self.key = str(uuid.uuid1().hex)
