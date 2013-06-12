@@ -20,6 +20,8 @@ from django.contrib.sites.models import Site
 import uuid
 from django.template.defaultfilters import slugify
 import re
+from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 
 
 class WriteItInstance(models.Model):
@@ -27,6 +29,7 @@ class WriteItInstance(models.Model):
     name = models.CharField(max_length=255)
     slug = models.CharField(max_length=255)
     persons = models.ManyToManyField(Person, related_name='writeit_instances', through='Membership')
+    owner = models.ForeignKey(User)
 
     @models.permalink
     def get_absolute_url(self):
@@ -73,9 +76,13 @@ class Message(models.Model):
         super(Message, self).__init__(*args, **kwargs)
 
     #TODO: only new outbound_messages
-    def from_new_to_ready(self):
+    def recently_confirmated(self):
+        status = 'ready'
+        if not self.public:
+            self.send_moderation_mail()
+            status = 'needmodera'
         for outbound_message in self.outboundmessage_set.all():
-            outbound_message.status = 'ready'
+            outbound_message.status = status
             outbound_message.save()
         
     @property
@@ -92,7 +99,9 @@ class Message(models.Model):
 
     def save(self, *args, **kwargs):
 
-        if self.id is None:
+        created = self.id is None
+
+        if created:
             self.slug = slugify(self.subject)
             #Previously created messages with the same slug
             previously = Message.objects.filter(subject=self.subject).count()
@@ -101,11 +110,55 @@ class Message(models.Model):
 
             if not self.persons:
                 raise TypeError(_('A message needs persons to be sent'))
+
+
+
         super(Message, self).save(*args, **kwargs)
+        if created and not self.public:
+            Moderation.objects.create(message=self)
+
         if self.persons:
             for person in self.persons:
                 for contact in person.contact_set.all():
                     outbound_message = OutboundMessage.objects.get_or_create(contact=contact, message=self)
+
+
+
+    def set_to_ready(self):
+        for outbound_message in self.outboundmessage_set.all():
+            outbound_message.status = 'ready'
+            outbound_message.save()
+
+
+    def send_moderation_mail(self):
+        plaintext = get_template('nuntium/mails/moderation_mail.txt')
+        htmly     = get_template('nuntium/mails/moderation_mail.html')
+        current_site = Site.objects.get_current()
+        current_domain = 'http://'+current_site.domain
+        url_rejected = reverse('moderation_rejected', kwargs={
+            'slug': self.moderation.key
+            })
+        url_rejected = current_domain+url_rejected
+        url_accept = reverse('moderation_accept', kwargs={
+            'slug': self.moderation.key
+            })
+        url_accept = current_domain+url_accept
+        d = Context({ 
+            'message': self,
+            'url_rejected':url_rejected,
+            'url_accept':url_accept
+             })
+
+        text_content = plaintext.render(d)
+        html_content = htmly.render(d)
+
+        msg = EmailMultiAlternatives( _('Confirmation email for a message in WriteIt'), 
+            text_content,#content
+            settings.DEFAULT_FROM_EMAIL,#From
+            [self.writeitinstance.owner.email]#To
+            )
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
 
     def __unicode__(self):
         return _('%(subject)s at %(instance)s') % {
@@ -156,6 +209,7 @@ class OutboundMessage(models.Model):
         ("ready",_("Ready to send")),
         ("sent",_("Sent")),
         ("error",_("Error sending it")),
+        ("needmodera",_("Needs moderation")),
         )
 
     contact = models.ForeignKey(Contact)
@@ -288,3 +342,16 @@ def send_an_email_to_the_author(sender,instance, created, **kwargs):
 
 
 post_save.connect(send_an_email_to_the_author, sender=Confirmation)
+
+
+class Moderation(models.Model):
+    message = models.OneToOneField(Message, related_name='moderation')
+    key = models.CharField(max_length=256)
+
+
+    def save(self, *args, **kwargs):
+        created = self.id is None
+        if created:
+            self.key = str(uuid.uuid1().hex)
+        super(Moderation, self).save(*args, **kwargs)
+        
