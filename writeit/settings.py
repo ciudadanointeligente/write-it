@@ -185,6 +185,10 @@ LOGGING = {
 #Email settings
 DEFAULT_FROM_EMAIL = 'mailer@example.com'
 
+#Domain From which all emails should be sent
+FROM_DOMAIN = "superdomain.org"
+
+
 #setting to avoid db changes during test
 SOUTH_TESTS_MIGRATE = False
 
