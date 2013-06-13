@@ -55,6 +55,7 @@ class MessageResource(ModelResource):
         for popit_url in bundle.data['persons']:
             persons.append(Person.objects.get(popit_url=popit_url))
         bundle.obj.persons = persons
+        bundle.obj.confirmated = True
         return bundle
 
     def obj_create(self, bundle, **kwargs):

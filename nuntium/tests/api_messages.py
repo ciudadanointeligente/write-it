@@ -144,6 +144,22 @@ class MessageResourceTestCase(ResourceTestCase):
         for outbound_message in outbound_messages:
             self.assertEquals(outbound_message.status, 'ready')
 
+    def test_create_a_new_message_confirmated(self):
+        writeitinstance = WriteItInstance.objects.all()[0]
+        message_data = {
+            'author_name' : 'Felipipoo',
+            'subject': 'new message',
+            'content': 'the content thing',
+            'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
+            'persons': [writeitinstance.persons.all()[0].popit_url]
+        }
+        url = '/api/v1/message/'
+        response = self.api_client.post(url, data = message_data, format='json', authentication=self.get_credentials())
+
+        the_message = Message.objects.get(author_name='Felipipoo')
+
+        self.assertTrue(the_message.confirmated)
+
 
 
 
