@@ -37,7 +37,22 @@ class TestMessages(TestCase):
         self.assertEquals(message.subject, "Fiera es una perra feroz")
         self.assertEquals(message.writeitinstance, self.writeitinstance1)
         self.assertEquals(message.slug, slugify(message.subject))
+        self.assertFalse(message.confirmated)
         self.assertTrue(message.public)
+
+
+    def test_message_has_a_is_confirmated_field(self):
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='Fiera es una perra feroz', 
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+        self.assertTrue(message.confirmated)
+
+
 
 
     def test_update_a_message_does_not_need_persons(self):
@@ -176,6 +191,7 @@ class TestMessages(TestCase):
 
         outbound_message_to_pedro = OutboundMessage.objects.filter(message=message)[0]
         self.assertEquals(outbound_message_to_pedro.status, 'ready')
+        self.assertTrue(message.confirmated)
 
 
 
