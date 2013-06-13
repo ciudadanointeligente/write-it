@@ -9,6 +9,7 @@ from plugin_mock.mental_message_plugin import MentalMessage
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
 from django.utils.unittest import skip
+from django.conf import settings
 
 
 class ConfirmationTestCase(TestCase):
@@ -71,6 +72,7 @@ class ConfirmationTestCase(TestCase):
         self.assertTrue(message_full_url in mail.outbox[0].body)
 
         self.assertEquals(len(mail.outbox[0].to), 1)
+        self.assertEquals(mail.outbox[0].from_email, self.message.writeitinstance.slug+"@"+settings.FROM_DOMAIN)
         self.assertTrue(self.message.author_email in mail.outbox[0].to)
 
 

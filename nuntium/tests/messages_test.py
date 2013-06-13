@@ -14,7 +14,7 @@ from mock import patch
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.sites.models import Site
 import datetime
-
+from django.conf import settings
 
 class TestMessages(TestCase):
 
@@ -248,6 +248,7 @@ class AllMessagesWithModerationInAWriteItInstances(TestCase):
 
         self.assertFalse(self.message.moderation is None)
         self.assertEquals(len(mail.outbox),1)
+        self.assertEquals(mail.outbox[0].from_email, self.message.writeitinstance.slug+"@"+settings.FROM_DOMAIN)
         #the second should be the confirmation thing
         #just to make sure 
         self.assertModerationMailSent(self.message, mail.outbox[0])
