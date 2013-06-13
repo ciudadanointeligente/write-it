@@ -109,19 +109,32 @@ class InstanceDetailView(TestCase):
     def test_list_only_confirmed_and_public_messages(self):
         message1 = self.writeitinstance1.message_set.all()[0]
         message2 = self.writeitinstance1.message_set.all()[1]
+        message3 = Message.objects.create(
+            content='Content 3', 
+            subject='Subject 3', 
+            writeitinstance = self.writeitinstance1, 
+            confirmated = True,
+            persons=[self.person1]
+            )
         private_message = Message.objects.create(content='Content 1', 
             subject='a private message', 
             writeitinstance = self.writeitinstance1, 
             persons=[self.person1], 
             public=False)
 
-        confirmation_for_message2 = Confirmation.objects.create(message=message2, confirmated_at=datetime.now())
-        confirmation_for_private_message = Confirmation.objects.create(message=private_message, confirmated_at=datetime.now())
+        confirmation_for_message2 = Confirmation.objects.create(message=message2)
+        self.client.get(reverse('confirm', kwargs={'slug':confirmation_for_message2.key}))
+        confirmation_for_private_message = Confirmation.objects.create(message=private_message)
+        self.client.get(reverse('confirm', kwargs={'slug':confirmation_for_private_message.key}))
+
+        
 
         url = reverse('instance_detail', kwargs={
             'slug':self.writeitinstance1.slug
             })
+
         response = self.client.get(url)
+        
 
         #message1 is not confirmed so it should not be in the list
         #private_message is not in the list either
@@ -129,6 +142,7 @@ class InstanceDetailView(TestCase):
 
         self.assertTrue(message2 in response.context['public_messages'])
         self.assertTrue(message1 not in response.context['public_messages'])
+        self.assertTrue(message3 in response.context['public_messages'])
         self.assertTrue(private_message not in response.context['public_messages'])
 
 

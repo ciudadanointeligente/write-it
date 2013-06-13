@@ -6,7 +6,7 @@ from nuntium.forms import MessageCreateForm
 from datetime import datetime
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-
+from django.db.models import Q
 
 
 
@@ -37,7 +37,7 @@ class WriteItInstanceDetailView(CreateView):
         return kwargs
     def get_context_data(self, **kwargs):
         context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
-        public_messages = self.object.message_set.filter(public=True).exclude(confirmation__confirmated_at=None)
+        public_messages = self.object.message_set.filter(Q(public=True) & Q(confirmated=True))
         context['public_messages'] = public_messages
         return context
 

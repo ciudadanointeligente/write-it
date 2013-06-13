@@ -9,6 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
 import datetime
+from django.utils.timezone import utc
 from djangoplugins.models import Plugin
 from django.core.mail import send_mail #Remove this when emailMultiAlternatives works
 from django.core.mail import EmailMultiAlternatives
@@ -45,7 +46,7 @@ class Membership(models.Model):
 
 class MessageRecord(models.Model):
     status = models.CharField(max_length=255)
-    datetime = models.DateField(default=datetime.datetime.now())
+    datetime = models.DateField(default=datetime.datetime.utcnow().replace(tzinfo=utc))
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
@@ -67,6 +68,7 @@ class Message(models.Model):
     subject = models.CharField(max_length=512)
     content = models.TextField()
     writeitinstance = models.ForeignKey(WriteItInstance)
+    confirmated = models.BooleanField(default=False)
     slug = models.CharField(max_length=512)
     public = models.BooleanField(default=True)
 
@@ -89,6 +91,8 @@ class Message(models.Model):
         if self.writeitinstance.moderation_needed_in_all_messages:
             Moderation.objects.create(message=self)
             self.send_moderation_mail()
+        self.confirmated = True
+        self.save()
         
     @property
     def people(self):
@@ -178,7 +182,7 @@ class Answer(models.Model):
     content = models.TextField()
     person = models.ForeignKey(Person)
     message = models.ForeignKey(Message, related_name='answers')
-    created = models.DateField(default=datetime.datetime.now())
+    created = models.DateField(default=datetime.datetime.utcnow().replace(tzinfo=utc))
 
     def __init__(self, *args, **kwargs):
         super(Answer, self).__init__(*args, **kwargs)
@@ -295,7 +299,7 @@ class OutboundMessagePluginRecord(models.Model):
 class Confirmation(models.Model):
     message = models.OneToOneField(Message)
     key = models.CharField(max_length=64, unique=True)
-    created = models.DateField(default=datetime.datetime.now())
+    created = models.DateField(default=datetime.datetime.utcnow().replace(tzinfo=utc))
     confirmated_at = models.DateField(default=None, null=True)
 
     def save(self, *args, **kwargs):
