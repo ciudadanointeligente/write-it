@@ -41,7 +41,8 @@ class MailChannel(OutputPlugin):
         #for errors and stuff
         from django.core.mail import send_mail
         try:
-            send_mail(subject, content, settings.DEFAULT_FROM_EMAIL,[outbound_message.contact.value], fail_silently=False)
+            from_email = outbound_message.message.writeitinstance.slug+"@"+settings.FROM_DOMAIN
+            send_mail(subject, content, from_email,[outbound_message.contact.value], fail_silently=False)
         except SMTPServerDisconnected, e:
             return False, False
         except SMTPResponseException, e:
