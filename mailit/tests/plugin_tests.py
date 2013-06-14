@@ -76,6 +76,9 @@ class MailSendingTestCase(TestCase):
         self.assertTrue("pdaire@ciudadanointeligente.org" in mail.outbox[0].to)
         self.assertEquals(mail.outbox[0].from_email, 
             self.outbound_message1.message.writeitinstance.slug+"@"+settings.FROM_DOMAIN)
+            
+        self.assertTrue('Reply-To' in )
+        self.assertEquals(mail.outbox[0].extra_headers['Reply-To'],)
 
     def test_it_fails_if_there_is_no_template(self):
         result_of_sending, fatal_error = self.channel.send(self.message_to_another_contact)
@@ -134,7 +137,7 @@ class SmtpErrorHandling(TestCase):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPServerDisconnected
 
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = SMTPServerDisconnected()
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
             self.assertFalse(result_of_sending)
@@ -143,7 +146,7 @@ class SmtpErrorHandling(TestCase):
     def test_smpt_error_code_500(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = SMTPResponseException(500,"")
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
             self.assertFalse(result_of_sending)
@@ -158,7 +161,7 @@ class SmtpErrorHandling(TestCase):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
 
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = SMTPResponseException(501,"")
 
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
@@ -170,7 +173,7 @@ class SmtpErrorHandling(TestCase):
     def test_smpt_error_code_502(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = SMTPResponseException(502,"")
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
             
@@ -182,7 +185,7 @@ class SmtpErrorHandling(TestCase):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
 
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
 
             send_mail.side_effect = SMTPResponseException(503,"")
 
@@ -195,7 +198,7 @@ class SmtpErrorHandling(TestCase):
     def test_smpt_error_code_504(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = SMTPResponseException(504,"")
 
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
@@ -207,7 +210,7 @@ class SmtpErrorHandling(TestCase):
     def test_smpt_error_code_550(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = SMTPResponseException(550,"")
 
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
@@ -219,7 +222,7 @@ class SmtpErrorHandling(TestCase):
     def test_smpt_error_code_551(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = SMTPResponseException(551,"")
 
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
@@ -231,7 +234,7 @@ class SmtpErrorHandling(TestCase):
     def test_smpt_error_code_552(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = SMTPResponseException(552,"")
 
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)

@@ -1,6 +1,6 @@
 
 from nuntium.plugins import OutputPlugin
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
 from contactos.models import ContactType
 from django.conf import settings
 from smtplib import SMTPServerDisconnected, SMTPRecipientsRefused, SMTPResponseException
@@ -42,7 +42,13 @@ class MailChannel(OutputPlugin):
         from django.core.mail import send_mail
         try:
             from_email = outbound_message.message.writeitinstance.slug+"@"+settings.FROM_DOMAIN
-            send_mail(subject, content, from_email,[outbound_message.contact.value], fail_silently=False)
+            msg = EmailMultiAlternatives( subject, 
+            content,#content
+            from_email,#From
+            [outbound_message.contact.value],#To
+            headers={'Reply-To': 'another@example.com'}
+            )
+            msg.send()
         except SMTPServerDisconnected, e:
             return False, False
         except SMTPResponseException, e:
