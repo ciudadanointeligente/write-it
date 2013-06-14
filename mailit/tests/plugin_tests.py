@@ -77,8 +77,8 @@ class MailSendingTestCase(TestCase):
         self.assertEquals(mail.outbox[0].from_email, 
             self.outbound_message1.message.writeitinstance.slug+"@"+settings.FROM_DOMAIN)
             
-        self.assertTrue('Reply-To' in )
-        self.assertEquals(mail.outbox[0].extra_headers['Reply-To'],)
+        self.assertTrue('Reply-To' in mail.outbox[0].extra_headers)
+        #self.assertEquals(mail.outbox[0].extra_headers['Reply-To'],)
 
     def test_it_fails_if_there_is_no_template(self):
         result_of_sending, fatal_error = self.channel.send(self.message_to_another_contact)
