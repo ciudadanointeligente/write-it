@@ -67,19 +67,26 @@ class OutboundMessageIdentifierTestCase(TestCase):
     def setUp(self):
         super(OutboundMessageIdentifierTestCase, self).setUp()
         self.outbound_message = OutboundMessage.objects.all()[0]
+        self.message = Message.objects.all()[0]
+        self.contact1 = Contact.objects.all()[0]
 
-    def test_create_an_outbound_message_identifier(self):
+    def test_create_an_outbound_message_identifier_when_creating_(self):
         with patch('uuid.uuid1') as string:
             string.return_value.hex = 'oliwi'
-            identifier = OutboundMessageIdentifier(outbound_message=self.outbound_message)
-            self.assertEquals(identifier.outbound_message, self.outbound_message)
-            #it is not created at creation time 
-            self.assertEquals(identifier.key, '')
-
+            outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact1)
+            identifier = OutboundMessageIdentifier.objects.get(outbound_message=outbound_message)
             string.assert_called()
-            identifier.save()
             #the key is created when saved
             self.assertEquals(identifier.key, 'oliwi')
+
+
+    def test_create_only_one_identifier_per_outbound_message(self):
+        with self.assertRaises(IntegrityError) as exception:
+            OutboundMessageIdentifier.objects.create(outbound_message=self.outbound_message)
+
+
+
+
 
 
 from plugin_mock.mental_message_plugin import MentalMessage, FatalException, TryAgainException

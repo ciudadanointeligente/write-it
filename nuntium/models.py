@@ -281,7 +281,7 @@ class OutboundMessage(models.Model):
         MessageRecord.objects.create(content_object= self, status=self.status)
 
 class OutboundMessageIdentifier(models.Model):
-    outbound_message = models.ForeignKey(OutboundMessage)
+    outbound_message = models.OneToOneField(OutboundMessage)
     key = models.CharField(max_length = 255)
 
     def save(self, *args, **kwargs):
