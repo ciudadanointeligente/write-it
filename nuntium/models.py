@@ -185,9 +185,7 @@ class Answer(models.Model):
     created = models.DateField(default=datetime.datetime.utcnow().replace(tzinfo=utc))
 
     def __init__(self, *args, **kwargs):
-        super(Answer, self).__init__(*args, **kwargs)
-
-
+        super(Answer, self).__init__(*args, **kwargs)    
     def save(self, *args, **kwargs):
         memberships = self.message.writeitinstance.membership_set.filter(person=self.person)
         if memberships.count() == 0:
@@ -283,6 +281,13 @@ class OutboundMessage(models.Model):
 class OutboundMessageIdentifier(models.Model):
     outbound_message = models.OneToOneField(OutboundMessage)
     key = models.CharField(max_length = 255)
+
+    @classmethod
+    def create_answer(cls, identifier_key, content):
+        identifier = cls.objects.get(key=identifier_key)
+        message = identifier.outbound_message.message
+        person = identifier.outbound_message.contact.person
+        Answer.objects.create(message=message, person=person, content=content)
 
     def save(self, *args, **kwargs):
         if not self.key:

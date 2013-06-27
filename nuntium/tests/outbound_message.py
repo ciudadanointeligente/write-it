@@ -4,7 +4,8 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, OutboundMessagePluginRecord, OutboundMessageIdentifier
+from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, OutboundMessagePluginRecord\
+, OutboundMessageIdentifier, Answer
 from popit.models import Person, ApiInstance
 from mock import patch
 from django.contrib.contenttypes.models import ContentType
@@ -92,6 +93,16 @@ class OutboundMessageIdentifierTestCase(TestCase):
         identifier.save()
 
         self.assertEquals(expected_key, identifier.key)
+
+    def test_create_an_answer_only_having_an_identifier(self):
+        identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
+        answer_content = "La fiera no tiene pulgas."
+        OutboundMessageIdentifier.create_answer(identifier.key, answer_content)
+        the_person = self.outbound_message.contact.person
+
+        the_answer = Answer.objects.get(message=self.outbound_message.message, person=the_person)
+
+        self.assertEquals(the_answer.content, answer_content)
 
 
 
