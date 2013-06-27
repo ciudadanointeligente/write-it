@@ -280,11 +280,20 @@ class OutboundMessage(models.Model):
             self.save()
         MessageRecord.objects.create(content_object= self, status=self.status)
 
+class OutboundMessageIdentifier(models.Model):
+    outbound_message = models.ForeignKey(OutboundMessage)
+    key = models.CharField(max_length = 255)
+
+    def save(self, *args, **kwargs):
+        self.key = str(uuid.uuid1().hex)
+        super(OutboundMessageIdentifier, self).save(*args, **kwargs)
+
 
 def create_a_message_record(sender,instance, created, **kwargs):
     outbound_message = instance
     if created:
         MessageRecord.objects.create(content_object= outbound_message, status=outbound_message.status)
+        OutboundMessageIdentifier.objects.create(outbound_message=outbound_message)
 post_save.connect(create_a_message_record, sender=OutboundMessage)
 
 
@@ -368,10 +377,4 @@ class Moderation(models.Model):
         super(Moderation, self).save(*args, **kwargs)
         
 
-class OutboundMessageIdentifier(models.Model):
-    outbound_message = models.ForeignKey(OutboundMessage)
-    key = models.CharField(max_length = 255)
 
-    def save(self, *args, **kwargs):
-        self.key = str(uuid.uuid1().hex)
-        super(OutboundMessageIdentifier, self).save(*args, **kwargs)

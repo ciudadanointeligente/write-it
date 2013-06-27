@@ -55,6 +55,14 @@ class OutboundMessageTestCase(TestCase):
         self.assertEquals(OutboundMessage.objects.to_send().filter(id=outbound_message.id).count(),1)
 
 
+    def test_create_a_new_outbound_message_identifier_on_creation(self):
+        outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact1, status="ready")
+        identifier = OutboundMessageIdentifier.objects.get(outbound_message=outbound_message)
+
+        self.assertTrue(identifier)
+
+
+
 class OutboundMessageIdentifierTestCase(TestCase):
     def setUp(self):
         super(OutboundMessageIdentifierTestCase, self).setUp()
