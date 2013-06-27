@@ -251,3 +251,21 @@ class AnswerCreationResource(ResourceTestCase):
         response = self.api_client.post(url, data = answer_data, format='json', authentication=credentials)
         self.assertHttpUnauthorized(response)
 
+
+    def test_only_post_endpoint(self):
+        url = '/api/v1/create_answer/'
+        content = 'una sola'
+        answer_data = {
+        'key':self.identifier.key,
+        'content':content
+        }
+        response = self.api_client.get(url)
+        self.assertHttpMethodNotAllowed(response)
+
+        response = self.api_client.put(url, data = answer_data)
+        self.assertHttpMethodNotAllowed(response)
+
+        response = self.api_client.patch(url, data = answer_data)
+        self.assertHttpMethodNotAllowed(response)
+
+

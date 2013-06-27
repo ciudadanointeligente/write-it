@@ -71,6 +71,7 @@ class AnswerCreationResource(Resource):
         resource_name = 'create_answer'
         object_class = Answer
         authentication = ApiKeyAuthentication()
+        allowed_methods = ['post', ]
 
 
     def obj_create(self, bundle, **kwargs):
