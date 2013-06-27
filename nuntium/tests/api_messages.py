@@ -216,3 +216,14 @@ class AnswerCreationResource(ResourceTestCase):
 
         self.assertEquals(answers_count, 1)
 
+
+    def test_authorization_using_api_key(self):
+        url = '/api/v1/create_answer/'
+        content = 'una sola'
+        answer_data = {
+        'key':self.identifier.key,
+        'content':content
+        }
+        response = self.api_client.post(url, data = answer_data, format='json')
+        self.assertHttpUnauthorized(response)
+

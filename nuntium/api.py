@@ -68,6 +68,7 @@ class AnswerCreationResource(Resource):
     class Meta:
         resource_name = 'create_answer'
         object_class = Answer
+        authentication = ApiKeyAuthentication()
 
 
     def obj_create(self, bundle, **kwargs):
