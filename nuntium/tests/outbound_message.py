@@ -4,8 +4,9 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, OutboundMessagePluginRecord
+from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, OutboundMessagePluginRecord, OutboundMessageIdentifier
 from popit.models import Person, ApiInstance
+from mock import patch
 from django.contrib.contenttypes.models import ContentType
 
 class OutboundMessageTestCase(TestCase):
@@ -52,6 +53,25 @@ class OutboundMessageTestCase(TestCase):
         outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact1, status="ready")
 
         self.assertEquals(OutboundMessage.objects.to_send().filter(id=outbound_message.id).count(),1)
+
+
+class OutboundMessageIdentifierTestCase(TestCase):
+    def setUp(self):
+        super(OutboundMessageIdentifierTestCase, self).setUp()
+        self.outbound_message = OutboundMessage.objects.all()[0]
+
+    def test_create_an_outbound_message_identifier(self):
+        with patch('uuid.uuid1') as string:
+            string.return_value.hex = 'oliwi'
+            identifier = OutboundMessageIdentifier(outbound_message=self.outbound_message)
+            self.assertEquals(identifier.outbound_message, self.outbound_message)
+            #it is not created at creation time 
+            self.assertEquals(identifier.key, '')
+
+            string.assert_called()
+            identifier.save()
+            #the key is created when saved
+            self.assertEquals(identifier.key, 'oliwi')
 
 
 from plugin_mock.mental_message_plugin import MentalMessage, FatalException, TryAgainException

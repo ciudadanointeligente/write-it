@@ -183,3 +183,10 @@ class AnswersResourceTestCase(ResourceTestCase):
         self.assertEquals(len(answers_json), Answer.objects.count())
         self.assertEquals(answers_json[0]["id"], self.answer.id)
 
+
+
+# class APIReceivesAnswer(ResourceTestCase):
+#     def setUp(self):
+#         super(APIReceivesAnswer, self).setUp()
+#         call_command('loaddata', 'example_data', verbosity=0)
+
