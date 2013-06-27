@@ -5,6 +5,8 @@ from tastypie.authentication import ApiKeyAuthentication, Authentication
 from tastypie.authorization import Authorization
 from django.conf.urls import url
 from tastypie import fields
+from tastypie.exceptions import ImmediateHttpResponse
+from tastypie import http
 from django.http import HttpRequest
 from popit.models import Person
 
@@ -73,7 +75,11 @@ class AnswerCreationResource(Resource):
 
     def obj_create(self, bundle, **kwargs):
         identifier_key = bundle.data['key']
+        identifier = OutboundMessageIdentifier.objects.get(key=bundle.data['key'])
+        owner = identifier.outbound_message.message.writeitinstance.owner
+        
+        if owner!=bundle.request.user:
+            raise ImmediateHttpResponse(response=http.HttpUnauthorized())
+
         answer_content = bundle.data['content']
         OutboundMessageIdentifier.create_answer(identifier_key, answer_content)
-
-

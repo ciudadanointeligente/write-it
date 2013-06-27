@@ -4,8 +4,9 @@ from nuntium.models import Message, WriteItInstance
 from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
 from tastypie.models import ApiKey
-from django.utils.unittest import skip
 from popit.models import Person
+from global_test_case import GlobalTestCase as TestCase
+from django.utils.unittest import skip
 
 class InstanceResourceTestCase(ResourceTestCase):
     def setUp(self):
@@ -182,6 +183,15 @@ class AnswersResourceTestCase(ResourceTestCase):
         self.assertEquals(len(answers_json), Answer.objects.count())
         self.assertEquals(answers_json[0]["id"], self.answer.id)
 
+# from nuntium.api import OnlyOwnerAuthorization
+
+# class OwnerAuthorizationTestCase(TestCase):
+#     def setUp(self):
+#         super(OwnerAuthorizationTestCase,self).setUp()
+#         self.authorization = OnlyOwnerAuthorization()
+
+#     def test_only_owner_of_an_election_is_authorized(self):
+#         self.assertTrue(False)
 
 from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Answer
 
@@ -225,5 +235,19 @@ class AnswerCreationResource(ResourceTestCase):
         'content':content
         }
         response = self.api_client.post(url, data = answer_data, format='json')
+        self.assertHttpUnauthorized(response)
+
+    def test_only_the_owner_can_create_an_answer(self):
+        not_the_owner = User.objects.create(username='not_the_owner')
+        his_api_key = ApiKey.objects.create(user=not_the_owner)
+        credentials = self.create_apikey(username=not_the_owner.username, api_key=his_api_key.key)
+        url = '/api/v1/create_answer/'
+        content = 'una sola'
+        answer_data = {
+        'key':self.identifier.key,
+        'content':content
+        }
+
+        response = self.api_client.post(url, data = answer_data, format='json', authentication=credentials)
         self.assertHttpUnauthorized(response)
 
