@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from tastypie.resources import ModelResource, ALL_WITH_RELATIONS
-from nuntium.models import WriteItInstance, Message, Answer
+from tastypie.resources import ModelResource, ALL_WITH_RELATIONS, Resource
+from nuntium.models import WriteItInstance, Message, Answer, OutboundMessageIdentifier
 from tastypie.authentication import ApiKeyAuthentication, Authentication
 from tastypie.authorization import Authorization
 from django.conf.urls import url
@@ -62,5 +62,17 @@ class MessageResource(ModelResource):
         bundle = super(MessageResource, self).obj_create(bundle, **kwargs)
         bundle.obj.recently_confirmated()
         return bundle
+
+
+class AnswerCreationResource(Resource):
+    class Meta:
+        resource_name = 'create_answer'
+        object_class = Answer
+
+
+    def obj_create(self, bundle, **kwargs):
+        identifier_key = bundle.data['key']
+        answer_content = bundle.data['content']
+        OutboundMessageIdentifier.create_answer(identifier_key, answer_content)
 
 

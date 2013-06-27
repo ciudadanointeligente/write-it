@@ -175,7 +175,6 @@ class AnswersResourceTestCase(ResourceTestCase):
 
     def test_resource_get_all_answers(self):
         resource = AnswerResource()
-
         self.assertTrue(resource)
 
         request = HttpRequest()
@@ -184,9 +183,36 @@ class AnswersResourceTestCase(ResourceTestCase):
         self.assertEquals(answers_json[0]["id"], self.answer.id)
 
 
+from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Answer
 
-# class APIReceivesAnswer(ResourceTestCase):
-#     def setUp(self):
-#         super(APIReceivesAnswer, self).setUp()
-#         call_command('loaddata', 'example_data', verbosity=0)
+class AnswerCreationResource(ResourceTestCase):
+    def setUp(self):
+        super(AnswerCreationResource, self).setUp()
+        call_command('loaddata', 'example_data', verbosity=0)
+        self.outbound_message = OutboundMessage.objects.all()[0]
+        self.identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
+        self.api_client = TestApiClient()
+        self.user = User.objects.all()[0]
+        ApiKey.objects.create(user=self.user)
+        self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
+
+    def get_credentials(self):
+        credentials = self.create_apikey(username=self.user.username, api_key=self.user.api_key.key)
+        return credentials
+
+
+    def test_I_can_create_an_answer_with_only_an_identifier_and_a_content(self):
+        url = '/api/v1/create_answer/'
+        content = 'Fiera tiene una pulga'
+        answer_data = {
+        'key':self.identifier.key,
+        'content':content
+        }
+        response = self.api_client.post(url, data = answer_data, format='json', authentication=self.get_credentials())
+        self.assertHttpCreated(response)
+
+        answers = Answer.objects.filter(message = self.outbound_message.message, person=self.outbound_message.contact.person)
+        answers_count = answers.count()
+
+        self.assertEquals(answers_count, 1)
 
