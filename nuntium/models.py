@@ -285,7 +285,8 @@ class OutboundMessageIdentifier(models.Model):
     key = models.CharField(max_length = 255)
 
     def save(self, *args, **kwargs):
-        self.key = str(uuid.uuid1().hex)
+        if not self.key:
+            self.key = str(uuid.uuid1().hex)
         super(OutboundMessageIdentifier, self).save(*args, **kwargs)
 
 

@@ -85,6 +85,15 @@ class OutboundMessageIdentifierTestCase(TestCase):
             OutboundMessageIdentifier.objects.create(outbound_message=self.outbound_message)
 
 
+    def test_the_key_does_not_change_on_save_twice(self):
+        identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
+        expected_key = identifier.key
+
+        identifier.save()
+
+        self.assertEquals(expected_key, identifier.key)
+
+
 
 
 
