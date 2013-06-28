@@ -2,6 +2,20 @@ import email
 import re
 import requests
 import os
+from requests.auth import AuthBase
+
+class ApiKeyAuth(AuthBase):
+    """
+    Sets the appropriate authentication headers
+    for the Tastypie API key authentication.
+    """
+    def __init__(self, username, api_key):
+        self.username = username
+        self.api_key = api_key
+
+    def __call__(self, r):
+        r.headers['Authorization'] = 'ApiKey %s:%s' % (self.username, self.api_key)
+        return r
 
 class EmailHandler():
 	def __init__(self):
@@ -33,7 +47,7 @@ class EmailAnswer():
 		self.requests_session = requests.Session()
 		username = os.environ['WRITEIT_USERNAME']
 		apikey = os.environ['WRITEIT_API_KEY']
-		self.requests_session.auth = 'ApiKey %(username)s:%(apikey)s'%{'username':username, 'apikey':apikey}
+		self.requests_session.auth = ApiKeyAuth(username, apikey)
 
 
 
@@ -42,4 +56,4 @@ class EmailAnswer():
 		'key': self.outbound_message_identifier,
 		'content': self.content_text
 		}
-		self.requests_session.post(os.environ['WRITEIT_API_ANSWER_CREATION'], data=data)
+		result = self.requests_session.post(os.environ['WRITEIT_API_ANSWER_CREATION'], data=data)

@@ -5,6 +5,7 @@ from mailit.bin import EmailHandler, EmailAnswer
 from django.utils.unittest import skip
 from mock import patch
 from django.contrib.auth.models import User
+import requests
 from tastypie.models import ApiKey
 
 class AnswerHandlerTestCase(TestCase):
@@ -39,7 +40,7 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
         f = open('mailit/tests/fixture/mail.txt')
         self.email = f.readlines()
         f.close()
-        self.where_to_post_creation_of_the_answer = 'http://writeit.ciudadanointeligente.org/api/v1/create_answer/'
+        self.where_to_post_creation_of_the_answer = 'http://localhost:8000/api/v1/create_answer/'
         os.environ['WRITEIT_API_ANSWER_CREATION'] = self.where_to_post_creation_of_the_answer
         os.environ['WRITEIT_API_KEY'] = self.user.api_key.key
         os.environ['WRITEIT_USERNAME'] = self.user.username
@@ -64,9 +65,8 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
 
 
     def test_it_posts_to_the_api(self):
-        credentials = self.get_credentials()
-        
-        self.assertEquals(self.answer.requests_session.auth, credentials)
+        self.assertEquals(self.answer.requests_session.auth.api_key, self.user.api_key.key)
+        self.assertEquals(self.answer.requests_session.auth.username, self.user.username)
         data = {
         'key':self.answer.outbound_message_identifier,
         'content':self.answer.content_text
@@ -76,6 +76,20 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
             self.answer.send_back()
 
             post.assert_called_with(self.where_to_post_creation_of_the_answer, data=data)
+
+
+    # def test_this_one_is_not_mocked(self):
+    #     credentials = self.get_credentials()
+        
+    #     self.assertEquals(self.answer.requests_session.auth.api_key, self.user.api_key.key)
+    #     self.assertEquals(self.answer.requests_session.auth.username, self.user.username)
+    #     data = {
+    #     'key':self.answer.outbound_message_identifier,
+    #     'content':self.answer.content_text
+    #     }
+    #     self.answer.send_back()
+
+
             
 
 
