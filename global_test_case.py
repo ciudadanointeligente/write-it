@@ -1,8 +1,9 @@
 from django.test import TestCase
 from django.core.management import call_command
+from tastypie.test import ResourceTestCase
 
 
-class GlobalTestCase(TestCase):
+class WriteItTestCaseMixin(object):
     def setUp(self):
         call_command('loaddata', 'example_data', verbosity=0)
 
@@ -14,3 +15,10 @@ class GlobalTestCase(TestCase):
         self.assertTrue(message.author_email in moderation_mail.body)
         for person in message.people:
             self.assertTrue(person.name in moderation_mail.body)
+
+class GlobalTestCase(WriteItTestCaseMixin, TestCase):
+    pass
+
+
+class ResourceGlobalTestCase(WriteItTestCaseMixin ,ResourceTestCase ):
+    pass
