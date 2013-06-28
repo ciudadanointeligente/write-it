@@ -9,6 +9,10 @@ import requests
 from tastypie.models import ApiKey
 import logging
 
+class PostMock():
+    def __init__(self):
+        self.status_code = 201
+
 class AnswerHandlerTestCase(TestCase):
     def setUp(self):
         super(AnswerHandlerTestCase,self).setUp()
@@ -90,10 +94,36 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
         'content':self.answer.content_text
         }
         with patch('requests.Session.post') as post:
-            post.return_value = True
+            post.return_value = PostMock()
             self.answer.send_back()
 
             post.assert_called_with(self.where_to_post_creation_of_the_answer, data=data)
+
+
+    def test_logs_the_result_of_send_back(self):
+        
+
+        email_answer = EmailAnswer()
+        email_answer.subject = 'prueba4'
+        email_answer.content_text = 'prueba4lafieritaespeluda'
+        email_answer.outbound_message_identifier = '8974aabsdsfierapulgosa'
+        email_answer.email_from = 'falvarez@votainteligente.cl'
+        email_answer.when = 'Wed Jun 26 21:05:33 2013'
+        with patch('logging.info') as info:
+            info.return_value = None
+            with patch('requests.Session.post') as post:
+                post.return_value = PostMock()
+
+                with patch('logging.info') as info:
+                    expected_log = "When sent to %(location)s the status code was 201" % { 
+                        'location': self.where_to_post_creation_of_the_answer 
+                    }
+                    email_answer.send_back()
+                    info.assert_called_with(expected_log)
+
+
+
+
 
     def test_logs_the_incoming_email(self):
 

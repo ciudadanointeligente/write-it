@@ -6,6 +6,8 @@ from requests.auth import AuthBase
 from email.utils import getaddresses
 import logging
 
+logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
+
 class ApiKeyAuth(AuthBase):
     """
     Sets the appropriate authentication headers
@@ -41,7 +43,7 @@ class EmailHandler():
             if part.get_content_type() == 'text/plain':
                 answer.content_text = part.get_payload()
         #logging stuff
-        logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
+        
         log = 'New incoming email from %(from)s sent on %(date)s with subject %(subject)s and content %(content)s'
         log = log % {
             'from':answer.email_from,
@@ -67,9 +69,17 @@ class EmailAnswer():
 
 
 
+
     def send_back(self):
         data = {
         'key': self.outbound_message_identifier,
         'content': self.content_text
         }
         result = self.requests_session.post(os.environ['WRITEIT_API_ANSWER_CREATION'], data=data)
+
+        log = "When sent to %(location)s the status code was %(status_code)d"
+        log = log % {
+            'location':os.environ['WRITEIT_API_ANSWER_CREATION'],
+            'status_code':result.status_code
+            }
+        logging.info(log)
