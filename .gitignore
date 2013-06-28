@@ -6,3 +6,4 @@ local_settings.py
 *.mo
 *.db
 .coverage
+mailing_logger.txt
