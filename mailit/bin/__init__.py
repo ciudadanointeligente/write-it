@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 from handleemail import *
 
 if __name__ == '__main__':

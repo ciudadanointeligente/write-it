@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 import email
 import re
 import requests
