@@ -185,9 +185,7 @@ class Answer(models.Model):
     created = models.DateField(default=datetime.datetime.utcnow().replace(tzinfo=utc))
 
     def __init__(self, *args, **kwargs):
-        super(Answer, self).__init__(*args, **kwargs)
-
-
+        super(Answer, self).__init__(*args, **kwargs)    
     def save(self, *args, **kwargs):
         memberships = self.message.writeitinstance.membership_set.filter(person=self.person)
         if memberships.count() == 0:
@@ -280,11 +278,28 @@ class OutboundMessage(models.Model):
             self.save()
         MessageRecord.objects.create(content_object= self, status=self.status)
 
+class OutboundMessageIdentifier(models.Model):
+    outbound_message = models.OneToOneField(OutboundMessage)
+    key = models.CharField(max_length = 255)
+
+    @classmethod
+    def create_answer(cls, identifier_key, content):
+        identifier = cls.objects.get(key=identifier_key)
+        message = identifier.outbound_message.message
+        person = identifier.outbound_message.contact.person
+        Answer.objects.create(message=message, person=person, content=content)
+
+    def save(self, *args, **kwargs):
+        if not self.key:
+            self.key = str(uuid.uuid1().hex)
+        super(OutboundMessageIdentifier, self).save(*args, **kwargs)
+
 
 def create_a_message_record(sender,instance, created, **kwargs):
     outbound_message = instance
     if created:
         MessageRecord.objects.create(content_object= outbound_message, status=outbound_message.status)
+        OutboundMessageIdentifier.objects.create(outbound_message=outbound_message)
 post_save.connect(create_a_message_record, sender=OutboundMessage)
 
 
@@ -367,3 +382,5 @@ class Moderation(models.Model):
             self.key = str(uuid.uuid1().hex)
         super(Moderation, self).save(*args, **kwargs)
         
+
+
