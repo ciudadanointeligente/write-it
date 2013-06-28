@@ -83,3 +83,9 @@ class EmailAnswer():
             'status_code':result.status_code
             }
         logging.info(log)
+
+if __name__ == '__main__': # pragma: no cover
+    lines = sys.stdin.readlines()
+    handler = EmailHandler()
+    answer = handler.handle(lines)
+    answer.send_back()

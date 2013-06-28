@@ -1,17 +1,40 @@
 from global_test_case import GlobalTestCase as TestCase
 from global_test_case import ResourceGlobalTestCase as ResourceTestCase
 import os
-from mailit.bin import EmailHandler, EmailAnswer
+from mailit.bin.handleemail import EmailHandler, EmailAnswer, ApiKeyAuth
 from django.utils.unittest import skip
 from mock import patch
 from django.contrib.auth.models import User
 import requests
+from requests.models import Request
 from tastypie.models import ApiKey
 import logging
 
 class PostMock():
     def __init__(self):
         self.status_code = 201
+
+
+class TestApiKeyAuthentification(TestCase):
+    def setUp(self):
+        super(TestApiKeyAuthentification,self).setUp()
+        self.user = User.objects.all()[0]
+        self.api_key = ApiKey.objects.create(user=self.user)
+
+    def test_creation(self):
+        auth = ApiKeyAuth(username = self.user.username, api_key=self.api_key.key)
+        self.assertTrue(auth)
+        self.assertEquals(auth.username, self.user.username)
+        self.assertEquals(auth.api_key, self.api_key.key)
+
+    def test_set_headers(self):
+        auth = ApiKeyAuth(username = self.user.username, api_key=self.api_key.key)
+        req = Request()
+        req = auth.__call__(req)
+        self.assertTrue('Authorization' in req.headers)
+        expected_headers = 'ApiKey %s:%s' % (self.user.username, self.api_key.key)
+        self.assertEquals(req.headers['Authorization'], expected_headers)
+            
 
 class AnswerHandlerTestCase(TestCase):
     def setUp(self):
@@ -54,13 +77,6 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
         os.environ['WRITEIT_API_KEY'] = self.user.api_key.key
         os.environ['WRITEIT_USERNAME'] = self.user.username
         self.handler = EmailHandler()
-        
-       
-
-    def get_credentials(self):
-        self.answer = self.handler.handle(self.email)
-        credentials = self.create_apikey(username=self.user.username, api_key=self.user.api_key.key)
-        return credentials
 
     def test_gets_the_subject(self):
         self.answer = self.handler.handle(self.email)
