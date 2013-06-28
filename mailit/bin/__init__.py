@@ -1,5 +1,7 @@
 import email
 import re
+import requests
+import os
 
 class EmailHandler():
 	def __init__(self):
@@ -28,3 +30,16 @@ class EmailAnswer():
 		self.subject = ''
 		self.content_text = ''
 		self.outbound_message_identifier = ''
+		self.requests_session = requests.Session()
+		username = os.environ['WRITEIT_USERNAME']
+		apikey = os.environ['WRITEIT_API_KEY']
+		self.requests_session.auth = 'ApiKey %(username)s:%(apikey)s'%{'username':username, 'apikey':apikey}
+
+
+
+	def send_back(self):
+		data = {
+		'key': self.outbound_message_identifier,
+		'content': self.content_text
+		}
+		self.requests_session.post(os.environ['WRITEIT_API_ANSWER_CREATION'], data=data)

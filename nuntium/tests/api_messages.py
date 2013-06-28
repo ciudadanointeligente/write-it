@@ -256,8 +256,8 @@ class AnswerCreationResource(ResourceTestCase):
         url = '/api/v1/create_answer/'
         content = 'una sola'
         answer_data = {
-        'key':self.identifier.key,
-        'content':content
+            'key':self.identifier.key,
+            'content':content
         }
         response = self.api_client.get(url)
         self.assertHttpMethodNotAllowed(response)
