@@ -7,6 +7,7 @@ from mock import patch
 from django.contrib.auth.models import User
 import requests
 from tastypie.models import ApiKey
+import logging
 
 class AnswerHandlerTestCase(TestCase):
     def setUp(self):
@@ -25,12 +26,16 @@ class AnswerHandlerTestCase(TestCase):
         email_answer.subject = 'prueba4'
         email_answer.content_text = 'prueba4lafieritaespeluda'
         email_answer.outbound_message_identifier = '8974aabsdsfierapulgosa'
+        email_answer.email_from = 'falvarez@votainteligente.cl'
+        email_answer.when = 'Wed Jun 26 21:05:33 2013'
 
 
         self.assertTrue(email_answer)
         self.assertEquals(email_answer.subject, 'prueba4')
         self.assertEquals(email_answer.content_text, 'prueba4lafieritaespeluda')
         self.assertEquals(email_answer.outbound_message_identifier, '8974aabsdsfierapulgosa')
+        self.assertEquals(email_answer.email_from, 'falvarez@votainteligente.cl')
+        self.assertEquals(email_answer.when, 'Wed Jun 26 21:05:33 2013')
 
 class IncomingEmailHandlerTestCase(ResourceTestCase):
     def setUp(self):
@@ -45,26 +50,39 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
         os.environ['WRITEIT_API_KEY'] = self.user.api_key.key
         os.environ['WRITEIT_USERNAME'] = self.user.username
         self.handler = EmailHandler()
-        self.answer = self.handler.handle(self.email)
+        
        
 
     def get_credentials(self):
+        self.answer = self.handler.handle(self.email)
         credentials = self.create_apikey(username=self.user.username, api_key=self.user.api_key.key)
         return credentials
 
     def test_gets_the_subject(self):
+        self.answer = self.handler.handle(self.email)
         self.assertEquals(self.answer.subject, 'prueba4')
 
     def test_gets_the_content(self):
+        self.answer = self.handler.handle(self.email)
         self.assertTrue(self.answer.content_text.startswith('prueba4lafieri'))
         
     def test_gets_the_outbound_message_identifier_to_which_relate_it(self):
         #make a regexp
         #ask maugsbur about it
+        self.answer = self.handler.handle(self.email)
         self.assertEquals(self.answer.outbound_message_identifier,"4aaaabbb")
+
+    def test_gets_who_sent_the_email(self):
+        self.answer = self.handler.handle(self.email)
+        self.assertEquals(self.answer.email_from, '=?ISO-8859-1?Q?Felipe_=C1lvarez?= <falvarez@ciudadanointeligente.cl>')
+
+    def test_gets_when_it_was_sent(self):
+        self.answer = self.handler.handle(self.email)
+        self.assertEquals(self.answer.when, 'Wed, 26 Jun 2013 17:05:30 -0400')
 
 
     def test_it_posts_to_the_api(self):
+        self.answer = self.handler.handle(self.email)
         self.assertEquals(self.answer.requests_session.auth.api_key, self.user.api_key.key)
         self.assertEquals(self.answer.requests_session.auth.username, self.user.username)
         data = {
@@ -77,21 +95,17 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
 
             post.assert_called_with(self.where_to_post_creation_of_the_answer, data=data)
 
+    def test_logs_the_incoming_email(self):
 
-    # def test_this_one_is_not_mocked(self):
-    #     credentials = self.get_credentials()
-        
-    #     self.assertEquals(self.answer.requests_session.auth.api_key, self.user.api_key.key)
-    #     self.assertEquals(self.answer.requests_session.auth.username, self.user.username)
-    #     data = {
-    #     'key':self.answer.outbound_message_identifier,
-    #     'content':self.answer.content_text
-    #     }
-    #     self.answer.send_back()
-
-
+        with patch('logging.info') as info:
+            info.return_value = None
             
-
-
-
-
+            self.answer = self.handler.handle(self.email)
+            expected_log = 'New incoming email from %(from)s sent on %(date)s with subject %(subject)s and content %(content)s'
+            expected_log = expected_log % {
+            'from':self.answer.email_from,
+            'date':self.answer.when,
+            'subject':self.answer.subject,
+            'content':self.answer.content_text
+            }
+            info.assert_called_with(expected_log)
