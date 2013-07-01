@@ -9,6 +9,7 @@ import requests
 from requests.models import Request
 from tastypie.models import ApiKey
 import logging
+from mailit.bin import config
 
 class PostMock():
     def __init__(self):
@@ -42,9 +43,9 @@ class AnswerHandlerTestCase(TestCase):
         self.user = User.objects.all()[0]
         ApiKey.objects.create(user=self.user)
         self.where_to_post_creation_of_the_answer = 'http://writeit.ciudadanointeligente.org/api/v1/create_answer/'
-        os.environ['WRITEIT_API_ANSWER_CREATION'] = self.where_to_post_creation_of_the_answer
-        os.environ['WRITEIT_API_KEY'] = self.user.api_key.key
-        os.environ['WRITEIT_USERNAME'] = self.user.username
+        config.WRITEIT_API_ANSWER_CREATION = self.where_to_post_creation_of_the_answer
+        config.WRITEIT_API_KEY = self.user.api_key.key
+        config.WRITEIT_USERNAME = self.user.username
 
 
     def test_class_answer(self):
@@ -73,9 +74,9 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
         self.email = f.readlines()
         f.close()
         self.where_to_post_creation_of_the_answer = 'http://localhost:8000/api/v1/create_answer/'
-        os.environ['WRITEIT_API_ANSWER_CREATION'] = self.where_to_post_creation_of_the_answer
-        os.environ['WRITEIT_API_KEY'] = self.user.api_key.key
-        os.environ['WRITEIT_USERNAME'] = self.user.username
+        config.WRITEIT_API_ANSWER_CREATION = self.where_to_post_creation_of_the_answer
+        config.WRITEIT_API_KEY = self.user.api_key.key
+        config.WRITEIT_USERNAME = self.user.username
         self.handler = EmailHandler()
 
     def test_gets_the_subject(self):

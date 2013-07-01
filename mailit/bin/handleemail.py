@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 import email
 import re
 import requests
@@ -5,6 +6,8 @@ import os
 from requests.auth import AuthBase
 from email.utils import getaddresses
 import logging
+import sys
+import config
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
@@ -63,8 +66,8 @@ class EmailAnswer():
         self.email_from = ''
         self.when = ''
         self.requests_session = requests.Session()
-        username = os.environ['WRITEIT_USERNAME']
-        apikey = os.environ['WRITEIT_API_KEY']
+        username = config.WRITEIT_USERNAME
+        apikey = config.WRITEIT_API_KEY
         self.requests_session.auth = ApiKeyAuth(username, apikey)
 
 
@@ -75,11 +78,11 @@ class EmailAnswer():
         'key': self.outbound_message_identifier,
         'content': self.content_text
         }
-        result = self.requests_session.post(os.environ['WRITEIT_API_ANSWER_CREATION'], data=data)
+        result = self.requests_session.post(config.WRITEIT_API_ANSWER_CREATION, data=data)
 
         log = "When sent to %(location)s the status code was %(status_code)d"
         log = log % {
-            'location':os.environ['WRITEIT_API_ANSWER_CREATION'],
+            'location':config.WRITEIT_API_ANSWER_CREATION,
             'status_code':result.status_code
             }
         logging.info(log)
@@ -89,3 +92,4 @@ if __name__ == '__main__': # pragma: no cover
     handler = EmailHandler()
     answer = handler.handle(lines)
     answer.send_back()
+    sys.exit(0)
