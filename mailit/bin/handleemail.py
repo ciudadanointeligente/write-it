@@ -8,6 +8,7 @@ from email.utils import getaddresses
 import logging
 import sys
 import config
+import json
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
@@ -76,10 +77,11 @@ class EmailAnswer():
     def send_back(self):
         data = {
         'key': self.outbound_message_identifier,
-        'content': self.content_text
+        'content': self.content_text,
+        'format' :'json'
         }
-        result = self.requests_session.post(config.WRITEIT_API_ANSWER_CREATION, data=data)
-
+        headers = {'content-type': 'application/json'}
+        result = self.requests_session.post(config.WRITEIT_API_ANSWER_CREATION, data=json.dumps(data), headers=headers)
         log = "When sent to %(location)s the status code was %(status_code)d"
         log = log % {
             'location':config.WRITEIT_API_ANSWER_CREATION,
