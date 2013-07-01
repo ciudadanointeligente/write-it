@@ -163,10 +163,12 @@ class Message(models.Model):
 
         text_content = plaintext.render(d)
         html_content = htmly.render(d)
+        from_email = self.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
+        
 
         msg = EmailMultiAlternatives( _('Confirmation email for a message in WriteIt'), 
             text_content,#content
-            settings.DEFAULT_FROM_EMAIL,#From
+            from_email,#From
             [self.writeitinstance.owner.email]#To
             )
         msg.attach_alternative(html_content, "text/html")
@@ -355,10 +357,11 @@ def send_an_email_to_the_author(sender,instance, created, **kwargs):
 
         text_content = plaintext.render(d)
         html_content = htmly.render(d)
+        from_email = confirmation.message.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
 
         msg = EmailMultiAlternatives( _('Confirmation email for a message in WriteIt'), 
             text_content,#content
-            settings.DEFAULT_FROM_EMAIL,#From
+            from_email,#From
             [confirmation.message.author_email]#To
             )
         msg.attach_alternative(html_content, "text/html")
