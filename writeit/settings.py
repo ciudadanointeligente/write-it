@@ -139,6 +139,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_nose',
     'nuntium',
     'djangoplugins',
     'popit',
@@ -152,6 +153,9 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
+#Testing with django
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -184,6 +188,9 @@ LOGGING = {
 
 #Email settings
 DEFAULT_FROM_EMAIL = 'mailer@example.com'
+
+#DEFAULT_FROM_DOMAIN
+DEFAULT_FROM_DOMAIN = 'mailit.ciudadanointeligente.org'
 
 #setting to avoid db changes during test
 SOUTH_TESTS_MIGRATE = False

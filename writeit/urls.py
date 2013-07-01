@@ -1,8 +1,9 @@
 from django.conf.urls import patterns, include, url
-from nuntium.views import ConfirmView
+from nuntium.views import ConfirmView, AcceptModerationView, RejectModerationView
 from django.conf.urls.i18n import i18n_patterns
 from tastypie.api import Api
-from nuntium.api import WriteItInstanceResource, MessageResource
+from nuntium.api import WriteItInstanceResource, MessageResource, AnswerCreationResource
+from django.views.generic.base import TemplateView
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -10,6 +11,7 @@ admin.autodiscover()
 v1_api = Api(api_name='v1')
 v1_api.register(WriteItInstanceResource())
 v1_api.register(MessageResource())
+v1_api.register(AnswerCreationResource())
 
 urlpatterns = patterns('',
     # Examples:
@@ -22,6 +24,8 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
     url(r'^confirm_message/(?P<slug>[-\w]+)/?$', ConfirmView.as_view(), name = 'confirm'),
+    url(r'^moderation_accept/(?P<slug>[-\w]+)/?$', AcceptModerationView.as_view(), name = 'moderation_accept'),
+    url(r'^moderation_reject/(?P<slug>[-\w]+)/?$', RejectModerationView.as_view(), name = 'moderation_rejected'),
     (r'^api/', include(v1_api.urls)),
 )
 

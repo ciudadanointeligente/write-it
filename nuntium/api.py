@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-from tastypie.resources import ModelResource, ALL_WITH_RELATIONS
-from nuntium.models import WriteItInstance, Message, Answer
+from tastypie.resources import ModelResource, ALL_WITH_RELATIONS, Resource
+from nuntium.models import WriteItInstance, Message, Answer, OutboundMessageIdentifier
 from tastypie.authentication import ApiKeyAuthentication, Authentication
 from tastypie.authorization import Authorization
 from django.conf.urls import url
 from tastypie import fields
+from tastypie.exceptions import ImmediateHttpResponse
+from tastypie import http
 from django.http import HttpRequest
 from popit.models import Person
 
@@ -28,7 +30,7 @@ class WriteItInstanceResource(ModelResource):
 
     def dehydrate(self, bundle):
         #not completely sure that this is the right way to get the messages
-        bundle.data['messages'] = bundle.data['resource_uri']+'messages/'
+        bundle.data['messages_uri'] = bundle.data['resource_uri']+'messages/'
         return bundle
 
 
@@ -55,11 +57,30 @@ class MessageResource(ModelResource):
         for popit_url in bundle.data['persons']:
             persons.append(Person.objects.get(popit_url=popit_url))
         bundle.obj.persons = persons
+        bundle.obj.confirmated = True
         return bundle
 
     def obj_create(self, bundle, **kwargs):
         bundle = super(MessageResource, self).obj_create(bundle, **kwargs)
-        bundle.obj.from_new_to_ready()
+        bundle.obj.recently_confirmated()
         return bundle
 
 
+class AnswerCreationResource(Resource):
+    class Meta:
+        resource_name = 'create_answer'
+        object_class = Answer
+        authentication = ApiKeyAuthentication()
+        allowed_methods = ['post', ]
+
+
+    def obj_create(self, bundle, **kwargs):
+        identifier_key = bundle.data['key']
+        identifier = OutboundMessageIdentifier.objects.get(key=bundle.data['key'])
+        owner = identifier.outbound_message.message.writeitinstance.owner
+        
+        if owner!=bundle.request.user:
+            raise ImmediateHttpResponse(response=http.HttpUnauthorized())
+
+        answer_content = bundle.data['content']
+        OutboundMessageIdentifier.create_answer(identifier_key, answer_content)

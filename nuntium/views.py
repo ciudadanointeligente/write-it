@@ -1,11 +1,12 @@
 # Create your views here.
 from django.views.generic import TemplateView, CreateView, DetailView
 from django.core.urlresolvers import reverse
-from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message
+from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation
 from nuntium.forms import MessageCreateForm
 from datetime import datetime
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 
 
@@ -36,7 +37,7 @@ class WriteItInstanceDetailView(CreateView):
         return kwargs
     def get_context_data(self, **kwargs):
         context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
-        public_messages = self.object.message_set.filter(public=True).exclude(confirmation__confirmated_at=None)
+        public_messages = self.object.message_set.filter(Q(public=True) & Q(confirmated=True))
         context['public_messages'] = public_messages
         return context
 
@@ -77,5 +78,27 @@ class ConfirmView(DetailView):
         confirmation = self.get_object()
         confirmation.confirmated_at = datetime.now()
         confirmation.save()
-        confirmation.message.from_new_to_ready()
+        confirmation.message.recently_confirmated()
         return super(ConfirmView,self).get(*args, **kwargs)
+
+class ModerationView(DetailView):
+    model = Moderation
+    slug_field = 'key'
+
+class AcceptModerationView(ModerationView):
+    template_name = "nuntium/moderation_accepted.html"
+    
+
+    def get(self, *args, **kwargs):
+        moderation = self.get_object()
+        moderation.message.set_to_ready()
+        return super(AcceptModerationView, self).get(*args,**kwargs)
+
+
+class RejectModerationView(ModerationView):
+    template_name = "nuntium/moderation_rejected.html"
+
+    def get(self, *args, **kwargs):        
+        get = super(RejectModerationView, self).get(*args,**kwargs)
+        self.get_object().message.delete()
+        return get

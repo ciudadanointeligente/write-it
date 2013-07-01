@@ -5,3 +5,4 @@ coveralls
 -e git://github.com/mysociety/popit-django.git#egg=popit-django
 mock
 django-tastypie
+django-nose
