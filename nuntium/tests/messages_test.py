@@ -222,8 +222,40 @@ class MessageDetailView(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.context['message'], self.message)
 
+    def test_get_message_detail_that_was_created_using_the_api(self):
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Subject 1', 
+            public=False,
+            writeitinstance= self.writeitinstance1, 
+            confirmated = True,
+            persons = [self.person1])
+
+        #this message is confirmated but has no confirmation object
+        #this occurs when creating a message throu the API
+        url = reverse('message_detail', kwargs={'slug':message.slug})
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
 
 
+    def test_get_messages_without_confirmation_and_not_confirmed(self):
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Subject 1', 
+            public=False,
+            writeitinstance= self.writeitinstance1, 
+            confirmated = False,
+            persons = [self.person1])
+
+        #this message is confirmated but has no confirmation object
+        #this occurs when creating a message throu the API
+        url = reverse('message_detail', kwargs={'slug':message.slug})
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 404)
+
+        
 class AllMessagesWithModerationInAWriteItInstances(TestCase):
     def setUp(self):
         super(AllMessagesWithModerationInAWriteItInstances,self).setUp()
@@ -251,8 +283,6 @@ class AllMessagesWithModerationInAWriteItInstances(TestCase):
         #the second should be the confirmation thing
         #just to make sure 
         self.assertModerationMailSent(self.message, mail.outbox[0])
-
-
 
 
 class ModerationMessagesTestCase(TestCase):
