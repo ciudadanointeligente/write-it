@@ -10,6 +10,7 @@ from requests.models import Request
 from tastypie.models import ApiKey
 import logging
 from mailit.bin import config
+import json
 
 class PostMock():
     def __init__(self):
@@ -106,15 +107,18 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
         self.answer = self.handler.handle(self.email)
         self.assertEquals(self.answer.requests_session.auth.api_key, self.user.api_key.key)
         self.assertEquals(self.answer.requests_session.auth.username, self.user.username)
+        expected_headers = {'content-type': 'application/json'}
         data = {
         'key':self.answer.outbound_message_identifier,
-        'content':self.answer.content_text
+        'content':self.answer.content_text,
+        'format': 'json'
         }
+        data = json.dumps(data)
         with patch('requests.Session.post') as post:
             post.return_value = PostMock()
             self.answer.send_back()
 
-            post.assert_called_with(self.where_to_post_creation_of_the_answer, data=data)
+            post.assert_called_with(self.where_to_post_creation_of_the_answer, data=data, headers=expected_headers)
 
 
     def test_logs_the_result_of_send_back(self):
