@@ -75,8 +75,6 @@ class MailSendingTestCase(TestCase):
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue("pdaire@ciudadanointeligente.org" in mail.outbox[0].to)
 
-        #self.assertEquals(mail.outbox[0].from_email, settings.DEFAULT_FROM_EMAIL)
-
     def test_sending_from_email_expected_from_email(self):
         result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
         #print self.outbound_message1.outboundmessageidentifier
