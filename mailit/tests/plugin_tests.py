@@ -74,7 +74,13 @@ class MailSendingTestCase(TestCase):
         self.assertEquals(mail.outbox[0].body, u'Hello Pedro:\r\nYou have a new message:\r\nsubject: Subject 1 \r\ncontent: Content 1\r\n\r\nSeeya\r\n--\r\nYou writeIt and we deliverit.')
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue("pdaire@ciudadanointeligente.org" in mail.outbox[0].to)
-        self.assertEquals(mail.outbox[0].from_email, settings.DEFAULT_FROM_EMAIL)
+
+    def test_sending_from_email_expected_from_email(self):
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+        #print self.outbound_message1.outboundmessageidentifier
+        expected_from_email = self.outbound_message1.message.writeitinstance.slug+"+"+self.outbound_message1.outboundmessageidentifier.key\
+                                +'@'+settings.DEFAULT_FROM_DOMAIN
+        self.assertEquals(mail.outbox[0].from_email, expected_from_email)
 
     def test_it_fails_if_there_is_no_template(self):
         result_of_sending, fatal_error = self.channel.send(self.message_to_another_contact)

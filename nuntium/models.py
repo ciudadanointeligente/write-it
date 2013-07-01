@@ -9,6 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
 import datetime
+from django.utils.timezone import utc
 from djangoplugins.models import Plugin
 from django.core.mail import send_mail #Remove this when emailMultiAlternatives works
 from django.core.mail import EmailMultiAlternatives
@@ -20,6 +21,8 @@ from django.contrib.sites.models import Site
 import uuid
 from django.template.defaultfilters import slugify
 import re
+from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 
 
 class WriteItInstance(models.Model):
@@ -27,6 +30,8 @@ class WriteItInstance(models.Model):
     name = models.CharField(max_length=255)
     slug = models.CharField(max_length=255)
     persons = models.ManyToManyField(Person, related_name='writeit_instances', through='Membership')
+    moderation_needed_in_all_messages = models.BooleanField(help_text=_("Every message is going to have a moderation mail"))
+    owner = models.ForeignKey(User)
 
     @models.permalink
     def get_absolute_url(self):
@@ -41,7 +46,7 @@ class Membership(models.Model):
 
 class MessageRecord(models.Model):
     status = models.CharField(max_length=255)
-    datetime = models.DateField(default=datetime.datetime.now())
+    datetime = models.DateField(default=datetime.datetime.utcnow().replace(tzinfo=utc))
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
@@ -63,6 +68,7 @@ class Message(models.Model):
     subject = models.CharField(max_length=512)
     content = models.TextField()
     writeitinstance = models.ForeignKey(WriteItInstance)
+    confirmated = models.BooleanField(default=False)
     slug = models.CharField(max_length=512)
     public = models.BooleanField(default=True)
 
@@ -73,10 +79,20 @@ class Message(models.Model):
         super(Message, self).__init__(*args, **kwargs)
 
     #TODO: only new outbound_messages
-    def from_new_to_ready(self):
+    def recently_confirmated(self):
+        status = 'ready'
+        if not self.public:
+            self.send_moderation_mail()
+            status = 'needmodera'
         for outbound_message in self.outboundmessage_set.all():
-            outbound_message.status = 'ready'
+            outbound_message.status = status
             outbound_message.save()
+
+        if self.writeitinstance.moderation_needed_in_all_messages:
+            Moderation.objects.create(message=self)
+            self.send_moderation_mail()
+        self.confirmated = True
+        self.save()
         
     @property
     def people(self):
@@ -90,22 +106,73 @@ class Message(models.Model):
     def get_absolute_url(self):
         return ('message_detail', (), {'slug': self.slug})
 
-    def save(self, *args, **kwargs):
+    def slugifyme(self):
+        self.slug = slugify(self.subject)
+        #Previously created messages with the same slug
+        previously = Message.objects.filter(subject=self.subject).count()
+        if previously > 0:
+            self.slug = self.slug + '-' + str(previously + 1)
+    def veryfy_people(self):
+        if not self.persons:
+            raise TypeError(_('A message needs persons to be sent'))
 
-        if self.id is None:
-            self.slug = slugify(self.subject)
-            #Previously created messages with the same slug
-            previously = Message.objects.filter(subject=self.subject).count()
-            if previously > 0:
-                self.slug = self.slug + '-' + str(previously + 1)
+    def create_moderation(self):
+        Moderation.objects.create(message=self)
 
-            if not self.persons:
-                raise TypeError(_('A message needs persons to be sent'))
-        super(Message, self).save(*args, **kwargs)
+    def create_outbound_messages(self):
         if self.persons:
             for person in self.persons:
                 for contact in person.contact_set.all():
                     outbound_message = OutboundMessage.objects.get_or_create(contact=contact, message=self)
+
+    def save(self, *args, **kwargs):
+        created = self.id is None
+        if created:
+            self.slugifyme()
+            self.veryfy_people()
+        super(Message, self).save(*args, **kwargs)
+        if created:
+            if not self.public:
+                self.create_moderation()
+        self.create_outbound_messages()
+
+    def set_to_ready(self):
+        for outbound_message in self.outboundmessage_set.all():
+            outbound_message.status = 'ready'
+            outbound_message.save()
+
+
+    def send_moderation_mail(self):
+        plaintext = get_template('nuntium/mails/moderation_mail.txt')
+        htmly     = get_template('nuntium/mails/moderation_mail.html')
+        current_site = Site.objects.get_current()
+        current_domain = 'http://'+current_site.domain
+        url_rejected = reverse('moderation_rejected', kwargs={
+            'slug': self.moderation.key
+            })
+        url_rejected = current_domain+url_rejected
+        url_accept = reverse('moderation_accept', kwargs={
+            'slug': self.moderation.key
+            })
+        url_accept = current_domain+url_accept
+        d = Context({ 
+            'message': self,
+            'url_rejected':url_rejected,
+            'url_accept':url_accept
+             })
+
+        text_content = plaintext.render(d)
+        html_content = htmly.render(d)
+        from_email = self.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
+        
+
+        msg = EmailMultiAlternatives( _('Confirmation email for a message in WriteIt'), 
+            text_content,#content
+            from_email,#From
+            [self.writeitinstance.owner.email]#To
+            )
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
 
     def __unicode__(self):
         return _('%(subject)s at %(instance)s') % {
@@ -117,12 +184,10 @@ class Answer(models.Model):
     content = models.TextField()
     person = models.ForeignKey(Person)
     message = models.ForeignKey(Message, related_name='answers')
-    created = models.DateField(default=datetime.datetime.now())
+    created = models.DateField(default=datetime.datetime.utcnow().replace(tzinfo=utc))
 
     def __init__(self, *args, **kwargs):
-        super(Answer, self).__init__(*args, **kwargs)
-
-
+        super(Answer, self).__init__(*args, **kwargs)    
     def save(self, *args, **kwargs):
         memberships = self.message.writeitinstance.membership_set.filter(person=self.person)
         if memberships.count() == 0:
@@ -156,6 +221,7 @@ class OutboundMessage(models.Model):
         ("ready",_("Ready to send")),
         ("sent",_("Sent")),
         ("error",_("Error sending it")),
+        ("needmodera",_("Needs moderation")),
         )
 
     contact = models.ForeignKey(Contact)
@@ -214,11 +280,28 @@ class OutboundMessage(models.Model):
             self.save()
         MessageRecord.objects.create(content_object= self, status=self.status)
 
+class OutboundMessageIdentifier(models.Model):
+    outbound_message = models.OneToOneField(OutboundMessage)
+    key = models.CharField(max_length = 255)
+
+    @classmethod
+    def create_answer(cls, identifier_key, content):
+        identifier = cls.objects.get(key=identifier_key)
+        message = identifier.outbound_message.message
+        person = identifier.outbound_message.contact.person
+        Answer.objects.create(message=message, person=person, content=content)
+
+    def save(self, *args, **kwargs):
+        if not self.key:
+            self.key = str(uuid.uuid1().hex)
+        super(OutboundMessageIdentifier, self).save(*args, **kwargs)
+
 
 def create_a_message_record(sender,instance, created, **kwargs):
     outbound_message = instance
     if created:
         MessageRecord.objects.create(content_object= outbound_message, status=outbound_message.status)
+        OutboundMessageIdentifier.objects.create(outbound_message=outbound_message)
 post_save.connect(create_a_message_record, sender=OutboundMessage)
 
 
@@ -233,7 +316,7 @@ class OutboundMessagePluginRecord(models.Model):
 class Confirmation(models.Model):
     message = models.OneToOneField(Message)
     key = models.CharField(max_length=64, unique=True)
-    created = models.DateField(default=datetime.datetime.now())
+    created = models.DateField(default=datetime.datetime.utcnow().replace(tzinfo=utc))
     confirmated_at = models.DateField(default=None, null=True)
 
     def save(self, *args, **kwargs):
@@ -274,10 +357,11 @@ def send_an_email_to_the_author(sender,instance, created, **kwargs):
 
         text_content = plaintext.render(d)
         html_content = htmly.render(d)
+        from_email = confirmation.message.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
 
         msg = EmailMultiAlternatives( _('Confirmation email for a message in WriteIt'), 
             text_content,#content
-            settings.DEFAULT_FROM_EMAIL,#From
+            from_email,#From
             [confirmation.message.author_email]#To
             )
         msg.attach_alternative(html_content, "text/html")
@@ -288,3 +372,18 @@ def send_an_email_to_the_author(sender,instance, created, **kwargs):
 
 
 post_save.connect(send_an_email_to_the_author, sender=Confirmation)
+
+
+class Moderation(models.Model):
+    message = models.OneToOneField(Message, related_name='moderation')
+    key = models.CharField(max_length=256)
+
+
+    def save(self, *args, **kwargs):
+        created = self.id is None
+        if created:
+            self.key = str(uuid.uuid1().hex)
+        super(Moderation, self).save(*args, **kwargs)
+        
+
+
