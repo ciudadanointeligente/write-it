@@ -185,6 +185,9 @@ LOGGING = {
 #Email settings
 DEFAULT_FROM_EMAIL = 'mailer@example.com'
 
+#DEFAULT_FROM_DOMAIN
+DEFAULT_FROM_DOMAIN = 'mailit.ciudadanointeligente.org'
+
 #setting to avoid db changes during test
 SOUTH_TESTS_MIGRATE = False
 
