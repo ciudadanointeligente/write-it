@@ -1,3 +1,4 @@
+# coding=utf8
 from global_test_case import GlobalTestCase as TestCase
 from global_test_case import ResourceGlobalTestCase as ResourceTestCase
 import os
@@ -82,7 +83,7 @@ class ReplyHandlerTestCase(ResourceTestCase):
 
     def test_get_only_new_content_and_not_original(self):
         self.answer = self.handler.handle(self.email)
-        self.assertEquals(self.answer.content_text, "asdasdasdasdasd")
+        self.assertEquals(self.answer.content_text, u"aass áéíóúñ")
 
 
 
