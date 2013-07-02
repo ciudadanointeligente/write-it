@@ -162,6 +162,27 @@ class MessageResourceTestCase(ResourceTestCase):
         self.assertTrue(the_message.confirmated)
 
 
+    # def test_get_message_detail_that_was_created_using_the_api(self):
+    #     writeitinstance = WriteItInstance.objects.all()[0]
+    #     message_data = {
+    #         'author_name' : 'Felipipoo',
+    #         'subject': 'new message',
+    #         'content': 'the content thing',
+    #         'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
+    #         'persons': [writeitinstance.persons.all()[0].popit_url]
+    #     }
+    #     url = '/api/v1/message/'
+    #     response = self.api_client.post(url, data = message_data, format='json', authentication=self.get_credentials())
+
+    #     the_message = Message.objects.get(author_name='Felipipoo')
+    #     #this message is confirmated but has no confirmation object
+    #     #this occurs when creating a message throu the API
+    #     url = reverse('message_detail', kwargs={'slug':the_message.slug})
+    #     response = self.client.get(url)
+    #     self.assertEquals(response.status_code, 200)
+    #     self.assertTrue(False)
+
+
 
 
 from nuntium.api import AnswerResource
