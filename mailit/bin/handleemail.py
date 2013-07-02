@@ -9,6 +9,7 @@ import logging
 import sys
 import config
 import json
+from email_reply_parser import EmailReplyParser
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
@@ -43,9 +44,11 @@ class EmailHandler():
         regex = re.compile(r".*[\+\-](.*)@.*")
 
         answer.outbound_message_identifier = regex.match(msg["To"]).groups()[0]
+
         for part in msg.walk():
             if part.get_content_type() == 'text/plain':
-                answer.content_text = part.get_payload()
+                answer.content_text = EmailReplyParser.parse_reply(part.get_payload(decode=True))
+                answer.content_text.strip()
         #logging stuff
         
         log = 'New incoming email from %(from)s sent on %(date)s with subject %(subject)s and content %(content)s'
