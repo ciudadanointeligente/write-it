@@ -1,0 +1,114 @@
+From falvarez@votainteligente.cl Tue Jul 02 15:43:31 2013
+Received: from mail-ie0-f178.google.com ([209.85.223.178])
+	by ip-10-170-133-165.us-west-1.compute.internal with esmtp (Exim 4.80)
+	(envelope-from <falvarez@votainteligente.cl>)
+	id 1Uu2jr-0000Qa-2O
+	for devteam+e610700ee29b11e295c71231400178dd@mailit.ciudadanointeligente.org; Tue, 02 Jul 2013 15:43:31 +0000
+Received: by mail-ie0-f178.google.com with SMTP id u16so11869054iet.23
+        for <devteam+e610700ee29b11e295c71231400178dd@mailit.ciudadanointeligente.org>; Tue, 02 Jul 2013 08:43:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20120113;
+        h=mime-version:sender:x-originating-ip:in-reply-to:references:date
+         :x-google-sender-auth:message-id:subject:from:to:content-type
+         :x-gm-message-state;
+        bh=5E3UpNJ0WVg/dLRlkJSKzULIR9MbpnRYVoE7qAeshRM=;
+        b=NrmomOpiLiUxvvQoF4P/Vu5PPA3Iwa36xLAzTZvafSXeED/sZTDKl1rA0KJ0bNM2EF
+         cM5veoEX4Q7AfnKWulgcUlQ0qjSBltvQQEHUJnQWgGkV9nc3PJHfQBE9do458QwdkRFh
+         V0gFehc4a2HSum3GIS28fCr53yIl9Olpu3Ous7oqEMNqCdK0/yD94MQhwpNuyW90FBV+
+         aQqtB61gCyvaycT7Ble0MH62NnyOHANqrUg33ThasVc5avGcVvGpL7Zx6CpzKbyrwJHh
+         eDQkbxzamCDTyDY/O9kX4yAC7vUvt71KHPF8xmJ5tdMS6ILb4ONJFeiLwJhnjXlR0/lB
+         2ACQ==
+MIME-Version: 1.0
+X-Received: by 10.50.56.20 with SMTP id w20mr21102670igp.40.1372779823169;
+ Tue, 02 Jul 2013 08:43:43 -0700 (PDT)
+Sender: falvarez@votainteligente.cl
+Received: by 10.64.225.174 with HTTP; Tue, 2 Jul 2013 08:43:43 -0700 (PDT)
+X-Originating-IP: [186.37.203.173]
+In-Reply-To: <0000013f9c520577-5dbd512f-717a-4dcf-9458-5968e8085b05-000000@email.amazonses.com>
+References: <0000013f9c520577-5dbd512f-717a-4dcf-9458-5968e8085b05-000000@email.amazonses.com>
+Date: Tue, 2 Jul 2013 11:43:43 -0400
+X-Google-Sender-Auth: daCvjQjwguN3feCC0fG4ZVj0pDw
+Message-ID: <CAA5Pczesyo_h9Tvk0U36A53GfpqJ_6ytiZqsW2RnOTO7Q=Hg=A@mail.gmail.com>
+Subject: Re: New Message on writeit
+From: =?ISO-8859-1?Q?Felipe_=C1lvarez?= <falvarez@ciudadanointeligente.cl>
+To: devteam+e610700ee29b11e295c71231400178dd@mailit.ciudadanointeligente.org
+Content-Type: multipart/alternative; boundary=089e01538d70b7130804e0893578
+X-Gm-Message-State: ALoCoQkozU7yufN3vMskbDYvVwqX7HWbCRhEauNV0Q6ecqJkKqvZ4TCe43xNNz9OrjBwsIhAWqxo
+
+--089e01538d70b7130804e0893578
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+asdasdasdasdasd
+
+
+On 1 July 2013 18:19, <devteam+e610700ee29b11e295c71231400178dd@mailit.ciudadanointeligente.org>wrote:
+
+> Hello Felipe =C1lvarez:
+> You have a new message on writeit:
+>
+> From: Felipe
+> Subject:  prueba11111111111111
+> Content:  prueba11111111111111
+>
+> You cannot answer yet, but you will soon have that oportunity (IMPLEMENT
+> ME PLEASE)
+>
+>
+> Thanks bye
+>
+
+
+
+--=20
+*Felipe =C1lvarez
+*
+Desarrollador de Aplicaciones Web
+Skype: luisfelipealvarezburgos
+Twitter: @lfalvarez
+Celular: +56973961732
+*Fundaci=F3n Ciudadano Inteligente*
+Holanda 895 - Providencia, Santiago de Chile.
+CiudadanoInteligente.cl <http://www.ciudadanointeligente.cl/> |
+@ciudadanoi<http://www.twitter.com/ciudadanoi>
+ | (56-2) 419 27 70
+
+--089e01538d70b7130804e0893578
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">asdasdasdasdasd</div><div class=3D"gmail_extra"><br><br><d=
+iv class=3D"gmail_quote">On 1 July 2013 18:19,  <span dir=3D"ltr">&lt;<a hr=
+ef=3D"mailto:devteam+e610700ee29b11e295c71231400178dd@mailit.ciudadanointel=
+igente.org" target=3D"_blank">devteam+e610700ee29b11e295c71231400178dd@mail=
+it.ciudadanointeligente.org</a>&gt;</span> wrote:<br>
+<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex">Hello Felipe =C1lvarez:<br>
+You have a new message on writeit:<br>
+<br>
+From: Felipe<br>
+Subject: =A0prueba11111111111111<br>
+Content: =A0prueba11111111111111<br>
+<br>
+You cannot answer yet, but you will soon have that oportunity (IMPLEMENT ME=
+ PLEASE)<br>
+<br>
+<br>
+Thanks bye<br>
+</blockquote></div><br><br clear=3D"all"><div><br></div>-- <br><div style=
+=3D"color:rgb(136,136,136)"><b>Felipe =C1lvarez<br></b></div><div style=3D"=
+color:rgb(136,136,136)"><font color=3D"#666666">Desarrollador de Aplicacion=
+es Web<br>
+Skype: luisfelipealvarezburgos</font></div><div style=3D"color:rgb(136,136,=
+136)"><font color=3D"#666666">Twitter: @lfalvarez<br>Celular: +56973961732<=
+br></font></div><div style=3D"color:rgb(136,136,136)"><b><font color=3D"#33=
+3333">Fundaci=F3n Ciudadano Inteligente</font></b></div>
+<div style=3D"color:rgb(136,136,136)"><font color=3D"#666666">Holanda 895 -=
+ Providencia, Santiago de Chile.=A0<br><a href=3D"http://www.ciudadanointel=
+igente.cl/" target=3D"_blank">CiudadanoInteligente.cl</a>=A0|=A0<a href=3D"=
+http://www.twitter.com/ciudadanoi" target=3D"_blank">@ciudadanoi</a>=A0|=A0=
+<a value=3D"+15624192770">(56-2) 419 27 70</a></font></div>
+
+</div>
+
+--089e01538d70b7130804e0893578--
