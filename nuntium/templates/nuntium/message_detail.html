@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block content %}
+{% load markdown_deux_tags %}
 <h1>{{ message.subject }}</h1>
 <h2>{{ message.content }}</h2>
 <span class="author_name">
@@ -21,7 +22,7 @@
 <div class="answers">
     
     <div class="answer">
-        <span class="content">{{ answer.content }} </span>
+        <span class="content">{% markdown %}{{ answer.content }}{% endmarkdown %}</span>
         <small>{% blocktrans with answer.person.name as name %} by {{ name }}.{% endblocktrans %}</small>
     </div>
 </div>
