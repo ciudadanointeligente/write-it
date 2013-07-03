@@ -6,3 +6,5 @@ coveralls
 mock
 django-tastypie
 django-nose
+email_reply_parser
+django-markdown-deux

@@ -66,6 +66,26 @@ class AnswerHandlerTestCase(TestCase):
         self.assertEquals(email_answer.email_from, 'falvarez@votainteligente.cl')
         self.assertEquals(email_answer.when, 'Wed Jun 26 21:05:33 2013')
 
+class ReplyHandlerTestCase(ResourceTestCase):
+    def setUp(self):
+        super(ReplyHandlerTestCase, self).setUp()
+        self.user = User.objects.all()[0]
+        ApiKey.objects.create(user=self.user)
+        f = open('mailit/tests/fixture/reply_mail.txt')
+        self.email = f.readlines()
+        f.close()
+        self.where_to_post_creation_of_the_answer = 'http://localhost:8000/api/v1/create_answer/'
+        config.WRITEIT_API_ANSWER_CREATION = self.where_to_post_creation_of_the_answer
+        config.WRITEIT_API_KEY = self.user.api_key.key
+        config.WRITEIT_USERNAME = self.user.username
+        self.handler = EmailHandler()
+
+    def test_get_only_new_content_and_not_original(self):
+        self.answer = self.handler.handle(self.email)
+        self.assertEquals(self.answer.content_text, "asdasdasdasdasd")
+
+
+
 class IncomingEmailHandlerTestCase(ResourceTestCase):
     def setUp(self):
         super(IncomingEmailHandlerTestCase,self).setUp()
