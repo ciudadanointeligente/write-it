@@ -147,6 +147,7 @@ INSTALLED_APPS = (
     'contactos',
     'mailit',
     'tastypie',
+    'markdown_deux',
     
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',

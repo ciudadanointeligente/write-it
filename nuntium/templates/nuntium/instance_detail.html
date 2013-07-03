@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block content %}
+{% load markdown_deux_tags %}
 
 <h2>{% trans "You can now write your question" %}</h2>
 <form method='post' class='form-horizontal'>
@@ -49,19 +50,8 @@
     {% for message in public_messages %}
     <div>
     	<h3>{{ message.subject }} <a href="{% url 'message_detail' slug=message.slug %}">{% trans "Link" %}</a></h3> 
-    	<h4>{{ message.content }}</h4>
+    	<h4>{% markdown %}{{ message.content }}{% endmarkdown %}</h4>
     	<span class="author_name"><small>{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}</small></span><br />
-        {% if message.answer_set.count > 0 %}
-        <div class="answers">
-            <h4>{% trans "Answers" %}</h4>
-            {% for answer in message.answer_set.all %}
-            <div class="answer">
-                <span class="content">{{ answer.content }} </span>
-                <small>{% blocktrans with answer.person.name as name %} by {{ name }}.{% endblocktrans %}</small>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
     </div>
     </dl>
         {% if not forloop.last %}
