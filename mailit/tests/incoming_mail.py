@@ -1,3 +1,4 @@
+# coding=utf8
 from global_test_case import GlobalTestCase as TestCase
 from global_test_case import ResourceGlobalTestCase as ResourceTestCase
 import os
@@ -80,9 +81,10 @@ class ReplyHandlerTestCase(ResourceTestCase):
         config.WRITEIT_USERNAME = self.user.username
         self.handler = EmailHandler()
 
+    #@skip("This test is currently failing reported in here https://github.com/zapier/email-reply-parser/issues/4 ")
     def test_get_only_new_content_and_not_original(self):
         self.answer = self.handler.handle(self.email)
-        self.assertEquals(self.answer.content_text, "asdasdasdasdasd")
+        self.assertEquals(self.answer.content_text, u"aass áéíóúñ")
 
 
 

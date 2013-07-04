@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 import email
 import re
 import requests
@@ -10,6 +9,8 @@ import sys
 import config
 import json
 from email_reply_parser import EmailReplyParser
+import quopri
+import HTMLParser
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
@@ -42,13 +43,20 @@ class EmailHandler():
         answer.email_from = msg["From"]
         answer.when = msg["Date"]
         regex = re.compile(r".*[\+\-](.*)@.*")
+        charset = msg.get_charset()
+        if not charset:
+            charset = 'ISO-8859-1'
 
         answer.outbound_message_identifier = regex.match(msg["To"]).groups()[0]
 
         for part in msg.walk():
             if part.get_content_type() == 'text/plain':
-                answer.content_text = EmailReplyParser.parse_reply(part.get_payload(decode=True))
-                answer.content_text.strip()
+                text = EmailReplyParser.parse_reply(part.get_payload(decode=True))
+                #text2 = quopri.decodestring(text)
+                
+                text2 = text.decode(charset)
+                text2.strip()
+                answer.content_text = text2
         #logging stuff
         
         log = 'New incoming email from %(from)s sent on %(date)s with subject %(subject)s and content %(content)s'
