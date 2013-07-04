@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 import email
 import re
 import requests
@@ -52,7 +51,7 @@ class EmailHandler():
 
         for part in msg.walk():
             if part.get_content_type() == 'text/plain':
-                text = EmailReplyParser.parse_reply(part.get_payload(decode=True    ))
+                text = EmailReplyParser.parse_reply(part.get_payload(decode=True))
                 #text2 = quopri.decodestring(text)
                 
                 text2 = text.decode(charset)
