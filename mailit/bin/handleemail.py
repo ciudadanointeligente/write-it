@@ -52,9 +52,10 @@ class EmailHandler():
 
         for part in msg.walk():
             if part.get_content_type() == 'text/plain':
-                text = EmailReplyParser.parse_reply(part.get_payload())
-                text2 = quopri.decodestring(text)
-                text2 = text2.decode(charset)
+                text = EmailReplyParser.parse_reply(part.get_payload(decode=True    ))
+                #text2 = quopri.decodestring(text)
+                
+                text2 = text.decode(charset)
                 text2.strip()
                 answer.content_text = text2
         #logging stuff
