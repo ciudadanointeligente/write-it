@@ -5,9 +5,7 @@
 <h1>{{ message.subject }}</h1>
 
 <h2>
-    {% markdown %}
-    {{ message.content }}
-    {% endmarkdown %}
+    {{ message.content|linebreaks }}
 </h2>
 <span class="author_name">
 	<small>

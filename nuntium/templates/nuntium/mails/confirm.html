@@ -2,7 +2,7 @@ Hello {{ confirmation.message.author_name }}:<br />
 We have received a message written by you in {{ site.current_site.domain }}.<br />
 The message was:<br />
 <strong>Subject: </strong> {{ confirmation.message.subject }} <br/>
-<strong>Content: </strong> {{ confirmation.message.content }} <br />
+<strong>Content: </strong> {{ confirmation.message.content|linebreaks }} <br />
 <strong>To: </strong>
 <ul>
 	{% for person in confirmation.message.people %}
