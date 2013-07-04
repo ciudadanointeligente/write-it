@@ -9,7 +9,7 @@ Subject: {{ message.subject }}
 To:{% for person in message.people %}{{ person.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
 The message:
 
-{{ message.content }}
+{{ message.content|linebreaks }}
 
 
 
