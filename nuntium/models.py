@@ -23,6 +23,7 @@ from django.template.defaultfilters import slugify
 import re
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+from django.db import IntegrityError
 
 
 class WriteItInstance(models.Model):
@@ -89,8 +90,12 @@ class Message(models.Model):
             outbound_message.save()
 
         if self.writeitinstance.moderation_needed_in_all_messages:
-            Moderation.objects.create(message=self)
-            self.send_moderation_mail()
+            try:
+                Moderation.objects.create(message=self)
+                self.send_moderation_mail()
+            except IntegrityError:
+                pass
+            
         self.confirmated = True
         self.save()
         
