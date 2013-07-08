@@ -143,6 +143,46 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
 
             post.assert_called_with(self.where_to_post_creation_of_the_answer, data=data, headers=expected_headers)
 
+    def test_it_posts_to_the_api_using_the_method_post_to_the_api(self):
+        self.answer = self.handler.handle(self.email)
+        self.assertEquals(self.answer.requests_session.auth.api_key, self.user.api_key.key)
+        self.assertEquals(self.answer.requests_session.auth.username, self.user.username)
+        expected_headers = {'content-type': 'application/json'}
+        data = {
+        'key':self.answer.outbound_message_identifier,
+        'content':self.answer.content_text,
+        'format': 'json'
+        }
+        data = json.dumps(data)
+        with patch('requests.Session.post') as post:
+            post.return_value = PostMock()
+            self.answer.post_to_the_api()
+
+            post.assert_called_with(self.where_to_post_creation_of_the_answer, data=data, headers=expected_headers)
+
+    def test_reports_a_bounce_if_it_is_a_bounce_and_does_not_post_to_the_api(self):
+        f = open('mailit/tests/fixture/bounced_mail.txt')
+        bounce = f.readlines()
+        f.close()
+        self.answer = self.handler.handle(bounce)
+        where_to_post_a_bounce = 'http://writeit.ciudadanointeligente.org/api/v1/handle_bounce/'
+        config.WRITEIT_API_WHERE_TO_REPORT_A_BOUNCE = where_to_post_a_bounce
+        self.assertEquals(self.answer.requests_session.auth.api_key, self.user.api_key.key)
+        self.assertEquals(self.answer.requests_session.auth.username, self.user.username)
+        expected_headers = {'content-type': 'application/json'}
+        data = {
+        'key':self.answer.outbound_message_identifier
+        }
+        data = json.dumps(data)
+        
+        with patch('requests.Session.post') as post:
+            post.return_value = PostMock()
+
+            self.answer.send_back()
+
+            post.assert_called_with(where_to_post_a_bounce, data=data, headers=expected_headers)
+
+
 
     def test_logs_the_result_of_send_back(self):
         

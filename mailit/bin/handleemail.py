@@ -48,7 +48,7 @@ class EmailHandler():
             the_recipient = scan_message(msg).pop()
         else:
             the_recipient = msg["To"]
-            
+
         answer.subject = msg["Subject"]
         answer.email_from = msg["From"]
         answer.when = msg["Date"]
@@ -80,6 +80,9 @@ class EmailHandler():
         return answer
 
 
+
+
+
 class EmailAnswer():
     def __init__(self):
         self.subject = ''
@@ -96,7 +99,7 @@ class EmailAnswer():
 
 
 
-    def send_back(self):
+    def post_to_the_api(self):
         data = {
         'key': self.outbound_message_identifier,
         'content': self.content_text,
@@ -110,6 +113,12 @@ class EmailAnswer():
             'status_code':result.status_code
             }
         logging.info(log)
+
+    def send_back(self):
+        if self.is_bounced:
+            self.report_bounce()
+        else:
+            self.post_to_the_api()
 
     def report_bounce(self):
         data = {
