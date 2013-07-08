@@ -11,6 +11,7 @@ import json
 from email_reply_parser import EmailReplyParser
 import quopri
 import HTMLParser
+from flufl.bounce import all_failures, scan_message
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
@@ -39,15 +40,24 @@ class EmailHandler():
             msgtxt += str(line)
 
         msg = email.message_from_string(msgtxt)
+        temporary, permanent = all_failures(msg)
+        regex = re.compile(r".*[\+\-](.*)@.*")
+        
+        if temporary or permanent:
+            answer.is_bounced = True
+            the_recipient = scan_message(msg).pop()
+        else:
+            the_recipient = msg["To"]
+            
         answer.subject = msg["Subject"]
         answer.email_from = msg["From"]
         answer.when = msg["Date"]
-        regex = re.compile(r".*[\+\-](.*)@.*")
+
+        
+        answer.outbound_message_identifier = regex.match(the_recipient).groups()[0]
         charset = msg.get_charset()
         if not charset:
             charset = 'ISO-8859-1'
-
-        answer.outbound_message_identifier = regex.match(msg["To"]).groups()[0]
 
         for part in msg.walk():
             if part.get_content_type() == 'text/plain':
@@ -81,6 +91,7 @@ class EmailAnswer():
         username = config.WRITEIT_USERNAME
         apikey = config.WRITEIT_API_KEY
         self.requests_session.auth = ApiKeyAuth(username, apikey)
+        self.is_bounced = False
 
 
 
@@ -99,6 +110,14 @@ class EmailAnswer():
             'status_code':result.status_code
             }
         logging.info(log)
+
+    def report_bounce(self):
+        data = {
+        'key':self.outbound_message_identifier
+        }
+        headers = {'content-type': 'application/json'}
+        result = self.requests_session.post(config.WRITEIT_API_WHERE_TO_REPORT_A_BOUNCE, data=json.dumps(data), headers=headers)
+
 
 if __name__ == '__main__': # pragma: no cover
     lines = sys.stdin.readlines()

@@ -66,6 +66,7 @@ class AnswerHandlerTestCase(TestCase):
         self.assertEquals(email_answer.outbound_message_identifier, '8974aabsdsfierapulgosa')
         self.assertEquals(email_answer.email_from, 'falvarez@votainteligente.cl')
         self.assertEquals(email_answer.when, 'Wed Jun 26 21:05:33 2013')
+        self.assertFalse(email_answer.is_bounced)
 
 class ReplyHandlerTestCase(ResourceTestCase):
     def setUp(self):
@@ -182,5 +183,43 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
             'content':self.answer.content_text
             }
             info.assert_called_with(expected_log)
+
+
+class HandleBounces(TestCase):
+    def setUp(self):
+        super(HandleBounces, self).setUp()
+        self.user = User.objects.all()[0]
+        ApiKey.objects.create(user=self.user)
+        f = open('mailit/tests/fixture/bounced_mail.txt')
+        self.email = f.readlines()
+        f.close()
+        self.where_to_post_a_bounce = 'http://writeit.ciudadanointeligente.org//api/v1/handle_bounce/'
+        config.WRITEIT_API_WHERE_TO_REPORT_A_BOUNCE = self.where_to_post_a_bounce
+        config.WRITEIT_API_KEY = self.user.api_key.key
+        config.WRITEIT_USERNAME = self.user.username
+        self.handler = EmailHandler()
+
+    def test_after_handling_the_message_is_set_to_bounced(self):
+        self.answer = self.handler.handle(self.email)
+        self.assertTrue(self.answer.is_bounced)
+
+
+    def test_it_handles_the_bounces_and_pushes_the_identifier_key_to_the_api(self):
+        self.answer = self.handler.handle(self.email)
+        self.assertEquals(self.answer.requests_session.auth.api_key, self.user.api_key.key)
+        self.assertEquals(self.answer.requests_session.auth.username, self.user.username)
+        expected_headers = {'content-type': 'application/json'}
+        data = {
+        'key':self.answer.outbound_message_identifier
+        }
+        data = json.dumps(data)
+        
+        with patch('requests.Session.post') as post:
+            post.return_value = PostMock()
+
+            self.answer.report_bounce()
+
+            post.assert_called_with(self.where_to_post_a_bounce, data=data, headers=expected_headers)
+
 
 
