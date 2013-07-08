@@ -182,3 +182,5 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
             'content':self.answer.content_text
             }
             info.assert_called_with(expected_log)
+
+
