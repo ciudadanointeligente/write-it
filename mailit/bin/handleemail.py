@@ -28,13 +28,58 @@ class ApiKeyAuth(AuthBase):
         r.headers['Authorization'] = 'ApiKey %s:%s' % (self.username, self.api_key)
         return r
 
-class EmailHandler():
+class EmailAnswer():
     def __init__(self):
+        self.subject = ''
+        self.content_text = ''
+        self.outbound_message_identifier = ''
+        self.email_from = ''
+        self.when = ''
+        self.requests_session = requests.Session()
+        username = config.WRITEIT_USERNAME
+        apikey = config.WRITEIT_API_KEY
+        self.requests_session.auth = ApiKeyAuth(username, apikey)
+        self.is_bounced = False
+
+
+
+
+    def save(self):
+        data = {
+        'key': self.outbound_message_identifier,
+        'content': self.content_text,
+        'format' :'json'
+        }
+        headers = {'content-type': 'application/json'}
+        result = self.requests_session.post(config.WRITEIT_API_ANSWER_CREATION, data=json.dumps(data), headers=headers)
+        log = "When sent to %(location)s the status code was %(status_code)d"
+        log = log % {
+            'location':config.WRITEIT_API_ANSWER_CREATION,
+            'status_code':result.status_code
+            }
+        logging.info(log)
+
+    def send_back(self):
+        if self.is_bounced:
+            self.report_bounce()
+        else:
+            self.save()
+
+    def report_bounce(self):
+        data = {
+        'key':self.outbound_message_identifier
+        }
+        headers = {'content-type': 'application/json'}
+        result = self.requests_session.post(config.WRITEIT_API_WHERE_TO_REPORT_A_BOUNCE, data=json.dumps(data), headers=headers)
+
+class EmailHandler():
+    def __init__(self, answer_class=EmailAnswer):
         self.message = None
+        self.answer_class = answer_class
 
     def handle(self, lines):
         
-        answer = EmailAnswer()
+        answer = self.answer_class()
         msgtxt = ''
         for line in lines:
             msgtxt += str(line)
@@ -83,49 +128,7 @@ class EmailHandler():
 
 
 
-class EmailAnswer():
-    def __init__(self):
-        self.subject = ''
-        self.content_text = ''
-        self.outbound_message_identifier = ''
-        self.email_from = ''
-        self.when = ''
-        self.requests_session = requests.Session()
-        username = config.WRITEIT_USERNAME
-        apikey = config.WRITEIT_API_KEY
-        self.requests_session.auth = ApiKeyAuth(username, apikey)
-        self.is_bounced = False
 
-
-
-
-    def save(self):
-        data = {
-        'key': self.outbound_message_identifier,
-        'content': self.content_text,
-        'format' :'json'
-        }
-        headers = {'content-type': 'application/json'}
-        result = self.requests_session.post(config.WRITEIT_API_ANSWER_CREATION, data=json.dumps(data), headers=headers)
-        log = "When sent to %(location)s the status code was %(status_code)d"
-        log = log % {
-            'location':config.WRITEIT_API_ANSWER_CREATION,
-            'status_code':result.status_code
-            }
-        logging.info(log)
-
-    def send_back(self):
-        if self.is_bounced:
-            self.report_bounce()
-        else:
-            self.save()
-
-    def report_bounce(self):
-        data = {
-        'key':self.outbound_message_identifier
-        }
-        headers = {'content-type': 'application/json'}
-        result = self.requests_session.post(config.WRITEIT_API_WHERE_TO_REPORT_A_BOUNCE, data=json.dumps(data), headers=headers)
 
 
 if __name__ == '__main__': # pragma: no cover

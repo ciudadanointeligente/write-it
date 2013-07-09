@@ -1,0 +1,118 @@
+# coding=utf8
+from global_test_case import GlobalTestCase as TestCase
+from django.core.management import call_command
+from global_test_case import ResourceGlobalTestCase as ResourceTestCase
+from mailit.management.commands.handleemail import AnswerForManageCommand
+from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Answer
+from django.utils.unittest import skip
+from mock import patch, Mock
+import sys
+
+
+class ManagementCommandAnswer(TestCase):
+    def setUp(self):
+        super(ManagementCommandAnswer, self).setUp()
+
+
+    def test_create_answer_for_management_command(self):
+        email_answer = AnswerForManageCommand()
+        email_answer.subject = 'prueba4'
+        email_answer.content_text = 'prueba4lafieritaespeluda'
+        email_answer.outbound_message_identifier = '8974aabsdsfierapulgosa'
+        email_answer.email_from = 'falvarez@votainteligente.cl'
+        email_answer.when = 'Wed Jun 26 21:05:33 2013'
+
+
+        self.assertTrue(email_answer)
+        self.assertEquals(email_answer.subject, 'prueba4')
+        self.assertEquals(email_answer.content_text, 'prueba4lafieritaespeluda')
+        self.assertEquals(email_answer.outbound_message_identifier, '8974aabsdsfierapulgosa')
+        self.assertEquals(email_answer.email_from, 'falvarez@votainteligente.cl')
+        self.assertEquals(email_answer.when, 'Wed Jun 26 21:05:33 2013')
+        self.assertFalse(email_answer.is_bounced)
+
+
+class ManagementCommandAnswerBehaviour(TestCase):
+    def setUp(self):
+        super(ManagementCommandAnswerBehaviour, self).setUp()
+        self.outbound_message = OutboundMessage.objects.all()[0]
+        self.identifier = self.outbound_message.outboundmessageidentifier
+        self.email_answer = AnswerForManageCommand()
+        self.email_answer.subject = 'prueba4'
+        self.email_answer.content_text = 'prueba4lafieritaespeluda'
+        self.email_answer.outbound_message_identifier = self.identifier.key
+        self.email_answer.email_from = 'falvarez@votainteligente.cl'
+        self.email_answer.when = 'Wed Jun 26 21:05:33 2013'
+
+
+    def test_it_creates_an_answer_when_sent_back(self):
+        self.assertEquals(Answer.objects.filter(message=self.outbound_message.message).count(), 0)
+        self.email_answer.save()
+        the_answer = Answer.objects.get(message=self.outbound_message.message)
+
+        self.assertEquals(the_answer.content, self.email_answer.content_text)
+        self.assertEquals(the_answer.person, self.outbound_message.contact.person)
+
+    def test_it_invalidates_a_contact(self):
+        self.email_answer.report_bounce()
+
+        self.assertTrue(self.outbound_message.contact.is_bounced)
+
+    def test_it_handles_bounces_in_send_back_function(self):
+        #the email is a bounce
+        self.email_answer.is_bounced = True
+        self.email_answer.send_back()
+
+        self.assertTrue(self.outbound_message.contact.is_bounced)
+
+    def test_it_creates_an_answer_when_is_not_bounced(self):
+        #the email is not a bounce
+        self.assertEquals(Answer.objects.filter(message=self.outbound_message.message).count(), 0)
+        self.email_answer.send_back()
+        the_answer = Answer.objects.get(message=self.outbound_message.message)
+
+        self.assertEquals(the_answer.content, self.email_answer.content_text)
+        self.assertEquals(the_answer.person, self.outbound_message.contact.person)
+
+def readlines_mock():
+    f = open('mailit/tests/fixture/mail.txt')
+    lines = f.readlines()
+    f.close()
+    return lines
+
+
+class HandleIncomingEmailCommand(TestCase):
+    def setUp(self):
+        super(HandleIncomingEmailCommand, self).setUp()
+
+    def test_call_command(self):
+        identifier = OutboundMessageIdentifier.objects.all()[0]
+        identifier.key = '4aaaabbb'
+        identifier.save()
+
+        with patch('sys.stdin') as stdin:
+            stdin.attach_mock(readlines_mock,'readlines')
+            
+            call_command('handleemail','mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+
+            the_answers = Answer.objects.filter(message=identifier.outbound_message.message)
+            self.assertEquals(the_answers.count(), 1)
+            self.assertEquals(the_answers[0].content, 'prueba4lafieri\n')
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
