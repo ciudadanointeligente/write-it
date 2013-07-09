@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from tastypie.resources import ModelResource, ALL_WITH_RELATIONS, Resource
-from nuntium.models import WriteItInstance, Message, Answer, OutboundMessageIdentifier
+from nuntium.models import WriteItInstance, Message, Answer, OutboundMessageIdentifier, OutboundMessage
 from tastypie.authentication import ApiKeyAuthentication, Authentication
 from tastypie.authorization import Authorization
 from django.conf.urls import url
@@ -9,6 +9,7 @@ from tastypie.exceptions import ImmediateHttpResponse
 from tastypie import http
 from django.http import HttpRequest
 from popit.models import Person
+from contactos.models import Contact
 
 class WriteItInstanceResource(ModelResource):
     class Meta:
@@ -84,3 +85,20 @@ class AnswerCreationResource(Resource):
 
         answer_content = bundle.data['content']
         OutboundMessageIdentifier.create_answer(identifier_key, answer_content)
+
+
+class HandleBouncesResource(Resource):
+    class Meta:
+        resource_name = 'handle_bounce'
+        object_class = Contact
+        authentication = ApiKeyAuthentication()
+        allowed_methods = ['post', ]
+
+
+    def obj_create(self, bundle, **kwargs):
+        identifier_key = bundle.data['key']
+        identifier = OutboundMessageIdentifier.objects.get(key=bundle.data['key'])
+        outbound_message = OutboundMessage.objects.get(outboundmessageidentifier=identifier)
+        contact = outbound_message.contact
+        contact.is_bounced = True
+        contact.save()
