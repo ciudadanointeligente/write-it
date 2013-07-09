@@ -68,6 +68,17 @@ class AnswerHandlerTestCase(TestCase):
         self.assertEquals(email_answer.when, 'Wed Jun 26 21:05:33 2013')
         self.assertFalse(email_answer.is_bounced)
 
+    def test_getter_removes_the_identifier(self):
+        email_answer = EmailAnswer()
+        email_answer.subject = 'prueba4'
+        email_answer.outbound_message_identifier = '8974aabsdsfierapulgosa'
+        email_answer.content_text = 'prueba4lafieritaespeluda y lo mandé desde este mail devteam+8974aabsdsfierapulgosa@chile.com'
+
+        self.assertFalse(email_answer.outbound_message_identifier in email_answer.content_text)
+
+
+
+
 class ReplyHandlerTestCase(ResourceTestCase):
     def setUp(self):
         super(ReplyHandlerTestCase, self).setUp()
