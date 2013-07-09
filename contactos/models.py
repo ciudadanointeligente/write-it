@@ -15,6 +15,7 @@ class Contact(models.Model):
     contact_type = models.ForeignKey('ContactType')
     person = models.ForeignKey(Person)
     value = models.CharField(max_length=512)
+    is_bounced = models.BooleanField()
 
     def __unicode__(self):
     	return _('%(contact)s (%(type)s)') % {

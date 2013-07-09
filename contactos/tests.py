@@ -23,6 +23,7 @@ class ContactTestCase(TestCase):
         contact_type = ContactType.objects.create(name='mental message', label_name = 'mental address id')
         contact1 = Contact.objects.create(contact_type= contact_type, value = 'contact point', person= self.person)
         self.assertTrue(contact1)
+        self.assertFalse(contact1.is_bounced)
 
     def test_contact_unicode(self):
         contact_type = ContactType.objects.create(name='mental message', label_name = 'mental address id')
