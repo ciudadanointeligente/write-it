@@ -189,7 +189,28 @@ class TestMessages(TestCase):
 
         self.assertEquals(message.outboundmessage_set.count(), 0)
 
+    def test_outbound_message_is_not_created_if_the_contact_is_owned_by_some_other_user(self):
+        #test names are big but I think that's the way to indicate my intention
+        felipe = User.objects.create_user(username='felipe', password='lafieratienepulgas')
+        contact = Contact.objects.create(person=self.person1
+            , value=u"another@contact.cl"
+            , contact_type=self.person1.contact_set.all()[0].contact_type
+            , owner=felipe)
 
+        #this contact is for person 1 but it is owned by felipe
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Subject 1', 
+            writeitinstance= self.writeitinstance1, 
+            persons = [self.person1])
+
+        #there should not be any outboundmessages to contact because the message was
+        #sent to writeitinstance1 that is owned by felipe
+
+
+
+        self.assertEquals(OutboundMessage.objects.filter(contact=contact).count(), 0)
 
 
     def test_it_creates_outbound_messages_only_once(self):
