@@ -98,6 +98,39 @@ class ReplyHandlerTestCase(ResourceTestCase):
         self.answer = self.handler.handle(self.email)
         self.assertEquals(self.answer.content_text, u"aass áéíóúñ")
 
+class DoesNotIncludeTheIdentifierInTheContent(TestCase):
+    def setUp(self):
+        super(DoesNotIncludeTheIdentifierInTheContent,self).setUp()
+        self.user = User.objects.all()[0]
+        ApiKey.objects.create(user=self.user)
+        f = open('mailit/tests/fixture/mail_with_identifier_in_the_content.txt')
+        self.email = f.readlines()
+        f.close()
+        self.where_to_post_creation_of_the_answer = 'http://localhost:8000/api/v1/create_answer/'
+        config.WRITEIT_API_ANSWER_CREATION = self.where_to_post_creation_of_the_answer
+        config.WRITEIT_API_KEY = self.user.api_key.key
+        config.WRITEIT_USERNAME = self.user.username
+        self.handler = EmailHandler()
+
+    def test_does_not_contain_the_identifier_when_posting(self):
+        self.answer = self.handler.handle(self.email)
+        self.assertEquals(self.answer.requests_session.auth.api_key, self.user.api_key.key)
+        self.assertEquals(self.answer.requests_session.auth.username, self.user.username)
+        expected_headers = {'content-type': 'application/json'}
+        data = {
+        'key':self.answer.outbound_message_identifier,
+        'content':self.answer.content_text,
+        'format': 'json'
+        }
+
+        data = json.dumps(data)
+        self.assertFalse(self.answer.outbound_message_identifier in self.answer.content_text)
+        with patch('requests.Session.post') as post:
+            post.return_value = PostMock()
+            self.answer.send_back()
+
+            post.assert_called_with(self.where_to_post_creation_of_the_answer, data=data, headers=expected_headers)
+
 
 
 class IncomingEmailHandlerTestCase(ResourceTestCase):
