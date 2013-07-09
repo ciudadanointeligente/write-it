@@ -156,7 +156,7 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
         data = json.dumps(data)
         with patch('requests.Session.post') as post:
             post.return_value = PostMock()
-            self.answer.post_to_the_api()
+            self.answer.save()
 
             post.assert_called_with(self.where_to_post_creation_of_the_answer, data=data, headers=expected_headers)
 

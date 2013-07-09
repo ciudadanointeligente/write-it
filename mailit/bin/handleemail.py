@@ -41,7 +41,7 @@ class EmailHandler():
 
         msg = email.message_from_string(msgtxt)
         temporary, permanent = all_failures(msg)
-        regex = re.compile(r".*[\+\-](.*)@.*")
+        
         
         if temporary or permanent:
             answer.is_bounced = True
@@ -53,7 +53,7 @@ class EmailHandler():
         answer.email_from = msg["From"]
         answer.when = msg["Date"]
 
-        
+        regex = re.compile(r".*[\+\-](.*)@.*")
         answer.outbound_message_identifier = regex.match(the_recipient).groups()[0]
         charset = msg.get_charset()
         if not charset:
@@ -99,7 +99,7 @@ class EmailAnswer():
 
 
 
-    def post_to_the_api(self):
+    def save(self):
         data = {
         'key': self.outbound_message_identifier,
         'content': self.content_text,
@@ -118,7 +118,7 @@ class EmailAnswer():
         if self.is_bounced:
             self.report_bounce()
         else:
-            self.post_to_the_api()
+            self.save()
 
     def report_bounce(self):
         data = {
