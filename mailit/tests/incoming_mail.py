@@ -68,6 +68,17 @@ class AnswerHandlerTestCase(TestCase):
         self.assertEquals(email_answer.when, 'Wed Jun 26 21:05:33 2013')
         self.assertFalse(email_answer.is_bounced)
 
+    def test_getter_removes_the_identifier(self):
+        email_answer = EmailAnswer()
+        email_answer.subject = 'prueba4'
+        email_answer.outbound_message_identifier = '8974aabsdsfierapulgosa'
+        email_answer.content_text = 'prueba4lafieritaespeluda y lo mandé desde este mail devteam+8974aabsdsfierapulgosa@chile.com'
+
+        self.assertFalse(email_answer.outbound_message_identifier in email_answer.content_text)
+
+
+
+
 class ReplyHandlerTestCase(ResourceTestCase):
     def setUp(self):
         super(ReplyHandlerTestCase, self).setUp()
@@ -86,6 +97,39 @@ class ReplyHandlerTestCase(ResourceTestCase):
     def test_get_only_new_content_and_not_original(self):
         self.answer = self.handler.handle(self.email)
         self.assertEquals(self.answer.content_text, u"aass áéíóúñ")
+
+class DoesNotIncludeTheIdentifierInTheContent(TestCase):
+    def setUp(self):
+        super(DoesNotIncludeTheIdentifierInTheContent,self).setUp()
+        self.user = User.objects.all()[0]
+        ApiKey.objects.create(user=self.user)
+        f = open('mailit/tests/fixture/mail_with_identifier_in_the_content.txt')
+        self.email = f.readlines()
+        f.close()
+        self.where_to_post_creation_of_the_answer = 'http://localhost:8000/api/v1/create_answer/'
+        config.WRITEIT_API_ANSWER_CREATION = self.where_to_post_creation_of_the_answer
+        config.WRITEIT_API_KEY = self.user.api_key.key
+        config.WRITEIT_USERNAME = self.user.username
+        self.handler = EmailHandler()
+
+    def test_does_not_contain_the_identifier_when_posting(self):
+        self.answer = self.handler.handle(self.email)
+        self.assertEquals(self.answer.requests_session.auth.api_key, self.user.api_key.key)
+        self.assertEquals(self.answer.requests_session.auth.username, self.user.username)
+        expected_headers = {'content-type': 'application/json'}
+        data = {
+        'key':self.answer.outbound_message_identifier,
+        'content':self.answer.content_text,
+        'format': 'json'
+        }
+
+        data = json.dumps(data)
+        self.assertFalse(self.answer.outbound_message_identifier in self.answer.content_text)
+        with patch('requests.Session.post') as post:
+            post.return_value = PostMock()
+            self.answer.send_back()
+
+            post.assert_called_with(self.where_to_post_creation_of_the_answer, data=data, headers=expected_headers)
 
 
 
