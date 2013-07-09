@@ -74,12 +74,19 @@ class ManagementCommandAnswerBehaviour(TestCase):
         self.assertEquals(the_answer.content, self.email_answer.content_text)
         self.assertEquals(the_answer.person, self.outbound_message.contact.person)
 
-def readlines_mock():
-    f = open('mailit/tests/fixture/mail.txt')
+def readlines1_mock():
+    file_name='mailit/tests/fixture/mail.txt'
+    f = open(file_name)
     lines = f.readlines()
     f.close()
     return lines
 
+def readlines2_mock():
+    file_name='mailit/tests/fixture/mail_with_identifier_in_the_content.txt'
+    f = open(file_name)
+    lines = f.readlines()
+    f.close()
+    return lines
 
 class HandleIncomingEmailCommand(TestCase):
     def setUp(self):
@@ -91,13 +98,28 @@ class HandleIncomingEmailCommand(TestCase):
         identifier.save()
 
         with patch('sys.stdin') as stdin:
-            stdin.attach_mock(readlines_mock,'readlines')
+            stdin.attach_mock(readlines1_mock,'readlines')
             
             call_command('handleemail','mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
 
             the_answers = Answer.objects.filter(message=identifier.outbound_message.message)
             self.assertEquals(the_answers.count(), 1)
             self.assertEquals(the_answers[0].content, 'prueba4lafieri\n')
+
+    def test_call_command_does_not_include_identifier_in_content(self):
+        identifier = OutboundMessageIdentifier.objects.all()[0]
+        identifier.key = '4aaaabbb'
+        identifier.save()
+
+        with patch('sys.stdin') as stdin:
+            stdin.attach_mock(readlines2_mock,'readlines')
+            
+            call_command('handleemail','mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+
+            the_answers = Answer.objects.filter(message=identifier.outbound_message.message)
+            self.assertEquals(the_answers.count(), 1)
+            self.assertFalse(identifier.key in the_answers[0].content)
+
 
 
             

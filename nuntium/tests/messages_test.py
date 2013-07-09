@@ -173,6 +173,21 @@ class TestMessages(TestCase):
         
         self.assertEquals(message.outboundmessage_set.count(), 1)
 
+    def test_outbound_message_is_not_created_if_the_persons_contact_is_bounced(self):
+        contact = Contact.objects.get(person=self.person1)
+        contact.is_bounced = True
+        contact.save()
+        message = Message(content = 'Content 1', author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Subject 1', 
+            writeitinstance= self.writeitinstance1, 
+            persons = [self.person1])
+        message.save()
+
+        self.assertEquals(message.outboundmessage_set.count(), 0)
+
+
+
 
     def test_it_creates_outbound_messages_only_once(self):
         message = Message.objects.create(content = 'Content 1', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])

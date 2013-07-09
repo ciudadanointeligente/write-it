@@ -28,10 +28,10 @@ class ApiKeyAuth(AuthBase):
         r.headers['Authorization'] = 'ApiKey %s:%s' % (self.username, self.api_key)
         return r
 
-class EmailAnswer():
+class EmailAnswer(object):
     def __init__(self):
         self.subject = ''
-        self.content_text = ''
+        self._content_text = ''
         self.outbound_message_identifier = ''
         self.email_from = ''
         self.when = ''
@@ -41,6 +41,18 @@ class EmailAnswer():
         self.requests_session.auth = ApiKeyAuth(username, apikey)
         self.is_bounced = False
 
+    def get_content_text(self):
+        cleaned_content = self._content_text.replace(self.outbound_message_identifier, '')
+
+        return cleaned_content
+
+    def set_content_text(self, value):
+        self._content_text = value
+
+    def del_content_text(self):
+        del self._content_text
+
+    content_text = property(get_content_text, set_content_text, del_content_text)
 
 
 
