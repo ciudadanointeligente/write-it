@@ -1,6 +1,7 @@
 from django.db import models
 from popit.models import Person
 from django.utils.translation import ugettext as _
+from django.contrib.auth.models import User
 
 class ContactType(models.Model):
     """This class contain all contact types"""
@@ -16,6 +17,7 @@ class Contact(models.Model):
     person = models.ForeignKey(Person)
     value = models.CharField(max_length=512)
     is_bounced = models.BooleanField()
+    owner = models.ForeignKey(User)
 
     def __unicode__(self):
     	return _('%(contact)s (%(type)s)') % {

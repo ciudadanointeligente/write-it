@@ -7,6 +7,7 @@ from popit.models import Person, ApiInstance
 from nuntium.plugins import OutputPlugin
 from mailit.models import MailItTemplate
 from django.core import mail
+from django.contrib.auth.models import User
 from django.conf import settings
 
 class MailChannelTestCase(TestCase):
@@ -52,7 +53,12 @@ class MailSendingTestCase(TestCase):
         self.person3 = Person.objects.all()[2]
         self.channel = MailChannel()
         self.contact_type2 = ContactType.objects.create(name= 'Uninvented one',label_name='bzbzbzb')
-        self.contact3 = Contact.objects.create(person=self.person3, contact_type=self.channel.get_contact_type(), value= '123456789')
+        self.user = User.objects.all()[0]
+        self.contact3 = Contact.objects.create(
+            person=self.person3, 
+            contact_type=self.channel.get_contact_type(), 
+            value= '123456789',
+            owner=self.user)
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
         self.writeitinstance2 = WriteItInstance.objects.all()[1]
         self.message = Message.objects.all()[0]
@@ -93,7 +99,8 @@ class MailSendingTestCase(TestCase):
             ,subject_template=u"subject %(subject)s",
             content_template=u" content %(subject)s %(content)s %(person)s %(author)s")
         contact3 = Contact.objects.create(person=self.person3, contact_type=self.contact_type2,
-            value= 'person1@votainteligente.cl')
+            value= 'person1@votainteligente.cl',
+            owner=self.user)
         message = Message.objects.create(content="The content", subject="the subject",
             writeitinstance=self.writeitinstance2, persons = [self.person3],
             )
@@ -111,7 +118,8 @@ class MailSendingTestCase(TestCase):
             ,subject_template=u"subject %(subject)s",
             content_template=u" content %(subject)s %(content)s %(person)s %(author)s")
         contact3 = Contact.objects.create(person=self.person3, contact_type=self.channel.get_contact_type(),
-            value= 'person1@votainteligente.cl')
+            value= 'person1@votainteligente.cl',
+            owner=self.user)
         message = Message.objects.create(content="The content", subject="the subject",
             writeitinstance=self.writeitinstance2, persons = [self.person3],author_name="Felipe",
             author_email="falvarez@votainteligente.cl"
