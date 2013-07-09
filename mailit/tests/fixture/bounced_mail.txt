@@ -1,0 +1,112 @@
+                                                                                                                                                                                                                                                               
+Delivered-To: falvarez@votainteligente.cl
+Received: by 10.64.72.170 with SMTP id e10csp93963iev;
+        Mon, 8 Jul 2013 14:04:39 -0700 (PDT)
+X-Received: by 10.182.215.133 with SMTP id oi5mr21693050obc.83.1373317479557;
+        Mon, 08 Jul 2013 14:04:39 -0700 (PDT)
+Return-Path: <>
+Received: from mail-ie0-x246.google.com (mail-ie0-x246.google.com [2607:f8b0:4001:c03::246])
+        by mx.google.com with ESMTPS id kk1si12521836oeb.142.2013.07.08.14.04.39
+        for <falvarez@votainteligente.cl>
+        (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+        Mon, 08 Jul 2013 14:04:39 -0700 (PDT)
+Received-SPF: pass (google.com: best guess record for domain of mail-ie0-x246.google.com designates 2607:f8b0:4001:c03::246 as permitted sender) client-ip=2607:f8b0:4001:c03::246;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: best guess record for domain of mail-ie0-x246.google.com designates 2607:f8b0:4001:c03::246 as permitted sender) smtp.mail=;
+       dkim=pass header.i=@googlemail.com
+Received: by mail-ie0-f198.google.com with SMTP id s9so25404024iec.1
+        for <falvarez@votainteligente.cl>; Mon, 08 Jul 2013 14:04:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20120113;
+        h=mime-version:from:to:x-failed-recipients:subject:message-id:date
+         :content-type:content-transfer-encoding;
+        bh=acabGGG1Jvzt9Ifq1txWTnK0yyXkMmvqHtl9YxYRY6s=;
+        b=0eBzBjiRmtiay9sQQh5ovrPnwlO9ax0RVAkGsUiH1jsqAJBaJqPqAJm3m33dpYkdP7
+         Jplt5ym9LzUqVxtwLnZHQRyQwc6kGKP7F2E0AeQOLApmp1pvWzGRo0qACI25DBl9s9eu
+         U8f+tL+fcr/B9ZCdo+wFJXMJJRWGZOfWVOmFCtdLyX3o21zMT0dW1LYDQszrCHJMTm3z
+         jvi/HIwDLVr2ugB0l9j7V3SyMLBO6gx5bqEFa30f49cjaNBk/ij2re7xhkZJiQ+k8X+9
+         HopFAHv05PXSImQNsDUAWdXZ+5aATGWOlUZeODLPtbb+uCLIeiTcIo16bfHQHvfto8lA
+         CFzA==
+X-Received: by 10.42.32.132 with SMTP id e4mr7651264icd.118.1373317479046;
+        Mon, 08 Jul 2013 14:04:39 -0700 (PDT)
+MIME-Version: 1.0
+Return-Path: <>
+Received: by 10.42.32.132 with SMTP id e4mr9828856icd.118; Mon, 08 Jul 2013
+ 14:04:39 -0700 (PDT)
+From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+To: falvarez@votainteligente.cl
+X-Failed-Recipients: mailinexistente+12345@votainteligente.cl
+Subject: Delivery Status Notification (Failure)
+Message-ID: <bcaec5196823809e5f04e10664dd@google.com>
+Date: Mon, 08 Jul 2013 21:04:39 +0000
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Delivery to the following recipient failed permanently:
+
+     mailinexistente+12345@votainteligente.cl
+
+Technical details of permanent failure:=20
+Google tried to deliver your message, but it was rejected by the server for=
+ the recipient domain votainteligente.cl by aspmx.l.google.com. [74.125.142=
+.26].
+
+The error that the other server returned was:
+550-5.1.1 The email account that you tried to reach does not exist. Please =
+try
+550-5.1.1 double-checking the recipient's email address for typos or
+550-5.1.1 unnecessary spaces. Learn more at
+550 5.1.1 http://support.google.com/mail/bin/answer.py?answer=3D6596 z7si10=
+462895icv.18 - gsmtp
+
+----- Original message -----
+
+X-Google-DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3Dgoogle.com; s=3D20120113;
+        h=3Dmime-version:sender:x-originating-ip:date:x-google-sender-auth
+         :message-id:subject:from:to:content-type:x-gm-message-state;
+        bh=3Dy8K5inX0tTS3rSgbv0tMlU94SbsQ76ObfSl2Bm1MDb0=3D;
+        b=3DOaoKhHrmuldga1VkbXb8LTNLVKyQE9MeNh6E2y/LPVIsJ0iu/y4NudiYNvVKGYT=
+RH0
+         yjjtSic8YjvGD22mwgJ1jLhNtl019vMUQthJ25ut0i+pqfaMeZ7GyFP9eR4+jJ0dBR=
+If
+         VOGhJmMhafOBQStLPh2CU88YuaKd/ZViUciyIsXLMqWGsBoJEVPJbf+ISm4CRbqPnh=
+EH
+         7zAbAT4jpXqVekr30LBNM7O33c6hDRFfiyWW3AP/vy+E9N9vZ5SElBw9EmgBC/hIgn=
+ey
+         p2FgR6ipU6Hvjv04B1tsEVMkNjHcxMKrhd2yWTmgnyPrxwadGxdC9kFhZZa5mOHlaC=
+NG
+         UMvw=3D=3D
+MIME-Version: 1.0
+X-Received: by 10.42.32.132 with SMTP id e4mr7651261icd.118.1373317478760;
+ Mon, 08 Jul 2013 14:04:38 -0700 (PDT)
+Sender: falvarez@votainteligente.cl
+Received: by 10.64.72.170 with HTTP; Mon, 8 Jul 2013 14:04:38 -0700 (PDT)
+X-Originating-IP: [200.74.33.27]
+Date: Mon, 8 Jul 2013 17:04:38 -0400
+X-Google-Sender-Auth: uJfa-qbp0LwttzB1eecJsEzGeZs
+Message-ID: <CAA5PczdX50vS0Q78=3DN=3DY0K=3DAqQ6e-tmbP_9SRte_eJK-bgTAkg@mail=
+.gmail.com>
+Subject: =3D?ISO-8859-1?Q?yo_s=3DE9_que_esto_no_existe?=3D
+From: =3D?ISO-8859-1?Q?Felipe_=3DC1lvarez?=3D <falvarez@ciudadanointeligent=
+e.cl>
+To: mailinexistente+12345@votainteligente.cl
+Content-Type: multipart/alternative; boundary=3Dbcaec51968237c5ff304e10664b=
+f
+X-Gm-Message-State: ALoCoQnoB1uPz4F89GVFgamsjH5a/181u7SHpy2wZxRU5KdtUDHQ3Jr=
+nVzGG93f+BOVLu6S6DH01
+
+pero es una prueba
+
+--=20
+*Felipe =C1lvarez
+*
+Desarrollador de Aplicaciones Web
+Skype: luisfelipealvarezburgos
+Twitter: @lfalvarez
+Celular: +56973961732
+*Fundaci=F3n Ciudadano Inteligente*
+Holanda 895 - Providencia, Santiago de Chile.
+CiudadanoInteligente.cl <http://www.ciudadanointeligente.cl/> |
+@ciudadanoi<http://www.twitter.com/ciudadanoi>
+ | (56-2) 419 27 70

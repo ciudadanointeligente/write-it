@@ -339,6 +339,26 @@ class ModerationMessagesTestCase(TestCase):
             self.assertFalse(message.moderation is None)
             self.assertEquals(message.moderation.key, 'oliwi')
             string.assert_called()
+    #issue 114 found at https://github.com/ciudadanointeligente/write-it/issues/114
+    def test_send_mails_only_once(self):
+        with patch('nuntium.models.Message.send_moderation_mail') as send_moderation_mail:
+            self.writeitinstance1.moderation_needed_in_all_messages = True
+            self.writeitinstance1.save()
+
+            send_moderation_mail.return_value = None
+            message = Message.objects.create(content = 'Content 1', 
+                author_name='Felipe', 
+                author_email="falvarez@votainteligente.cl", 
+                subject='Fiera es una perra feroz', 
+                public=False,
+                writeitinstance= self.writeitinstance1, 
+                persons = [self.person1])
+
+            message.recently_confirmated()
+
+
+            number_of_moderations = Moderation.objects.filter(message=message).count()
+            send_moderation_mail.assert_called_once_with()
 
     def test_there_is_a_moderation_url_that_sets_the_message_to_ready(self):
         url = reverse('moderation_accept', kwargs={
