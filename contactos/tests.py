@@ -63,6 +63,7 @@ class ContactTestCase(TestCase):
         self.assertTrue(self.person.name in mail.outbox[0].body)
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue(self.user.email in mail.outbox[0].to)
+        self.assertEquals(mail.outbox[0].subject, _('The contact contact point for Pedro has bounced'))
         self.assertEquals(mail.outbox[0].from_email, settings.DEFAULT_FROM_EMAIL)
 
     def test_sends_a_notification_mail_only_once(self):

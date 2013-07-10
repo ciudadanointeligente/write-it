@@ -51,7 +51,11 @@ def notify_bounce(sender, instance, update_fields, **kwargs):
             text_content = plaintext.render(context)
             html_content = htmly.render(context)
 
-            msg = EmailMultiAlternatives( _('Confirmation email for a message in WriteIt'), 
+            subject = _('The contact %(contact)s for %(person)s has bounced') % {
+            'contact':contact.value,
+            'person':contact.person.name
+            }
+            msg = EmailMultiAlternatives(subject , 
                 text_content,#content
                 settings.DEFAULT_FROM_EMAIL,#From
                 [contact.owner.email]#To
