@@ -8,6 +8,7 @@ from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRec
 , OutboundMessageIdentifier, Answer
 from popit.models import Person, ApiInstance
 from mock import patch
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 
 class OutboundMessageTestCase(TestCase):
@@ -124,7 +125,11 @@ class PluginMentalMessageTestCase(TestCase):
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
         self.person1 = Person.objects.all()[0]
         self.channel = MentalMessage()
-        self.mental_contact1 = Contact.objects.create(person=self.person1, contact_type=self.channel.get_contact_type())
+        self.user = User.objects.all()[0]
+        self.mental_contact1 = Contact.objects.create(
+            person=self.person1, 
+            contact_type=self.channel.get_contact_type(),
+            owner= self.user)
 
     def test_it_only_sends_messages_to_contacts_of_the_same_channel(self):
         otubound_message = OutboundMessage.objects.create(contact=self.mental_contact1, message=self.message)
