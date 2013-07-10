@@ -34,24 +34,34 @@ class Contact(models.Model):
 
 def notify_bounce(sender, instance, update_fields, **kwargs):
     contact = instance
-    if contact.is_bounced:
-        plaintext = get_template('contactos/mails/bounce_notification.txt')
-        htmly     = get_template('contactos/mails/bounce_notification.html')
+    updating = instance.id is not None
+    if updating:
+        try:
+            current_instance = Contact.objects.get(id = instance.id)
+        except:
+            return
+        if not current_instance.is_bounced and instance.is_bounced:
+            plaintext = get_template('contactos/mails/bounce_notification.txt')
+            htmly     = get_template('contactos/mails/bounce_notification.html')
 
-        context = Context({ 
-            'contact':contact
-             })
+            context = Context({ 
+                'contact':contact
+                 })
 
-        text_content = plaintext.render(context)
-        html_content = htmly.render(context)
+            text_content = plaintext.render(context)
+            html_content = htmly.render(context)
 
-        msg = EmailMultiAlternatives( _('Confirmation email for a message in WriteIt'), 
-            text_content,#content
-            settings.DEFAULT_FROM_EMAIL,#From
-            [contact.owner.email]#To
-            )
-        msg.attach_alternative(html_content, "text/html")
-        msg.send()
+            msg = EmailMultiAlternatives( _('Confirmation email for a message in WriteIt'), 
+                text_content,#content
+                settings.DEFAULT_FROM_EMAIL,#From
+                [contact.owner.email]#To
+                )
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+
+
+
+        
 
 
 pre_save.connect(notify_bounce , sender=Contact)

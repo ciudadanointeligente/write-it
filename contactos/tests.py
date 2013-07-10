@@ -64,3 +64,14 @@ class ContactTestCase(TestCase):
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue(self.user.email in mail.outbox[0].to)
         self.assertEquals(mail.outbox[0].from_email, settings.DEFAULT_FROM_EMAIL)
+
+    def test_sends_a_notification_mail_only_once(self):
+
+        contact_type = ContactType.objects.create(name='mental message', label_name = 'mental address id')
+        contact1 = Contact.objects.create(contact_type= contact_type, value = 'contact point', person= self.person, owner=self.user)
+        contact1.is_bounced = True
+        contact1.save()
+        contact1.save()
+
+        self.assertEquals(len(mail.outbox), 1) #it is sent to one person pointed in the contact
+
