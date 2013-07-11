@@ -1,0 +1,5 @@
+Hello there:
+
+We are writing to you because there has been a bounce with the contact {{ contact.value }} for {{ contact.person.name }} in your writeit instance.
+It has been marked as a bounce, so no more messages to that contact.
+Please review it.

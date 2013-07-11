@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
 from django.utils.unittest import skip
 from django.conf import settings
+from django.contrib.auth.models import User
 
 
 class ConfirmationTestCase(TestCase):
@@ -19,7 +20,8 @@ class ConfirmationTestCase(TestCase):
         self.Marcel = Person.objects.all()[1]
         felipe = Person.objects.all()[2]
         self.channel = MentalMessage()
-        self.mental_contact1 = Contact.objects.create(person=felipe, contact_type=self.channel.get_contact_type())
+        self.user = User.objects.all()[0]
+        self.mental_contact1 = Contact.objects.create(person=felipe, contact_type=self.channel.get_contact_type(), owner=self.user)
 
         self.message = Message.objects.create(content = 'hello there', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Wow!',
          writeitinstance= self.writeitinstance1, persons = [felipe])
@@ -131,7 +133,8 @@ class EmailSendingErrorHandling(TestCase):
         self.Marcel = Person.objects.all()[1]
         felipe = Person.objects.all()[2]
         self.channel = MentalMessage()
-        self.mental_contact1 = Contact.objects.create(person=felipe, contact_type=self.channel.get_contact_type())
+        self.user = User.objects.all()[0]
+        self.mental_contact1 = Contact.objects.create(person=felipe, contact_type=self.channel.get_contact_type(), owner=self.user)
         self.message = Message.objects.create(content = 'hello there', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Wow!',
          writeitinstance= self.writeitinstance1, persons = [felipe])
         self.message2 = Message.objects.create(content = 'hello there', author_name='Marcel', author_email="maugsburger@votainteligente.cl", subject='Wow!',

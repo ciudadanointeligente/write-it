@@ -1,6 +1,12 @@
 from django.db import models
 from popit.models import Person
 from django.utils.translation import ugettext as _
+from django.contrib.auth.models import User
+from django.db.models.signals import pre_save
+from django.template import Context
+from django.template.loader import get_template
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
 
 class ContactType(models.Model):
     """This class contain all contact types"""
@@ -16,9 +22,50 @@ class Contact(models.Model):
     person = models.ForeignKey(Person)
     value = models.CharField(max_length=512)
     is_bounced = models.BooleanField()
+    owner = models.ForeignKey(User)
 
     def __unicode__(self):
     	return _('%(contact)s (%(type)s)') % {
 	            'contact' : self.value,
 	            'type' : self.contact_type.label_name
 	        }
+
+
+
+def notify_bounce(sender, instance, update_fields, **kwargs):
+    contact = instance
+    updating = instance.id is not None
+    if updating:
+        try:
+            current_instance = Contact.objects.get(id = instance.id)
+        except:
+            return
+        if not current_instance.is_bounced and instance.is_bounced:
+            plaintext = get_template('contactos/mails/bounce_notification.txt')
+            htmly     = get_template('contactos/mails/bounce_notification.html')
+
+            context = Context({ 
+                'contact':contact
+                 })
+
+            text_content = plaintext.render(context)
+            html_content = htmly.render(context)
+
+            subject = _('The contact %(contact)s for %(person)s has bounced') % {
+            'contact':contact.value,
+            'person':contact.person.name
+            }
+            msg = EmailMultiAlternatives(subject , 
+                text_content,#content
+                settings.DEFAULT_FROM_EMAIL,#From
+                [contact.owner.email]#To
+                )
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+
+
+
+        
+
+
+pre_save.connect(notify_bounce , sender=Contact)
