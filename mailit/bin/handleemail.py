@@ -49,10 +49,7 @@ class EmailAnswer(object):
     def set_content_text(self, value):
         self._content_text = value
 
-    def del_content_text(self):
-        del self._content_text
-
-    content_text = property(get_content_text, set_content_text, del_content_text)
+    content_text = property(get_content_text, set_content_text)
 
 
 
