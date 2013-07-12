@@ -110,6 +110,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     )
 
 MIDDLEWARE_CLASSES = (
+    'subdomains.middleware.SubdomainURLRoutingMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -120,7 +121,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'writeit.urls'
+ROOT_URLCONF = 'nuntium.subdomain_urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'writeit.wsgi.application'
@@ -149,6 +150,7 @@ INSTALLED_APPS = (
     'tastypie',
     'markdown_deux',
     'django_extensions',
+    'subdomains',
     
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
@@ -198,6 +200,11 @@ DEFAULT_FROM_DOMAIN = 'mailit.ciudadanointeligente.org'
 SOUTH_TESTS_MIGRATE = False
 
 EXTRA_APPS = ()
+
+
+SUBDOMAIN_URLCONFS = {
+    None: 'writeit.urls',
+}
 
 try:
     from local_settings import *

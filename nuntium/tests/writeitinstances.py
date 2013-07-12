@@ -7,6 +7,7 @@ from contactos.models import Contact, ContactType
 from popit.models import ApiInstance, Person
 from django.utils.unittest import skip
 from datetime import datetime
+from subdomains.utils import reverse as sreverse
 from django.contrib.auth.models import User
 
 class InstanceTestCase(TestCase):
@@ -83,7 +84,7 @@ class InstanceDetailView(TestCase):
 
     
     def test_detail_instance_view(self):
-        url = reverse('instance_detail', kwargs={
+        url = sreverse('instance_detail', kwargs={
             'slug':self.writeitinstance1.slug
             })
         self.assertTrue(url)
@@ -99,6 +100,7 @@ class InstanceDetailView(TestCase):
         url = reverse('instance_detail', kwargs={
             'slug':self.writeitinstance1.slug
             })
+        print url
         response = self.client.get(url)
         self.assertTrue('public_messages' in response.context)
         self.assertTrue(private_message not in response.context['public_messages'])
@@ -129,7 +131,7 @@ class InstanceDetailView(TestCase):
 
         
 
-        url = reverse('instance_detail', kwargs={
+        url = sreverse('instance_detail', kwargs={
             'slug':self.writeitinstance1.slug
             })
 
@@ -155,7 +157,7 @@ class InstanceDetailView(TestCase):
         'content':u'¿Dónde está Fiera Feroz? en la playa?',
         'persons': [self.person1.id]
         }
-        url = reverse('instance_detail', kwargs={
+        url = sreverse('instance_detail', kwargs={
             'slug':self.writeitinstance1.slug
             })
         response = self.client.post(url, data, follow=True)
@@ -172,7 +174,7 @@ class InstanceDetailView(TestCase):
         'author_email':u"falvarez@votainteligente.cl",
         'persons': [self.person1.id]
         }
-        url = reverse('instance_detail', kwargs={
+        url = sreverse('instance_detail', kwargs={
             'slug':self.writeitinstance1.slug
             })
         response = self.client.post(url, data)
