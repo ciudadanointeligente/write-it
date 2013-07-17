@@ -1,14 +1,14 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from nuntium.models import WriteItInstance, Message, Membership, Confirmation
 from nuntium.views import MessageCreateForm
 from contactos.models import Contact, ContactType
 from popit.models import ApiInstance, Person
 from django.utils.unittest import skip
 from datetime import datetime
-from subdomains.utils import reverse as sreverse
 from django.contrib.auth.models import User
+from subdomains.tests import SubdomainTestMixin
 
 class InstanceTestCase(TestCase):
 
@@ -60,9 +60,8 @@ class InstanceTestCase(TestCase):
 
     def test_get_absolute_url(self):
         writeitinstance1 = WriteItInstance.objects.all()[0]
-        expected_url = reverse('instance_detail', kwargs={
-            'slug':writeitinstance1.slug
-            })
+        expected_url = reverse('instance_detail',
+            subdomain=writeitinstance1.slug)
 
         self.assertEquals(expected_url, writeitinstance1.get_absolute_url())
 
@@ -74,21 +73,21 @@ class InstanceTestCase(TestCase):
         self.assertEquals(writeitinstance.persons.get(id=self.person1.id), self.person1)
         self.assertEquals(self.person1.writeit_instances.get(id=writeitinstance.id), writeitinstance)
 
-class InstanceDetailView(TestCase):
+class InstanceDetailView(TestCase, SubdomainTestMixin):
     def setUp(self):
-        super(InstanceDetailView,self).setUp()
+        super(InstanceDetailView, self).setUp()
         self.api_instance1 = ApiInstance.objects.all()[0]
         self.api_instance2 = ApiInstance.objects.all()[1]
         self.person1 = Person.objects.all()[0]
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.url = self.writeitinstance1.get_absolute_url()
+        self.host = self.get_host_for_subdomain(self.writeitinstance1.slug)
 
     
     def test_detail_instance_view(self):
-        url = sreverse('instance_detail', kwargs={
-            'slug':self.writeitinstance1.slug
-            })
-        self.assertTrue(url)
-        response = self.client.get(url)
+        #I'm removing this because it has been already tested
+        #self.assertTrue(url)
+        response = self.client.get(self.url, HTTP_HOST=self.host)
         self.assertTemplateUsed(response, 'nuntium/instance_detail.html')
         self.assertEquals(response.context['writeitinstance'], self.writeitinstance1)
         self.assertTrue(response.context['form'])
@@ -97,11 +96,8 @@ class InstanceDetailView(TestCase):
 
     def test_list_only_public_messages(self):
         private_message = Message.objects.create(content='Content 1', subject='a private message', writeitinstance = self.writeitinstance1, persons=[self.person1], public=False)
-        url = reverse('instance_detail', kwargs={
-            'slug':self.writeitinstance1.slug
-            })
-        print url
-        response = self.client.get(url)
+        response = self.client.get(self.url, HTTP_HOST=self.host)
+
         self.assertTrue('public_messages' in response.context)
         self.assertTrue(private_message not in response.context['public_messages'])
 
@@ -131,11 +127,9 @@ class InstanceDetailView(TestCase):
 
         
 
-        url = sreverse('instance_detail', kwargs={
-            'slug':self.writeitinstance1.slug
-            })
+        url = self.writeitinstance1.get_absolute_url()
 
-        response = self.client.get(url)
+        response = self.client.get(self.url, HTTP_HOST=self.host)
         
 
         #message1 is not confirmed so it should not be in the list
@@ -157,10 +151,7 @@ class InstanceDetailView(TestCase):
         'content':u'¿Dónde está Fiera Feroz? en la playa?',
         'persons': [self.person1.id]
         }
-        url = sreverse('instance_detail', kwargs={
-            'slug':self.writeitinstance1.slug
-            })
-        response = self.client.post(url, data, follow=True)
+        response = self.client.post(self.url, data, follow=True, HTTP_HOST=self.host)
         self.assertEquals(response.status_code, 200)
         new_messages = Message.objects.all()
         self.assertTrue(new_messages.count()>0)
@@ -174,12 +165,12 @@ class InstanceDetailView(TestCase):
         'author_email':u"falvarez@votainteligente.cl",
         'persons': [self.person1.id]
         }
-        url = sreverse('instance_detail', kwargs={
-            'slug':self.writeitinstance1.slug
-            })
-        response = self.client.post(url, data)
+        url = self.writeitinstance1.get_absolute_url()
+        response = self.client.post(self.url, data, follow=True, HTTP_HOST=self.host)
 
-        self.assertTrue(response['Location'].endswith(url))
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'nuntium/instance_detail.html')
+        
 
 
 

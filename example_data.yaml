@@ -13,10 +13,10 @@
     username: admin
   model: auth.user
   pk: 1
-- fields: {name: instance 1, slug: instance_1, owner: 1}
+- fields: {name: instance 1, slug: instance1, owner: 1}
   model: nuntium.writeitinstance
   pk: 1
-- fields: {name: instance 2, slug: instance_2, owner: 1}
+- fields: {name: instance 2, slug: instance2, owner: 1}
   model: nuntium.writeitinstance
   pk: 2
 - fields: {content_type: 13, datetime: 2013-04-26, object_id: 1, status: new}

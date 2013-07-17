@@ -121,6 +121,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+# ROOT_URLCONF = 'nuntium.subdomain_urls'
 ROOT_URLCONF = 'nuntium.subdomain_urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
