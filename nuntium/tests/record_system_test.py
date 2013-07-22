@@ -6,6 +6,7 @@ from popit.models import Person, ApiInstance
 from contactos.models import Contact, ContactType
 from django.utils.translation import ugettext as _
 import datetime
+from django.utils.timezone import utc
 
 
 class MessageRecordTestCase(TestCase):
@@ -24,7 +25,7 @@ class MessageRecordTestCase(TestCase):
         self.assertEquals(record.content_type, self.outboundmessage_type)
         self.assertEquals(record.object_id, self.outbound_message.id)
         self.assertEquals(record.status, "something")
-        self.assertEquals(record.datetime.date(), datetime.datetime.today().date() )
+        self.assertEquals(record.datetime.date(), datetime.datetime.utcnow().date() )
 
 
     def test_record_unicode(self):

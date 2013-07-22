@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load subdomainurls %}
+{% load i18n %}
+{% block content %}
+{% load markdown_deux_tags %}
+<h1>{{ message.subject }}</h1>
+
+<h2>
+    {{ message.content|linebreaks }}
+</h2>
+<span class="author_name">
+	<small>
+		{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}
+	</small>
+</span><br />
+<div class="sent_to">
+    {% trans 'This message was sent to' %}
+    <ul>
+        {% for person in message.people %}
+        <li>{{ person.name }}</li>
+        {% endfor %}
+    </ul>
+</div>
+<h4>{% trans "Answers" %}</h4>
+{% for answer in message.answers.all %}
+<div class="answers">
+    
+    <div class="answer">
+        <span class="content">{{ answer.content|linebreaks }}</span>
+        <small>{% blocktrans with answer.person.name as name %} by {{ name }}.{% endblocktrans %}</small>
+    </div>
+</div>
+{% endfor %}
+
+
+<div class="getbacktotheinstance"> <a href="{% url 'instance_detail' subdomain=message.writeitinstance.slug %}">< {% blocktrans %} Get back to the messages.{% endblocktrans %} </a></div>
+{% endblock %}

@@ -1,16 +1,34 @@
-- fields: {name: instance 1, slug: instance-1}
+- fields: {domain: '127.0.0.1.xip.io:8000', name: '127.0.0.1.xip.io:8000'}
+  model: sites.site
+  pk: 1
+- fields:
+    date_joined: 2013-04-26 21:09:22.224616+00:00
+    email: admin@admines.cl
+    first_name: ''
+    groups: []
+    is_active: true
+    is_staff: true
+    is_superuser: true
+    last_login: 2013-06-10 16:06:46.989439+00:00
+    last_name: ''
+    password: pbkdf2_sha256$10000$LoeTDV2yMCWT$fgkQ++r4O7wurfFSAtHT1/a9WTjb32cHq63dFgXU+rI=
+    user_permissions: []
+    username: admin
+  model: auth.user
+  pk: 1
+- fields: {name: instance 1, slug: instance1, owner: 1}
   model: nuntium.writeitinstance
   pk: 1
-- fields: {name: instance 2, slug: instance-2}
+- fields: {name: instance 2, slug: instance2, owner: 1}
   model: nuntium.writeitinstance
   pk: 2
 - fields: {content_type: 13, datetime: 2013-04-26, object_id: 1, status: new}
   model: nuntium.messagerecord
   pk: 1
-- fields: {content: Content 1, subject: Subject 1, writeitinstance: 1}
+- fields: {content: Content 1, subject: Subject 1, writeitinstance: 1, slug: subject-1 }
   model: nuntium.message
   pk: 1
-- fields: {content: Content 2, subject: Subject 2, writeitinstance: 1}
+- fields: {content: Content 2, subject: Subject 2, writeitinstance: 1, slug: subject-2}
   model: nuntium.message
   pk: 2
 - fields: {contact: 1, message: 1}
@@ -25,13 +43,13 @@
 - fields: {url: 'http://popit.org/api/v2'}
   model: popit.apiinstance
   pk: 2
-- fields: {api_instance: 1, name: Pedro, popit_url: ''}
+- fields: {api_instance: 1, name: Pedro, popit_url: 'http://popit.mysociety.org/api/v1/persons/1'}
   model: popit.person
   pk: 1
-- fields: {api_instance: 2, name: Marcel, popit_url: ''}
+- fields: {api_instance: 2, name: Marcel, popit_url: 'http://popit.mysociety.org/api/v1/persons/2'}
   model: popit.person
   pk: 2
-- fields: {api_instance: 2, name: Felipe, popit_url: ''}
+- fields: {api_instance: 2, name: Felipe, popit_url: 'http://popit.mysociety.org/api/v1/persons/3'}
   model: popit.person
   pk: 3
 - fields: {person: 1, writeitinstance: 1}
@@ -40,10 +58,10 @@
 - fields: {label_name: Electronic Mail, name: e-mail}
   model: contactos.contacttype
   pk: 1
-- fields: {contact_type: 1, person: 1, value: pdaire@ciudadanointeligente.org}
+- fields: {contact_type: 1, person: 1, value: pdaire@ciudadanointeligente.org, owner: 1}
   model: contactos.contact
   pk: 1
-- fields: {contact_type: 1, person: 2, value: maugsburger@ciudadanointeligente.org}
+- fields: {contact_type: 1, person: 2, value: maugsburger@ciudadanointeligente.org, owner: 1}
   model: contactos.contact
   pk: 2
 - fields: {content_template: "Hello %(person)s:\r\nYou have a new message:\r\nsubject:\
