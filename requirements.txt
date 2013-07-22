@@ -3,3 +3,12 @@ django-plugins==0.2.2
 South
 coveralls
 -e git://github.com/mysociety/popit-django.git#egg=popit-django
+mock
+django-tastypie
+django-nose
+email_reply_parser
+flufl.bounce
+django-markdown-deux
+requests
+django-extensions
+django-subdomains

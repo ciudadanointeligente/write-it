@@ -4,8 +4,11 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, OutboundMessagePluginRecord
+from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, OutboundMessagePluginRecord\
+, OutboundMessageIdentifier, Answer
 from popit.models import Person, ApiInstance
+from mock import patch
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 
 class OutboundMessageTestCase(TestCase):
@@ -47,20 +50,64 @@ class OutboundMessageTestCase(TestCase):
         self.assertEquals(outbound_message.status, "sent")
 
 
-    @skip("There should be a link between a message and a person that now does not exist")
-    def test_it_should_create_an_output_message_for_person_without_contacts(self):
-        person_without_contacts = Person.objects.create(api_instance=self.api_instance1, name= 'I don\'t have any contacts')
-        message_to_3 = Message.objects.create(content = 'hello there', subject='Wow!', writeitinstance= self.writeitinstance1, persons = [self.person1,\
-            self.person2, person_without_contacts])
-
-        outbound_messages = OutboundMessage.objects.filter(message=message_to_3)
-        self.assertEquals(outbound_messages.count(), 3)
-
 
     def test_there_is_a_manager_that_retrieves_all_the_available_messages(self):
         outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact1, status="ready")
 
         self.assertEquals(OutboundMessage.objects.to_send().filter(id=outbound_message.id).count(),1)
+
+
+    def test_create_a_new_outbound_message_identifier_on_creation(self):
+        outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact1, status="ready")
+        identifier = OutboundMessageIdentifier.objects.get(outbound_message=outbound_message)
+
+        self.assertTrue(identifier)
+
+
+
+class OutboundMessageIdentifierTestCase(TestCase):
+    def setUp(self):
+        super(OutboundMessageIdentifierTestCase, self).setUp()
+        self.outbound_message = OutboundMessage.objects.all()[0]
+        self.message = Message.objects.all()[0]
+        self.contact1 = Contact.objects.all()[0]
+
+    def test_create_an_outbound_message_identifier_when_creating_(self):
+        with patch('uuid.uuid1') as string:
+            string.return_value.hex = 'oliwi'
+            outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact1)
+            identifier = OutboundMessageIdentifier.objects.get(outbound_message=outbound_message)
+            string.assert_called()
+            #the key is created when saved
+            self.assertEquals(identifier.key, 'oliwi')
+
+
+    def test_create_only_one_identifier_per_outbound_message(self):
+        with self.assertRaises(IntegrityError) as exception:
+            OutboundMessageIdentifier.objects.create(outbound_message=self.outbound_message)
+
+
+    def test_the_key_does_not_change_on_save_twice(self):
+        identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
+        expected_key = identifier.key
+
+        identifier.save()
+
+        self.assertEquals(expected_key, identifier.key)
+
+    def test_create_an_answer_only_having_an_identifier(self):
+        identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
+        answer_content = "La fiera no tiene pulgas."
+        OutboundMessageIdentifier.create_answer(identifier.key, answer_content)
+        the_person = self.outbound_message.contact.person
+
+        the_answer = Answer.objects.get(message=self.outbound_message.message, person=the_person)
+
+        self.assertEquals(the_answer.content, answer_content)
+
+
+
+
 
 
 from plugin_mock.mental_message_plugin import MentalMessage, FatalException, TryAgainException
@@ -78,7 +125,11 @@ class PluginMentalMessageTestCase(TestCase):
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
         self.person1 = Person.objects.all()[0]
         self.channel = MentalMessage()
-        self.mental_contact1 = Contact.objects.create(person=self.person1, contact_type=self.channel.get_contact_type())
+        self.user = User.objects.all()[0]
+        self.mental_contact1 = Contact.objects.create(
+            person=self.person1, 
+            contact_type=self.channel.get_contact_type(),
+            owner= self.user)
 
     def test_it_only_sends_messages_to_contacts_of_the_same_channel(self):
         otubound_message = OutboundMessage.objects.create(contact=self.mental_contact1, message=self.message)

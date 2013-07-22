@@ -1,7 +1,8 @@
 from django.contrib import admin
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord
+from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, Answer
 from popit.models import ApiInstance, Person
 from contactos.models import Contact, ContactType
+from django.forms.models import BaseInlineFormSet
 
 class PersonInline(admin.TabularInline):
 	model=Person
@@ -16,8 +17,26 @@ class WriteItInstanceAdmin(admin.ModelAdmin):
     exclude = ('persons',)
 admin.site.register(WriteItInstance, WriteItInstanceAdmin)
 
-class MessageAdmin(admin.ModelAdmin):
+
+# class AnswerInlineFormset(BaseInlineFormSet):
+#     def __init__(self, *args, **kwargs):
+#         super(AnswerInlineFormset, self).__init__(*args, **kwargs)
+
+class AnswerAdmin(admin.ModelAdmin):
     pass
+
+admin.site.register(Answer, AnswerAdmin)
+
+
+class AnswerInline(admin.TabularInline):
+    model = Answer
+    # formset = AnswerInlineFormset
+
+class MessageAdmin(admin.ModelAdmin):
+    exclude = ('slug', )
+    inlines = [
+        AnswerInline
+    ]
 admin.site.register(Message, MessageAdmin)
 
 class OutboundMessageAdmin(admin.ModelAdmin):

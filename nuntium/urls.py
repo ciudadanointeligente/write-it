@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
-from django.views.generic import TemplateView, DetailView
-from nuntium.views import HomeTemplateView, WriteItInstanceDetailView
+from django.views.generic import TemplateView
+from nuntium.views import HomeTemplateView
 
 
 # Uncomment the next two lines to enable the admin:
@@ -10,7 +10,6 @@ from nuntium.views import HomeTemplateView, WriteItInstanceDetailView
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', HomeTemplateView.as_view(template_name='home.html'), name='home'),
-    url(r'^instances/(?P<slug>[-\w]+)/?$', WriteItInstanceDetailView.as_view(), name = 'instance_detail'),
     
     # url(r'^writeit/', include('writeit.foo.urls')),
 
@@ -19,4 +18,5 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
+    # url(r'^', include('nuntium.subdomain_urls')),
 )

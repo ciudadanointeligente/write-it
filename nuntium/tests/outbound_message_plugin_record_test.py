@@ -4,6 +4,7 @@ from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRec
 from plugin_mock.mental_message_plugin import MentalMessage, FatalException, TryAgainException
 from contactos.models import Contact, ContactType
 from djangoplugins.models import Plugin
+from django.contrib.auth.models import User
 from popit.models import Person
 '''
 This testcase is intented to test the OutboundMessageRecord model
@@ -20,8 +21,11 @@ class OutboundMessageRecordTestCase(TestCase):
         self.channel = MentalMessage()
 
         self.person1 = Person.objects.all()[0]
-
-        self.mental_contact1 = Contact.objects.create(person=self.person1, contact_type=self.channel.get_contact_type())
+        self.user = User.objects.all()[0]
+        self.mental_contact1 = Contact.objects.create(
+            person=self.person1, 
+            contact_type=self.channel.get_contact_type(), 
+            owner=self.user)
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
 
 
