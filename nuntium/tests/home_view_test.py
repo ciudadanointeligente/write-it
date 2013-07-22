@@ -24,6 +24,16 @@ class HomeViewTestCase(TestCase, SubdomainTestMixin):
         url = reverse("home")
         self.assertTrue("/es/" in url)
 
+    def test_it_redirects_correctly(self):
+        activate('es')
+        url = "/"
+        response = self.client.get(url, HTTP_HOST=self.host)
+
+        self.assertEquals(response.status_code, 301)
+        expected_redirection = reverse("home")
+        self.assertEqual(response['Location'], expected_redirection)
+
+
     def test_list_instances(self):
         activate('en')
         api_instance1 = ApiInstance.objects.all()[0]

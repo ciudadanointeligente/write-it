@@ -1,5 +1,5 @@
 # Create your views here.
-from django.views.generic import TemplateView, CreateView, DetailView
+from django.views.generic import TemplateView, CreateView, DetailView, RedirectView
 from django.core.urlresolvers import reverse
 from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation
 from nuntium.forms import MessageCreateForm
@@ -117,3 +117,10 @@ class RejectModerationView(ModerationView):
         get = super(RejectModerationView, self).get(*args,**kwargs)
         self.get_object().message.delete()
         return get
+
+
+class RootRedirectView(RedirectView):
+    def get_redirect_url(self, **kwargs):
+
+        url = reverse("home")
+        return url
