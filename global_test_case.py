@@ -8,8 +8,6 @@ from django.contrib.sites.models import Site
 class WriteItTestCaseMixin(object):
     def setUp(self):
         self.site = Site.objects.get_current()
-        self.site.domain = 'example.com'
-        self.site.save()
         call_command('loaddata', 'example_data', verbosity=0)
 
     def assertModerationMailSent(self, message, moderation_mail):
