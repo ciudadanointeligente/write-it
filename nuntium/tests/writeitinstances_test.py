@@ -9,6 +9,7 @@ from django.utils.unittest import skip
 from datetime import datetime
 from django.contrib.auth.models import User
 from subdomains.tests import SubdomainTestMixin
+from django.utils.translation import activate
 
 class InstanceTestCase(TestCase):
 
@@ -64,6 +65,15 @@ class InstanceTestCase(TestCase):
             subdomain=writeitinstance1.slug)
 
         self.assertEquals(expected_url, writeitinstance1.get_absolute_url())
+
+
+    def test_get_absolute_url_i18n(self):
+        activate("es")
+        writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.assertTrue(writeitinstance1.get_absolute_url().endswith('/es/'))
+        response = self.client.get(writeitinstance1.get_absolute_url())
+        
+        self.assertEquals(response.status_code, 200)
 
 
     def test_membership(self):
