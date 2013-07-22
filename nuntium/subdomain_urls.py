@@ -1,4 +1,5 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import url
+from django.conf.urls.i18n import i18n_patterns
 from django.views.generic import TemplateView
 from nuntium.views import HomeTemplateView, WriteItInstanceDetailView, MessageDetailView
 
@@ -7,7 +8,7 @@ from nuntium.views import HomeTemplateView, WriteItInstanceDetailView, MessageDe
 # from django.contrib import admin
 # admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = i18n_patterns('',
     # Examples:
     url(r'^$', WriteItInstanceDetailView.as_view(), name = 'instance_detail'),
     url(r'^messages/(?P<slug>[-\w]+)/?$', MessageDetailView.as_view(), name = 'message_detail'),
