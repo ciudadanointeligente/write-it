@@ -1,3 +1,6 @@
+- fields: {domain: '127.0.0.1.xip.io:8000', name: '127.0.0.1.xip.io:8000'}
+  model: sites.site
+  pk: 1
 - fields:
     date_joined: 2013-04-26 21:09:22.224616+00:00
     email: admin@admines.cl
@@ -13,10 +16,10 @@
     username: admin
   model: auth.user
   pk: 1
-- fields: {name: instance 1, slug: instance_1, owner: 1}
+- fields: {name: instance 1, slug: instance1, owner: 1}
   model: nuntium.writeitinstance
   pk: 1
-- fields: {name: instance 2, slug: instance_2, owner: 1}
+- fields: {name: instance 2, slug: instance2, owner: 1}
   model: nuntium.writeitinstance
   pk: 2
 - fields: {content_type: 13, datetime: 2013-04-26, object_id: 1, status: new}

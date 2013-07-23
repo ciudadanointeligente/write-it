@@ -11,3 +11,4 @@ flufl.bounce
 django-markdown-deux
 requests
 django-extensions
+django-subdomains

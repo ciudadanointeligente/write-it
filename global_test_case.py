@@ -2,10 +2,12 @@ from django.test import TestCase
 from django.core.management import call_command
 from tastypie.test import ResourceTestCase
 from django.conf import settings
+from django.contrib.sites.models import Site
 
 
 class WriteItTestCaseMixin(object):
     def setUp(self):
+        self.site = Site.objects.get_current()
         call_command('loaddata', 'example_data', verbosity=0)
 
     def assertModerationMailSent(self, message, moderation_mail):
