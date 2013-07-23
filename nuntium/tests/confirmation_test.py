@@ -6,7 +6,7 @@ from contactos.models import Contact
 from datetime import datetime
 from django.core import mail
 from plugin_mock.mental_message_plugin import MentalMessage
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from django.contrib.sites.models import Site
 from django.utils.unittest import skip
 from django.conf import settings
@@ -120,7 +120,7 @@ class ConfirmationTestCase(TestCase):
 
     def test_i_cannot_access_a_non_confirmed_message(self):
         confirmation = Confirmation.objects.create(message=self.message)
-        url = reverse('message_detail', kwargs={'slug':self.message.slug})
+        url = reverse('message_detail', subdomain=self.message.writeitinstance.slug, kwargs={'slug':self.message.slug})
         response = self.client.get(url)
 
         self.assertEquals(response.status_code, 404)

@@ -16,7 +16,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template import Context
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from django.contrib.sites.models import Site
 import uuid
 from django.template.defaultfilters import slugify
@@ -34,9 +34,9 @@ class WriteItInstance(models.Model):
     moderation_needed_in_all_messages = models.BooleanField(help_text=_("Every message is going to have a moderation mail"))
     owner = models.ForeignKey(User)
 
-    @models.permalink
+    
     def get_absolute_url(self):
-        return ('instance_detail', (), {'slug': self.slug})
+        return reverse('instance_detail',subdomain=self.slug)
 
     def __unicode__(self):
         return self.name
@@ -107,9 +107,8 @@ class Message(models.Model):
                 people.append(outbound_message.contact.person)
         return people
 
-    @models.permalink
     def get_absolute_url(self):
-        return ('message_detail', (), {'slug': self.slug})
+        return reverse('message_detail', subdomain=self.writeitinstance.slug, kwargs={'slug': self.slug})
 
     def slugifyme(self):
         self.slug = slugify(self.subject)

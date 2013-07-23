@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 from contactos.models import Contact, ContactType
 from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, Confirmation, Moderation
 from popit.models import Person, ApiInstance
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
@@ -15,6 +15,7 @@ from mock import patch
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.sites.models import Site
 import datetime
+from subdomains.tests import SubdomainTestMixin
 
 
 class TestMessages(TestCase):
@@ -70,7 +71,7 @@ class TestMessages(TestCase):
 
     def test_message_has_a_permalink(self):
         message1 = Message.objects.all()[0]
-        expected_url = reverse('message_detail', kwargs={'slug':message1.slug})
+        expected_url = reverse('message_detail',subdomain=message1.writeitinstance.slug, kwargs={'slug':message1.slug})
 
         self.assertEquals(expected_url, message1.get_absolute_url())
 
@@ -235,7 +236,7 @@ class TestMessages(TestCase):
 
 
 
-class MessageDetailView(TestCase):
+class MessageDetailView(TestCase, SubdomainTestMixin):
     def setUp(self):
         super(MessageDetailView,self).setUp()
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
@@ -252,11 +253,11 @@ class MessageDetailView(TestCase):
     def test_get_message_detail_page(self):
         #I'm kind of feeling like I need 
         #something like rspec or cucumber
-        
-        url = reverse('message_detail', kwargs={'slug':self.message.slug})
+        host = self.get_host_for_subdomain(self.message.writeitinstance.slug)
+        url = self.message.get_absolute_url()
         self.assertTrue(url)
 
-        response = self.client.get(url)
+        response = self.client.get(url,HTTP_HOST=host)
 
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.context['message'], self.message)
@@ -273,8 +274,9 @@ class MessageDetailView(TestCase):
 
         #this message is confirmated but has no confirmation object
         #this occurs when creating a message throu the API
-        url = reverse('message_detail', kwargs={'slug':message.slug})
-        response = self.client.get(url)
+        url = message.get_absolute_url()
+        host = self.get_host_for_subdomain(self.message.writeitinstance.slug)
+        response = self.client.get(url,HTTP_HOST=host)
         self.assertEquals(response.status_code, 200)
 
 
@@ -290,8 +292,9 @@ class MessageDetailView(TestCase):
 
         #this message is confirmated but has no confirmation object
         #this occurs when creating a message throu the API
-        url = reverse('message_detail', kwargs={'slug':message.slug})
-        response = self.client.get(url)
+        host = self.get_host_for_subdomain(message.writeitinstance.slug)
+        url = message.get_absolute_url()
+        response = self.client.get(url,HTTP_HOST=host)
         self.assertEquals(response.status_code, 404)
 
         
@@ -324,7 +327,7 @@ class AllMessagesWithModerationInAWriteItInstances(TestCase):
         self.assertModerationMailSent(self.message, mail.outbox[0])
 
 
-class ModerationMessagesTestCase(TestCase):
+class ModerationMessagesTestCase(TestCase, SubdomainTestMixin):
     def setUp(self):
         super(ModerationMessagesTestCase,self).setUp()
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
@@ -336,7 +339,8 @@ class ModerationMessagesTestCase(TestCase):
             public=False,
             writeitinstance= self.writeitinstance1, 
             persons = [self.person1])
-        self.confirmation = Confirmation.objects.create(message=self.private_message)    
+        self.confirmation = Confirmation.objects.create(message=self.private_message)
+        self.host = self.get_host_for_subdomain(self.writeitinstance1.slug)
 
     def test_private_messages_confirmation_created_move_from_new_to_needs_moderation(self):
         moderation, created = Moderation.objects.get_or_create(message=self.private_message)

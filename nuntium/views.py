@@ -1,5 +1,5 @@
 # Create your views here.
-from django.views.generic import TemplateView, CreateView, DetailView
+from django.views.generic import TemplateView, CreateView, DetailView, RedirectView
 from django.core.urlresolvers import reverse
 from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation
 from nuntium.forms import MessageCreateForm
@@ -23,10 +23,14 @@ class WriteItInstanceDetailView(CreateView):
     model = WriteItInstance
     template_name='nuntium/instance_detail.html'
 
+    def get_object(self):
+        subdomain = self.request.subdomain
+        if not self.object:
+            self.object = self.model.objects.get(slug=subdomain)
+        return self.object
+
     def get_success_url(self):
-        return reverse('instance_detail', kwargs={
-            'slug':self.object.writeitinstance.slug
-            })
+        return self.object.writeitinstance.get_absolute_url()
 
     def get_form_kwargs(self):
         kwargs = super(WriteItInstanceDetailView, self).get_form_kwargs()
@@ -37,7 +41,7 @@ class WriteItInstanceDetailView(CreateView):
         return kwargs
     def get_context_data(self, **kwargs):
         context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
-        public_messages = self.object.message_set.filter(Q(public=True) & Q(confirmated=True))
+        public_messages = self.get_object().message_set.filter(Q(public=True) & Q(confirmated=True))
         context['public_messages'] = public_messages
         return context
 
@@ -113,3 +117,10 @@ class RejectModerationView(ModerationView):
         get = super(RejectModerationView, self).get(*args,**kwargs)
         self.get_object().message.delete()
         return get
+
+
+class RootRedirectView(RedirectView):
+    def get_redirect_url(self, **kwargs):
+
+        url = reverse("home")
+        return url
