@@ -55,8 +55,13 @@ class MessageResource(ModelResource):
 
     def hydrate(self, bundle):
         persons = []
-        for popit_url in bundle.data['persons']:
-            persons.append(Person.objects.get(popit_url=popit_url))
+        if bundle.data['persons'] == 'all':
+            instance = WriteItInstanceResource().get_via_uri(bundle.data["writeitinstance"])
+            for person in instance.persons.all():
+                persons.append(person)
+        else:
+            for popit_url in bundle.data['persons']:
+                persons.append(Person.objects.get(popit_url=popit_url))
         bundle.obj.persons = persons
         bundle.obj.confirmated = True
         return bundle

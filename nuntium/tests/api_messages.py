@@ -162,6 +162,28 @@ class MessageResourceTestCase(ResourceTestCase):
         self.assertTrue(the_message.confirmated)
 
 
+    def test_create_a_new_message_to_all_persons_in_the_instance(self):
+        #here it is the thing I don't know yet how to do this and I'll go for 
+        #saying all in the persons array instead of having an array or an empty
+        writeitinstance = WriteItInstance.objects.all()[0]
+        message_data = {
+            'author_name' : 'Felipipoo',
+            'subject': 'new message',
+            'content': 'the content thing',
+            'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
+            'persons': "all"
+        }
+        url = '/api/v1/message/'
+        response = self.api_client.post(url, data = message_data, format='json', authentication=self.get_credentials())
+        
+        the_message = Message.objects.get(author_name='Felipipoo')
+
+        self.assertEquals(len(the_message.people), writeitinstance.persons.count())
+        self.assertEquals(the_message.people,list(writeitinstance.persons.all()))
+
+
+
+
     # def test_get_message_detail_that_was_created_using_the_api(self):
     #     writeitinstance = WriteItInstance.objects.all()[0]
     #     message_data = {
