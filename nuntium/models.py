@@ -66,11 +66,11 @@ class Message(models.Model):
     """Message: Class that contain the info for a model, despite of the input and the output channels. Subject and content are mandatory fields"""
     author_name = models.CharField(max_length=512)
     author_email = models.EmailField()
-    subject = models.CharField(max_length=512)
+    subject = models.CharField(max_length=255)
     content = models.TextField()
     writeitinstance = models.ForeignKey(WriteItInstance)
     confirmated = models.BooleanField(default=False)
-    slug = models.CharField(max_length=512, unique=True)
+    slug = models.CharField(max_length=255, unique=True)
     public = models.BooleanField(default=True)
 
     def __init__(self, *args, **kwargs):
@@ -161,7 +161,7 @@ class Message(models.Model):
         url_accept = reverse('moderation_accept', kwargs={
             'slug': self.moderation.key
             })
-        
+
         d = Context({ 
             'message': self,
             'url_rejected':url_rejected,
