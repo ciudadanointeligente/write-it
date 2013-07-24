@@ -9,10 +9,12 @@ To: {% for person in confirmation.message.people %}
 
 Please confirm that you have sent this message by copiying the next url in your browser.
 
+
 {{ confirmation_full_url }}.
 
 
 Once you have confirmed, you will be able to access your message if you go to the next url
+
 
 {{ message_full_url }}.
 

@@ -157,11 +157,11 @@ class Message(models.Model):
         url_rejected = reverse('moderation_rejected', kwargs={
             'slug': self.moderation.key
             })
-        url_rejected = current_domain+url_rejected
+
         url_accept = reverse('moderation_accept', kwargs={
             'slug': self.moderation.key
             })
-        url_accept = current_domain+url_accept
+        
         d = Context({ 
             'message': self,
             'url_rejected':url_rejected,
@@ -360,9 +360,8 @@ def send_an_email_to_the_author(sender,instance, created, **kwargs):
             'slug':confirmation.key
             })
         current_site = Site.objects.get_current()
-        confirmation_full_url = "http://"+current_site.domain+url
-        message_full_url = 'http://'+current_site.domain+confirmation.message.get_absolute_url()
-
+        confirmation_full_url = url
+        message_full_url = confirmation.message.get_absolute_url()
         plaintext = get_template('nuntium/mails/confirm.txt')
         htmly     = get_template('nuntium/mails/confirm.html')
 
