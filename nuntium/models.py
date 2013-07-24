@@ -115,7 +115,7 @@ class Message(models.Model):
     def slugifyme(self):
         self.slug = slugify(self.subject)
         #Previously created messages with the same slug
-        previously = Message.objects.filter(subject=self.subject).count()
+        previously = Message.objects.filter(subject__iexact=self.subject).count()
         if previously > 0:
             self.slug = self.slug + '-' + str(previously + 1)
     def veryfy_people(self):

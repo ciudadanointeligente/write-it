@@ -54,10 +54,10 @@ class TestMessages(TestCase):
 
         self.assertTrue(message.confirmated)
 
-
+    #This intended to fix this bug
+    #https://github.com/ciudadanointeligente/write-it/issues/167
     def test_two_messages_with_the_same_slug_throw_an_error(self):
-        #This intended to fix this bug
-        #https://github.com/ciudadanointeligente/write-it/issues/167
+        
 
         message1 = Message.objects.create(content = 'Content 1', 
             author_name='Felipe', 
@@ -78,6 +78,25 @@ class TestMessages(TestCase):
         message2.slug='test'
         with self.assertRaises(IntegrityError):
             message2.save()
+
+    def test_two_messages_with_different_capital_letters(self):
+        message1 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='Test',
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+        message2 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='test', 
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+
+        self.assertNotEqual(message1.slug, message2.slug)
 
 
 
