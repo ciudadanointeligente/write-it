@@ -120,7 +120,6 @@ class TestMessages(TestCase):
         self.assertEquals(expected_url, message1.get_absolute_url())
 
 
-
     def test_message_set_to_ready(self):
         message1 = Message.objects.all()[0]
 
@@ -495,13 +494,17 @@ class ModerationMessagesTestCase(TestCase, SubdomainTestMixin):
         url_rejected = reverse('moderation_rejected', kwargs={
             'slug': self.private_message.moderation.key
             })
-        url_rejected = current_domain+url_rejected
+
         url_accept = reverse('moderation_accept', kwargs={
             'slug': self.private_message.moderation.key
             })
-        url_accept = current_domain+url_accept
+
+
+        self.assertFalse(current_domain+url_rejected in moderation_mail.body)
         self.assertTrue(url_rejected in moderation_mail.body)
+        self.assertFalse(current_domain+url_accept in moderation_mail.body)
         self.assertTrue(url_accept in moderation_mail.body)
+
 
 
     def test_creates_automatically_a_moderation_when_a_private_message_is_created(self):
