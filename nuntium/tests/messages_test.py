@@ -120,7 +120,6 @@ class TestMessages(TestCase):
         self.assertEquals(expected_url, message1.get_absolute_url())
 
 
-
     def test_message_set_to_ready(self):
         message1 = Message.objects.all()[0]
 
