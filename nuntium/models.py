@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
@@ -70,14 +70,16 @@ class Message(models.Model):
     content = models.TextField()
     writeitinstance = models.ForeignKey(WriteItInstance)
     confirmated = models.BooleanField(default=False)
-    slug = models.CharField(max_length=512)
+    slug = models.CharField(max_length=512, unique=True)
     public = models.BooleanField(default=True)
 
     def __init__(self, *args, **kwargs):
         self.persons = None
         if 'persons' in kwargs:
             self.persons = kwargs.pop('persons')
+
         super(Message, self).__init__(*args, **kwargs)
+
 
     #TODO: only new outbound_messages
     def recently_confirmated(self):
@@ -113,7 +115,7 @@ class Message(models.Model):
     def slugifyme(self):
         self.slug = slugify(self.subject)
         #Previously created messages with the same slug
-        previously = Message.objects.filter(subject=self.subject).count()
+        previously = Message.objects.filter(subject__iexact=self.subject).count()
         if previously > 0:
             self.slug = self.slug + '-' + str(previously + 1)
     def veryfy_people(self):
@@ -130,11 +132,11 @@ class Message(models.Model):
                     if not contact.is_bounced:
                         outbound_message = OutboundMessage.objects.get_or_create(contact=contact, message=self)
 
+
+
+
     def save(self, *args, **kwargs):
         created = self.id is None
-        if created:
-            self.slugifyme()
-            self.veryfy_people()
         super(Message, self).save(*args, **kwargs)
         if created:
             if not self.public:
@@ -184,6 +186,15 @@ class Message(models.Model):
             'subject':self.subject,
             'instance':self.writeitinstance.name
             }
+
+
+def slugify_message(sender,instance, **kwargs):
+    created = instance.id is None
+    if created:
+        instance.slugifyme()
+        instance.veryfy_people()
+
+pre_save.connect(slugify_message, sender=Message)
 
 class Answer(models.Model):
     content = models.TextField()
@@ -373,7 +384,8 @@ def send_an_email_to_the_author(sender,instance, created, **kwargs):
         try:
             msg.send()
         except:
-            confirmation.message.delete()
+            pass
+            #confirmation.message.delete()
 
 
 post_save.connect(send_an_email_to_the_author, sender=Confirmation)
