@@ -157,11 +157,11 @@ class Message(models.Model):
         url_rejected = reverse('moderation_rejected', kwargs={
             'slug': self.moderation.key
             })
-        url_rejected = current_domain+url_rejected
+
         url_accept = reverse('moderation_accept', kwargs={
             'slug': self.moderation.key
             })
-        url_accept = current_domain+url_accept
+        
         d = Context({ 
             'message': self,
             'url_rejected':url_rejected,
