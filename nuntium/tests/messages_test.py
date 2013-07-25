@@ -95,8 +95,36 @@ class TestMessages(TestCase):
             writeitinstance= self.writeitinstance1,
             persons = [self.person1])
 
-
         self.assertNotEqual(message1.slug, message2.slug)
+
+    def test_a_message_with_a_changed_slug(self):
+        message1 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='Test',
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+        message1.slug = 'test-2'
+        message1.save()
+
+        regex = "^"+message1.slug+"(-\d+){0,1}$"
+        previously = Message.objects.filter(slug__regex=regex).count()
+
+        message2 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='test', 
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+
+        self.assertEquals(message2.slug, 'test-3')
+
+
+        
 
 
 
