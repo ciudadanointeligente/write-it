@@ -115,9 +115,23 @@ class Message(models.Model):
     def slugifyme(self):
         self.slug = slugify(self.subject)
         #Previously created messages with the same slug
-        previously = Message.objects.filter(subject__iexact=self.subject).count()
+        
+        regex = "^"+self.slug+"(-(\d+)){0,1}$"
+        previously = Message.objects.filter(slug__regex=regex)
+        count = 1
+        for message in previously:
+            new_regex = "^"+self.slug+"-(\d+){0,1}$"
+            if re.match(new_regex, message.slug) is not None:
+                groups = re.match(new_regex, message.slug).groups()
+                if len(groups) > 0:
+                    if int(groups[0]) > count:
+                        count = int(groups[0])
+                    
+
+        previously=previously.count()
         if previously > 0:
-            self.slug = self.slug + '-' + str(previously + 1)
+            self.slug = self.slug + '-' + str(count + 1)
+
     def veryfy_people(self):
         if not self.persons:
             raise TypeError(_('A message needs persons to be sent'))
