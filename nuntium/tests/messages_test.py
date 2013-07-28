@@ -123,10 +123,41 @@ class TestMessages(TestCase):
 
         self.assertEquals(message2.slug, 'test-3')
 
-
         
+    def test_four_messaes_with_the_same_slug(self):
+        message1 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='Test',
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+        message2 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='Test',
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+        message3 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='Test',
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+        message4 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='Test',
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
 
-
+        self.assertEquals(message1.slug, 'test')
+        self.assertEquals(message2.slug, 'test-2')
+        self.assertEquals(message3.slug, 'test-3')
+        self.assertEquals(message4.slug, 'test-4')
 
 
     def test_update_a_message_does_not_need_persons(self):

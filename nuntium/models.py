@@ -70,7 +70,7 @@ class Message(models.Model):
     content = models.TextField()
     writeitinstance = models.ForeignKey(WriteItInstance)
     confirmated = models.BooleanField(default=False)
-    slug = models.CharField(max_length=255, unique=True)
+    slug = models.SlugField(max_length=255, unique=True)
     public = models.BooleanField(default=True)
 
     def __init__(self, *args, **kwargs):
@@ -116,7 +116,7 @@ class Message(models.Model):
         self.slug = slugify(self.subject)
         #Previously created messages with the same slug
         
-        regex = "^"+self.slug+"(-(\d+)){0,1}$"
+        regex = "^"+self.slug+"(-[0-9]*){0,1}$"
         previously = Message.objects.filter(slug__regex=regex)
         count = 1
         for message in previously:
