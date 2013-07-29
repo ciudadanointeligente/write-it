@@ -200,10 +200,9 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
         'persons': [self.person1.id]
         }
         url = self.writeitinstance1.get_absolute_url()
-        response = self.client.post(self.url, data, follow=True, HTTP_HOST=self.host)
+        response = self.client.post(self.url, data, HTTP_HOST=self.host)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'nuntium/instance_detail.html')
+        self.assertRedirects(response, url)
         
 
 
