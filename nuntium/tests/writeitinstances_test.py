@@ -224,6 +224,26 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
 
         self.assertContains(response, expected_acknoledgments)
 
+    def test_if_the_instance_needs_moderation_in_all_messages(self):
+        self.writeitinstance1.moderation_needed_in_all_messages = True
+        self.writeitinstance1.save()
+        data = {
+            'subject':u'Fiera no está',
+            'content':u'¿Dónde está Fiera Feroz? en la playa?',
+            'author_name':u"Felipe",
+            'public': True,
+            'author_email':u"falvarez@votainteligente.cl",
+            'persons': [self.person1.id]
+        }
+
+        url = self.writeitinstance1.get_absolute_url()
+        response = self.client.post(self.url, data, follow=True, HTTP_HOST=self.host)
+
+        expected_acknoledgments = _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation")
+
+
+        self.assertContains(response, expected_acknoledgments)
+
 
 
 
