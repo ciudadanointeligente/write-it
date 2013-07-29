@@ -176,6 +176,7 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
         'subject':u'Fiera no está',
         'author_email':u'falvarez@votainteligente.cl',
         'author_name':u'feli',
+        'public':True,
         'content':u'¿Dónde está Fiera Feroz? en la playa?',
         'persons': [self.person1.id]
         }
@@ -203,7 +204,28 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
         response = self.client.post(self.url, data, HTTP_HOST=self.host)
 
         self.assertRedirects(response, url)
-        
+
+
+    def test_flash_message_after_the_creation_of_a_private_message(self):
+        data = {
+            'subject':u'Fiera no está',
+            'content':u'¿Dónde está Fiera Feroz? en la playa?',
+            'author_name':u"Felipe",
+            'public': False,
+            'author_email':u"falvarez@votainteligente.cl",
+            'persons': [self.person1.id]
+        }
+
+        url = self.writeitinstance1.get_absolute_url()
+        response = self.client.post(self.url, data, follow=True, HTTP_HOST=self.host)
+
+        expected_acknoledgments = _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation")
+
+
+        self.assertContains(response, expected_acknoledgments)
+
+
+
 
 
 
