@@ -2,7 +2,11 @@
 {% load i18n %}
 {% block content %}
 {% load markdown_deux_tags %}
-
+<ul class="flash-messages">
+{% for message in messages %}
+<li>{{ message }}</li>
+{% endfor %}
+</ul>
 <h2>{% trans "You can now write your question" %}</h2>
 <form method='post' class='form-horizontal'>
 {% csrf_token %}

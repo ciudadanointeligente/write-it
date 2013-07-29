@@ -10,6 +10,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from subdomains.tests import SubdomainTestMixin
 from django.utils.translation import activate
+from django.utils.translation import ugettext as _
 
 class InstanceTestCase(TestCase):
 
@@ -157,15 +158,38 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
 
         #spanish
         data = {
+        'author_email':u'falvarez@votainteligente.cl',
+        'author_name':u'feli',
         'subject':u'Fiera no está',
         'content':u'¿Dónde está Fiera Feroz? en la playa?',
         'persons': [self.person1.id]
         }
         response = self.client.post(self.url, data, follow=True, HTTP_HOST=self.host)
         self.assertEquals(response.status_code, 200)
-        new_messages = Message.objects.all()
+        new_messages = Message.objects.filter(subject='Fiera no está')
         self.assertTrue(new_messages.count()>0)
+        self.assertEquals(len(response.context["form"].errors), 0)
 
+    def test_I_get_an_acknoledgement_for_creating_a_message(self):
+        #spanish
+        data = {
+        'subject':u'Fiera no está',
+        'author_email':u'falvarez@votainteligente.cl',
+        'author_name':u'feli',
+        'content':u'¿Dónde está Fiera Feroz? en la playa?',
+        'persons': [self.person1.id]
+        }
+
+        response = self.client.post(self.url, data, follow=True, HTTP_HOST=self.host)
+        self.assertEquals(response.status_code, 200)
+        expected_acknoledgments = _("Thanks for submitting your message, please check your email and click on the confirmation link")
+
+        self.assertContains(response, expected_acknoledgments)
+
+        all_messages, all_retrieved = response.context["messages"]._get()
+
+        self.assertEquals(len(all_messages), 1)
+        self.assertEquals(all_messages[0].__str__(), expected_acknoledgments)
 
     def test_after_the_creation_of_a_message_it_redirects(self):
         data = {

@@ -7,7 +7,8 @@ from datetime import datetime
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-
+from django.utils.translation import ugettext as _
+from django.contrib import messages
 
 
 class HomeTemplateView(TemplateView):
@@ -29,16 +30,22 @@ class WriteItInstanceDetailView(CreateView):
             self.object = self.model.objects.get(slug=subdomain)
         return self.object
 
+
+    def form_valid(self, form):
+        messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link"))
+        response = super(WriteItInstanceDetailView, self).form_valid(form)
+        return response
+
+
     def get_success_url(self):
         return self.object.writeitinstance.get_absolute_url()
 
     def get_form_kwargs(self):
         kwargs = super(WriteItInstanceDetailView, self).get_form_kwargs()
         self.object = self.get_object()
-        kwargs['writeitinstance'] = self.object
-     
-        
+        kwargs['writeitinstance'] = self.object        
         return kwargs
+
     def get_context_data(self, **kwargs):
         context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
         public_messages = self.get_object().message_set.filter(Q(public=True) & Q(confirmated=True))
