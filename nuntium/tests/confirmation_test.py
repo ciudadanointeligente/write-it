@@ -80,8 +80,13 @@ class ConfirmationTestCase(TestCase):
         expected_from_email = self.message.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
         self.assertEquals(mail.outbox[0].from_email, expected_from_email)
 
+    def test_private_messages_do_not_have_its_absolute_url(self):
+        self.message.public = False
+        self.message.save()
 
-
+        confirmation = Confirmation.objects.create(message=self.message)
+        self.assertFalse(self.message.get_absolute_url() in mail.outbox[0].body)
+        
     def test_access_the_confirmation_url(self):
         confirmation = Confirmation.objects.create(message=self.message)
         url = reverse('confirm', kwargs={

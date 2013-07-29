@@ -187,7 +187,7 @@ class Message(models.Model):
         from_email = self.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
         
 
-        msg = EmailMultiAlternatives( _('Confirmation email for a message in WriteIt'), 
+        msg = EmailMultiAlternatives( _('Moderation required for a message in WriteIt'), 
             text_content,#content
             from_email,#From
             [self.writeitinstance.owner.email]#To

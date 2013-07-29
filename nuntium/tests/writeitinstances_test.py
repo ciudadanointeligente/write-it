@@ -10,6 +10,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from subdomains.tests import SubdomainTestMixin
 from django.utils.translation import activate
+from django.utils.translation import ugettext as _
 
 class InstanceTestCase(TestCase):
 
@@ -157,15 +158,39 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
 
         #spanish
         data = {
+        'author_email':u'falvarez@votainteligente.cl',
+        'author_name':u'feli',
         'subject':u'Fiera no está',
         'content':u'¿Dónde está Fiera Feroz? en la playa?',
         'persons': [self.person1.id]
         }
         response = self.client.post(self.url, data, follow=True, HTTP_HOST=self.host)
         self.assertEquals(response.status_code, 200)
-        new_messages = Message.objects.all()
+        new_messages = Message.objects.filter(subject='Fiera no está')
         self.assertTrue(new_messages.count()>0)
+        self.assertEquals(len(response.context["form"].errors), 0)
 
+    def test_I_get_an_acknoledgement_for_creating_a_message(self):
+        #spanish
+        data = {
+        'subject':u'Fiera no está',
+        'author_email':u'falvarez@votainteligente.cl',
+        'author_name':u'feli',
+        'public':True,
+        'content':u'¿Dónde está Fiera Feroz? en la playa?',
+        'persons': [self.person1.id]
+        }
+
+        response = self.client.post(self.url, data, follow=True, HTTP_HOST=self.host)
+        self.assertEquals(response.status_code, 200)
+        expected_acknoledgments = _("Thanks for submitting your message, please check your email and click on the confirmation link")
+
+        self.assertContains(response, expected_acknoledgments)
+
+        all_messages, all_retrieved = response.context["messages"]._get()
+
+        self.assertEquals(len(all_messages), 1)
+        self.assertEquals(all_messages[0].__str__(), expected_acknoledgments)
 
     def test_after_the_creation_of_a_message_it_redirects(self):
         data = {
@@ -176,11 +201,51 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
         'persons': [self.person1.id]
         }
         url = self.writeitinstance1.get_absolute_url()
+        response = self.client.post(self.url, data, HTTP_HOST=self.host)
+
+        self.assertRedirects(response, url)
+
+
+    def test_flash_message_after_the_creation_of_a_private_message(self):
+        data = {
+            'subject':u'Fiera no está',
+            'content':u'¿Dónde está Fiera Feroz? en la playa?',
+            'author_name':u"Felipe",
+            'public': False,
+            'author_email':u"falvarez@votainteligente.cl",
+            'persons': [self.person1.id]
+        }
+
+        url = self.writeitinstance1.get_absolute_url()
         response = self.client.post(self.url, data, follow=True, HTTP_HOST=self.host)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'nuntium/instance_detail.html')
-        
+        expected_acknoledgments = _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation")
+
+
+        self.assertContains(response, expected_acknoledgments)
+
+    def test_if_the_instance_needs_moderation_in_all_messages(self):
+        self.writeitinstance1.moderation_needed_in_all_messages = True
+        self.writeitinstance1.save()
+        data = {
+            'subject':u'Fiera no está',
+            'content':u'¿Dónde está Fiera Feroz? en la playa?',
+            'author_name':u"Felipe",
+            'public': True,
+            'author_email':u"falvarez@votainteligente.cl",
+            'persons': [self.person1.id]
+        }
+
+        url = self.writeitinstance1.get_absolute_url()
+        response = self.client.post(self.url, data, follow=True, HTTP_HOST=self.host)
+
+        expected_acknoledgments = _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation")
+
+
+        self.assertContains(response, expected_acknoledgments)
+
+
+
 
 
 
