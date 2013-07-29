@@ -15,6 +15,7 @@ from mock import patch
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.sites.models import Site
 import datetime
+from django.utils.translation import activate
 from subdomains.tests import SubdomainTestMixin
 
 
@@ -369,7 +370,7 @@ class MessageDetailView(TestCase, SubdomainTestMixin):
             author_name='Felipe', 
             author_email="falvarez@votainteligente.cl", 
             subject='Subject 1', 
-            public=False,
+            public=True,
             writeitinstance= self.writeitinstance1, 
             confirmated = True,
             persons = [self.person1])
@@ -449,6 +450,18 @@ class ModerationMessagesTestCase(TestCase, SubdomainTestMixin):
         self.private_message.recently_confirmated()
         outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message)
         self.assertEquals(outbound_message_to_pedro.status, 'needmodera')
+
+    def test_private_message_is_not_accesible(self):
+        self.confirmation.confirmated_at = datetime.datetime.now()
+        self.confirmation.save()
+        self.private_message.confirmated = True
+        self.private_message.save()
+        host = self.get_host_for_subdomain(self.private_message.writeitinstance.slug)
+        url = self.private_message.get_absolute_url()
+        response = self.client.get(url,HTTP_HOST=host)
+
+        self.assertEquals(response.status_code, 404)
+
 
     def test_outbound_messages_of_a_confirmed_message_are_waiting_for_moderation(self):
         #I need to do a get to the confirmation url

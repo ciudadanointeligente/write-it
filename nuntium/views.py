@@ -52,20 +52,24 @@ class MessageDetailView(DetailView):
     def get_queryset(self):
         #get_object_or_404(Message, slug__iexact=self.kwargs['slug'])
         qs = Message.objects.filter(slug__iexact=self.kwargs['slug'])
+        return qs
 
+    def get_object(self):
+        the_message = super(MessageDetailView, self).get_object()
+        if not the_message.public:
+            raise Http404
         is_confirmed = False
-        if qs[0].confirmated:
-            is_confirmed = qs[0].confirmated
+        if the_message.confirmated:
+            is_confirmed = the_message.confirmated
         else:
             try:
-                is_confirmed = qs[0].confirmation.is_confirmed
+                is_confirmed = the_message.confirmation.is_confirmed
             except :
                 pass
-
-
         if not is_confirmed:
             raise Http404
-        return qs
+
+        return the_message
 
 class ConfirmView(DetailView):
     template_name='nuntium/confirm.html'
