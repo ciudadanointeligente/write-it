@@ -10,7 +10,7 @@ from nuntium.views import HomeTemplateView, MessageSearchView
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', HomeTemplateView.as_view(template_name='home.html'), name='home'),
-    url(r'^search/?$', MessageSearchView.as_view(), name='search_messages'),
+    url(r'^search/?$', MessageSearchView(), name='search_messages'),
     # url(r'^writeit/', include('writeit.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

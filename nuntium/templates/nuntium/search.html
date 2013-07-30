@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+{% load markdown_deux_tags %}
+<ul class="flash-messages">
+{% for message in messages %}
+<li>{{ message }}</li>
+{% endfor %}
+</ul>
+
+
+{{ form }}
+
+{% endblock content %}

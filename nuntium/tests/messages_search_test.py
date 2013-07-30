@@ -10,6 +10,7 @@ from subdomains.utils import reverse
 from nuntium.views import MessageSearchView
 from django.views.generic.edit import FormView
 from django.utils.unittest import skip
+from haystack.views import SearchView
 
 class MessagesSearchTestCase(TestCase):
 	def setUp(self):
@@ -62,9 +63,8 @@ class MessageSearchViewTestCase(TestCase):
 	def test_search_view(self):
 		view = MessageSearchView()
 
-		self.assertIsInstance(view, FormView)
+		self.assertIsInstance(view, SearchView)
 		self.assertEquals(view.form_class, MessageSearchForm)
-		self.assertEquals(view.template_name, 'nuntium/search.html')
-		self.assertEquals(view.success_url, 'nuntium/search.html')
+		self.assertEquals(view.template, 'nuntium/search.html')
 
 		
