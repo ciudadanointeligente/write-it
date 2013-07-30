@@ -1,5 +1,5 @@
 # Create your views here.
-from django.views.generic import TemplateView, CreateView, DetailView, RedirectView
+from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, FormView
 from django.core.urlresolvers import reverse
 from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation
 from nuntium.forms import MessageCreateForm
@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.contrib import messages
+from nuntium.forms import  MessageSearchForm
 
 
 class HomeTemplateView(TemplateView):
@@ -141,3 +142,8 @@ class RootRedirectView(RedirectView):
 
         url = reverse("home")
         return url
+
+class MessageSearchView(FormView):
+    template_name = 'nuntium/search.html'
+    form_class = MessageSearchForm
+    success_url = 'nuntium/search.html'

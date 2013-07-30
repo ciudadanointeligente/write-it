@@ -2,8 +2,14 @@
 from global_test_case import GlobalTestCase as TestCase
 from nuntium.search_indexes import MessageIndex
 from nuntium.models import Message
+from nuntium.forms import  MessageSearchForm
 from haystack import indexes
 from haystack.fields import CharField
+from haystack.forms import SearchForm
+from subdomains.utils import reverse
+from nuntium.views import MessageSearchView
+from django.views.generic.edit import FormView
+from django.utils.unittest import skip
 
 class MessagesSearchTestCase(TestCase):
 	def setUp(self):
@@ -28,4 +34,37 @@ class MessagesSearchTestCase(TestCase):
 
 		self.assertTrue(self.first_message.subject in rendered_text)
 		self.assertTrue(self.first_message.content in rendered_text)
+
+
+class MessageSearchFormTestCase(TestCase):
+	def setUp(self):
+		super(MessageSearchFormTestCase, self).setUp()
+
+	def test_it_is_a_search_form(self):
+		form = MessageSearchForm()
+
+		self.assertIsInstance(form, SearchForm)
+
+
+class MessageSearchViewTestCase(TestCase):
+	def setUp(self):
+		super(MessageSearchViewTestCase, self).setUp()
+
+
+	def test_access_the_search_url(self):
+		url = reverse('search_messages')
+		response = self.client.get(url)
+
+		self.assertEquals(response.status_code, 200)
+		self.assertIsInstance(response.context['form'], MessageSearchForm)
+
+
+	def test_search_view(self):
+		view = MessageSearchView()
+
+		self.assertIsInstance(view, FormView)
+		self.assertEquals(view.form_class, MessageSearchForm)
+		self.assertEquals(view.template_name, 'nuntium/search.html')
+		self.assertEquals(view.success_url, 'nuntium/search.html')
+
 		
