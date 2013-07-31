@@ -30,6 +30,7 @@ class MessagesSearchTestCase(TestCase):
 		self.assertQuerysetEqual(index.index_queryset(), [repr(r) for r in public_messages])
 
 		self.assertIsInstance(index.text, CharField)
+		self.assertTrue(index.text.use_template)
 
 		rendered_text = index.text.prepare_template(self.first_message)
 

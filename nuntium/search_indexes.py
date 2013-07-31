@@ -3,7 +3,7 @@ from haystack import indexes
 from nuntium.models import Message
 
 class MessageIndex(indexes.SearchIndex, indexes.Indexable):
-	text = indexes.CharField(document=True)
+	text = indexes.CharField(document=True, use_template=True)
 
 	def get_model(self):
 		return Message
