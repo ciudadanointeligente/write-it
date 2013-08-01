@@ -9,4 +9,4 @@ class MessageIndex(indexes.SearchIndex, indexes.Indexable):
 		return Message
 
 	def index_queryset(self, using=None):
-		return self.get_model().objects.filter(public=True, confirmated=True)
+		return self.get_model().objects.public()
