@@ -8,7 +8,7 @@ from haystack.fields import CharField
 from haystack.forms import SearchForm
 from subdomains.utils import reverse
 from nuntium.views import MessageSearchView
-from nuntium.models import WriteItInstance
+from nuntium.models import WriteItInstance, Confirmation
 from django.views.generic.edit import FormView
 from django.utils.unittest import skip
 from haystack.views import SearchView
@@ -70,13 +70,25 @@ class MessagesSearchTestCase(TestCase):
             author_name='Felipe', 
             author_email="falvarez@votainteligente.cl", 
             subject='Fiera es una perra feroz2', 
+            confirmated=True,
             writeitinstance= self.writeitinstance1,
-            confirmated = True,
             persons = [self.person1])
 
         self.assertIn(confirmated_message, self.index.index_queryset())
         self.assertNotIn(non_message, self.index.index_queryset())
 
+
+    def test_it_does_not_search_within_non_moderated_messages(self):
+
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Fiera es una perra feroz2', 
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+        confirmation = Confirmation.objects.create(message=message)
+        print confirmation.key
+        self.assertFalse(True)
 
 
 

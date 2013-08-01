@@ -365,6 +365,9 @@ class Confirmation(models.Model):
     def key_generator(cls):
         return str(uuid.uuid1().hex)
 
+    def get_absolute_url(self):
+
+        return reverse('confirm', kwargs={'slug': self.key})
 
 
 def send_an_email_to_the_author(sender,instance, created, **kwargs):
