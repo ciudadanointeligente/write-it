@@ -49,15 +49,10 @@
 {% else %}
 
     <h2>{% trans "Messages" %}</h2>
-    <dl class="dl-horizontal">
+    
 
     {% for message in public_messages %}
-    <div>
-    	<h3>{{ message.subject }} <a href="{% url 'message_detail' slug=message.slug %}">{% trans "Link" %}</a></h3> 
-    	<h4>{% markdown %}{{ message.content }}{% endmarkdown %}</h4>
-    	<span class="author_name"><small>{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}</small></span><br />
-    </div>
-    </dl>
+        {% include "nuntium/message_in_list.html" with message=message %}
         {% if not forloop.last %}
             <hr />
         {% endif %}
