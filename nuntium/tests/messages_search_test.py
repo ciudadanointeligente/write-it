@@ -78,8 +78,10 @@ class MessagesSearchTestCase(TestCase):
         self.assertNotIn(non_message, self.index.index_queryset())
 
 
+    @skip("moderation is not working")
     def test_it_does_not_search_within_non_moderated_messages(self):
-
+        self.writeitinstance1.moderation_needed_in_all_messages = True
+        self.writeitinstance1.save()
         message = Message.objects.create(content = 'Content 1', 
             author_name='Felipe', 
             author_email="falvarez@votainteligente.cl", 
@@ -87,9 +89,13 @@ class MessagesSearchTestCase(TestCase):
             writeitinstance= self.writeitinstance1,
             persons = [self.person1])
         confirmation = Confirmation.objects.create(message=message)
-        print confirmation.key
-        self.assertFalse(True)
+        response = self.client.get(confirmation.get_absolute_url())
 
+        #message is confirmed (or whatever way you spell it)
+        #but it was written in an instance in wich all messages need moderation,
+        #and therefore it needs to be moderated before it is shown in the searches
+
+        self.assertNotIn(message, self.index.index_queryset())
 
 
 

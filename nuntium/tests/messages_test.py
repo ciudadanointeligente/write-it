@@ -43,6 +43,8 @@ class TestMessages(TestCase):
         self.assertFalse(message.confirmated)
         self.assertTrue(message.public)
 
+        self.assertTrue(message.moderated is None)
+
 
     def test_message_has_a_is_confirmated_field(self):
         message = Message.objects.create(content = 'Content 1', 
@@ -337,6 +339,53 @@ class TestMessages(TestCase):
         self.assertTrue(message.confirmated)
 
 
+class PublicMessagesManager(TestCase, SubdomainTestMixin):
+    def setUp(self):
+        super(PublicMessagesManager, self).setUp()
+        self.moderation_not_needed_instance = WriteItInstance.objects.all()[0]
+        self.person1 = Person.objects.all()[0]
+        self.moderable_instance = WriteItInstance.objects.all()[1]
+        self.moderable_instance.moderation_needed_in_all_messages = True
+
+        self.moderable_instance.save()
+
+    def test_public_non_confirmated_message_is_not_in_the_public(self):
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='public non confirmated message', 
+            writeitinstance= self.moderation_not_needed_instance, 
+            persons = [self.person1])
+        Confirmation.objects.create(message=message)
+
+        self.assertNotIn(message, Message.objects.public())
+
+        message.recently_confirmated()
+
+        self.assertIn(message, Message.objects.public())
+
+    def test_confirmated_but_non_moderated_message_in_a_moderable_instance_is_not_shown(self):
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='public non confirmated message', 
+            writeitinstance= self.moderable_instance, 
+            persons = [self.person1])
+
+        Confirmation.objects.create(message=message)
+        self.assertNotIn(message, Message.objects.public())
+        message.recently_confirmated()
+
+        #the important one
+        self.assertNotIn(message, Message.objects.public())
+
+
+
+
+
+
+
+
 
 
 class MessageDetailView(TestCase, SubdomainTestMixin):
@@ -415,6 +464,19 @@ class AllMessagesWithModerationInAWriteItInstances(TestCase):
             writeitinstance= self.writeitinstance1, 
             persons = [self.person1])
 
+    def test_a_message_is_considered_not_moderated(self):
+        
+        self.assertFalse(self.message.moderated is None)
+        self.assertFalse(self.message.moderated)
+
+    def test_a_message_moderated_status_is_changed(self):
+        self.message.moderated = True
+        self.message.save()
+
+        message = Message.objects.get(id=self.message.id)
+
+        self.assertTrue(message.moderated)
+
     def test_a_message_does_not_have_a_moderation_previous_to_confirmation(self):
         self.assertEquals(Moderation.objects.filter(message=self.message).count(), 0)
 
@@ -448,8 +510,10 @@ class ModerationMessagesTestCase(TestCase, SubdomainTestMixin):
     def test_private_messages_confirmation_created_move_from_new_to_needs_moderation(self):
         moderation, created = Moderation.objects.get_or_create(message=self.private_message)
         self.private_message.recently_confirmated()
+        
         outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message)
         self.assertEquals(outbound_message_to_pedro.status, 'needmodera')
+
 
     def test_private_message_is_not_accesible(self):
         self.confirmation.confirmated_at = datetime.datetime.now()
@@ -529,7 +593,20 @@ class ModerationMessagesTestCase(TestCase, SubdomainTestMixin):
         #private_message = Message.objects.get(id=self.private_message.id)
         outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message.id)
         self.assertEquals(outbound_message_to_pedro.status, 'ready')
+        private_message = Message.objects.get(id=self.private_message.id)
+        self.assertTrue(private_message.moderated)
 
+    def test_moderation_get_success_url(self):
+        expected_url = reverse('moderation_accept', kwargs={
+            'slug': self.private_message.moderation.key
+            })
+        self.assertEquals(self.private_message.moderation.get_success_url(), expected_url)
+
+    def test_moderation_get_reject_url(self):
+        expected_url = reverse('moderation_rejected', kwargs={
+            'slug': self.private_message.moderation.key
+            })
+        self.assertEquals(self.private_message.moderation.get_reject_url(), expected_url)
 
     def test_there_is_a_reject_moderation_url_that_deletes_the_message(self):
         '''
@@ -602,3 +679,11 @@ class ModerationMessagesTestCase(TestCase, SubdomainTestMixin):
         post_key = moderation.key
 
         self.assertEquals(previous_key, post_key)
+
+    def test_moderates_method(self):
+        moderation = Moderation.objects.get(message=self.private_message)
+        moderation.success()
+
+        message = Message.objects.get(moderation=moderation)
+
+        self.assertTrue(message.moderated)

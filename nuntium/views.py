@@ -56,7 +56,7 @@ class WriteItInstanceDetailView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
-        public_messages = self.get_object().message_set.filter(Q(public=True) & Q(confirmated=True))
+        public_messages = Message.objects.public(writeitinstance=self.object)
         context['public_messages'] = public_messages
         return context
 
@@ -126,6 +126,7 @@ class AcceptModerationView(ModerationView):
     def get(self, *args, **kwargs):
         moderation = self.get_object()
         moderation.message.set_to_ready()
+        moderation.success()
         return super(AcceptModerationView, self).get(*args,**kwargs)
 
 
