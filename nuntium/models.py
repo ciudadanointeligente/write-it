@@ -24,6 +24,7 @@ import re
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db import IntegrityError
+from django.db.models import Q
 
 
 class WriteItInstance(models.Model):
@@ -61,6 +62,11 @@ class MessageRecord(models.Model):
             'date' : str(self.datetime)
             }
 
+class PublicMessagesManager(models.Manager):
+    def public(self,*args, **kwargs):
+        query = super(PublicMessagesManager, self).filter(*args, **kwargs)
+        query = query.filter(Q(public=True),Q(confirmated=True), Q(moderated=True)| Q(moderated=None))
+        return query
 
 class Message(models.Model):
     """Message: Class that contain the info for a model, despite of the input and the output channels. Subject and content are mandatory fields"""
@@ -72,6 +78,9 @@ class Message(models.Model):
     confirmated = models.BooleanField(default=False)
     slug = models.SlugField(max_length=255, unique=True)
     public = models.BooleanField(default=True)
+    moderated = models.NullBooleanField()
+
+    objects = PublicMessagesManager()
 
     def __init__(self, *args, **kwargs):
         self.persons = None
@@ -151,6 +160,8 @@ class Message(models.Model):
 
     def save(self, *args, **kwargs):
         created = self.id is None
+        if created and self.writeitinstance.moderation_needed_in_all_messages:
+            self.moderated = False
         super(Message, self).save(*args, **kwargs)
         if created:
             if not self.public:
@@ -365,6 +376,9 @@ class Confirmation(models.Model):
     def key_generator(cls):
         return str(uuid.uuid1().hex)
 
+    def get_absolute_url(self):
+
+        return reverse('confirm', kwargs={'slug': self.key})
 
 
 def send_an_email_to_the_author(sender,instance, created, **kwargs):
@@ -414,6 +428,20 @@ class Moderation(models.Model):
         if created:
             self.key = str(uuid.uuid1().hex)
         super(Moderation, self).save(*args, **kwargs)
+
+    def success(self):
+        self.message.moderated = True
+        self.message.save()
+
+    def get_success_url(self):
+        return reverse('moderation_accept', kwargs={
+            'slug': self.key
+            })
+
+    def get_reject_url(self):
+        return reverse('moderation_rejected', kwargs={
+            'slug': self.key
+            })
         
 
 

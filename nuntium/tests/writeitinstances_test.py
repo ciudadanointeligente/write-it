@@ -1,7 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
 from subdomains.utils import reverse
-from nuntium.models import WriteItInstance, Message, Membership, Confirmation
+from nuntium.models import WriteItInstance, Message, Membership, Confirmation, Moderation
 from nuntium.views import MessageCreateForm
 from contactos.models import Contact, ContactType
 from popit.models import ApiInstance, Person
@@ -113,6 +113,34 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
         self.assertTrue(private_message not in response.context['public_messages'])
 
 
+    def test_in_moderation_needed_instances_does_not_show_a_confirmated_but_not_moderated(self):
+        self.writeitinstance1.moderation_needed_in_all_messages = True
+
+        self.writeitinstance1.save()
+        message = Message.objects.create(
+            content='Content 3', 
+            subject='Subject 3', 
+            writeitinstance = self.writeitinstance1, 
+            confirmated = True,
+            persons=[self.person1]
+            )
+
+        confirmation = Confirmation.objects.create(message=message)
+        self.client.get(confirmation.get_absolute_url())
+
+        #ok it is now confirmated but it is not moderated
+
+        url = self.writeitinstance1.get_absolute_url()
+
+        response = self.client.get(self.url, HTTP_HOST=self.host)
+
+        self.assertNotIn(message, response.context['public_messages'])
+
+
+
+
+
+
 
 
     def test_list_only_confirmed_and_public_messages(self):
@@ -132,7 +160,12 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
             public=False)
 
         confirmation_for_message2 = Confirmation.objects.create(message=message2)
-        self.client.get(reverse('confirm', kwargs={'slug':confirmation_for_message2.key}))
+        self.client.get(confirmation_for_message2.get_absolute_url())
+
+
+        #now i need to moderate this
+        self.client.get(private_message.moderation.get_success_url())
+
         confirmation_for_private_message = Confirmation.objects.create(message=private_message)
         self.client.get(reverse('confirm', kwargs={'slug':confirmation_for_private_message.key}))
 
@@ -150,7 +183,7 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
         self.assertTrue(message2 in response.context['public_messages'])
         self.assertTrue(message1 not in response.context['public_messages'])
         self.assertTrue(message3 in response.context['public_messages'])
-        self.assertTrue(private_message not in response.context['public_messages'])
+        self.assertNotIn(private_message, response.context["public_messages"])
 
 
 

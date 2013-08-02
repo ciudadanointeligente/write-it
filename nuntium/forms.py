@@ -4,6 +4,7 @@ from contactos.models import Contact
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
 from popit.models import Person
+from haystack.forms import SearchForm
 
 class PersonMultipleChoiceField(ModelMultipleChoiceField):
     widget = CheckboxSelectMultiple()
@@ -49,3 +50,7 @@ class MessageCreateForm(ModelForm):
     class Meta:
         model = Message
         exclude = ("writeitinstance", "status", "slug")
+
+
+class MessageSearchForm(SearchForm):
+    pass
