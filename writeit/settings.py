@@ -152,12 +152,22 @@ INSTALLED_APPS = (
     'markdown_deux',
     'django_extensions',
     'subdomains',
-    
+    # Searching.
+    'haystack',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+#SEARCH INDEX WITH SOLR
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://127.0.0.1:8983/solr/writeit'
+        # ...or for multicore...
+        # 'URL': 'http://127.0.0.1:8983/solr/mysite',
+    },
+}
 
 #Testing with django
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'

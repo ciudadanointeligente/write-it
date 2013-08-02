@@ -9,6 +9,8 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.contrib import messages
+from nuntium.forms import  MessageSearchForm
+from haystack.views import SearchView
 
 
 class HomeTemplateView(TemplateView):
@@ -54,7 +56,7 @@ class WriteItInstanceDetailView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
-        public_messages = self.get_object().message_set.filter(Q(public=True) & Q(confirmated=True))
+        public_messages = Message.objects.public(writeitinstance=self.object)
         context['public_messages'] = public_messages
         return context
 
@@ -75,12 +77,17 @@ class MessageDetailView(DetailView):
         if the_message.confirmated:
             is_confirmed = the_message.confirmated
         else:
-            try:
-                is_confirmed = the_message.confirmation.is_confirmed
-            except :
-                pass
-        if not is_confirmed:
-            raise Http404
+            is_confirmed = the_message.confirmation.is_confirmed
+        #these lines were removed because there was a time
+        # when they help me pass a test but now if I comment them 
+        # they don't break anything
+        # I'm gonna keep them just in case something in the future breaks
+        #     try:
+        #         is_confirmed = the_message.confirmation.is_confirmed
+        #     except :
+        #         pass
+        # if not is_confirmed:
+        #     raise Http404
 
         return the_message
 
@@ -124,6 +131,7 @@ class AcceptModerationView(ModerationView):
     def get(self, *args, **kwargs):
         moderation = self.get_object()
         moderation.message.set_to_ready()
+        moderation.success()
         return super(AcceptModerationView, self).get(*args,**kwargs)
 
 
@@ -141,3 +149,11 @@ class RootRedirectView(RedirectView):
 
         url = reverse("home")
         return url
+
+class MessageSearchView(SearchView):
+    
+
+    def __init__(self, *args, **kwargs):
+        super(MessageSearchView, self).__init__(*args, **kwargs)
+        self.form_class = MessageSearchForm
+        self.template = 'nuntium/search.html'
