@@ -23,13 +23,7 @@
 </div>
 <h4>{% trans "Answers" %}</h4>
 {% for answer in message.answers.all %}
-<div class="answers">
-    
-    <div class="answer">
-        <span class="content">{{ answer.content|linebreaks }}</span>
-        <small>{% blocktrans with answer.person.name as name %} by {{ name }}.{% endblocktrans %}</small>
-    </div>
-</div>
+    {% include "nuntium/answer/answer_in_list.html" with answer=answer %}
 {% endfor %}
 
 

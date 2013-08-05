@@ -214,7 +214,7 @@ class AnswersResourceTestCase(ResourceTestCase):
     def setUp(self):
         super(AnswersResourceTestCase,self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
-        self.answer = Answer.objects.create(message=Message.objects.all()[0], person=Person.objects.all()[0])
+        self.answer = Answer.objects.all()[0]
 
 
     def test_resource_get_all_answers(self):
@@ -261,13 +261,13 @@ class AnswerCreationResource(ResourceTestCase):
         'key':self.identifier.key,
         'content':content
         }
+        previous_answers = Answer.objects.count()
         response = self.api_client.post(url, data = answer_data, format='json', authentication=self.get_credentials())
         self.assertHttpCreated(response)
 
-        answers = Answer.objects.filter(message = self.outbound_message.message, person=self.outbound_message.contact.person)
-        answers_count = answers.count()
+        answers_count = Answer.objects.count()
 
-        self.assertEquals(answers_count, 1)
+        self.assertEquals(answers_count, previous_answers + 1)
 
 
     def test_authorization_using_api_key(self):

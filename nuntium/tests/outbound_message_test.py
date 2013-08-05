@@ -100,8 +100,7 @@ class OutboundMessageIdentifierTestCase(TestCase):
         answer_content = "La fiera no tiene pulgas."
         OutboundMessageIdentifier.create_answer(identifier.key, answer_content)
         the_person = self.outbound_message.contact.person
-
-        the_answer = Answer.objects.get(message=self.outbound_message.message, person=the_person)
+        the_answer = Answer.objects.get(message=self.outbound_message.message, person=the_person, content=answer_content)
 
         self.assertEquals(the_answer.content, answer_content)
 

@@ -1,0 +1,8 @@
+{% load i18n %}
+<div class="answers">
+    
+    <div class="answer">
+        <span class="content">{{ answer.content|linebreaks }}</span>
+        <small>{% blocktrans with answer.person.name as name %} by {{ name }}.{% endblocktrans %}</small>
+    </div>
+</div>
