@@ -61,7 +61,7 @@ class WriteItInstanceDetailView(CreateView):
         return context
 
 class MessageDetailView(DetailView):
-    template_name='nuntium/message_detail.html'
+    template_name='nuntium/message/message_detail.html'
     model=Message
 
     def get_queryset(self):

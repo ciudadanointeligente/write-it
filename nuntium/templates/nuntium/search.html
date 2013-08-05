@@ -25,7 +25,9 @@
 {% if query %}
     <h3>Results</h3>
     {% for result in page.object_list %}
-        {% include "nuntium/message_in_list.html" with message=result.object %}
+        <div class="search_result">
+            {{ result.rendered|safe }}
+        </div>
     {% empty %}
         <p>No results found.</p>
     {% endfor %}
