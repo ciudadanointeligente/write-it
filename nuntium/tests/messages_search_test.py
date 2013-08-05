@@ -39,9 +39,20 @@ class MessagesSearchTestCase(TestCase):
         self.assertQuerysetEqual(self.index.index_queryset(), [repr(r) for r in public_messages])
 
         self.assertIsInstance(self.index.text, CharField)
+        
         self.assertTrue(self.index.text.use_template)
 
-        rendered_text = self.index.text.prepare_template(self.first_message)
+        indexed_text = self.index.text.prepare_template(self.first_message)
+
+        self.assertTrue(self.first_message.subject in indexed_text)
+        self.assertTrue(self.first_message.content in indexed_text)
+
+        #rendered
+        self.assertFalse(self.index.rendered.indexed)
+        self.assertIsInstance(self.index.rendered, CharField)
+        self.assertTrue(self.index.rendered.use_template)
+        self.assertEquals(self.index.rendered.template_name, 'nuntium/message/message_in_search_list.html')
+        rendered_text = self.index.rendered.prepare_template(self.first_message)
 
         self.assertTrue(self.first_message.subject in rendered_text)
         self.assertTrue(self.first_message.content in rendered_text)

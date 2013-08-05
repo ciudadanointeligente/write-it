@@ -25,12 +25,15 @@
 - fields: {content_type: 13, datetime: 2013-04-26, object_id: 1, status: new}
   model: nuntium.messagerecord
   pk: 1
-- fields: {content: Content 1, subject: Subject 1, writeitinstance: 1, slug: subject-1 }
+- fields: {content: Content 1, subject: Subject 1, confirmated: False, writeitinstance: 1, slug: subject-1 }
   model: nuntium.message
   pk: 1
-- fields: {content: Content 2, subject: Subject 2, writeitinstance: 1, slug: subject-2}
+- fields: {content: Content 2, subject: Subject 2, confirmated: True, writeitinstance: 1, slug: subject-2}
   model: nuntium.message
   pk: 2
+- fields: {content: Private Message, public: False, confirmated: True, subject: This is private, writeitinstance: 1, slug: private-message}
+  model: nuntium.message
+  pk: 3
 - fields: {contact: 1, message: 1}
   model: nuntium.outboundmessage
   pk: 1
@@ -52,6 +55,12 @@
 - fields: {api_instance: 2, name: Felipe, popit_url: 'http://popit.mysociety.org/api/v1/persons/3'}
   model: popit.person
   pk: 3
+- fields: {content: Public Answer,message: 2,person: 1}
+  model: nuntium.answer
+  pk: 1
+- fields: {content: Private Answer,message: 3,person: 1}
+  model: nuntium.answer
+  pk: 2
 - fields: {person: 1, writeitinstance: 1}
   model: nuntium.membership
   pk: 1

@@ -52,7 +52,7 @@
     
 
     {% for message in public_messages %}
-        {% include "nuntium/message_in_list.html" with message=message %}
+        {% include "nuntium/message/message_in_list.html" with message=message %}
         {% if not forloop.last %}
             <hr />
         {% endif %}
