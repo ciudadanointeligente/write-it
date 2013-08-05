@@ -35,6 +35,11 @@ class AnswerIndexTestCase(TestCase):
         self.assertTrue(first_answer.content in indexed_text)
         self.assertTrue(first_answer.person.name in indexed_text)
 
+
+        self.assertTrue(self.index.rendered.use_template)
+        self.assertFalse(self.index.rendered.indexed)
+        self.assertEquals(self.index.rendered.template_name, 'nuntium/answer/answer_in_search_list.html')
+        
         rendered_text = self.index.rendered.prepare_template(first_answer)
         self.assertTrue(first_answer.content in rendered_text)
         self.assertTrue(first_answer.person.name in rendered_text)

@@ -15,7 +15,7 @@ class MessageIndex(indexes.SearchIndex, indexes.Indexable):
 
 class AnswerIndex(indexes.SearchIndex, indexes.Indexable):
 	text = indexes.CharField(document=True, use_template=True)
-	rendered = indexes.CharField()
+	rendered = indexes.CharField(use_template=True, indexed=False, template_name='nuntium/answer/answer_in_search_list.html')
 
 	def get_model(self):
 		return Answer
