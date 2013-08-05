@@ -241,7 +241,7 @@ class Answer(models.Model):
     def __unicode__(self):
         return _("%(person)s said \"%(content)s\" to the message %(message)s") % {
             'person': self.person.name,
-            'content': "the answer to that is ...",
+            'content': self.content,
             'message': self.message.subject
             }
 

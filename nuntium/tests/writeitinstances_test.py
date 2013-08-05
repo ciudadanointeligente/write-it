@@ -172,17 +172,17 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
         
 
         url = self.writeitinstance1.get_absolute_url()
-
+        
         response = self.client.get(self.url, HTTP_HOST=self.host)
         
-
+        
         #message1 is not confirmed so it should not be in the list
         #private_message is not in the list either
         #only message 2 is in the list because is public and confirmed
 
-        self.assertTrue(message2 in response.context['public_messages'])
-        self.assertTrue(message1 not in response.context['public_messages'])
-        self.assertTrue(message3 in response.context['public_messages'])
+        self.assertIn(message2, response.context['public_messages'])
+        self.assertNotIn(message1, response.context['public_messages'])
+        self.assertIn(message3, response.context['public_messages'])
         self.assertNotIn(private_message, response.context["public_messages"])
 
 

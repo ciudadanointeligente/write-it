@@ -1,6 +1,6 @@
 # coding=utf-8
 from haystack import indexes
-from nuntium.models import Message
+from nuntium.models import Message, Answer
 
 class MessageIndex(indexes.SearchIndex, indexes.Indexable):
 	text = indexes.CharField(document=True, use_template=True)
@@ -11,3 +11,14 @@ class MessageIndex(indexes.SearchIndex, indexes.Indexable):
 
 	def index_queryset(self, using=None):
 		return self.get_model().objects.public()
+
+
+class AnswerIndex(indexes.SearchIndex, indexes.Indexable):
+	text = indexes.CharField(document=True, use_template=True)
+	rendered = indexes.CharField()
+
+	def get_model(self):
+		return Answer
+
+	def index_queryset(self, using=None):
+		return self.get_model().objects.filter(message__in=Message.objects.public())

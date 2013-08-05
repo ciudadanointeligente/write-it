@@ -53,7 +53,6 @@ class MessagesSearchTestCase(TestCase):
         self.assertTrue(self.index.rendered.use_template)
         self.assertEquals(self.index.rendered.template_name, 'nuntium/message/message_in_search_list.html')
         rendered_text = self.index.rendered.prepare_template(self.first_message)
-        print rendered_text
 
         self.assertTrue(self.first_message.subject in rendered_text)
         self.assertTrue(self.first_message.content in rendered_text)
