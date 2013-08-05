@@ -4,6 +4,7 @@ South
 coveralls
 -e git://github.com/mysociety/popit-django.git#egg=popit-django
 mock
+python-mimeparse
 django-tastypie
 django-nose
 email_reply_parser
@@ -13,4 +14,4 @@ requests
 django-extensions
 django-subdomains
 django-haystack
-pysolr
+pyelasticsearch
