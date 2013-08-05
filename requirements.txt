@@ -13,4 +13,4 @@ requests
 django-extensions
 django-subdomains
 django-haystack
-pysolr
+pyelasticsearch
