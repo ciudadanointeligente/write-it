@@ -1,1 +1,10 @@
-{% include "nuntium/message/message_in_list.html" with message=object %}
+{% load staticfiles %}
+{% load i18n %}
+{% load markdown_deux_tags %}
+<dl class="dl-horizontal">
+<div>
+	<h3>{{ message.subject }} <a href="{{ message.get_absolute_url }}">{% trans "Link" %}</a></h3> 
+	<h4>{% markdown %}{{ message.content }}{% endmarkdown %}</h4>
+	<span class="author_name"><small>{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}</small></span><br />
+</div>
+</dl>

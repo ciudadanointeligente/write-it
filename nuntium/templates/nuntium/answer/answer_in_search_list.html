@@ -1,1 +1,8 @@
-{% include "nuntium/answer/answer_in_list.html" with answer=object %}
+{% load staticfiles %}{% load i18n %}{% load markdown_deux_tags %}
+<div class="answers">
+    
+    <div class="answer">
+        <span class="content">{{ answer.content|linebreaks }}</span>
+        <small>{% blocktrans with answer.person.name as name %} by {{ name }}.{% endblocktrans %}</small>
+    </div>
+</div>
