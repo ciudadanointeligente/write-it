@@ -1,6 +1,8 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
 from nuntium.search_indexes import AnswerIndex
+from django.core.management import call_command
+from subdomains.utils import reverse
 from nuntium.models import Answer, Message
 from haystack import indexes
 from haystack.fields import CharField
@@ -35,18 +37,29 @@ class AnswerIndexTestCase(TestCase):
         self.assertTrue(first_answer.content in indexed_text)
         self.assertTrue(first_answer.person.name in indexed_text)
 
-
-        self.assertTrue(self.index.rendered.use_template)
-        self.assertFalse(self.index.rendered.indexed)
-        self.assertEquals(self.index.rendered.template_name, 'nuntium/answer/answer_in_search_list.html')
-
-        rendered_text = self.index.rendered.prepare_template(first_answer)
-        print rendered_text
-        self.assertTrue(first_answer.content in rendered_text)
-        self.assertTrue(first_answer.person.name in rendered_text)
+class SearchAnswerAccess(TestCase):
+    def setUp(self):
+        super(SearchAnswerAccess, self).setUp()
+        call_command('rebuild_index', verbosity=0, interactive = False)
 
 
+    def test_access_the_url(self):
+        #I don't like this test that much 
+        #because it seems to be likely to break if I add more 
+        #public messages
+        #if it ever fails
+        #well then I'll fix it
+        url = reverse('search_messages')
+        data = {
+        'q':'Public Answer'
+        }
+        response = self.client.get(url, data=data)
+        self.assertEquals(response.status_code, 200)
 
+        #the first one the one that says "Public Answer" in example_data.yml
+        expected_answer = Answer.objects.get(id=1)
+        self.assertIn('page', response.context)
+        results = response.context['page'].object_list
 
-
-
+        self.assertGreaterEqual(len(results), 1)
+        self.assertEquals(results[0].object.id, expected_answer.id)
