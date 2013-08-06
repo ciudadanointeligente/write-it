@@ -27,3 +27,10 @@ class GlobalTestCase(WriteItTestCaseMixin, TestCase):
 
 class ResourceGlobalTestCase(WriteItTestCaseMixin ,ResourceTestCase ):
     pass
+
+
+class SearchIndexTestCase(GlobalTestCase):
+    def setUp(self):
+        super(SearchIndexTestCase, self).setUp()
+        call_command('rebuild_index', verbosity=0, interactive = False)
+    

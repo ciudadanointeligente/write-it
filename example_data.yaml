@@ -34,6 +34,9 @@
 - fields: {content: Private Message, public: False, confirmated: True, subject: This is private, writeitinstance: 1, slug: private-message}
   model: nuntium.message
   pk: 3
+- fields: {content: Content 4, subject: Subject 4, confirmated: True, writeitinstance: 2, slug: subject-4}
+  model: nuntium.message
+  pk: 4
 - fields: {contact: 1, message: 1}
   model: nuntium.outboundmessage
   pk: 1
