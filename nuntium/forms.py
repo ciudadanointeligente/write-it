@@ -54,3 +54,10 @@ class MessageCreateForm(ModelForm):
 
 class MessageSearchForm(SearchForm):
     pass
+
+
+class PerInstanceSearchForm(SearchForm):
+    def __init__(self, *args, **kwargs):
+        writeitinstance = kwargs.pop('writeitinstance', None)
+        super(PerInstanceSearchForm, self).__init__(*args, **kwargs)
+        self.searchqueryset = self.searchqueryset.filter(writeitinstance=writeitinstance.id)

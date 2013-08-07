@@ -1,19 +1,21 @@
 # coding=utf-8
-from global_test_case import GlobalTestCase as TestCase
+from global_test_case import GlobalTestCase as TestCase, SearchIndexTestCase
 from nuntium.search_indexes import MessageIndex
 from django.core.management import call_command
 from nuntium.models import Message
-from nuntium.forms import  MessageSearchForm
+from nuntium.forms import  MessageSearchForm, PerInstanceSearchForm
 from haystack import indexes
 from haystack.fields import CharField
 from haystack.forms import SearchForm
 from subdomains.utils import reverse
-from nuntium.views import MessageSearchView
+from nuntium.views import MessageSearchView, PerInstanceSearchView
 from nuntium.models import WriteItInstance, Confirmation, Answer
 from django.views.generic.edit import FormView
 from django.utils.unittest import skip
 from haystack.views import SearchView
+from django.utils.unittest import skip
 from popit.models import Person
+from subdomains.tests import SubdomainTestMixin
 
 class MessagesSearchTestCase(TestCase):
     def setUp(self):
@@ -48,6 +50,11 @@ class MessagesSearchTestCase(TestCase):
         self.assertTrue(self.first_message.subject in indexed_text)
         self.assertTrue(self.first_message.content in indexed_text)
 
+
+        self.assertEquals(self.index.writeitinstance.model_attr, 'writeitinstance__id')
+
+
+        self.assertEquals(self.index.writeitinstance.prepare(self.first_message), self.first_message.writeitinstance.id)
         #rendered
         # self.assertFalse(self.index.rendered.indexed)
         # self.assertIsInstance(self.index.rendered, CharField)
@@ -140,10 +147,11 @@ class MessageSearchViewTestCase(TestCase):
         self.assertEquals(view.template, 'nuntium/search.html')
 
 
-class SearchMessageAccess(TestCase):
+
+
+class SearchMessageAccess(SearchIndexTestCase):
     def setUp(self):
         super(SearchMessageAccess, self).setUp()
-        call_command('rebuild_index', verbosity=0, interactive = False)
 
 
     def test_access_the_url(self):
@@ -160,9 +168,53 @@ class SearchMessageAccess(TestCase):
         self.assertEquals(response.status_code, 200)
 
         #the first one the one that says "Public Answer" in example_data.yml
-        expected_answer = Message.objects.get(id=2)
+        expected_answer = Message.objects.get(id=2) 
         self.assertIn('page', response.context)
         results = response.context['page'].object_list
 
         self.assertGreaterEqual(len(results), 1)
         self.assertEquals(results[0].object.id, expected_answer.id)
+
+
+class PerInstanceSearchFormTestCase(SearchIndexTestCase, SubdomainTestMixin):
+    def setUp(self):
+        super(PerInstanceSearchFormTestCase, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.host = self.get_host_for_subdomain(self.writeitinstance.slug)
+
+    def test_per_instance_search_form(self):
+        form = PerInstanceSearchForm(writeitinstance=self.writeitinstance)
+        self.assertIsInstance(form, SearchForm)
+
+        ids_of_messages_returned_by_searchqueryset = []
+
+        for result in form.searchqueryset:
+            if result.content_type() == "nuntium.message":
+                ids_of_messages_returned_by_searchqueryset.append(result.object.id)
+
+
+        public_messages = Message.objects.public().filter(writeitinstance=self.writeitinstance)
+
+        ids_of_public_messages_in_writeitinstance = [r.id for r in public_messages]
+
+        self.assertItemsEqual(ids_of_public_messages_in_writeitinstance, ids_of_messages_returned_by_searchqueryset)
+
+    def test_per_instance_search_view(self):
+        view = PerInstanceSearchView()
+        self.assertIsInstance(view, SearchView)
+        self.assertEquals(view.form_class, PerInstanceSearchForm)
+        self.assertEquals(view.template, 'nuntium/instance_search.html')
+
+
+    #@skip('Must test view first')
+    def test_per_instance_search_url(self):
+        url = reverse('instance_search', subdomain=self.writeitinstance.slug)
+
+        response = self.client.get(url, HTTP_HOST=self.host)
+
+        self.assertEquals(response.status_code, 200)
+
+        self.assertTemplateUsed(response, 'nuntium/instance_search.html')
+
+        self.assertIn('form', response.context)
+        self.assertIsInstance(response.context['form'], PerInstanceSearchForm)
