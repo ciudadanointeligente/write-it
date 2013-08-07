@@ -36,6 +36,13 @@ class AnswerIndexTestCase(TestCase):
 
         self.assertTrue(first_answer.content in indexed_text)
         self.assertTrue(first_answer.person.name in indexed_text)
+        self.assertEquals(self.index.writeitinstance.model_attr, 'message__writeitinstance__id')
+
+
+        self.assertEquals(self.index.writeitinstance.prepare(first_answer), first_answer.message.writeitinstance.id)
+
+
+
 
 class SearchAnswerAccess(SearchIndexTestCase):
     def setUp(self):
