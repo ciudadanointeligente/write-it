@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.contrib import messages
-from nuntium.forms import  MessageSearchForm
+from nuntium.forms import  MessageSearchForm, PerInstanceSearchForm
 from haystack.views import SearchView
 
 
@@ -157,3 +157,18 @@ class MessageSearchView(SearchView):
         super(MessageSearchView, self).__init__(*args, **kwargs)
         self.form_class = MessageSearchForm
         self.template = 'nuntium/search.html'
+
+class PerInstanceSearchView(SearchView):
+    def __init__(self, *args, **kwargs):
+        super(PerInstanceSearchView, self).__init__(*args, **kwargs)
+        self.form_class = PerInstanceSearchForm
+        self.template = 'nuntium/instance_search.html'
+
+
+    def build_form(self, form_kwargs=None):
+        self.writeitinstance = WriteItInstance.objects.get(slug=self.request.subdomain)
+        if form_kwargs is None:
+            form_kwargs = {}
+        form_kwargs['writeitinstance']=self.writeitinstance
+
+        return super(PerInstanceSearchView, self).build_form(form_kwargs)

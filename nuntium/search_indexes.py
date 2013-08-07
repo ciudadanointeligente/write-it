@@ -4,6 +4,7 @@ from nuntium.models import Message, Answer
 
 class MessageIndex(indexes.SearchIndex, indexes.Indexable):
 	text = indexes.CharField(document=True, use_template=True)
+	writeitinstance = indexes.IntegerField(model_attr='writeitinstance__id')
 
 	def get_model(self):
 		return Message
@@ -14,6 +15,7 @@ class MessageIndex(indexes.SearchIndex, indexes.Indexable):
 
 class AnswerIndex(indexes.SearchIndex, indexes.Indexable):
 	text = indexes.CharField(document=True, use_template=True)
+	writeitinstance = indexes.IntegerField(model_attr='message__writeitinstance__id')
 
 	def get_model(self):
 		return Answer

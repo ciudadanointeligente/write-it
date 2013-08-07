@@ -1,5 +1,5 @@
 # coding=utf-8
-from global_test_case import GlobalTestCase as TestCase
+from global_test_case import GlobalTestCase as TestCase, SearchIndexTestCase
 from nuntium.search_indexes import AnswerIndex
 from django.core.management import call_command
 from subdomains.utils import reverse
@@ -36,11 +36,17 @@ class AnswerIndexTestCase(TestCase):
 
         self.assertTrue(first_answer.content in indexed_text)
         self.assertTrue(first_answer.person.name in indexed_text)
+        self.assertEquals(self.index.writeitinstance.model_attr, 'message__writeitinstance__id')
 
-class SearchAnswerAccess(TestCase):
+
+        self.assertEquals(self.index.writeitinstance.prepare(first_answer), first_answer.message.writeitinstance.id)
+
+
+
+
+class SearchAnswerAccess(SearchIndexTestCase):
     def setUp(self):
         super(SearchAnswerAccess, self).setUp()
-        call_command('rebuild_index', verbosity=0, interactive = False)
 
 
     def test_access_the_url(self):
