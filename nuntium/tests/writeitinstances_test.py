@@ -2,7 +2,7 @@
 from global_test_case import GlobalTestCase as TestCase
 from subdomains.utils import reverse
 from nuntium.models import WriteItInstance, Message, Membership, Confirmation, Moderation
-from nuntium.views import MessageCreateForm
+from nuntium.views import MessageCreateForm, PerInstanceSearchForm
 from contactos.models import Contact, ContactType
 from popit.models import ApiInstance, Person
 from django.utils.unittest import skip
@@ -75,7 +75,7 @@ class InstanceTestCase(TestCase):
         response = self.client.get(writeitinstance1.get_absolute_url())
         
         self.assertEquals(response.status_code, 200)
-
+        self.assertTemplateUsed(response, 'nuntium/instance_detail.html')
 
     def test_membership(self):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
@@ -104,6 +104,16 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
         self.assertTrue(response.context['form'])
         self.assertTrue(isinstance(response.context['form'],MessageCreateForm))
         self.assertEquals(response.status_code, 200)
+
+    def test_instance_view_has_a_search_form(self):
+        response = self.client.get(self.url, HTTP_HOST=self.host)
+
+        self.assertIn('search_form', response.context)
+
+        self.assertIsInstance(response.context['search_form'], PerInstanceSearchForm)
+
+        self.assertEquals(response.context['search_form'].writeitinstance, self.writeitinstance1)
+
 
     def test_list_only_public_messages(self):
         private_message = Message.objects.create(content='Content 1', subject='a private message', writeitinstance = self.writeitinstance1, persons=[self.person1], public=False)
