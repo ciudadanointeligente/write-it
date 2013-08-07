@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% block content %}
 {% load markdown_deux_tags %}
 <ul class="flash-messages">
@@ -44,6 +45,20 @@
     
 <input type='submit' class='btn btn-primary' value= "{% trans 'Submit Message' %}"/>
 </form>
+<div class='instance-search-form'>
+    <form action="{% url 'instance_search' subdomain=writeitinstance.slug %}" method="get" >
+        <table>
+            {{ search_form.as_table }}
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <input type="submit" value="{% trans 'Search' %}" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
 {% if writeitinstance.message_set.count == 0 %}
     <h2>{% trans "There are no messages" %}</h2>
 {% else %}
