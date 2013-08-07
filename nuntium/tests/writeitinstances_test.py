@@ -12,7 +12,7 @@ from subdomains.tests import SubdomainTestMixin
 from django.utils.translation import activate
 from django.utils.translation import ugettext as _
 
-class InstanceTestCase(TestCase):
+class InstanceTestCase(TestCase, SubdomainTestMixin):
 
     def setUp(self):
         super(InstanceTestCase,self).setUp()
@@ -72,8 +72,8 @@ class InstanceTestCase(TestCase):
         activate("es")
         writeitinstance1 = WriteItInstance.objects.all()[0]
         self.assertTrue(writeitinstance1.get_absolute_url().endswith('/es/'))
-        response = self.client.get(writeitinstance1.get_absolute_url())
-        
+        host = self.get_host_for_subdomain(writeitinstance1.slug)
+        response = self.client.get(writeitinstance1.get_absolute_url(), HTTP_HOST=host)
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'nuntium/instance_detail.html')
 
