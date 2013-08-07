@@ -58,6 +58,7 @@ class WriteItInstanceDetailView(CreateView):
         context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
         public_messages = Message.objects.public(writeitinstance=self.object)
         context['public_messages'] = public_messages
+        context['search_form'] = PerInstanceSearchForm(writeitinstance=self.object)
         return context
 
 class MessageDetailView(DetailView):

@@ -55,16 +55,7 @@ class MessagesSearchTestCase(TestCase):
 
 
         self.assertEquals(self.index.writeitinstance.prepare(self.first_message), self.first_message.writeitinstance.id)
-        #rendered
-        # self.assertFalse(self.index.rendered.indexed)
-        # self.assertIsInstance(self.index.rendered, CharField)
-        # self.assertTrue(self.index.rendered.use_template)
-        # self.assertEquals(self.index.rendered.template_name, 'nuntium/message/message_in_search_list.html')
-        # rendered_text = self.index.rendered.prepare_template(self.first_message)
-
-        # self.assertTrue(self.first_message.subject in rendered_text)
-        # self.assertTrue(self.first_message.content in rendered_text)
-
+        
 
     def test_it_does_not_search_within_private_messages(self):
         message = Message.objects.create(content = 'Content 1', 
