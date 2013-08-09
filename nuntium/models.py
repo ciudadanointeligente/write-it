@@ -93,19 +93,13 @@ class Message(models.Model):
     #TODO: only new outbound_messages
     def recently_confirmated(self):
         status = 'ready'
-        if not self.public:
+        if not self.public or self.writeitinstance.moderation_needed_in_all_messages:
+            moderation, created = Moderation.objects.get_or_create(message=self)
             self.send_moderation_mail()
             status = 'needmodera'
         for outbound_message in self.outboundmessage_set.all():
             outbound_message.status = status
             outbound_message.save()
-
-        if self.writeitinstance.moderation_needed_in_all_messages:
-            try:
-                Moderation.objects.create(message=self)
-                self.send_moderation_mail()
-            except IntegrityError:
-                pass
             
         self.confirmated = True
         self.save()
