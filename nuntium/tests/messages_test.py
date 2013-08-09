@@ -1,3 +1,4 @@
+# coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
 from django.utils.unittest import skip
 from django.core.exceptions import ValidationError
@@ -17,6 +18,7 @@ from django.contrib.sites.models import Site
 import datetime
 from django.utils.translation import activate
 from subdomains.tests import SubdomainTestMixin
+from django.core.management import call_command
 
 
 class TestMessages(TestCase):
@@ -685,5 +687,38 @@ class ModerationMessagesTestCase(TestCase, SubdomainTestMixin):
         moderation.success()
 
         message = Message.objects.get(moderation=moderation)
-
         self.assertTrue(message.moderated)
+
+
+    #this test is for the issue https://github.com/ciudadanointeligente/write-it/issues/186
+    #
+    def test_confirmated_but_not_moderated_message_in_a_moderable_instance_is_in_needs_moderation_status(self):
+        mail_count = len(mail.outbox)
+        self.writeitinstance1.moderation_needed_in_all_messages = True
+        self.writeitinstance1.save()
+
+        data = {
+            'author_email':u'falvarez@votainteligente.cl',
+            'author_name':u'feli',
+            'public':True,
+            'subject':u'Fiera no está',
+            'content':u'¿Dónde está Fiera Feroz? en la playa?',
+            'persons': [self.person1.id]
+        }
+        url = self.writeitinstance1.get_absolute_url()
+        response = self.client.post(url, data, follow=True, HTTP_HOST=self.host)
+        message = Message.objects.get(
+            author_name="feli", 
+            author_email="falvarez@votainteligente.cl",
+            subject="Fiera no está", 
+            content='¿Dónde está Fiera Feroz? en la playa?')
+        confirmation = Confirmation.objects.get(message=message)
+
+        confirmation_response = self.client.get(confirmation.get_absolute_url())
+
+        #one message to Pedro
+        outbound_message = OutboundMessage.objects.get(message=message)
+        #Here I have the bug!!!!!
+        self.assertEquals(outbound_message.status, 'needmodera')
+        #This one is the bug!!\
+
