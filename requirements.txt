@@ -15,3 +15,6 @@ django-extensions
 django-subdomains
 django-haystack
 pyelasticsearch
+celery
+django-celery
+pytz
