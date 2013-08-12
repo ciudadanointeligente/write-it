@@ -10,6 +10,8 @@ class TasksTestCase(TestCase):
     def setUp(self):
         super(TasksTestCase,self).setUp()
         
+    def test_it_has_a_name(self):
+        self.assertEquals(send_mails_task.name,'nuntium.tasks.send_mails_task')
 
 
 
