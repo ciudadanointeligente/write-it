@@ -7,3 +7,4 @@ local_settings.py
 *.db
 .coverage
 mailing_logger.txt
+celerybeat-schedule

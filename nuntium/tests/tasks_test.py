@@ -41,3 +41,9 @@ class TasksTestCase(TestCase):
 
             result = send_mails_task()
             info.assert_called_with(expected_log)
+
+    def test_it_logs_everytime_it_starts_sending_emails(self):
+        with patch('logging.info') as info:
+            expected_log = 'Sending messages'
+            result = send_mails_task()
+            info.assert_called_with(expected_log)

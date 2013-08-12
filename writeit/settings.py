@@ -154,6 +154,7 @@ INSTALLED_APPS = (
     'subdomains',
     # Searching.
     'haystack',
+    'djcelery',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -216,7 +217,17 @@ DEFAULT_FROM_EMAIL = 'mailer@example.com'
 DEFAULT_FROM_DOMAIN = 'mailit.ciudadanointeligente.org'
 
 #CELERY CONFIGURATION
-#NOTHING FOR NOW
+import djcelery
+from celery.schedules import crontab
+djcelery.setup_loader()
+CELERYBEAT_SCHEDULE = {
+    # Executes every Monday morning at 7:30 A.M
+    'send-mails-every-5-minutes': {
+        'task': 'tasks.send_mails_task',
+        'schedule': crontab(minute='*/5'),
+        'args': (16, 16),
+    },
+}  
 
 #setting to avoid db changes during test
 SOUTH_TESTS_MIGRATE = False
