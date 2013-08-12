@@ -381,15 +381,6 @@ class PublicMessagesManager(TestCase, SubdomainTestMixin):
         #the important one
         self.assertNotIn(message, Message.objects.public())
 
-
-
-
-
-
-
-
-
-
 class MessageDetailView(TestCase, SubdomainTestMixin):
     def setUp(self):
         super(MessageDetailView,self).setUp()
@@ -402,7 +393,6 @@ class MessageDetailView(TestCase, SubdomainTestMixin):
             writeitinstance= self.writeitinstance1, 
             persons = [self.person1])
         Confirmation.objects.create(message=self.message, confirmated_at = datetime.datetime.now())
-
 
     def test_get_message_detail_page(self):
         #I'm kind of feeling like I need 
@@ -433,7 +423,6 @@ class MessageDetailView(TestCase, SubdomainTestMixin):
         response = self.client.get(url,HTTP_HOST=host)
         self.assertEquals(response.status_code, 200)
 
-
     def test_get_messages_without_confirmation_and_not_confirmed(self):
         message = Message.objects.create(content = 'Content 1', 
             author_name='Felipe', 
@@ -450,7 +439,6 @@ class MessageDetailView(TestCase, SubdomainTestMixin):
         url = message.get_absolute_url()
         response = self.client.get(url,HTTP_HOST=host)
         self.assertEquals(response.status_code, 404)
-
         
 class AllMessagesWithModerationInAWriteItInstances(TestCase):
     def setUp(self):
