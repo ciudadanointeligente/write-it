@@ -225,7 +225,6 @@ CELERYBEAT_SCHEDULE = {
     'send-mails-every-5-minutes': {
         'task': 'nuntium.tasks.send_mails_task',
         'schedule': crontab(minute='*/5'),
-        'args': (16, 16),
     },
 }  
 
