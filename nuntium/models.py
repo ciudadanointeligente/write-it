@@ -467,6 +467,12 @@ class Moderation(models.Model):
 class AnswerWebHook(models.Model):
     url = models.URLField(max_length=255)
     writeitinstance = models.ForeignKey(WriteItInstance, related_name='answer_webhooks')
+
+    def __unicode__(self):
+        return '%(url)s at %(instance)s'%{
+            'url':self.url,
+            'instance':self.writeitinstance.name
+        }
         
 
 

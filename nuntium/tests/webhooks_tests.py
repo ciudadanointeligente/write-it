@@ -29,6 +29,17 @@ class NewAnswerWebhooks(TestCase):
         self.assertEquals(webhook.url, 'http://someaddress.to.be.mocked')
         self.assertIn(webhook, self.writeitinstance.answer_webhooks.all())
 
+    def test_unicode(self):
+        webhook = AnswerWebHook.objects.create(
+            writeitinstance=self.writeitinstance,
+            url='http://someaddress.to.be.mocked'
+            )
+        expected_unicode = '%(url)s at %(instance)s'%{
+        'url':webhook.url,
+        'instance':webhook.writeitinstance.name
+        }
+        self.assertEquals(webhook.__unicode__(), expected_unicode)
+
 
     def test_when_a_new_answer_is_created_then_it_post_to_the_url(self):
         webhook = AnswerWebHook.objects.create(
