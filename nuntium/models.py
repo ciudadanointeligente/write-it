@@ -25,6 +25,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db import IntegrityError
 from django.db.models import Q
+import requests
 
 
 class WriteItInstance(models.Model):
@@ -240,6 +241,32 @@ class Answer(models.Model):
             }
 
 
+def send_new_answer_payload(sender,instance, created, **kwargs):
+    if created:
+        for webhook in instance.message.writeitinstance.answer_webhooks.all():
+            payload = {
+            #I thought that this could be very useful in case of security
+            #so validate on the other side if that the payload is sent
+            #from an instance that the owner created
+                'user':{
+                    'username':instance.message.writeitinstance.owner.username,
+                    'apikey':instance.message.writeitinstance.owner.api_key.key
+                },
+                'payload':{
+                    'message_id':instance.message.id,
+                    'content': instance.content,
+                    'person':instance.person.name
+                }
+             
+
+            }
+            requests.post(webhook.url, data=payload)
+
+
+post_save.connect(send_new_answer_payload, sender=Answer)
+
+
+
 class OutboundMessageManager(models.Manager):
     def to_send(self, *args, **kwargs):
         query = super(OutboundMessageManager, self).filter(*args, **kwargs)
@@ -439,7 +466,7 @@ class Moderation(models.Model):
 
 class AnswerWebHook(models.Model):
     url = models.URLField(max_length=255)
-    writeitinstance = models.ForeignKey(WriteItInstance)
+    writeitinstance = models.ForeignKey(WriteItInstance, related_name='answer_webhooks')
         
 
 
