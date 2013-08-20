@@ -436,6 +436,10 @@ class Moderation(models.Model):
         return reverse('moderation_rejected', kwargs={
             'slug': self.key
             })
+
+class AnswerWebHook(models.Model):
+    url = models.URLField(max_length=255)
+    writeitinstance = models.ForeignKey(WriteItInstance)
         
 
 
