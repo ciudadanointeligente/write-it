@@ -245,13 +245,6 @@ def send_new_answer_payload(sender,instance, created, **kwargs):
     if created:
         for webhook in instance.message.writeitinstance.answer_webhooks.all():
             payload = {
-            #I thought that this could be very useful in case of security
-            #so validate on the other side if that the payload is sent
-            #from an instance that the owner created
-                'user':{
-                    'username':instance.message.writeitinstance.owner.username,
-                    'apikey':instance.message.writeitinstance.owner.api_key.key
-                },
                 'payload':{
                     'message_id':'/api/v1/message/{0}/'.format(instance.message.id),
                     'content': instance.content,

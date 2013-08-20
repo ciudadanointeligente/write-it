@@ -51,13 +51,6 @@ class NewAnswerWebhooks(TestCase):
         message = Message.objects.filter(writeitinstance=self.writeitinstance)[0]
         
         expected_payload = {
-        #I thought that this could be very useful in case of security
-        #so validate on the other side if that the payload is sent
-        #from an instance that the owner created
-            'user':{
-                'username':self.writeitinstance.owner.username,
-                'apikey':self.api_key.key
-            },
             'payload':{
                 'message_id':'/api/v1/message/{0}/'.format(message.id),
                 'content':'holiwi',
@@ -82,13 +75,6 @@ class NewAnswerWebhooks(TestCase):
         message = Message.objects.filter(writeitinstance=self.writeitinstance)[0]
         
         expected_payload = {
-        #I thought that this could be very useful in case of security
-        #so validate on the other side if that the payload is sent
-        #from an instance that the owner created
-            'user':{
-                'username':self.writeitinstance.owner.username,
-                'apikey':self.api_key.key
-            },
             'payload':{
                 'message_id':'/api/v1/message/{0}/'.format(message.id),
                 'content':'holiwi',
