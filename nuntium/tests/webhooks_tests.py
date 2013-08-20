@@ -59,7 +59,7 @@ class NewAnswerWebhooks(TestCase):
                 'apikey':self.api_key.key
             },
             'payload':{
-                'message_id':message.id,
+                'message_id':'/api/v1/message/{0}/'.format(message.id),
                 'content':'holiwi',
                 'person':pedro.name
             }
@@ -90,7 +90,7 @@ class NewAnswerWebhooks(TestCase):
                 'apikey':self.api_key.key
             },
             'payload':{
-                'message_id':message.id,
+                'message_id':'/api/v1/message/{0}/'.format(message.id),
                 'content':'holiwi',
                 'person':pedro.name
             }

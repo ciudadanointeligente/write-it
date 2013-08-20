@@ -253,7 +253,7 @@ def send_new_answer_payload(sender,instance, created, **kwargs):
                     'apikey':instance.message.writeitinstance.owner.api_key.key
                 },
                 'payload':{
-                    'message_id':instance.message.id,
+                    'message_id':'/api/v1/message/{0}/'.format(instance.message.id),
                     'content': instance.content,
                     'person':instance.person.name
                 }
