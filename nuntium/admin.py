@@ -1,5 +1,5 @@
 from django.contrib import admin
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, Answer
+from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, Answer, AnswerWebHook
 from popit.models import ApiInstance, Person
 from contactos.models import Contact, ContactType
 from django.forms.models import BaseInlineFormSet
@@ -38,6 +38,10 @@ class MessageAdmin(admin.ModelAdmin):
         AnswerInline
     ]
 admin.site.register(Message, MessageAdmin)
+
+class AnswerWebHookAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(AnswerWebHook, AnswerWebHookAdmin)
 
 class OutboundMessageAdmin(admin.ModelAdmin):
     pass
