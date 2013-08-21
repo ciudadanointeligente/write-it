@@ -6,12 +6,6 @@ angular.module('writeit').config(function($interpolateProvider) {
   $interpolateProvider.startSymbol('[[');
   $interpolateProvider.endSymbol(']]');
 });
-angular.module('writeit').filter('personsHelper', function(){
-	return function(text, length, end) {
-		console.log(text, length, end)
-		return ;
-	}
-})
 app.controller('message-form',function($scope, $http, $filter, $log){
 	$scope.persons = 
 		[{% for person in writeitinstance.persons.all %}

@@ -15,9 +15,8 @@
 {% endfor %}
 </ul>
 <h2>{% trans "You can now write your question" %}</h2>
-<form method='post' class='form-horizontal'>
+<form method='post' class='form-horizontal' action="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{% csrf_token %}
     <div ng-controller="message-form">
-{% csrf_token %}
 {{ form.non_field_errors }}
 	<div class="fieldWrapper">
         {{ form.author_name.errors }}
