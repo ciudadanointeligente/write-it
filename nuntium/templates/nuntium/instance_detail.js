@@ -1,4 +1,4 @@
-console.log("muchas gracias a los cabros de epistemonikos.org por la ayuda con angularjs")
+console.log("Thanks to the guys at epistemonikos.org for all your help with angularjs")
 
 
 var app = angular.module('writeit', []);
