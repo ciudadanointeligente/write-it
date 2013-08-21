@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load subdomainurls %}
+
+{% block extrajs %}
+{% include 'nuntium/instance_detail.js' with writeitinstance=writeitinstance%}
+{% endblock extrajs %}
+
+
 {% block content %}
 {% load markdown_deux_tags %}
 <ul class="flash-messages">
@@ -10,6 +16,7 @@
 </ul>
 <h2>{% trans "You can now write your question" %}</h2>
 <form method='post' class='form-horizontal'>
+    <div ng-controller="message-form">
 {% csrf_token %}
 {{ form.non_field_errors }}
 	<div class="fieldWrapper">
@@ -25,7 +32,13 @@
     <div class="fieldWrapper">
         {{ form.persons.errors }}
         <label for="id_persons">{% trans "To whom *" %}</label>
-        {{ form.persons }}
+        <ul>
+            <input type="search" placeholder="{% trans 'Search for people' %}" ng-model="searchTerm"/>
+        <li ng-repeat="person in persons | filter:comp" >
+            <label for="id_persons_[[$index]]">
+                <input id="id_persons_[[$index]]" name="persons" type="checkbox" value="[[person.id]]" /> [[person.name]]</label>
+        </li>
+        </ul>
     </div>
     <div class="fieldWrapper">
         {{ form.subject.errors }}
@@ -44,6 +57,7 @@
     </div>
     
 <input type='submit' class='btn btn-primary' value= "{% trans 'Submit Message' %}"/>
+</div>
 </form>
 <div class='instance-search-form'>
     <form action="{% url 'instance_search' subdomain=writeitinstance.slug %}" method="get" >
