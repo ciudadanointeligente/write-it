@@ -51,13 +51,9 @@ class NewAnswerWebhooks(TestCase):
         message = Message.objects.filter(writeitinstance=self.writeitinstance)[0]
         
         expected_payload = {
-            'payload':{
                 'message_id':'/api/v1/message/{0}/'.format(message.id),
                 'content':'holiwi',
                 'person':pedro.name
-            }
-         
-
         }
         with patch('requests.post') as post:
             post.return_value = PostMock()
@@ -75,13 +71,9 @@ class NewAnswerWebhooks(TestCase):
         message = Message.objects.filter(writeitinstance=self.writeitinstance)[0]
         
         expected_payload = {
-            'payload':{
                 'message_id':'/api/v1/message/{0}/'.format(message.id),
                 'content':'holiwi',
                 'person':pedro.name
-            }
-         
-
         }
         with patch('requests.post') as post:
             post.return_value = PostMock()
