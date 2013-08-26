@@ -99,8 +99,8 @@ class ConfirmView(DetailView):
 
     def dispatch(self, *args, **kwargs):
         confirmation = super(ConfirmView, self).get_object()
-        if confirmation.confirmated_at is not None:
-            raise Http404
+        #if confirmation.confirmated_at is not None:
+        #    raise Http404
         return super(ConfirmView,self).dispatch(*args, **kwargs)
 
     def get_object(self, queryset=None):
