@@ -36,8 +36,9 @@ class MailChannel(OutputPlugin):
         }
         subject = template.subject_template % format
         content = template.content_template % format
-        from_email = outbound_message.message.writeitinstance.slug+"+"+outbound_message.outboundmessageidentifier.key\
-                                +'@'+settings.DEFAULT_FROM_DOMAIN
+        author_name = outbound_message.message.author_name
+        from_email = author_name + " <" + outbound_message.message.writeitinstance.slug+"+"+outbound_message.outboundmessageidentifier.key\
+                                +'@'+settings.DEFAULT_FROM_DOMAIN + ">"
 
         #here there should be a try and except looking
         #for errors and stuff
