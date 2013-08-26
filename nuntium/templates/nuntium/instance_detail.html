@@ -22,19 +22,22 @@
         <form method='post' class='form-horizontal message-form' action="{% url 'instance_detail' subdomain=writeitinstance.slug %}" role="form">{% csrf_token %}
             <div ng-controller="message-form">
                 {{ form.non_field_errors }}
-            	<div class="form-group">
-                    {{ form.author_name.errors }}
+            	<div class="form-group{% if form.author_name.errors %} has-error{% endif %}">
+                    
                     <label for="id_author_name">{% trans "Your name" %}</label>
-                        <input id="id_author_name" maxlength="512" placeholder="{% trans 'Felipe' %}" name="author_name" class="form-control" type="text" />
+                    {{ form.author_name.errors }}
+                        <input id="id_author_name" maxlength="512" placeholder="{% trans 'Felipe' %}" value="{% if form.author_name.value %}{{ form.author_name.value }}{% endif %}" name="author_name" class="form-control" type="text" />
                 </div>
-                <div class="form-group">
-                    {{ form.author_email.errors }}
+                <div class="form-group{% if form.author_email.errors %} has-error{% endif %}">
+                    
                     <label for="id_author_email">{% trans "Your email" %}</label>
-                    <input id="id_author_email" maxlength="75" placeholder="{% trans 'copy@paste.org' %}" class="form-control" name="author_email" type="text" />
+                    {{ form.author_email.errors }}
+                    <input id="id_author_email" maxlength="75" placeholder="{% trans 'copy@paste.org' %}" value="{% if form.author_email.value %}{{ form.author_email.value }}{% endif %}" class="form-control" name="author_email" type="text" />
                 </div>
-                <div class="form-group">
-                    {{ form.persons.errors }}
+                <div class="form-group{% if form.persons.errors %} has-error{% endif %}">
+                    
                     <label for="id_persons">{% trans "To whom" %}</label>
+                    {{ form.persons.errors }}
                     <ul>
                         <input type="search" placeholder="{% trans 'Filter people' %}" class="form-control" ng-model="searchTerm"/>
                             <li ng-repeat="person in persons | filter:comp" >
@@ -46,21 +49,23 @@
                             </li>
                     </ul>
                 </div>
-                <div class="form-group">
-                    {{ form.subject.errors }}
+                <div class="form-group{% if form.subject.errors %} has-error{% endif %}">
+                    
                     <label for="id_subject">{% trans "Subject" %}</label>
-                        <input id="id_subject" class="form-control" placeholder="{% trans 'About the new thing' %}" maxlength="255" name="subject" type="text" />
+                    {{ form.subject.errors }}
+                        <input id="id_subject" class="form-control" value="{% if form.subject.value %}{{ form.subject.value }}{% endif %}" placeholder="{% trans 'About the new thing' %}" maxlength="255" name="subject" type="text" />
                 </div>
                 
-                <div class="form-group">
-                    {{ form.content.errors }}
+                <div class="form-group{% if form.content.errors %} has-error{% endif %}">
+                    
                     <label for="id_content">{% trans "Content" %}</label>
-                        <textarea cols="40" id="id_content" placeholder="{% trans 'Tell me please about the new thing ...' %}" class="form-control" rows="10"></textarea/>
+                    {{ form.content.errors }}
+                        <textarea cols="40" id="id_content" name="content" value="{% if form.content.value %}{{ form.content.value }}{% endif %}" placeholder="{% trans 'Tell me please about the new thing ...' %}" class="form-control" rows="10"></textarea/>
                 </div>
                 <div class="checkbox">
                     {{ form.public.errors }}
                     <label>
-                        <input checked="checked" id="id_public" name="public" type="checkbox" />
+                        <input id="id_public" {% if form.public.value %}checked="checked"{% endif %} name="public" type="checkbox" />
                         {% trans "Is this message public?" %}
                     </label>
                 </div>
