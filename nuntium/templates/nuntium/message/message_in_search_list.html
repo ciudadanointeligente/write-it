@@ -2,9 +2,29 @@
 {% load i18n %}
 {% load markdown_deux_tags %}
 <dl class="dl-horizontal">
-<div>
-	<h3>{{ message.subject }} <a href="{{ message.get_absolute_url }}">{% trans "Link" %}</a></h3> 
-	<h4>{% markdown %}{{ message.content }}{% endmarkdown %}</h4>
-	<span class="author_name"><small>{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}</small></span><br />
+<div class="panel panel-default">
+	<div class="panel-heading">
+	<h4>{{ message.subject }} <a href="{{ message.get_absolute_url }}"><i class="icon-link"></i></a></h4>
+	</div>
+	<div class="panel-body">
+	<p>{% markdown %}{{ message.content }}{% endmarkdown %}</p>
+	<i id="persons_message_{{message.id}}" class="glyphicon glyphicon-user"></i>
+	<br />
+	<span class="author_name"><small>{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}</small></span>
+	<script type="text/javascript">
+	$(function() {
+	    var options = {
+	    	'html':true,
+	    	'title':'{% trans "People" %}',
+			'content':'<ul>{% for person in message.people %}<li>{{person.name}}</li>{% endfor %}</ul>',
+			'trigger':'hover focus',
+			'delay':{ show: 0, hide: 1000 }
+		}
+		$('#persons_message_{{message.id}}').popover(options)
+	});
+	
+	</script>
+	</div>
+
 </div>
 </dl>
