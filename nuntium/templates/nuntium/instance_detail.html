@@ -14,62 +14,61 @@
 <li>{{ message }}</li>
 {% endfor %}
 </ul>
-<h2>{% trans "You can now write your question" %}</h2>
-<form method='post' class='form-horizontal' action="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{% csrf_token %}
-    <div ng-controller="message-form">
-{{ form.non_field_errors }}
-	<div class="fieldWrapper">
-        {{ form.author_name.errors }}
-        <label for="id_author_name">{% trans "Your name *" %}</label>
-        {{ form.author_name }}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h2 class="panel-title">{% trans "You can now write your question" %}</h2>
     </div>
-    <div class="fieldWrapper">
-        {{ form.author_email.errors }}
-        <label for="id_author_email">{% trans "Your email *" %}</label>
-        {{ form.author_email }}
+    <div class="panel-body">
+        <form method='post' class='form-horizontal message-form' action="{% url 'instance_detail' subdomain=writeitinstance.slug %}" role="form">{% csrf_token %}
+            <div ng-controller="message-form">
+                {{ form.non_field_errors }}
+            	<div class="form-group">
+                    {{ form.author_name.errors }}
+                    <label for="id_author_name">{% trans "Your name" %}</label>
+                        <input id="id_author_name" maxlength="512" placeholder="{% trans 'Felipe' %}" name="author_name" class="form-control" type="text" />
+                </div>
+                <div class="form-group">
+                    {{ form.author_email.errors }}
+                    <label for="id_author_email">{% trans "Your email" %}</label>
+                    <input id="id_author_email" maxlength="75" placeholder="{% trans 'copy@paste.org' %}" class="form-control" name="author_email" type="text" />
+                </div>
+                <div class="form-group">
+                    {{ form.persons.errors }}
+                    <label for="id_persons">{% trans "To whom" %}</label>
+                    <ul>
+                        <input type="search" placeholder="{% trans 'Filter people' %}" class="form-control" ng-model="searchTerm"/>
+                            <li ng-repeat="person in persons | filter:comp" >
+                                <div class="checkbox">
+                                    <label for="id_persons_[[$index]]">
+                                        <input id="id_persons_[[$index]]" name="persons" type="checkbox" value="[[person.id]]" /> [[person.name]]
+                                    </label>
+                                </div>
+                            </li>
+                    </ul>
+                </div>
+                <div class="form-group">
+                    {{ form.subject.errors }}
+                    <label for="id_subject">{% trans "Subject" %}</label>
+                        <input id="id_subject" class="form-control" placeholder="{% trans 'About the new thing' %}" maxlength="255" name="subject" type="text" />
+                </div>
+                
+                <div class="form-group">
+                    {{ form.content.errors }}
+                    <label for="id_content">{% trans "Content" %}</label>
+                        <textarea cols="40" id="id_content" placeholder="{% trans 'Tell me please about the new thing ...' %}" class="form-control" rows="10"></textarea/>
+                </div>
+                <div class="checkbox">
+                    {{ form.public.errors }}
+                    <label>
+                        <input checked="checked" id="id_public" name="public" type="checkbox" />
+                        {% trans "Is this message public?" %}
+                    </label>
+                </div>
+                
+                <input type='submit' class='btn btn-primary' value= "{% trans 'Submit Message' %}"/>
+            </div>
+        </form>
     </div>
-    <div class="fieldWrapper">
-        {{ form.persons.errors }}
-        <label for="id_persons">{% trans "To whom *" %}</label>
-        <ul>
-            <input type="search" placeholder="{% trans 'Search for people' %}" ng-model="searchTerm"/>
-        <li ng-repeat="person in persons | filter:comp" >
-            <label for="id_persons_[[$index]]">
-                <input id="id_persons_[[$index]]" name="persons" type="checkbox" value="[[person.id]]" /> [[person.name]]</label>
-        </li>
-        </ul>
-    </div>
-    <div class="fieldWrapper">
-        {{ form.subject.errors }}
-        <label for="id_subject">{% trans "Subject *" %}</label>
-        {{ form.subject }}
-    </div>
-    <div class="fieldWrapper">
-        {{ form.public.errors }}
-        <label for="id_public">{% trans "Public" %}</label>
-        {{ form.public }}
-    </div>
-    <div class="fieldWrapper">
-        {{ form.content.errors }}
-        <label for="id_content">{% trans "Content *" %}</label>
-        {{ form.content }}
-    </div>
-    
-<input type='submit' class='btn btn-primary' value= "{% trans 'Submit Message' %}"/>
-</div>
-</form>
-<div class='instance-search-form'>
-    <form action="{% url 'instance_search' subdomain=writeitinstance.slug %}" method="get" >
-        <table>
-            {{ search_form.as_table }}
-            <tr>
-                <td>&nbsp;</td>
-                <td>
-                    <input type="submit" value="{% trans 'Search' %}" />
-                </td>
-            </tr>
-        </table>
-    </form>
 </div>
 
 {% if writeitinstance.message_set.count == 0 %}
@@ -81,10 +80,17 @@
 
     {% for message in public_messages %}
         {% include "nuntium/message/message_in_list.html" with message=message %}
-        {% if not forloop.last %}
-            <hr />
-        {% endif %}
     {% endfor %}
 {% endif %}
 
 {% endblock content%}
+
+{% block search_form %}
+<form action="{% url 'instance_search' subdomain=writeitinstance.slug %}" class="navbar-form navbar-right" method="get"  role="form">
+    <div class="form-group">
+        <label class="sr-only" for="exampleInputEmail2">Search within messages</label>
+        <input type="text" class="form-control" name="q" id="id_q" placeholder="{% trans 'Search within messages' %}">
+    </div>
+    <button type="submit" class="btn btn-success" >{% trans 'Search' %}</button>
+</form>
+{% endblock search_form%}

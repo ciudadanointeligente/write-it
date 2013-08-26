@@ -7,21 +7,6 @@
 <li>{{ message }}</li>
 {% endfor %}
 </ul>
-
-<form method="get" >
-    <table>
-        {{ form.as_table }}
-        <tr>
-            <td>&nbsp;</td>
-            <td>
-                <input type="submit" value="{% trans 'Search' %}">
-            </td>
-        </tr>
-    </table>
-</form>
-
-
-
 {% if query %}
     <h3>{% trans 'Results' %}</h3>
     {% for result in page.object_list %}
@@ -49,3 +34,13 @@
 {% endif %}
 
 {% endblock content %}
+
+{% block search_form %}
+<form class="navbar-form navbar-right" method="get"  role="form">
+    <div class="form-group">
+        <label class="sr-only" for="exampleInputEmail2">Search within messages</label>
+        <input type="text" class="form-control" name="q" id="id_q" placeholder="{% trans 'Search within messages' %}" value="{{ form.q.value }}">
+    </div>
+    <button type="submit" class="btn btn-success" >{% trans 'Search' %}</button>
+</form>
+{% endblock search_form%}
