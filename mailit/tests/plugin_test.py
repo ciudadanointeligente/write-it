@@ -83,8 +83,9 @@ class MailSendingTestCase(TestCase):
 
     def test_sending_from_email_expected_from_email(self):
         result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
-        expected_from_email = self.outbound_message1.message.writeitinstance.slug+"+"+self.outbound_message1.outboundmessageidentifier.key\
-                                +'@'+settings.DEFAULT_FROM_DOMAIN
+        author_name = self.outbound_message1.message.author_name
+        expected_from_email = author_name+" <"+self.outbound_message1.message.writeitinstance.slug+"+"+self.outbound_message1.outboundmessageidentifier.key\
+                                +'@'+settings.DEFAULT_FROM_DOMAIN+">"
         self.assertEquals(mail.outbox[0].from_email, expected_from_email)
 
     def test_it_fails_if_there_is_no_template(self):
