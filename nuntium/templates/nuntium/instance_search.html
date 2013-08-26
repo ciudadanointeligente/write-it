@@ -12,10 +12,10 @@
     {% for result in page.object_list %}
         <div class="search_result">
             {% if result.model_name == 'message' %}
-                {% include 'nuntium/message/message_in_search_list.html' with message=result.object %}
+                {% include 'nuntium/message/message_in_list.html' with message=result.object %}
             {% endif %}
             {% if result.model_name == 'answer' %}
-                {% include 'nuntium/message/message_in_search_list.html' with message=result.object %}
+                {% include 'nuntium/answer/answer_in_list.html' with answer=result.object %}
             {% endif %}
         </div>
     {% empty %}
