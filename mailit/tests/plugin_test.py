@@ -81,12 +81,27 @@ class MailSendingTestCase(TestCase):
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertIn("pdaire@ciudadanointeligente.org", mail.outbox[0].to)
 
+
+
     def test_sending_from_email_expected_from_email(self):
         result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
         author_name = self.outbound_message1.message.author_name
         expected_from_email = author_name+" <"+self.outbound_message1.message.writeitinstance.slug+"+"+self.outbound_message1.outboundmessageidentifier.key\
                                 +'@'+settings.DEFAULT_FROM_DOMAIN+">"
         self.assertEquals(mail.outbox[0].from_email, expected_from_email)
+
+    def test_send_email_logs(self):
+        author_name = self.outbound_message1.message.author_name
+        from_email = author_name+" <"+self.outbound_message1.message.writeitinstance.slug+"+"+self.outbound_message1.outboundmessageidentifier.key\
+                                +'@'+settings.DEFAULT_FROM_DOMAIN+">"
+        with patch('logging.info') as info:
+            expected_log = "Mail sent from %(from)s to %(to)s" % {
+            'from' : from_email,
+            'to' : "pdaire@ciudadanointeligente.org"
+            }
+            self.channel.send(self.outbound_message1)
+
+            info.assert_called_with(expected_log)
 
     def test_it_fails_if_there_is_no_template(self):
         result_of_sending, fatal_error = self.channel.send(self.message_to_another_contact)
