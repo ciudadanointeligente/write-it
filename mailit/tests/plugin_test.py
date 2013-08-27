@@ -79,7 +79,7 @@ class MailSendingTestCase(TestCase):
         self.assertEquals(mail.outbox[0].subject, 'WriteIT Message: Subject 1')
         self.assertEquals(mail.outbox[0].body, u'Hello Pedro:\r\nYou have a new message:\r\nsubject: Subject 1 \r\ncontent: Content 1\r\n\r\nSeeya\r\n--\r\nYou writeIt and we deliverit.')
         self.assertEquals(len(mail.outbox[0].to), 1)
-        self.assertTrue("pdaire@ciudadanointeligente.org" in mail.outbox[0].to)
+        self.assertIn("pdaire@ciudadanointeligente.org", mail.outbox[0].to)
 
     def test_sending_from_email_expected_from_email(self):
         result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
