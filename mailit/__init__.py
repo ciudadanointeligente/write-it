@@ -6,7 +6,7 @@ from django.conf import settings
 import logging
 from smtplib import SMTPServerDisconnected, SMTPRecipientsRefused, SMTPResponseException
 
-logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 class MailChannel(OutputPlugin):
     name = 'mail-channel'
