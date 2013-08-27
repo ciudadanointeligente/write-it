@@ -3,7 +3,10 @@ from nuntium.plugins import OutputPlugin
 from django.core.mail import send_mail
 from contactos.models import ContactType
 from django.conf import settings
+import logging
 from smtplib import SMTPServerDisconnected, SMTPRecipientsRefused, SMTPResponseException
+
+logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
 class MailChannel(OutputPlugin):
     name = 'mail-channel'
@@ -45,6 +48,13 @@ class MailChannel(OutputPlugin):
         from django.core.mail import send_mail
         try:
             send_mail(subject, content, from_email,[outbound_message.contact.value], fail_silently=False)
+            log = "Mail sent from %(from)s to %(to)s"
+
+            log = log % {
+                'from':from_email,
+                'to':outbound_message.contact.value
+                }
+            logging.info(log)
         except SMTPServerDisconnected, e:
             return False, False
         except SMTPResponseException, e:
