@@ -43,6 +43,22 @@ class WriteItInstance(models.Model):
     def __unicode__(self):
         return self.name
 
+
+def new_write_it_instance(sender,instance, created, **kwargs):
+    if(created):
+        new_answer_html = ''
+        with open('nuntium/templates/nuntium/mails/new_answer.html', 'r') as f:
+            new_answer_html += f.read()
+
+            
+        NewAnswerNotificationTemplate.objects.create(
+            template = new_answer_html,
+            writeitinstance=instance
+            )
+
+post_save.connect(new_write_it_instance, sender=WriteItInstance)
+
+
 class Membership(models.Model):
     person = models.ForeignKey(Person)
     writeitinstance = models.ForeignKey(WriteItInstance)
@@ -101,6 +117,8 @@ class Message(models.Model):
         for outbound_message in self.outboundmessage_set.all():
             outbound_message.status = status
             outbound_message.save()
+        if self.author_email:
+            Subscriber.objects.create(email=self.author_email, message=self)
             
         self.confirmated = True
         self.save()
@@ -462,6 +480,12 @@ class AnswerWebHook(models.Model):
             'url':self.url,
             'instance':self.writeitinstance.name
         }
-        
 
 
+class Subscriber(models.Model):
+    message = models.ForeignKey(Message, related_name='subscribers')
+    email = models.EmailField()
+
+class NewAnswerNotificationTemplate(models.Model):
+    writeitinstance = models.OneToOneField(WriteItInstance, related_name='new_answer_notification_template')
+    template = models.TextField()
