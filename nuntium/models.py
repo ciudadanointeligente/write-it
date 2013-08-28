@@ -13,7 +13,7 @@ from django.utils.timezone import utc
 from djangoplugins.models import Plugin
 from django.core.mail import send_mail #Remove this when emailMultiAlternatives works
 from django.core.mail import EmailMultiAlternatives
-from django.template.loader import get_template
+from django.template.loader import get_template, get_template_from_string
 from django.template import Context
 from django.conf import settings
 from subdomains.utils import reverse
@@ -42,6 +42,22 @@ class WriteItInstance(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+def new_write_it_instance(sender,instance, created, **kwargs):
+    if(created):
+        new_answer_html = ''
+        with open('nuntium/templates/nuntium/mails/new_answer.html', 'r') as f:
+            new_answer_html += f.read()
+
+
+        NewAnswerNotificationTemplate.objects.create(
+            template = new_answer_html,
+            writeitinstance=instance
+            )
+
+post_save.connect(new_write_it_instance, sender=WriteItInstance)
+
 
 class Membership(models.Model):
     person = models.ForeignKey(Person)
@@ -101,6 +117,8 @@ class Message(models.Model):
         for outbound_message in self.outboundmessage_set.all():
             outbound_message.status = status
             outbound_message.save()
+        if self.author_email:
+            Subscriber.objects.create(email=self.author_email, message=self)
             
         self.confirmated = True
         self.save()
@@ -240,9 +258,27 @@ class Answer(models.Model):
             'message': self.message.subject
             }
 
-
+subject_template = '%(person)s has answered to your message %(message)s'
 def send_new_answer_payload(sender,instance, created, **kwargs):
     if created:
+        for subscriber in instance.message.subscribers.all():
+            new_answer_template = instance.message.writeitinstance.new_answer_notification_template
+            htmly = get_template_from_string(new_answer_template.template)
+            d = Context({ 
+                'user': instance.message.author_name,
+                'person':instance.person,
+                'message':instance.message,
+                'answer':instance
+             })
+            html_content = htmly.render(d)
+            from_email = instance.message.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
+            subject = subject_template % {
+            'person':instance.person.name,
+            'message':instance.message.subject
+            }
+            send_mail(subject, html_content, from_email,[subscriber.email], fail_silently=False)
+
+
         for webhook in instance.message.writeitinstance.answer_webhooks.all():
             payload = {
                     'message_id':'/api/v1/message/{0}/'.format(instance.message.id),
@@ -462,6 +498,13 @@ class AnswerWebHook(models.Model):
             'url':self.url,
             'instance':self.writeitinstance.name
         }
-        
 
 
+class Subscriber(models.Model):
+    message = models.ForeignKey(Message, related_name='subscribers')
+    email = models.EmailField()
+
+class NewAnswerNotificationTemplate(models.Model):
+    writeitinstance = models.OneToOneField(WriteItInstance, related_name='new_answer_notification_template')
+    template = models.TextField()
+    subject_template = models.CharField(max_length=255, default=_('%(person)s has answered to your message %(message)s'))
