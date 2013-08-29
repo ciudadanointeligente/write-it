@@ -515,3 +515,4 @@ class RateLimiter(models.Model):
     writeitinstance = models.ForeignKey(WriteItInstance)
     email = models.EmailField()
     day = models.DateField(auto_now=True)
+    count = models.PositiveIntegerField(default=1)
