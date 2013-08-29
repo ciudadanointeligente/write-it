@@ -8,22 +8,12 @@
 	</div>
 	<div class="panel-body">
 	<p>{% markdown %}{{ message.content }}{% endmarkdown %}</p>
-	<i id="persons_message_{{message.id}}" class="glyphicon glyphicon-user"></i>
+	<i class="glyphicon glyphicon-user"></i>
+	{% for person in message.people %}
+		<span class="label label-default">{{ person.name }}</span>
+	{% endfor %}
 	<br />
 	<span class="author_name"><small>{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}</small></span>
-	<script type="text/javascript">
-	$(function() {
-	    var options = {
-	    	'html':true,
-	    	'title':'{% trans "People" %}',
-			'content':'<ul>{% for person in message.people %}<li>{{person.name}}</li>{% endfor %}</ul>',
-			'trigger':'hover focus',
-			'delay':{ show: 0, hide: 1000 }
-		}
-		$('#persons_message_{{message.id}}').popover(options)
-	});
-	
-	</script>
 	</div>
 
 </div>
