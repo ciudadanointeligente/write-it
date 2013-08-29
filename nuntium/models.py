@@ -509,3 +509,9 @@ class NewAnswerNotificationTemplate(models.Model):
     writeitinstance = models.OneToOneField(WriteItInstance, related_name='new_answer_notification_template')
     template = models.TextField()
     subject_template = models.CharField(max_length=255, default=_('%(person)s has answered to your message %(message)s'))
+
+
+class RateLimiter(models.Model):
+    writeitinstance = models.ForeignKey(WriteItInstance)
+    email = models.EmailField()
+    day = models.DateField(auto_now=True)
