@@ -1,0 +1,8 @@
+Hello %(person)s:
+You have a new message:
+subject: %(subject)s 
+content: %(content)s
+
+Seeya
+--
+You writeIt and we deliverit.
