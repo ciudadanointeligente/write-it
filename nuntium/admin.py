@@ -1,5 +1,5 @@
 from django.contrib import admin
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, Answer, AnswerWebHook
+from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, Answer, AnswerWebHook, NewAnswerNotificationTemplate
 from popit.models import ApiInstance, Person
 from contactos.models import Contact, ContactType
 from django.forms.models import BaseInlineFormSet
@@ -10,12 +10,18 @@ class PersonInline(admin.TabularInline):
 class MembershipInline(admin.TabularInline):
     model = WriteItInstance.persons.through
 
+class NewAnswerNotificationTemplateAdmin(admin.TabularInline):
+    model = NewAnswerNotificationTemplate
+
+
 class WriteItInstanceAdmin(admin.ModelAdmin):
     inlines = [
     	MembershipInline,
+        NewAnswerNotificationTemplateAdmin
     ]
     exclude = ('persons',)
 admin.site.register(WriteItInstance, WriteItInstanceAdmin)
+
 
 
 # class AnswerInlineFormset(BaseInlineFormSet):
