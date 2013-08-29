@@ -35,6 +35,7 @@ class WriteItInstance(models.Model):
     persons = models.ManyToManyField(Person, related_name='writeit_instances', through='Membership')
     moderation_needed_in_all_messages = models.BooleanField(help_text=_("Every message is going to have a moderation mail"))
     owner = models.ForeignKey(User)
+    rate_limiter = models.IntegerField(default=0)
 
     
     def get_absolute_url(self):
