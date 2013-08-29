@@ -516,3 +516,10 @@ class RateLimiter(models.Model):
     email = models.EmailField()
     day = models.DateField(auto_now=True)
     count = models.PositiveIntegerField(default=1)
+
+
+def rate_limiting(sender,instance, created, **kwargs):
+    if instance.author_email:
+        RateLimiter.objects.create(writeitinstance=instance.writeitinstance, email=instance.author_email)
+
+post_save.connect(rate_limiting, sender=Message)
