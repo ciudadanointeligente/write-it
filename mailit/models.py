@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import post_save
 from nuntium.models import WriteItInstance
 
 # Create your models here.
@@ -17,4 +18,9 @@ class MailItTemplate(models.Model):
             self.content_template = content_template
 
         return result
+
+def new_write_it_instance(sender,instance, created, **kwargs):
+    if created:
+        MailItTemplate.objects.create(writeitinstance=instance)
+post_save.connect(new_write_it_instance, sender=WriteItInstance)
 

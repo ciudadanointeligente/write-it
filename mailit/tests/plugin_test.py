@@ -40,8 +40,13 @@ class MailTemplateTestCase(TestCase):
     def setUp(self):
         super(MailTemplateTestCase,self).setUp()
         self.writeitinstance2 = WriteItInstance.objects.all()[1]#the other one already has a template
+        self.owner = User.objects.all()[0]
+        self.content_template = ''
+        with open('mailit/templates/mailit/mails/content_template.txt', 'r') as f:
+            self.content_template += f.read()
 
     def test_it_has_a_template(self):
+        self.writeitinstance2.mailit_template.delete()
         template = MailItTemplate.objects.create(writeitinstance=self.writeitinstance2,subject_template=u"hello somebody %(thing)s",content_template=u"content thing %(another)s asdas")
 
         self.assertTrue(template)
@@ -49,14 +54,31 @@ class MailTemplateTestCase(TestCase):
 
 
     def test_mailit_template_has_some_default_data(self):
-        content_template = ''
-        with open('mailit/templates/mailit/mails/content_template.txt', 'r') as f:
-            content_template += f.read()
+        self.writeitinstance2.mailit_template.delete()
 
+
+        
         template = MailItTemplate.objects.create(writeitinstance=self.writeitinstance2)
-        self.assertEquals(template.subject_template, "[WriteIT] Message: %(subject)s")
-        self.assertEquals(template.content_template,content_template)
 
+        self.assertEquals(template.subject_template, "[WriteIT] Message: %(subject)s")
+        self.assertEquals(template.content_template, self.content_template)
+
+    def test_when_creating_a_new_instance_then_a_new_template_is_created_automatically(self):
+        instance  = WriteItInstance.objects.create(name='instance 234', slug='instance-234', owner=self.owner)
+
+        self.assertTrue(instance.mailit_template)
+        self.assertEquals(instance.mailit_template.subject_template, "[WriteIT] Message: %(subject)s")
+        self.assertEquals(instance.mailit_template.content_template, self.content_template)
+
+    def test_it_only_creates_templates_when_creating_not_when_updating(self):
+        instance  = WriteItInstance.objects.create(name='instance 234', slug='instance-234', owner=self.owner)
+
+
+        instance.save()
+
+        self.assertTrue(instance.mailit_template)
+        self.assertEquals(instance.mailit_template.subject_template, "[WriteIT] Message: %(subject)s")
+        self.assertEquals(instance.mailit_template.content_template, self.content_template)
 
 class MailSendingTestCase(TestCase):
     def setUp(self):
@@ -122,9 +144,7 @@ class MailSendingTestCase(TestCase):
 
 
     def test_it_only_sends_mails_to_email_contacts(self):
-        template = MailItTemplate.objects.create(writeitinstance=self.writeitinstance2
-            ,subject_template=u"subject %(subject)s",
-            content_template=u" content %(subject)s %(content)s %(person)s %(author)s")
+        template = self.writeitinstance2.mailit_template
         contact3 = Contact.objects.create(person=self.person3, contact_type=self.contact_type2,
             value= 'person1@votainteligente.cl',
             owner=self.user)
@@ -141,9 +161,8 @@ class MailSendingTestCase(TestCase):
 
 
     def test_template_string_keys(self):
-        template = MailItTemplate.objects.create(writeitinstance=self.writeitinstance2
-            ,subject_template=u"subject %(subject)s",
-            content_template=u" content %(subject)s %(content)s %(person)s %(author)s")
+
+        template = self.writeitinstance2.mailit_template
         contact3 = Contact.objects.create(person=self.person3, contact_type=self.channel.get_contact_type(),
             value= 'person1@votainteligente.cl',
             owner=self.user)
