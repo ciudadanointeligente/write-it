@@ -47,6 +47,17 @@ class MailTemplateTestCase(TestCase):
         self.assertTrue(template)
         self.assertEquals(self.writeitinstance2.mailit_template, template)
 
+
+    def test_mailit_template_has_some_default_data(self):
+        content_template = ''
+        with open('mailit/templates/mailit/mails/content_template.txt', 'r') as f:
+            content_template += f.read()
+
+        template = MailItTemplate.objects.create(writeitinstance=self.writeitinstance2)
+        self.assertEquals(template.subject_template, "[WriteIT] Message: %(subject)s")
+        self.assertEquals(template.content_template,content_template)
+
+
 class MailSendingTestCase(TestCase):
     def setUp(self):
         super(MailSendingTestCase,self).setUp()
