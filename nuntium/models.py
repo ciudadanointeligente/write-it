@@ -514,12 +514,27 @@ class NewAnswerNotificationTemplate(models.Model):
 class RateLimiter(models.Model):
     writeitinstance = models.ForeignKey(WriteItInstance)
     email = models.EmailField()
-    day = models.DateField(auto_now=True)
+    day = models.DateField()
     count = models.PositiveIntegerField(default=1)
+
+    def save(self, *args, **kwargs):
+        if not self.day:
+            self.day = datetime.date.today()
+        super(RateLimiter, self).save(*args, **kwargs)
+
+
 
 
 def rate_limiting(sender,instance, created, **kwargs):
+
     if instance.author_email:
-        RateLimiter.objects.create(writeitinstance=instance.writeitinstance, email=instance.author_email)
+        rate_limiter, created = RateLimiter.objects.get_or_create(
+            writeitinstance=instance.writeitinstance, 
+            email=instance.author_email,
+            day = datetime.date.today()
+            )
+        if not created:
+            rate_limiter.count = rate_limiter.count + 1
+            rate_limiter.save()
 
 post_save.connect(rate_limiting, sender=Message)
