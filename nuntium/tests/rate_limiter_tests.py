@@ -144,7 +144,7 @@ class RateLimiterTestCase(TestCase):
 
         try:
             message1.clean()
-        except:
+        except: # pragma: no cover
             self.fail("It didn't pass the clean when it whould have")
 
 
