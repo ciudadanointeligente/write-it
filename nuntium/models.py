@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save, pre_save
 from django.db import models
 from django.utils.translation import ugettext as _
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from popit.models import Person
 from contactos.models import Contact
 from nuntium.plugins import OutputPlugin
@@ -35,6 +35,7 @@ class WriteItInstance(models.Model):
     persons = models.ManyToManyField(Person, related_name='writeit_instances', through='Membership')
     moderation_needed_in_all_messages = models.BooleanField(help_text=_("Every message is going to have a moderation mail"))
     owner = models.ForeignKey(User)
+    rate_limiter = models.IntegerField(default=0)
 
     
     def get_absolute_url(self):
@@ -105,6 +106,19 @@ class Message(models.Model):
             self.persons = kwargs.pop('persons')
 
         super(Message, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        try:
+            rate_limiter = RateLimiter.objects.get(
+                writeitinstance=self.writeitinstance, 
+                email=self.author_email,
+                day = datetime.date.today()
+                )
+            if self.writeitinstance.rate_limiter > 0 and rate_limiter.count >= self.writeitinstance.rate_limiter:
+                raise ValidationError(_('You have reached your limit for today please try again tomorrow'))
+        except ObjectDoesNotExist:
+            pass
+        super(Message, self).clean()
 
 
     #TODO: only new outbound_messages
@@ -508,3 +522,32 @@ class NewAnswerNotificationTemplate(models.Model):
     writeitinstance = models.OneToOneField(WriteItInstance, related_name='new_answer_notification_template')
     template = models.TextField()
     subject_template = models.CharField(max_length=255, default=_('%(person)s has answered to your message %(message)s'))
+
+
+class RateLimiter(models.Model):
+    writeitinstance = models.ForeignKey(WriteItInstance)
+    email = models.EmailField()
+    day = models.DateField()
+    count = models.PositiveIntegerField(default=1)
+
+    def save(self, *args, **kwargs):
+        if not self.day:
+            self.day = datetime.date.today()
+        super(RateLimiter, self).save(*args, **kwargs)
+
+
+
+
+def rate_limiting(sender,instance, created, **kwargs):
+
+    if instance.author_email:
+        rate_limiter, created = RateLimiter.objects.get_or_create(
+            writeitinstance=instance.writeitinstance, 
+            email=instance.author_email,
+            day = datetime.date.today()
+            )
+        if not created:
+            rate_limiter.count = rate_limiter.count + 1
+            rate_limiter.save()
+
+post_save.connect(rate_limiting, sender=Message)
