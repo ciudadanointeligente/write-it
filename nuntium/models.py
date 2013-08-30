@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save, pre_save
 from django.db import models
 from django.utils.translation import ugettext as _
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from popit.models import Person
 from contactos.models import Contact
 from nuntium.plugins import OutputPlugin
@@ -106,6 +106,19 @@ class Message(models.Model):
             self.persons = kwargs.pop('persons')
 
         super(Message, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        try:
+            rate_limiter = RateLimiter.objects.get(
+                writeitinstance=self.writeitinstance, 
+                email=self.author_email,
+                day = datetime.date.today()
+                )
+            if self.writeitinstance.rate_limiter > 0 and rate_limiter.count >= self.writeitinstance.rate_limiter:
+                raise ValidationError(_('You have reached your limit for today please try again tomorrow'))
+        except ObjectDoesNotExist:
+            pass
+        super(Message, self).clean()
 
 
     #TODO: only new outbound_messages

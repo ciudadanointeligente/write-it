@@ -3,7 +3,9 @@ from global_test_case import GlobalTestCase as TestCase
 from django.contrib.auth.models import User
 from nuntium.models import WriteItInstance, RateLimiter, Message
 from datetime import date
+from django.core.exceptions import ValidationError
 from popit.models import Person
+from django.utils.translation import ugettext as _
 
 class RateLimiterTestCase(TestCase):
     def setUp(self):
@@ -86,7 +88,6 @@ class RateLimiterTestCase(TestCase):
         rate_limiter = RateLimiter.objects.get(email=message1.author_email)
         rate_limiter.day = some_other_day
         rate_limiter.save()
-        print rate_limiter.day, some_other_day
         #ok at this point there should be a rate_limiter for yesterday but not for today
 
         message1 = Message.objects.create(content = 'Content 1', 
@@ -103,14 +104,48 @@ class RateLimiterTestCase(TestCase):
         rate_limiter_for_today = RateLimiter.objects.get(email=message1.author_email, day=date.today())
         self.assertEquals(rate_limiter_for_today.count, 1)
 
+    def test_maximum_rate_exceded(self):
+        self.writeitinstance1.rate_limiter = 1
+        self.writeitinstance1.save()
+
+        message1 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="fieramolestando@votainteligente.cl",
+            confirmated = True,
+            subject='Test',
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
 
 
 
 
 
+        message2 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="fieramolestando@votainteligente.cl",
+            confirmated = True,
+            subject='Test',
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
 
-        
+        with self.assertRaises(ValidationError) as error:
+            message2.clean()
 
+        self.assertEquals(error.exception.messages[0], _('You have reached your limit for today please try again tomorrow'))
+
+    def test_when_a_message_is_created_and_rate_limiter_is_zero_it_does_not_raise_anything(self):
+        message1 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="fieramolestando@votainteligente.cl",
+            confirmated = True,
+            subject='Test',
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+        try:
+            message1.clean()
+        except:
+            self.fail("It didn't pass the clean when it whould have")
 
 
 
