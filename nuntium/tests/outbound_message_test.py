@@ -70,7 +70,6 @@ class OutboundMessageTestCase(TestCase):
         self.assertIn(("sent",_("Sent")),OutboundMessage.STATUS_CHOICES )
         self.assertIn(("error",_("Error sending it")),OutboundMessage.STATUS_CHOICES )
         self.assertIn(("needmodera",_("Needs moderation")),OutboundMessage.STATUS_CHOICES )
-        self.assertIn(("fixcontact",_("Fix the contact")),OutboundMessage.STATUS_CHOICES )
 
 
 
