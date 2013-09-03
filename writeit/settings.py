@@ -220,11 +220,12 @@ DEFAULT_FROM_DOMAIN = 'mailit.ciudadanointeligente.org'
 import djcelery
 from celery.schedules import crontab
 djcelery.setup_loader()
+
 CELERYBEAT_SCHEDULE = {
     # Executes every Monday morning at 7:30 A.M
-    'send-mails-every-5-minutes': {
+    'send-mails-every-2-minutes': {
         'task': 'nuntium.tasks.send_mails_task',
-        'schedule': crontab(minute='*/5'),
+        'schedule': crontab(minute='*/2'),
     },
 }  
 
