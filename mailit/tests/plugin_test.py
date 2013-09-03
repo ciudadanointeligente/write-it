@@ -178,6 +178,7 @@ class MailSendingTestCase(TestCase):
 
         self.assertTrue(message.author_name in mail.outbox[0].body)
         self.assertTrue(message.author_email not in mail.outbox[0].body)
+        self.assertIn(self.writeitinstance2.get_absolute_url(), mail.outbox[0].body)
 
 from smtplib import SMTPRecipientsRefused, SMTPServerDisconnected, SMTPResponseException
 from mock import patch
