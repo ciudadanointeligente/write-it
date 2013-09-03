@@ -25,7 +25,7 @@ def new_write_it_instance(sender,instance, created, **kwargs):
 post_save.connect(new_write_it_instance, sender=WriteItInstance)
 
 
-class BouncedMessage(models.Model):
+class BouncedMessageRecord(models.Model):
     outbound_message = models.OneToOneField(OutboundMessage)
     bounce_text = models.TextField()
     date = models.DateTimeField(auto_now=True)

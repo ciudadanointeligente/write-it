@@ -3,7 +3,7 @@ from global_test_case import GlobalTestCase as TestCase
 from global_test_case import ResourceGlobalTestCase as ResourceTestCase
 import os
 from mailit.bin.handleemail import EmailHandler, EmailAnswer, ApiKeyAuth
-from mailit.models import BouncedMessage
+from mailit.models import BouncedMessageRecord
 from django.utils.unittest import skip
 from mock import patch
 from django.contrib.auth.models import User
@@ -321,9 +321,9 @@ class HandleBounces(TestCase):
 #         isinstance(instance.report_bounce(), types.FunctionType)
 
 
-class BouncedMessageTestCase(TestCase):
+class BouncedMessageRecordTestCase(TestCase):
     def setUp(self):
-        super(BouncedMessageTestCase, self).setUp()
+        super(BouncedMessageRecordTestCase, self).setUp()
         self.outbound_message = OutboundMessage.objects.all()[0]
         self.identifier = OutboundMessageIdentifier.objects.all()[0]
         self.identifier.key = '12345'
@@ -338,13 +338,10 @@ class BouncedMessageTestCase(TestCase):
 
 
     def test_creation(self):
-
-        bounced_message = BouncedMessage.objects.create(
+        bounced_message = BouncedMessageRecord.objects.create(
             outbound_message = self.outbound_message,
             bounce_text = self.bounced_email
             )
-
-
         self.assertTrue(bounced_message)
         self.assertEquals(bounced_message.outbound_message, self.outbound_message)
         self.assertFalse(bounced_message.date is None)
@@ -352,21 +349,14 @@ class BouncedMessageTestCase(TestCase):
 
     
     def test_it_creates_a_bounced_message_when_comes_a_new_bounce(self):
-        
-
-
         email_answer = self.handler.handle(self.bounced_email)
         identifier = OutboundMessageIdentifier.objects.get(key=email_answer.outbound_message_identifier)
         outbound_message = OutboundMessage.objects.get(outboundmessageidentifier=identifier)
-
-
         email_answer.send_back()
-
-
-        bounced_messages = BouncedMessage.objects.filter(outbound_message=outbound_message)
-
+        bounced_messages = BouncedMessageRecord.objects.filter(outbound_message=outbound_message)
 
         self.assertEquals(bounced_messages.count(), 1)
         bounced_message = bounced_messages[0]
         self.assertEquals(bounced_message.bounce_text, email_answer.content_text)
+
 
