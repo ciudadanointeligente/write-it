@@ -323,6 +323,7 @@ class OutboundMessage(models.Model):
         ("sent",_("Sent")),
         ("error",_("Error sending it")),
         ("needmodera",_("Needs moderation")),
+        ("fixcontact",_("Fix the contact")),
         )
 
     contact = models.ForeignKey(Contact)
