@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models.signals import post_save
-from nuntium.models import WriteItInstance
+from nuntium.models import WriteItInstance, OutboundMessage
 
 # Create your models here.
 
@@ -23,4 +23,10 @@ def new_write_it_instance(sender,instance, created, **kwargs):
     if created:
         MailItTemplate.objects.create(writeitinstance=instance)
 post_save.connect(new_write_it_instance, sender=WriteItInstance)
+
+
+class BouncedMessage(models.Model):
+    outbound_message = models.OneToOneField(OutboundMessage)
+    bounce_text = models.TextField()
+    date = models.DateTimeField(auto_now=True)
 

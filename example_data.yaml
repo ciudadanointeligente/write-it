@@ -43,6 +43,9 @@
 - fields: {contact: 2, message: 1}
   model: nuntium.outboundmessage
   pk: 2
+- fields: {contact: 3, message: 1}
+  model: nuntium.outboundmessage
+  pk: 3
 - fields: {url: 'http://popit.org/api/v1'}
   model: popit.apiinstance
   pk: 1
@@ -76,6 +79,9 @@
 - fields: {contact_type: 1, person: 2, value: maugsburger@ciudadanointeligente.org, owner: 1}
   model: contactos.contact
   pk: 2
+- fields: {contact_type: 1, person: 3, value: falvarez@ciudadanointeligente.org, owner: 1, is_bounced: True}
+  model: contactos.contact
+  pk: 3
 - fields: {content_template: "Hello {{person}}:\r\nYou have a new message:\r\nsubject:\
       \ {{subject}} \r\ncontent: {{content}}\r\n\r\nSeeya\r\n--\r\nYou writeIt and\
       \ we deliverit.", subject_template: 'WriteIT Message: %(subject)s', writeitinstance: 1}

@@ -3,6 +3,7 @@ from global_test_case import GlobalTestCase as TestCase
 from global_test_case import ResourceGlobalTestCase as ResourceTestCase
 import os
 from mailit.bin.handleemail import EmailHandler, EmailAnswer, ApiKeyAuth
+from mailit.models import BouncedMessage
 from django.utils.unittest import skip
 from mock import patch
 from django.contrib.auth.models import User
@@ -12,6 +13,9 @@ from tastypie.models import ApiKey
 import logging
 from mailit.bin import config
 import json
+from nuntium.models import OutboundMessage, OutboundMessageIdentifier
+from mailit.management.commands.handleemail import AnswerForManageCommand
+import types
 
 class PostMock():
     def __init__(self):
@@ -268,7 +272,6 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
             }
             info.assert_called_with(expected_log)
 
-
 class HandleBounces(TestCase):
     def setUp(self):
         super(HandleBounces, self).setUp()
@@ -305,5 +308,65 @@ class HandleBounces(TestCase):
 
             post.assert_called_with(self.where_to_post_a_bounce, data=data, headers=expected_headers)
 
+# class ReportBounceMixinTestCase(TestCase):
+#     def setUp(self):
+#         super(ReportBounceMixinTestCase, self).setUp()
 
+
+#     def test_create_has_a_report_bounce_method(self):
+#         class EmailHandlerThing(ReportBounceMixin):
+#             pass
+
+#         instance = EmailHandlerThing()
+#         isinstance(instance.report_bounce(), types.FunctionType)
+
+
+class BouncedMessageTestCase(TestCase):
+    def setUp(self):
+        super(BouncedMessageTestCase, self).setUp()
+        self.outbound_message = OutboundMessage.objects.all()[0]
+        self.identifier = OutboundMessageIdentifier.objects.all()[0]
+        self.identifier.key = '12345'
+        self.identifier.save()
+        self.bounced_email = ""
+        with open('mailit/tests/fixture/bounced_mail.txt') as f:
+            self.bounced_email += f.read()
+        f.close()
+        self.bounced_email.replace(self.identifier.key, '')
+
+        self.handler = EmailHandler(answer_class = AnswerForManageCommand)
+
+
+    def test_creation(self):
+
+        bounced_message = BouncedMessage.objects.create(
+            outbound_message = self.outbound_message,
+            bounce_text = self.bounced_email
+            )
+
+
+        self.assertTrue(bounced_message)
+        self.assertEquals(bounced_message.outbound_message, self.outbound_message)
+        self.assertFalse(bounced_message.date is None)
+        self.assertEquals(bounced_message.bounce_text, self.bounced_email)
+
+    
+    def test_it_creates_a_bounced_message_when_comes_a_new_bounce(self):
+        
+
+
+        email_answer = self.handler.handle(self.bounced_email)
+        identifier = OutboundMessageIdentifier.objects.get(key=email_answer.outbound_message_identifier)
+        outbound_message = OutboundMessage.objects.get(outboundmessageidentifier=identifier)
+
+
+        email_answer.send_back()
+
+
+        bounced_messages = BouncedMessage.objects.filter(outbound_message=outbound_message)
+
+
+        self.assertEquals(bounced_messages.count(), 1)
+        bounced_message = bounced_messages[0]
+        self.assertEquals(bounced_message.bounce_text, email_answer.content_text)
 
