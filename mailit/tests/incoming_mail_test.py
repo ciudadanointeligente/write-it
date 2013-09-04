@@ -233,8 +233,6 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
 
 
     def test_logs_the_result_of_send_back(self):
-        
-
         email_answer = EmailAnswer()
         email_answer.subject = 'prueba4'
         email_answer.content_text = 'prueba4lafieritaespeluda'
@@ -252,10 +250,6 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
                     }
                     email_answer.send_back()
                     info.assert_called_with(expected_log)
-
-
-
-
 
     def test_logs_the_incoming_email(self):
 
@@ -308,18 +302,6 @@ class HandleBounces(TestCase):
 
             post.assert_called_with(self.where_to_post_a_bounce, data=data, headers=expected_headers)
 
-# class ReportBounceMixinTestCase(TestCase):
-#     def setUp(self):
-#         super(ReportBounceMixinTestCase, self).setUp()
-
-
-#     def test_create_has_a_report_bounce_method(self):
-#         class EmailHandlerThing(ReportBounceMixin):
-#             pass
-
-#         instance = EmailHandlerThing()
-#         isinstance(instance.report_bounce(), types.FunctionType)
-
 
 class BouncedMessageRecordTestCase(TestCase):
     def setUp(self):
@@ -358,5 +340,3 @@ class BouncedMessageRecordTestCase(TestCase):
         self.assertEquals(bounced_messages.count(), 1)
         bounced_message = bounced_messages[0]
         self.assertEquals(bounced_message.bounce_text, email_answer.content_text)
-
-

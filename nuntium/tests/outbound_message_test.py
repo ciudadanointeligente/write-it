@@ -39,7 +39,7 @@ class OutboundMessageTestCase(TestCase):
     def test_outbound_messsages_creation_on_message_save(self):
         # si new message then x neew outbound TestMessages
         new_outbound_messages = OutboundMessage.objects.all()
-        self.assertEquals(new_outbound_messages.count(), 2)
+        self.assertEquals(new_outbound_messages.count(), 3)
 
 
     def test_successful_send(self):
