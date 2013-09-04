@@ -2,7 +2,7 @@ from django.db import models
 from popit.models import Person
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.template import Context
 from django.template.loader import get_template
 from django.conf import settings
@@ -29,6 +29,11 @@ class Contact(models.Model):
 	            'contact' : self.value,
 	            'type' : self.contact_type.label_name
 	        }
+
+    def set_outbound_messages_to_ready(self):
+        for outbound_message in self.outboundmessage_set.all():
+            outbound_message.status = 'ready'
+            outbound_message.save()
 
 
 
@@ -62,10 +67,5 @@ def notify_bounce(sender, instance, update_fields, **kwargs):
                 )
             msg.attach_alternative(html_content, "text/html")
             msg.send()
-
-
-
-        
-
-
 pre_save.connect(notify_bounce , sender=Contact)
+
