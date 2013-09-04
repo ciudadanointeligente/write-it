@@ -113,9 +113,11 @@ class EmailHandler():
         charset = msg.get_charset()
         if not charset:
             charset = 'ISO-8859-1'
-
+        logging.info("Reading the parts")
         for part in msg.walk():
+            logging.info("Part of type "+part.get_content_type())
             if part.get_content_type() == 'text/plain':
+
                 text = EmailReplyParser.parse_reply(part.get_payload(decode=True))
                 #text2 = quopri.decodestring(text)
                 
