@@ -100,6 +100,8 @@ class EmailHandler():
         if temporary or permanent:
             answer.is_bounced = True
             the_recipient = scan_message(msg).pop()
+            logging.info("Got new bounce")
+            logging.info(the_recipient)
         else:
             the_recipient = msg["To"]
 
