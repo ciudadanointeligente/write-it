@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 from django.core import mail
 from django.conf import settings
+from nuntium.models import OutboundMessage
 
 class ContactTestCase(TestCase):
     def setUp(self):
@@ -76,3 +77,10 @@ class ContactTestCase(TestCase):
 
         self.assertEquals(len(mail.outbox), 1) #it is sent to one person pointed in the contact
 
+        #@skip("it must first set the outbound_message to error")
+    def test_it_sets_the_outbound_message_to_ready(self):
+        contact = Contact.objects.get(id=1)#pedro
+        contact.set_outbound_messages_to_ready()
+
+        outbound_message = OutboundMessage.objects.get(contact=contact)
+        self.assertEquals(outbound_message.status, 'ready')

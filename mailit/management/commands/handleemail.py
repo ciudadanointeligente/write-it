@@ -1,4 +1,5 @@
 from mailit.bin.handleemail import EmailAnswer, EmailHandler
+from mailit.models import BouncedMessageRecord
 from nuntium.models import OutboundMessageIdentifier, OutboundMessage
 from django.core.management.base import BaseCommand, CommandError
 import sys
@@ -10,9 +11,11 @@ class AnswerForManageCommand(EmailAnswer):
     def report_bounce(self):
     	identifier = OutboundMessageIdentifier.objects.get(key=self.outbound_message_identifier)
     	outbound_message = OutboundMessage.objects.get(outboundmessageidentifier=identifier)
+        outbound_message.status = 'error'
+        outbound_message.save()
+        BouncedMessageRecord.objects.create(outbound_message=outbound_message, bounce_text=self.content_text)
     	contact = outbound_message.contact
     	contact.is_bounced = True
-
     	contact.save()
 
 class Command(BaseCommand):
