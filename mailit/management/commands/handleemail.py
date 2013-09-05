@@ -1,7 +1,7 @@
 from mailit.bin.handleemail import EmailAnswer, EmailHandler
 from mailit.models import BouncedMessageRecord
 import logging
-from nuntium.models import OutboundMessageIdentifier, OutboundMessage
+from nuntium.models import OutboundMessageIdentifier, OutboundMessage, OutboundMessagePluginRecord
 from django.core.management.base import BaseCommand, CommandError
 import sys
 
@@ -17,6 +17,10 @@ class AnswerForManageCommand(EmailAnswer):
         outbound_message = OutboundMessage.objects.get(outboundmessageidentifier=identifier)
         outbound_message.status = 'error'
         outbound_message.save()
+        records = OutboundMessagePluginRecord.objects.filter(outbound_message=outbound_message)
+        for record in records:
+            record.try_again = True
+            record.save()
         BouncedMessageRecord.objects.create(outbound_message=outbound_message, bounce_text=self.content_text)
         contact = outbound_message.contact
         contact.is_bounced = True
