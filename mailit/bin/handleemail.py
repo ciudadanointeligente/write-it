@@ -87,54 +87,59 @@ class EmailHandler():
         self.answer_class = answer_class
 
     def handle(self, lines):
-        
-        answer = self.answer_class()
-        msgtxt = ''
-        for line in lines:
-            msgtxt += str(line)
+        try:
+            
+            answer = self.answer_class()
+            msgtxt = ''
+            for line in lines:
+                msgtxt += str(line)
 
-        msg = email.message_from_string(msgtxt)
-        temporary, permanent = all_failures(msg)
-        
-        
-        if temporary or permanent:
-            answer.is_bounced = True
-            answer.email_from = scan_message(msg).pop()
-        else:
-            answer.email_from = msg["From"]
+            msg = email.message_from_string(msgtxt)
+            temporary, permanent = all_failures(msg)
+            
+            
+            if temporary or permanent:
+                answer.is_bounced = True
+                answer.email_from = scan_message(msg).pop()
+            else:
+                answer.email_from = msg["From"]
 
 
-        the_recipient = msg["To"]
-        answer.subject = msg["Subject"]
-        answer.when = msg["Date"]
+            the_recipient = msg["To"]
+            answer.subject = msg["Subject"]
+            answer.when = msg["Date"]
 
-        regex = re.compile(r".*[\+\-](.*)@.*")
-        answer.outbound_message_identifier = regex.match(the_recipient).groups()[0]
-        charset = msg.get_charset()
-        if not charset:
-            charset = 'ISO-8859-1'
-        logging.info("Reading the parts")
-        for part in msg.walk():
-            logging.info("Part of type "+part.get_content_type())
-            if part.get_content_type() == 'text/plain':
+            regex = re.compile(r".*[\+\-](.*)@.*")
+            answer.outbound_message_identifier = regex.match(the_recipient).groups()[0]
+            charset = msg.get_charset()
+            if not charset:
+                charset = 'ISO-8859-1'
+            logging.info("Reading the parts")
+            for part in msg.walk():
+                logging.info("Part of type "+part.get_content_type())
+                if part.get_content_type() == 'text/plain':
 
-                text = EmailReplyParser.parse_reply(part.get_payload(decode=True))
-                #text2 = quopri.decodestring(text)
-                
-                text2 = text.decode(charset)
-                text2.strip()
-                answer.content_text = text2
-        #logging stuff
-        
-        log = 'New incoming email from %(from)s sent on %(date)s with subject %(subject)s and content %(content)s'
-        log = log % {
-            'from':answer.email_from,
-            'date':answer.when,
-            'subject':answer.subject,
-            'content':answer.content_text
-            }
-        logging.info(log)
-        return answer
+                    text = EmailReplyParser.parse_reply(part.get_payload(decode=True))
+                    #text2 = quopri.decodestring(text)
+                    
+                    text2 = text.decode(charset)
+                    text2.strip()
+                    answer.content_text = text2
+            #logging stuff
+            
+            log = 'New incoming email from %(from)s sent on %(date)s with subject %(subject)s and content %(content)s'
+            log = log % {
+                'from':answer.email_from,
+                'date':answer.when,
+                'subject':answer.subject,
+                'content':answer.content_text
+                }
+            logging.info(log)
+            return answer
+        except Exception, e:
+            logging.info(e)
+            return
+
 
 
 
