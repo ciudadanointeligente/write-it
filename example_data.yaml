@@ -79,7 +79,7 @@
 - fields: {contact_type: 1, person: 2, value: maugsburger@ciudadanointeligente.org, owner: 1}
   model: contactos.contact
   pk: 2
-- fields: {contact_type: 1, person: 3, value: falvarez@ciudadanointeligente.org, owner: 1, is_bounced: True}
+- fields: {contact_type: 1, person: 3, value: mailnoexistente@ciudadanointeligente.org, owner: 1}
   model: contactos.contact
   pk: 3
 - fields: {content_template: "Hello {{person}}:\r\nYou have a new message:\r\nsubject:\
