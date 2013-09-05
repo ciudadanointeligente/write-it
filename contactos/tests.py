@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 from django.core import mail
 from django.conf import settings
-from nuntium.models import OutboundMessage
+from nuntium.models import OutboundMessage, Message
 
 class ContactTestCase(TestCase):
     def setUp(self):
@@ -84,3 +84,45 @@ class ContactTestCase(TestCase):
 
         outbound_message = OutboundMessage.objects.get(contact=contact)
         self.assertEquals(outbound_message.status, 'ready')
+
+
+class ResendOutboundMessages(TestCase):
+    def setUp(self):
+        super(ResendOutboundMessages, self).setUp()
+
+        self.contact = Contact.objects.get(value="mailnoexistente@ciudadanointeligente.org")
+        self.contact.is_bounced = True
+        self.contact.save()
+        self.previous_amount_of_mails = len(mail.outbox)
+        self.outbound_messages = OutboundMessage.objects.filter(contact=self.contact)
+        for outbound_message in self.outbound_messages:
+            outbound_message.status = "error"
+            outbound_message.save()
+
+
+
+
+    def test_resend_outbound_messages(self):
+        self.contact.resend_messages()
+
+        outbound_messages = OutboundMessage.objects.filter(contact=self.contact)
+        current_amount_of_mails_sent_after_resend_messages = len(mail.outbox)
+        self.assertEquals(current_amount_of_mails_sent_after_resend_messages - self.previous_amount_of_mails, outbound_messages.count())
+        for outbound_message in outbound_messages:
+            self.assertEquals(outbound_message.status,"sent")
+
+
+    def test_resends_only_failed_outbound_messages(self):
+        message = Message.objects.all()[0]
+        non_failed_outbound_message = OutboundMessage.objects.create(message=message, contact=self.contact, status="ready")
+        self.contact.resend_messages()
+        current_amount_of_mails_sent_after_resend_messages = len(mail.outbox)
+        self.assertEquals(current_amount_of_mails_sent_after_resend_messages - self.previous_amount_of_mails,
+        self.outbound_messages.count())
+
+    def test_it_sets_the_is_bounced_status_to_false_of_the_contact(self):
+        self.contact.resend_messages()
+
+        contact = Contact.objects.get(id=self.contact.id)
+
+        self.assertFalse(contact.is_bounced)

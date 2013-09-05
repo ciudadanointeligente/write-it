@@ -35,6 +35,12 @@ class Contact(models.Model):
             outbound_message.status = 'ready'
             outbound_message.save()
 
+    def resend_messages(self):
+        self.is_bounced = False
+        self.save()
+        for outbound_message in self.outboundmessage_set.filter(status="error"):
+            outbound_message.send()
+
 
 
 def notify_bounce(sender, instance, update_fields, **kwargs):

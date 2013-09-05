@@ -3,9 +3,10 @@ from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRec
 from popit.models import ApiInstance, Person
 from contactos.models import Contact, ContactType
 from django.forms.models import BaseInlineFormSet
+from mailit.models import MailItTemplate
 
 class PersonInline(admin.TabularInline):
-	model=Person
+    model=Person
 
 class MembershipInline(admin.TabularInline):
     model = WriteItInstance.persons.through
@@ -13,11 +14,15 @@ class MembershipInline(admin.TabularInline):
 class NewAnswerNotificationTemplateAdmin(admin.TabularInline):
     model = NewAnswerNotificationTemplate
 
+class MailItTemplateInline(admin.TabularInline):
+    model = MailItTemplate
+
 
 class WriteItInstanceAdmin(admin.ModelAdmin):
     inlines = [
-    	MembershipInline,
-        NewAnswerNotificationTemplateAdmin
+        MembershipInline,
+        NewAnswerNotificationTemplateAdmin,
+        MailItTemplateInline
     ]
     exclude = ('persons',)
 admin.site.register(WriteItInstance, WriteItInstanceAdmin)
@@ -58,17 +63,21 @@ class MessageRecordAdmin(admin.ModelAdmin):
 admin.site.register(MessageRecord, MessageRecordAdmin)
 
 class ApiInstanceAdmin(admin.ModelAdmin):
-	pass
+    pass
 admin.site.register(ApiInstance, ApiInstanceAdmin)
 
 class PersonAdmin(admin.ModelAdmin):
-	pass
+    pass
 admin.site.register(Person, PersonAdmin)
 
 class ContactAdmin(admin.ModelAdmin):
-	pass
+    actions = ['resend_errored_mails']
+    def resend_errored_mails(self, request, queryset):
+        for contact in queryset:
+            contact.resend_messages()
+    resend_errored_mails.short_description = "Resends bounced mails"
 admin.site.register(Contact, ContactAdmin)
 
 class ContactTypeAdmin(admin.ModelAdmin):
-	pass
+    pass
 admin.site.register(ContactType, ContactTypeAdmin)
