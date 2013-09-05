@@ -98,7 +98,8 @@ class MailSendingTestCase(TestCase):
         self.outbound_message1 = OutboundMessage.objects.filter(message=self.message)[0]
         self.message_to_another_contact = Message.objects.create(content = 'Content 1', 
             subject='Subject 1', writeitinstance= self.writeitinstance2, persons = [self.person3])
-        self.outbound_message2 = OutboundMessage.objects.get(message=self.message_to_another_contact)
+        self.outbound_message2 = OutboundMessage.objects.filter(message=self.message_to_another_contact)[0]
+
         self.template1 = MailItTemplate.objects.all()[0]
 
 

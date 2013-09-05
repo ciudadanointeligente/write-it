@@ -12,18 +12,16 @@ class AnswerForManageCommand(EmailAnswer):
         OutboundMessageIdentifier.create_answer(self.outbound_message_identifier, self.content_text)
 
     def report_bounce(self):
-        try:
-            logging.info("Reporting bounce using a management command")
-            identifier = OutboundMessageIdentifier.objects.get(key=self.outbound_message_identifier)
-            outbound_message = OutboundMessage.objects.get(outboundmessageidentifier=identifier)
-            outbound_message.status = 'error'
-            outbound_message.save()
-            BouncedMessageRecord.objects.create(outbound_message=outbound_message, bounce_text=self.content_text)
-            contact = outbound_message.contact
-            contact.is_bounced = True
-            contact.save()
-        except Exception, e:
-            logging.info(e)
+        print "oliiwi"
+        logging.info("Reporting bounce using a management command")
+        identifier = OutboundMessageIdentifier.objects.get(key=self.outbound_message_identifier)
+        outbound_message = OutboundMessage.objects.get(outboundmessageidentifier=identifier)
+        outbound_message.status = 'error'
+        outbound_message.save()
+        BouncedMessageRecord.objects.create(outbound_message=outbound_message, bounce_text=self.content_text)
+        contact = outbound_message.contact
+        contact.is_bounced = True
+        contact.save()
 
 
 

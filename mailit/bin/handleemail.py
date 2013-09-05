@@ -99,13 +99,13 @@ class EmailHandler():
         
         if temporary or permanent:
             answer.is_bounced = True
-            the_recipient = scan_message(msg).pop()
-            logging.info("Got new bounce for "+the_recipient)
+            answer.email_from = scan_message(msg).pop()
         else:
-            the_recipient = msg["To"]
+            answer.email_from = msg["From"]
 
+
+        the_recipient = msg["To"]
         answer.subject = msg["Subject"]
-        answer.email_from = msg["From"]
         answer.when = msg["Date"]
 
         regex = re.compile(r".*[\+\-](.*)@.*")
