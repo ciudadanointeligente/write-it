@@ -13,7 +13,7 @@ from tastypie.models import ApiKey
 import logging
 from mailit.bin import config
 import json
-from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Message
+from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Message, OutboundMessagePluginRecord
 from mailit.management.commands.handleemail import AnswerForManageCommand
 import types
 from contactos.models import Contact
@@ -375,6 +375,7 @@ class BouncedMailInGmail(TestCase):
         self.message = Message.objects.all()[0]
         self.contact = Contact.objects.get(value="mailnoexistente@ciudadanointeligente.org")
         self.outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact)
+        self.outbound_message.send()
         identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
         identifier.key = "4aaaabbb"
         identifier.save()
@@ -395,3 +396,7 @@ class BouncedMailInGmail(TestCase):
         #I have to look for it again cause it has changed in the DB
         outbound_message = OutboundMessage.objects.get(id=self.outbound_message.id)
         self.assertEquals(outbound_message.status, "error")
+
+    def test_it_marks_the_outbound_record_to_try_again(self):
+        record = OutboundMessagePluginRecord.objects.get(outbound_message=self.outbound_message)
+        self.assertTrue(record.try_again)

@@ -354,7 +354,6 @@ class OutboundMessage(models.Model):
                 outbound_message_plugin = plugin
                 break
         outbound_record, created = OutboundMessagePluginRecord.objects.get_or_create(outbound_message=self, plugin=plugin.get_model())
-
         if not outbound_record.try_again:
             return
 

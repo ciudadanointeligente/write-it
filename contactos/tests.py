@@ -6,7 +6,9 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 from django.core import mail
 from django.conf import settings
-from nuntium.models import OutboundMessage, Message
+from nuntium.models import OutboundMessage, Message, OutboundMessageIdentifier
+from mailit.bin.handleemail import EmailHandler
+from mailit.management.commands.handleemail import AnswerForManageCommand
 
 class ContactTestCase(TestCase):
     def setUp(self):
@@ -93,11 +95,26 @@ class ResendOutboundMessages(TestCase):
         self.contact = Contact.objects.get(value="mailnoexistente@ciudadanointeligente.org")
         self.contact.is_bounced = True
         self.contact.save()
-        self.previous_amount_of_mails = len(mail.outbox)
         self.outbound_messages = OutboundMessage.objects.filter(contact=self.contact)
         for outbound_message in self.outbound_messages:
+            outbound_message.send()
             outbound_message.status = "error"
             outbound_message.save()
+            identifier = OutboundMessageIdentifier.objects.get(outbound_message=outbound_message)
+            identifier.key = "4aaaabbb"
+            try:
+                identifier.save()
+            except:
+                pass
+        self.previous_amount_of_mails = len(mail.outbox)
+
+        self.bounced_email = ""
+        with open('mailit/tests/fixture/bounced_mail.txt') as f:
+            self.bounced_email += f.read()
+        f.close()
+        self.handler = EmailHandler(answer_class = AnswerForManageCommand)
+        self.answer = self.handler.handle(self.bounced_email)
+        self.answer.send_back()
 
 
 
