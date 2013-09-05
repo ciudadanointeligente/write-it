@@ -9,6 +9,7 @@ from django.conf import settings
 from nuntium.models import OutboundMessage, Message, OutboundMessageIdentifier
 from mailit.bin.handleemail import EmailHandler
 from mailit.management.commands.handleemail import AnswerForManageCommand
+from nuntium.admin import ContactAdmin
 
 class ContactTestCase(TestCase):
     def setUp(self):
@@ -102,10 +103,13 @@ class ResendOutboundMessages(TestCase):
             outbound_message.save()
             identifier = OutboundMessageIdentifier.objects.get(outbound_message=outbound_message)
             identifier.key = "4aaaabbb"
-            try:
-                identifier.save()
-            except:
-                pass
+            #This might fail if there are more than one outbound message!!!
+            identifier.save()
+            #This might fail if there are more than one outbound message!!
+            #please fix if necesary by only choosing the first one or by using a try - except
+
+
+
         self.previous_amount_of_mails = len(mail.outbox)
 
         self.bounced_email = ""
@@ -115,9 +119,6 @@ class ResendOutboundMessages(TestCase):
         self.handler = EmailHandler(answer_class = AnswerForManageCommand)
         self.answer = self.handler.handle(self.bounced_email)
         self.answer.send_back()
-
-
-
 
     def test_resend_outbound_messages(self):
         self.contact.resend_messages()
