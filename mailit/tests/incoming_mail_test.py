@@ -363,3 +363,35 @@ class BouncedMailInAmazonBug(TestCase):
     def test_it_marks_the_contact_as_a_bounce(self):
         contact = Contact.objects.get(value="mailnoexistente@ciudadanointeligente.org")
         self.assertTrue(contact.is_bounced)
+
+    def test_it_marks_the_outbound_message_as_an_error(self):
+        #I have to look for it again cause it has changed in the DB
+        outbound_message = OutboundMessage.objects.get(id=self.outbound_message.id)
+        self.assertEquals(outbound_message.status, "error")
+
+class BouncedMailInGmail(TestCase):
+    def setUp(self):
+        super(BouncedMailInGmail, self).setUp()
+        self.message = Message.objects.all()[0]
+        self.contact = Contact.objects.get(value="mailnoexistente@ciudadanointeligente.org")
+        self.outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact)
+        identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
+        identifier.key = "4aaaabbb"
+        identifier.save()
+
+        self.bounced_email = ""
+        with open('mailit/tests/fixture/bounced_mail.txt') as f:
+            self.bounced_email += f.read()
+        f.close()
+        self.handler = EmailHandler(answer_class = AnswerForManageCommand)
+        self.answer = self.handler.handle(self.bounced_email)
+        self.answer.send_back()
+        
+    def test_it_marks_the_contact_as_a_bounce(self):
+        contact = Contact.objects.get(value="mailnoexistente@ciudadanointeligente.org")
+        self.assertTrue(contact.is_bounced)
+
+    def test_it_marks_the_outbound_message_as_an_error(self):
+        #I have to look for it again cause it has changed in the DB
+        outbound_message = OutboundMessage.objects.get(id=self.outbound_message.id)
+        self.assertEquals(outbound_message.status, "error")
