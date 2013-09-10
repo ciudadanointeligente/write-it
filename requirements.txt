@@ -5,7 +5,7 @@ coveralls
 -e git://github.com/mysociety/popit-django.git#egg=popit-django
 mock
 python-mimeparse
-django-tastypie
+django-tastypie==0.9.16 #the latest version has this bug https://github.com/toastdriven/django-tastypie/issues/1005
 django-nose
 email_reply_parser
 flufl.bounce
