@@ -95,13 +95,15 @@ class InstanceResourceTestCase(ResourceTestCase):
         self.assertEquals(instance.name, instance_data['name'])
         self.assertEquals(instance.slug, instance_data['slug'])
         self.assertEquals(instance.owner, self.user)
-        
-
-
-        
-
-
-
+    
+    def test_does_not_create_a_user_if_not_logged(self):
+        instance_data = {
+            'name' : 'The instance',
+            'slug': 'the-instance'
+        }
+        url = '/api/v1/instance/'
+        response = self.api_client.post(url, data = instance_data, format='json')
+        self.assertHttpUnauthorized(response)
 
 class MessageResourceTestCase(ResourceTestCase):
     def setUp(self):
