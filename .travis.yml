@@ -5,12 +5,14 @@ python:
 services:
   - elasticsearch
   - rabbitmq
+  - mongodb
 install:
   - pip install -r requirements.txt 
 # command to run tests
 env:
   - DJANGO_VERSION=1.5
 script:
+  - ./start_local_popit_api.bash
   - coverage run --source=nuntium,contactos,mailit manage.py test nuntium contactos mailit
   - coverage report -m
 after_script:

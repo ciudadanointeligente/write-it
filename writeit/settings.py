@@ -210,6 +210,20 @@ LOGGING = {
     }
 }
 
+# POPIT TESTING RELATED
+TEST_POPIT_API_HOST_IP   = '127.0.0.1'
+TEST_POPIT_API_PORT      = '3000'
+TEST_POPIT_API_SUBDOMAIN = 'popit-django-test'
+
+# We have our local popit instance for testing porpouses running using 
+# the bash file start_local_popit_api.bash
+# create the url to use for testing the database.
+# See http://xip.io/ for details on the domain used.
+TEST_POPIT_API_URL = "http://%s.%s.xip.io:%s/api" % ( TEST_POPIT_API_SUBDOMAIN,
+                                                      TEST_POPIT_API_HOST_IP,
+                                                      TEST_POPIT_API_PORT )
+
+
 #Email settings
 DEFAULT_FROM_EMAIL = 'mailer@example.com'
 
