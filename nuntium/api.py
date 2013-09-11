@@ -15,7 +15,8 @@ class WriteItInstanceResource(ModelResource):
     class Meta:
         queryset = WriteItInstance.objects.all()
         resource_name = 'instance'
-        authentication = ApiKeyAuthentication()
+        authorization = Authorization()
+        authentication = ApiKeyAuthentication() 
 
     def prepend_urls(self):
         return [
@@ -34,6 +35,9 @@ class WriteItInstanceResource(ModelResource):
         bundle.data['messages_uri'] = bundle.data['resource_uri']+'messages/'
         return bundle
 
+    def hydrate(self, bundle):
+        bundle.obj.owner = bundle.request.user
+        return bundle
 
 class AnswerResource(ModelResource):
     class Meta:

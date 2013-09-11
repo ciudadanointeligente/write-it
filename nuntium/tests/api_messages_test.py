@@ -7,6 +7,7 @@ from tastypie.models import ApiKey
 from popit.models import Person
 from global_test_case import GlobalTestCase as TestCase
 from django.utils.unittest import skip
+import re
 
 class InstanceResourceTestCase(ResourceTestCase):
     def setUp(self):
@@ -20,7 +21,9 @@ class InstanceResourceTestCase(ResourceTestCase):
 
         self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
 
-
+    def get_credentials(self):
+        credentials = self.create_apikey(username=self.user.username, api_key=self.user.api_key.key)
+        return credentials
 
     def test_api_exists(self):
         url = '/api/v1/'
@@ -74,7 +77,33 @@ class InstanceResourceTestCase(ResourceTestCase):
         self.assertEqual(messages[0]['id'], message.id)
         #assert that answers come in the 
 
+    def test_create_a_new_instance(self):
+        instance_data = {
+            'name' : 'The instance',
+            'slug': 'the-instance'
+        }
+        url = '/api/v1/instance/'
+        response = self.api_client.post(url, data = instance_data, format='json', authentication=self.get_credentials())
+        self.assertHttpCreated(response)
+        match_id = re.match(r'^http://testserver/api/v1/instance/(?P<id>\d+)/?', response['Location'])
+        self.assertIsNotNone(match_id)
+        instance_id = match_id.group('id')
 
+        instance = WriteItInstance.objects.get(id=instance_id)
+
+
+        self.assertEquals(instance.name, instance_data['name'])
+        self.assertEquals(instance.slug, instance_data['slug'])
+        self.assertEquals(instance.owner, self.user)
+    
+    def test_does_not_create_a_user_if_not_logged(self):
+        instance_data = {
+            'name' : 'The instance',
+            'slug': 'the-instance'
+        }
+        url = '/api/v1/instance/'
+        response = self.api_client.post(url, data = instance_data, format='json')
+        self.assertHttpUnauthorized(response)
 
 class MessageResourceTestCase(ResourceTestCase):
     def setUp(self):
