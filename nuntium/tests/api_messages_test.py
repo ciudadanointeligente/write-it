@@ -106,7 +106,6 @@ class InstanceResourceTestCase(ResourceTestCase):
         response = self.api_client.post(url, data = instance_data, format='json')
         self.assertHttpUnauthorized(response)
 
-    @skip("Im gonna do this at a model level first")
     def test_create_and_pull_people_from_a_popit_api(self):
         #loading data into the popit-api
         popit_load_data()
@@ -122,11 +121,13 @@ class InstanceResourceTestCase(ResourceTestCase):
         match_id = re.match(r'^http://testserver/api/v1/instance/(?P<id>\d+)/?', response['Location'])
 
         instance = WriteItInstance.objects.get(id=match_id.group('id'))
-        self.assertTrue(instance.persons.count(), 2)
+        self.assertEquals(instance.persons.count(), 2)
         #this should not break
-        joe_bloggs = Person.objects.get(name='Joe Bloggs')
+        raton = Person.objects.get(name='Ratón Inteligente')
+        fiera = Person.objects.get(name="Fiera Feroz")
 
-        self.assertIn(joe_bloggs, [repr(r) for r in instance.persons.all()])
+        self.assertIn(raton, [r for r in instance.persons.all()])
+        self.assertIn(fiera, [r for r in instance.persons.all()])
 
 
 

@@ -36,7 +36,6 @@ def popit_load_data(fixture_name='default'):
 
     # Usage: mongofixtures db_name path/to/fixtures.js
     dev_null = open(os.devnull, 'w')
-    print mongofixtures_path, database_name, test_fixtures_path
     exit_code = subprocess.call([mongofixtures_path, database_name, test_fixtures_path], stdout=dev_null)
     if exit_code:
         raise Exception("Error loading fixtures for '%s'" % fixture_name)   
