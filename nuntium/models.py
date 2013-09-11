@@ -2,7 +2,7 @@ from django.db.models.signals import post_save, pre_save
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from popit.models import Person
+from popit.models import Person, ApiInstance
 from contactos.models import Contact
 from nuntium.plugins import OutputPlugin
 from django.contrib.contenttypes.models import ContentType
@@ -37,7 +37,13 @@ class WriteItInstance(models.Model):
     owner = models.ForeignKey(User)
     rate_limiter = models.IntegerField(default=0)
 
-    
+    def load_persons_from_a_popit_api(self, popit_url):
+        api_instance, created = ApiInstance.objects.get_or_create(url=popit_url)
+        api_instance.fetch_all_from_api()
+        persons = Person.objects.filter(api_instance=api_instance)
+        for person in persons:
+            Membership.objects.create(writeitinstance=self, person=person)
+
     def get_absolute_url(self):
         return reverse('instance_detail',subdomain=self.slug)
 

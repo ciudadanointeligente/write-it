@@ -1,5 +1,5 @@
 # coding=utf-8
-from global_test_case import GlobalTestCase as TestCase
+from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from subdomains.utils import reverse
 from nuntium.models import WriteItInstance, Message, Membership, Confirmation, Moderation
 from nuntium.views import MessageCreateForm, PerInstanceSearchForm
@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from subdomains.tests import SubdomainTestMixin
 from django.utils.translation import activate
 from django.utils.translation import ugettext as _
+from django.conf import settings
 
 class InstanceTestCase(TestCase, SubdomainTestMixin):
 
@@ -83,6 +84,27 @@ class InstanceTestCase(TestCase, SubdomainTestMixin):
         Membership.objects.create(writeitinstance=writeitinstance, person=self.person1)
         self.assertEquals(writeitinstance.persons.get(id=self.person1.id), self.person1)
         self.assertEquals(self.person1.writeit_instances.get(id=writeitinstance.id), writeitinstance)
+
+
+    def test_create_an_instance_and_load_persons_from_an_api(self):
+        # We have a popit running locally using the 
+        # start_local_popit_api.bash script
+        popit_load_data()
+        #loading data into the popit-api
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+
+        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+
+        self.assertEquals(writeitinstance.persons.all().count(), 2)
+
+        raton = Person.objects.get(name='Ratón Inteligente')
+        fiera = Person.objects.get(name="Fiera Feroz")
+
+        self.assertIn(raton, [r for r in writeitinstance.persons.all()])
+        self.assertIn(fiera, [r for r in writeitinstance.persons.all()])
+
+
+
 
 class InstanceDetailView(TestCase, SubdomainTestMixin):
     def setUp(self):

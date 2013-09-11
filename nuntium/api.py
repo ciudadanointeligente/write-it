@@ -39,6 +39,13 @@ class WriteItInstanceResource(ModelResource):
         bundle.obj.owner = bundle.request.user
         return bundle
 
+    def obj_create(self, bundle):
+        bundle = super(WriteItInstanceResource, self).obj_create(bundle)
+        instance = bundle.obj
+        if "popit-api" in bundle.data and bundle.data["popit-api"]:
+            instance.load_persons_from_a_popit_api(bundle.data["popit-api"])
+        return bundle
+
 class AnswerResource(ModelResource):
     class Meta:
         queryset =  Answer.objects.all()

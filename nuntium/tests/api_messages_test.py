@@ -5,8 +5,9 @@ from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
 from tastypie.models import ApiKey
 from popit.models import Person
-from global_test_case import GlobalTestCase as TestCase
+from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from django.utils.unittest import skip
+from django.conf import settings
 import re
 
 class InstanceResourceTestCase(ResourceTestCase):
@@ -104,6 +105,34 @@ class InstanceResourceTestCase(ResourceTestCase):
         url = '/api/v1/instance/'
         response = self.api_client.post(url, data = instance_data, format='json')
         self.assertHttpUnauthorized(response)
+
+    def test_create_and_pull_people_from_a_popit_api(self):
+        #loading data into the popit-api
+        popit_load_data()
+
+        instance_data = {
+            'name' : 'The instance',
+            'slug': 'the-instance',
+            'popit-api': settings.TEST_POPIT_API_URL
+        }
+        url = '/api/v1/instance/'
+        response = self.api_client.post(url, data = instance_data, format='json', authentication=self.get_credentials())
+        self.assertHttpCreated(response)
+        match_id = re.match(r'^http://testserver/api/v1/instance/(?P<id>\d+)/?', response['Location'])
+
+        instance = WriteItInstance.objects.get(id=match_id.group('id'))
+        self.assertEquals(instance.persons.count(), 2)
+        #this should not break
+        raton = Person.objects.get(name='Ratón Inteligente')
+        fiera = Person.objects.get(name="Fiera Feroz")
+
+        self.assertIn(raton, [r for r in instance.persons.all()])
+        self.assertIn(fiera, [r for r in instance.persons.all()])
+
+
+
+
+
 
 class MessageResourceTestCase(ResourceTestCase):
     def setUp(self):
