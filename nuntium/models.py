@@ -26,12 +26,13 @@ from django.contrib.sites.models import Site
 from django.db import IntegrityError
 from django.db.models import Q
 import requests
+from autoslug import AutoSlugField
 
 
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
     name = models.CharField(max_length=255)
-    slug = models.CharField(max_length=255)
+    slug = AutoSlugField(populate_from='name', unique=True)
     persons = models.ManyToManyField(Person, related_name='writeit_instances', through='Membership')
     moderation_needed_in_all_messages = models.BooleanField(help_text=_("Every message is going to have a moderation mail"))
     owner = models.ForeignKey(User)
