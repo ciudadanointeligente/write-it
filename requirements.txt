@@ -17,4 +17,5 @@ django-haystack
 pyelasticsearch
 celery
 django-celery
+django-autoslug
 pytz

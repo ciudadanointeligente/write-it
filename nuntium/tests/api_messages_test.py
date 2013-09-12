@@ -76,7 +76,7 @@ class InstanceResourceTestCase(ResourceTestCase):
 
         self.assertEqual(len(messages), Message.objects.filter(writeitinstance=self.writeitinstance).count()) #All the instances
         self.assertEqual(messages[0]['id'], message.id)
-        #assert that answers come in the 
+        #assert that answers come in the
 
     def test_create_a_new_instance(self):
         instance_data = {
@@ -96,6 +96,24 @@ class InstanceResourceTestCase(ResourceTestCase):
         self.assertEquals(instance.name, instance_data['name'])
         self.assertEquals(instance.slug, instance_data['slug'])
         self.assertEquals(instance.owner, self.user)
+
+    def test_create_a_new_instance_with_only_name(self):
+        instance_data = {
+            'name' : 'The instance'
+        }
+        url = '/api/v1/instance/'
+        response = self.api_client.post(url, data = instance_data, format='json', authentication=self.get_credentials())
+        self.assertHttpCreated(response)
+        match_id = re.match(r'^http://testserver/api/v1/instance/(?P<id>\d+)/?', response['Location'])
+        self.assertIsNotNone(match_id)
+        instance_id = match_id.group('id')
+
+        instance = WriteItInstance.objects.get(id=instance_id)
+
+
+        self.assertEquals(instance.name, instance_data['name'])
+        self.assertEquals(instance.owner, self.user)
+        self.assertTrue(instance.slug)
     
     def test_does_not_create_a_user_if_not_logged(self):
         instance_data = {
