@@ -11,7 +11,20 @@ from django.http import HttpRequest
 from popit.models import Person
 from contactos.models import Contact
 
+class PersonResource(ModelResource):
+    class Meta:
+        queryset = Person.objects.all()
+        resource_name = 'person'
+        authentication = ApiKeyAuthentication()
+
+    def dehydrate(self, bundle):
+        bundle.data['resource_uri'] = bundle.obj.popit_url
+        return bundle
+
 class WriteItInstanceResource(ModelResource):
+    # I should add persons but the thing is that it breaks some other tests and I'm running out of time
+    # so now you cannot create a writeit instance with persons just with a popit-instance =) 
+    # regards the lazy programmer
     class Meta:
         queryset = WriteItInstance.objects.all()
         resource_name = 'instance'
@@ -33,6 +46,9 @@ class WriteItInstanceResource(ModelResource):
     def dehydrate(self, bundle):
         #not completely sure that this is the right way to get the messages
         bundle.data['messages_uri'] = bundle.data['resource_uri']+'messages/'
+        bundle.data['persons'] = []
+        for person in bundle.obj.persons.all():
+            bundle.data['persons'].append(person.popit_url)
         return bundle
 
     def hydrate(self, bundle):
@@ -40,6 +56,7 @@ class WriteItInstanceResource(ModelResource):
         return bundle
 
     def obj_create(self, bundle):
+        print bundle.data
         bundle = super(WriteItInstanceResource, self).obj_create(bundle)
         instance = bundle.obj
         if "popit-api" in bundle.data and bundle.data["popit-api"]:

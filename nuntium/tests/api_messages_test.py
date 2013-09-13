@@ -57,6 +57,16 @@ class InstanceResourceTestCase(ResourceTestCase):
 
         self.assertValidJSONResponse(response)
 
+    def test_get_persons_of_an_instance(self):
+        writeitinstance = WriteItInstance.objects.all()[0]
+        url = '/api/v1/instance/{0}/'.format(writeitinstance.id)
+        response = self.api_client.get(url,data = self.data)
+        instance = self.deserialize(response)
+        self.assertIn('persons', instance)
+        pedro = Person.objects.all()[0]
+        self.assertIn(pedro.popit_url, instance['persons'])
+
+
     def test_get_list_of_messages_per_instance(self):
         
         pedro = Person.objects.all()[0]
@@ -146,6 +156,52 @@ class InstanceResourceTestCase(ResourceTestCase):
 
         self.assertIn(raton, [r for r in instance.persons.all()])
         self.assertIn(fiera, [r for r in instance.persons.all()])
+
+
+
+
+class PersonResourceTestCase(ResourceTestCase):
+    def setUp(self):
+        super(PersonResourceTestCase, self).setUp()
+        call_command('loaddata', 'example_data', verbosity=0)
+        self.user = User.objects.all()[0]
+        self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
+        self.api_client = TestApiClient()
+        
+        
+        ApiKey.objects.create(user=self.user)
+
+        self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
+
+
+    def get_credentials(self):
+        credentials = self.create_apikey(username=self.user.username, api_key=self.user.api_key.key)
+        return credentials
+
+
+    def test_get_list_of_messages(self):
+        url = '/api/v1/person/'
+        response = self.api_client.get(url, authentication=self.get_credentials())
+
+
+        self.assertValidJSONResponse(response)
+
+        persons = self.deserialize(response)['objects']
+        self.assertEqual(len(persons), Person.objects.count()) #All the instances
+
+
+    def test_unauthorized_list_of_persons(self):
+        url = '/api/v1/person/'
+        response = self.api_client.get(url)
+
+        self.assertHttpUnauthorized(response)
+
+
+    def test_the_remote_url_of_the_person_points_to_its_popit_instance(self):
+        url = '/api/v1/person/'
+        response = self.api_client.get(url, authentication=self.get_credentials())
+        persons = self.deserialize(response)['objects']
+        self.assertEquals(persons[0]['popit_url'], persons[0]['resource_uri'])
 
 
 
@@ -257,32 +313,6 @@ class MessageResourceTestCase(ResourceTestCase):
         self.assertEquals(len(the_message.people), writeitinstance.persons.count())
         self.assertEquals(the_message.people,list(writeitinstance.persons.all()))
 
-
-
-
-    # def test_get_message_detail_that_was_created_using_the_api(self):
-    #     writeitinstance = WriteItInstance.objects.all()[0]
-    #     message_data = {
-    #         'author_name' : 'Felipipoo',
-    #         'subject': 'new message',
-    #         'content': 'the content thing',
-    #         'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
-    #         'persons': [writeitinstance.persons.all()[0].popit_url]
-    #     }
-    #     url = '/api/v1/message/'
-    #     response = self.api_client.post(url, data = message_data, format='json', authentication=self.get_credentials())
-
-    #     the_message = Message.objects.get(author_name='Felipipoo')
-    #     #this message is confirmated but has no confirmation object
-    #     #this occurs when creating a message throu the API
-    #     url = reverse('message_detail', kwargs={'slug':the_message.slug})
-    #     response = self.client.get(url)
-    #     self.assertEquals(response.status_code, 200)
-    #     self.assertTrue(False)
-
-
-
-
 from nuntium.api import AnswerResource
 from django.http import HttpRequest
 from nuntium.models import Answer
@@ -301,16 +331,6 @@ class AnswersResourceTestCase(ResourceTestCase):
         answers_json = self.deserialize(resource.get_list(request))['objects']
         self.assertEquals(len(answers_json), Answer.objects.count())
         self.assertEquals(answers_json[0]["id"], self.answer.id)
-
-# from nuntium.api import OnlyOwnerAuthorization
-
-# class OwnerAuthorizationTestCase(TestCase):
-#     def setUp(self):
-#         super(OwnerAuthorizationTestCase,self).setUp()
-#         self.authorization = OnlyOwnerAuthorization()
-
-#     def test_only_owner_of_an_election_is_authorized(self):
-#         self.assertTrue(False)
 
 from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Answer
 
