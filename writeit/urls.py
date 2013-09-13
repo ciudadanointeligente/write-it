@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from nuntium.views import ConfirmView, AcceptModerationView, RejectModerationView, RootRedirectView
 from django.conf.urls.i18n import i18n_patterns
 from tastypie.api import Api
-from nuntium.api import WriteItInstanceResource, MessageResource, AnswerCreationResource, HandleBouncesResource
+from nuntium.api import WriteItInstanceResource, MessageResource, AnswerCreationResource, HandleBouncesResource, PersonResource
 from django.views.generic.base import TemplateView, RedirectView
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -13,6 +13,7 @@ v1_api.register(WriteItInstanceResource())
 v1_api.register(MessageResource())
 v1_api.register(AnswerCreationResource())
 v1_api.register(HandleBouncesResource())
+v1_api.register(PersonResource())
 
 urlpatterns = patterns('',
     # Examples:
