@@ -9,6 +9,7 @@ from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from django.utils.unittest import skip
 from django.conf import settings
 import re
+from django.utils.encoding import force_text
 
 class InstanceResourceTestCase(ResourceTestCase):
     def setUp(self):
@@ -101,8 +102,9 @@ class InstanceResourceTestCase(ResourceTestCase):
         instance_id = match_id.group('id')
 
         instance = WriteItInstance.objects.get(id=instance_id)
-
-
+        self.assertValidJSON(force_text(response.content))
+        instance_as_json = force_text(response.content)
+        self.assertIn('resource_uri', instance_as_json)
         self.assertEquals(instance.name, instance_data['name'])
         self.assertEquals(instance.slug, instance_data['slug'])
         self.assertEquals(instance.owner, self.user)

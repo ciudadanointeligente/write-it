@@ -30,6 +30,7 @@ class WriteItInstanceResource(ModelResource):
         resource_name = 'instance'
         authorization = Authorization()
         authentication = ApiKeyAuthentication() 
+        always_return_data = True
 
     def prepend_urls(self):
         return [
@@ -56,7 +57,6 @@ class WriteItInstanceResource(ModelResource):
         return bundle
 
     def obj_create(self, bundle):
-        print bundle.data
         bundle = super(WriteItInstanceResource, self).obj_create(bundle)
         instance = bundle.obj
         if "popit-api" in bundle.data and bundle.data["popit-api"]:
