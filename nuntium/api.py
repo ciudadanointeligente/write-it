@@ -77,6 +77,7 @@ class MessageResource(ModelResource):
         resource_name = 'message'
         authorization = Authorization()
         authentication = ApiKeyAuthentication()
+        always_return_data = True
         filtering = {
             'writeitinstance': ALL_WITH_RELATIONS
         }

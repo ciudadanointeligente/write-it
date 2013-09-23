@@ -267,6 +267,9 @@ class MessageResourceTestCase(ResourceTestCase):
         previous_amount_of_messages = Message.objects.count()
         response = self.api_client.post(url, data = message_data, format='json', authentication=self.get_credentials())
         self.assertHttpCreated(response)
+        self.assertValidJSON(force_text(response.content))
+        message_as_json = force_text(response.content)
+        self.assertIn('resource_uri', message_as_json)
 
         post_amount_of_messages = Message.objects.count()
         self.assertEquals(post_amount_of_messages, previous_amount_of_messages + 1)
