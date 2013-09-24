@@ -282,6 +282,29 @@ class MessageResourceTestCase(ResourceTestCase):
         for outbound_message in outbound_messages:
             self.assertEquals(outbound_message.status, 'ready')
 
+    def test_create_a_new_message_with_a_non_existing_person(self):
+        writeitinstance = WriteItInstance.objects.all()[0]
+        message_data = {
+            'author_name' : 'Felipipoo',
+            'subject': 'new message',
+            'content': 'the content thing',
+            'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
+            'persons': [
+            writeitinstance.persons.all()[0].popit_url,
+            'http://this.person.does.not.exist'
+            ]
+        }
+
+
+        url = '/api/v1/message/'
+        previous_amount_of_messages = Message.objects.count()
+        response = self.api_client.post(url, data = message_data, format='json', authentication=self.get_credentials())
+        self.assertHttpCreated(response)
+        the_message = Message.objects.get(author_name='Felipipoo')
+        outbound_messages = the_message.outboundmessage_set.all()
+        self.assertEquals(outbound_messages.count(), 1)
+        self.assertEquals(outbound_messages[0].contact.person,writeitinstance.persons.all()[0] )
+
     def test_create_a_new_message_confirmated(self):
         writeitinstance = WriteItInstance.objects.all()[0]
         message_data = {

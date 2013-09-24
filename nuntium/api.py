@@ -3,6 +3,7 @@ from tastypie.resources import ModelResource, ALL_WITH_RELATIONS, Resource
 from nuntium.models import WriteItInstance, Message, Answer, OutboundMessageIdentifier, OutboundMessage
 from tastypie.authentication import ApiKeyAuthentication, Authentication
 from tastypie.authorization import Authorization
+from django.core.exceptions import ObjectDoesNotExist
 from django.conf.urls import url
 from tastypie import fields
 from tastypie.exceptions import ImmediateHttpResponse
@@ -90,7 +91,11 @@ class MessageResource(ModelResource):
                 persons.append(person)
         else:
             for popit_url in bundle.data['persons']:
-                persons.append(Person.objects.get(popit_url=popit_url))
+                try:
+                    person = Person.objects.get(popit_url=popit_url)
+                    persons.append(person)
+                except ObjectDoesNotExist:
+                    pass
         bundle.obj.persons = persons
         bundle.obj.confirmated = True
         return bundle
