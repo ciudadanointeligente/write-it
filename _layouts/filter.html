@@ -1,9 +1,0 @@
-<!DOCTYPE html>
-{% assign layout_filter_html = null %}
-{% capture layout_filter_html %}
-	<html lang="en">
-		{% include head/filter.html %}
-		{% include body/filter.html %}
-	</html>
-{% endcapture %}
-{{ layout_filter_html | strip_newlines | remove:'	' }}

@@ -1,9 +1,0 @@
-<!DOCTYPE html>
-{% assign layout_post_html = null %}
-{% capture layout_post_html %}
-	<html lang="en">
-		{% include head/post.html %}
-		{% include body/post.html %}
-	</html>
-{% endcapture %}
-{{ layout_post_html | remove:'	' }}

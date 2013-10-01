@@ -1,7 +1,0 @@
-{% assign javascript_jquery_html = null %}
-{% capture javascript_jquery_html %}
-	{% if site.jquery.enabled %}
-		<script src="{{ site.url }}/js/{{ site.jquery.src }}"></script>
-	{% endif %}
-{% endcapture %}
-{{ javascript_jquery_html | strip_newlines | remove:'	' }}
