@@ -118,7 +118,7 @@ a {
 
 
 #hero-background {
-    background: url("./images/imagenFondo.png") no-repeat scroll 100% 50px #E6E7E7;
+    background: url("../images/imagenFondo.png") no-repeat scroll 100% 50px #E6E7E7;
     height: 100%;
     left: 0;
     min-height: 540px;
@@ -150,15 +150,7 @@ a {
     width: 45%;
 }
 
-#hero-right a:before {
-    background: none repeat scroll 0 0 #6D8700;
-    border-radius: 6px 0 0 6px;
-    content: url("../images/start-iniciative.png");
-    left: -50px;
-    padding: 6px 8px;
-    position: absolute;
-    top: 0;
-}
+
 #hero-right a {
     background: none repeat scroll 0 0 #89A000;
     border-radius: 6px 6px 6px 6px;
@@ -174,20 +166,6 @@ a {
     text-align: center;
     text-decoration: none;
     width: 70%;
-}
-
-#hero-right a.bt-red:before {
-    background: none repeat scroll 0 0 #D32420;
-    content: url("../images/upload-app.png");
-}
-#hero-right a:before {
-    background: none repeat scroll 0 0 #6D8700;
-    border-radius: 6px 0 0 6px;
-    content: url("../images/start-iniciative.png");
-    left: -50px;
-    padding: 6px 8px;
-    position: absolute;
-    top: 0;
 }
 
 #hero-right a.bt-red {
