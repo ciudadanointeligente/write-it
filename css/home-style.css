@@ -78,6 +78,18 @@ h2 {
     margin: 80px 0 0;
 }
 
+/*Header*/
+
+.header:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.header {
+  *zoom: 1;
+}
+
 .site-header {
     background-color: #2E353F;
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.25);
@@ -85,6 +97,10 @@ h2 {
     top: 0;
     width: 100%;
     z-index: 2;
+}
+
+.header a.site-logo {
+	float: left;
 }
 
 .site-header .site {
@@ -101,16 +117,11 @@ h2 {
 }
 
 ul.menu {
-    display: inline-block;
     float: right;
     list-style: none outside none;
     padding: 6px 0;
 }
 
-.site .header a {
-
-    text-decoration: none;
-}
 a {
     color: #EE4036;
     text-decoration: none;
