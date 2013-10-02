@@ -206,7 +206,9 @@ a {
     color: #FFFFFF;
     font-size: 12px;
     font-weight: normal;
+    display: inline;
 }
+
 ul.menu li {
     background: none repeat scroll 0 0 #242B33;
     border-radius: 5px 5px 5px 5px;
@@ -220,7 +222,7 @@ ul.menu a li:hover {
 }
 
 .btnContacto {
-	 background: none repeat scroll 0 0 #57D6AC;
+	background: none repeat scroll 0 0 #57D6AC;
     border-radius: 6px 6px 6px 6px;
     color: #FFFFFF;
     float: right;
