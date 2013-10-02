@@ -119,7 +119,7 @@ h2 {
 ul.menu {
     float: right;
     list-style: none outside none;
-    padding: 6px 0;
+    padding: 10px 0;
 }
 
 a {
@@ -202,22 +202,36 @@ a {
     width: 90%;
 }
 
-.site .header ul.menu a li {
-    color: #FFFFFF;
-    font-size: 12px;
-    font-weight: normal;
+.site .header ul.menu {
+    float: right;
+}
+
+.site .header ul.menu li {
     display: inline;
 }
 
-ul.menu li {
-    background: none repeat scroll 0 0 #242B33;
-    border-radius: 5px 5px 5px 5px;
-    float: right;
-    margin-left: 10px;
-    padding: 5px 10px;
+.header ul.menu a {
+	color: #FFFFFF;
+	text-decoration: none;
+	background: none repeat scroll 0 0 #242B33;
+	border-radius: 5px;
+	padding: 8px 14px;
 }
 
-ul.menu a li:hover {
+.header li.poplus-logo a {
+	color: #c3d83a;
+	position: relative;
+	padding-left: 39px;
+}
+
+.header li.poplus-logo a:before {
+	content: url("../images/icon-poplus.png");
+	left: 12px;
+	top: 8px;
+	position: absolute;
+}
+
+ul.menu a:hover {
   background: #0a0c0f;
 }
 
