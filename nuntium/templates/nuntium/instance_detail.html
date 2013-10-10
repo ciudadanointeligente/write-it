@@ -78,6 +78,12 @@
         </form>
     </div>
 </div>
+{% else %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h2 class="panel-title">{% trans "Sorry, currently you can not create new messages using this web" %}</h2>
+    </div>
+</div>
 {% endif %}
 {% if writeitinstance.message_set.count == 0 %}
     <h2>{% trans "There are no messages" %}</h2>
