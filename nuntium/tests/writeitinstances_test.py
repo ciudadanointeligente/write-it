@@ -32,6 +32,7 @@ class InstanceTestCase(TestCase, SubdomainTestMixin):
         self.assertEquals(writeitinstance.name, 'instance 1')
         self.assertEquals(writeitinstance.slug, 'instance-1')
         self.assertEquals(writeitinstance.owner, self.owner)
+        self.assertTrue(writeitinstance.allow_messages_using_form)
 
     def test_moderation_needed_in_all_messages(self):
         
