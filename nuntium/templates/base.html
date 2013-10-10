@@ -1,57 +1,94 @@
-{% load staticfiles %}{% load i18n %}<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>{% trans "You writeit and we deliver it!" %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load i18n %}
+{% load subdomainurls %}
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
 
-    <!-- Le styles -->
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'css/bootstrap-responsive.min.css' %}" rel="stylesheet">
-    <link href="{% static 'css/base.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+        <style>
+            body {
+              min-height: 2000px;
+            }
 
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="{% static 'js/html5shiv.js' %}"></script>
-    <![endif]-->
-
-    <!-- Fav and touch icons -->
-  </head>
-
-  <body>
-
-    
-
-  <div class="container-fluid">
-    <div class="row-fluid">
-      <div class="span3">
-        <!--Sidebar content-->
+            .navbar-static-top {
+              margin-bottom: 19px;
+            }
+        </style>
+        <link rel="stylesheet" href="{% static 'css/bootstrap-responsive.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/main.css' %}">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/jquery-1.10.1.min.js"><\/script>')</script>
+    </head>
+    <body ng-app="writeit">
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+    <div class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Write-it</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+          </ul>
+              {% block search_form %}
+              {% endblock search_form%}
+        </div><!--/.nav-collapse -->
       </div>
-      <div class="span9">
-      	{% block content %}
-      	{% endblock content%}
-      </div>
-      
+    </div>
 
-    </div> <!-- /container -->
+        <div class="container">
+          {% block content %}
+      {% endblock content %}
+            <hr>
 
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{% static 'js/jquery.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+            <footer>
+                <p>{% blocktrans %}Built by <a href="http://www.ciudadanointeligente.org">Fundación Ciudadano Inteligente</a>{% endblocktrans %}</p>
+                <p>
+                  <a href="http://www.github.com/ciudadanointeligente/write-it">
+                  {% blocktrans %}Find the code at Github{% endblocktrans %}
+                  </a>
+                </p>
+            </footer>
 
-  </body>
-  <footer>
-    <p>{% blocktrans %}Built by <a href="http://www.ciudadanointeligente.org">Fundación Ciudadano Inteligente</a>{% endblocktrans %}</p>
-    <p>
-      <a href="http://www.github.com/ciudadanointeligente/write-it">
-      {% blocktrans %}Find the code at Github{% endblocktrans %}
-      </a>
-    </p>
-    
-  </footer>
+        </div> <!-- /container -->
+
+        
+        <script src="{% static 'js/modernizr-2.6.2-respond-1.1.0.min.js' %}"></script>
+        <script src="{% static 'js/removeDiacritics.js' %}"></script>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+        <script src="{% static 'js/main.js' %}"></script>
+        <script type="text/javascript">
+        {% block extrajs %}
+        {% endblock extrajs %}
+        </script>
+        <script>
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src='//www.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
 </html>

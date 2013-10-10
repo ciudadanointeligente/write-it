@@ -39,7 +39,7 @@ class OutboundMessageTestCase(TestCase):
     def test_outbound_messsages_creation_on_message_save(self):
         # si new message then x neew outbound TestMessages
         new_outbound_messages = OutboundMessage.objects.all()
-        self.assertEquals(new_outbound_messages.count(), 2)
+        self.assertEquals(new_outbound_messages.count(), 3)
 
 
     def test_successful_send(self):
@@ -62,6 +62,14 @@ class OutboundMessageTestCase(TestCase):
         identifier = OutboundMessageIdentifier.objects.get(outbound_message=outbound_message)
 
         self.assertTrue(identifier)
+
+
+    def test_statuses(self):
+        self.assertIn(("new",_("Newly created")),OutboundMessage.STATUS_CHOICES )
+        self.assertIn(("ready",_("Ready to send")),OutboundMessage.STATUS_CHOICES )
+        self.assertIn(("sent",_("Sent")),OutboundMessage.STATUS_CHOICES )
+        self.assertIn(("error",_("Error sending it")),OutboundMessage.STATUS_CHOICES )
+        self.assertIn(("needmodera",_("Needs moderation")),OutboundMessage.STATUS_CHOICES )
 
 
 

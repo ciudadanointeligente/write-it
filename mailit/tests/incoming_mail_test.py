@@ -3,6 +3,7 @@ from global_test_case import GlobalTestCase as TestCase
 from global_test_case import ResourceGlobalTestCase as ResourceTestCase
 import os
 from mailit.bin.handleemail import EmailHandler, EmailAnswer, ApiKeyAuth
+from mailit.models import BouncedMessageRecord
 from django.utils.unittest import skip
 from mock import patch
 from django.contrib.auth.models import User
@@ -12,6 +13,10 @@ from tastypie.models import ApiKey
 import logging
 from mailit.bin import config
 import json
+from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Message, OutboundMessagePluginRecord
+from mailit.management.commands.handleemail import AnswerForManageCommand
+import types
+from contactos.models import Contact
 
 class PostMock():
     def __init__(self):
@@ -205,7 +210,7 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
             post.assert_called_with(self.where_to_post_creation_of_the_answer, data=data, headers=expected_headers)
 
     def test_reports_a_bounce_if_it_is_a_bounce_and_does_not_post_to_the_api(self):
-        f = open('mailit/tests/fixture/bounced_mail.txt')
+        f = open('mailit/tests/fixture/bounced_mail2.txt')
         bounce = f.readlines()
         f.close()
         self.answer = self.handler.handle(bounce)
@@ -229,8 +234,6 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
 
 
     def test_logs_the_result_of_send_back(self):
-        
-
         email_answer = EmailAnswer()
         email_answer.subject = 'prueba4'
         email_answer.content_text = 'prueba4lafieritaespeluda'
@@ -249,10 +252,6 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
                     email_answer.send_back()
                     info.assert_called_with(expected_log)
 
-
-
-
-
     def test_logs_the_incoming_email(self):
 
         with patch('logging.info') as info:
@@ -268,13 +267,12 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
             }
             info.assert_called_with(expected_log)
 
-
 class HandleBounces(TestCase):
     def setUp(self):
         super(HandleBounces, self).setUp()
         self.user = User.objects.all()[0]
         ApiKey.objects.create(user=self.user)
-        f = open('mailit/tests/fixture/bounced_mail.txt')
+        f = open('mailit/tests/fixture/bounced_mail2.txt')
         self.email = f.readlines()
         f.close()
         self.where_to_post_a_bounce = 'http://writeit.ciudadanointeligente.org//api/v1/handle_bounce/'
@@ -306,4 +304,99 @@ class HandleBounces(TestCase):
             post.assert_called_with(self.where_to_post_a_bounce, data=data, headers=expected_headers)
 
 
+class BouncedMessageRecordTestCase(TestCase):
+    def setUp(self):
+        super(BouncedMessageRecordTestCase, self).setUp()
+        self.outbound_message = OutboundMessage.objects.all()[0]
+        self.identifier = OutboundMessageIdentifier.objects.all()[0]
+        self.identifier.key = '4aaaabbb'
+        self.identifier.save()
+        self.bounced_email = ""
+        with open('mailit/tests/fixture/bounced_mail2.txt') as f:
+            self.bounced_email += f.read()
+        f.close()
+        self.bounced_email.replace(self.identifier.key, '')
 
+        self.handler = EmailHandler(answer_class = AnswerForManageCommand)
+
+
+    def test_creation(self):
+        bounced_message = BouncedMessageRecord.objects.create(
+            outbound_message = self.outbound_message,
+            bounce_text = self.bounced_email
+            )
+        self.assertTrue(bounced_message)
+        self.assertEquals(bounced_message.outbound_message, self.outbound_message)
+        self.assertFalse(bounced_message.date is None)
+        self.assertEquals(bounced_message.bounce_text, self.bounced_email)
+
+    
+    def test_it_creates_a_bounced_message_when_comes_a_new_bounce(self):
+        email_answer = self.handler.handle(self.bounced_email)
+        identifier = OutboundMessageIdentifier.objects.get(key=email_answer.outbound_message_identifier)
+        outbound_message = OutboundMessage.objects.get(outboundmessageidentifier=identifier)
+        email_answer.send_back()
+        bounced_messages = BouncedMessageRecord.objects.filter(outbound_message=outbound_message)
+
+        self.assertEquals(bounced_messages.count(), 1)
+        bounced_message = bounced_messages[0]
+        self.assertEquals(bounced_message.bounce_text, email_answer.content_text)
+
+class BouncedMailInAmazonBug(TestCase):
+    def setUp(self):
+        super(BouncedMailInAmazonBug, self).setUp()
+        self.message = Message.objects.all()[0]
+        self.contact = Contact.objects.get(value="mailnoexistente@ciudadanointeligente.org")
+        self.outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact)
+        identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
+        identifier.key = "4aaaabbb"
+        identifier.save()
+        
+        self.bounced_email = ""
+        with open('mailit/tests/fixture/bounced_mail2.txt') as f:
+            self.bounced_email += f.read()
+        f.close()
+        self.handler = EmailHandler(answer_class = AnswerForManageCommand)
+        self.answer = self.handler.handle(self.bounced_email)
+        self.answer.send_back()
+        
+    def test_it_marks_the_contact_as_a_bounce(self):
+        contact = Contact.objects.get(value="mailnoexistente@ciudadanointeligente.org")
+        self.assertTrue(contact.is_bounced)
+
+    def test_it_marks_the_outbound_message_as_an_error(self):
+        #I have to look for it again cause it has changed in the DB
+        outbound_message = OutboundMessage.objects.get(id=self.outbound_message.id)
+        self.assertEquals(outbound_message.status, "error")
+
+class BouncedMailInGmail(TestCase):
+    def setUp(self):
+        super(BouncedMailInGmail, self).setUp()
+        self.message = Message.objects.all()[0]
+        self.contact = Contact.objects.get(value="mailnoexistente@ciudadanointeligente.org")
+        self.outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact)
+        self.outbound_message.send()
+        identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
+        identifier.key = "4aaaabbb"
+        identifier.save()
+
+        self.bounced_email = ""
+        with open('mailit/tests/fixture/bounced_mail.txt') as f:
+            self.bounced_email += f.read()
+        f.close()
+        self.handler = EmailHandler(answer_class = AnswerForManageCommand)
+        self.answer = self.handler.handle(self.bounced_email)
+        self.answer.send_back()
+        
+    def test_it_marks_the_contact_as_a_bounce(self):
+        contact = Contact.objects.get(value="mailnoexistente@ciudadanointeligente.org")
+        self.assertTrue(contact.is_bounced)
+
+    def test_it_marks_the_outbound_message_as_an_error(self):
+        #I have to look for it again cause it has changed in the DB
+        outbound_message = OutboundMessage.objects.get(id=self.outbound_message.id)
+        self.assertEquals(outbound_message.status, "error")
+
+    def test_it_marks_the_outbound_record_to_try_again(self):
+        record = OutboundMessagePluginRecord.objects.get(outbound_message=self.outbound_message)
+        self.assertTrue(record.try_again)

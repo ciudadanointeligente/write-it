@@ -5,8 +5,11 @@ from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
 from tastypie.models import ApiKey
 from popit.models import Person
-from global_test_case import GlobalTestCase as TestCase
+from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from django.utils.unittest import skip
+from django.conf import settings
+import re
+from django.utils.encoding import force_text
 
 class InstanceResourceTestCase(ResourceTestCase):
     def setUp(self):
@@ -20,7 +23,9 @@ class InstanceResourceTestCase(ResourceTestCase):
 
         self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
 
-
+    def get_credentials(self):
+        credentials = self.create_apikey(username=self.user.username, api_key=self.user.api_key.key)
+        return credentials
 
     def test_api_exists(self):
         url = '/api/v1/'
@@ -53,6 +58,16 @@ class InstanceResourceTestCase(ResourceTestCase):
 
         self.assertValidJSONResponse(response)
 
+    def test_get_persons_of_an_instance(self):
+        writeitinstance = WriteItInstance.objects.all()[0]
+        url = '/api/v1/instance/{0}/'.format(writeitinstance.id)
+        response = self.api_client.get(url,data = self.data)
+        instance = self.deserialize(response)
+        self.assertIn('persons', instance)
+        pedro = Person.objects.all()[0]
+        self.assertIn(pedro.popit_url, instance['persons'])
+
+
     def test_get_list_of_messages_per_instance(self):
         
         pedro = Person.objects.all()[0]
@@ -72,7 +87,126 @@ class InstanceResourceTestCase(ResourceTestCase):
 
         self.assertEqual(len(messages), Message.objects.filter(writeitinstance=self.writeitinstance).count()) #All the instances
         self.assertEqual(messages[0]['id'], message.id)
-        #assert that answers come in the 
+        #assert that answers come in the
+
+    def test_create_a_new_instance(self):
+        instance_data = {
+            'name' : 'The instance',
+            'slug': 'the-instance'
+        }
+        url = '/api/v1/instance/'
+        response = self.api_client.post(url, data = instance_data, format='json', authentication=self.get_credentials())
+        self.assertHttpCreated(response)
+        match_id = re.match(r'^http://testserver/api/v1/instance/(?P<id>\d+)/?', response['Location'])
+        self.assertIsNotNone(match_id)
+        instance_id = match_id.group('id')
+
+        instance = WriteItInstance.objects.get(id=instance_id)
+        self.assertValidJSON(force_text(response.content))
+        instance_as_json = force_text(response.content)
+        self.assertIn('resource_uri', instance_as_json)
+        self.assertEquals(instance.name, instance_data['name'])
+        self.assertEquals(instance.slug, instance_data['slug'])
+        self.assertEquals(instance.owner, self.user)
+
+    def test_create_a_new_instance_with_only_name(self):
+        instance_data = {
+            'name' : 'The instance'
+        }
+        url = '/api/v1/instance/'
+        response = self.api_client.post(url, data = instance_data, format='json', authentication=self.get_credentials())
+        self.assertHttpCreated(response)
+        match_id = re.match(r'^http://testserver/api/v1/instance/(?P<id>\d+)/?', response['Location'])
+        self.assertIsNotNone(match_id)
+        instance_id = match_id.group('id')
+
+        instance = WriteItInstance.objects.get(id=instance_id)
+
+
+        self.assertEquals(instance.name, instance_data['name'])
+        self.assertEquals(instance.owner, self.user)
+        self.assertTrue(instance.slug)
+    
+    def test_does_not_create_a_user_if_not_logged(self):
+        instance_data = {
+            'name' : 'The instance',
+            'slug': 'the-instance'
+        }
+        url = '/api/v1/instance/'
+        response = self.api_client.post(url, data = instance_data, format='json')
+        self.assertHttpUnauthorized(response)
+
+    def test_create_and_pull_people_from_a_popit_api(self):
+        #loading data into the popit-api
+        popit_load_data()
+
+        instance_data = {
+            'name' : 'The instance',
+            'slug': 'the-instance',
+            'popit-api': settings.TEST_POPIT_API_URL
+        }
+        url = '/api/v1/instance/'
+        response = self.api_client.post(url, data = instance_data, format='json', authentication=self.get_credentials())
+        self.assertHttpCreated(response)
+        match_id = re.match(r'^http://testserver/api/v1/instance/(?P<id>\d+)/?', response['Location'])
+
+        instance = WriteItInstance.objects.get(id=match_id.group('id'))
+        self.assertEquals(instance.persons.count(), 2)
+        #this should not break
+        raton = Person.objects.get(name='Ratón Inteligente')
+        fiera = Person.objects.get(name="Fiera Feroz")
+
+        self.assertIn(raton, [r for r in instance.persons.all()])
+        self.assertIn(fiera, [r for r in instance.persons.all()])
+
+
+
+
+class PersonResourceTestCase(ResourceTestCase):
+    def setUp(self):
+        super(PersonResourceTestCase, self).setUp()
+        call_command('loaddata', 'example_data', verbosity=0)
+        self.user = User.objects.all()[0]
+        self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
+        self.api_client = TestApiClient()
+        
+        
+        ApiKey.objects.create(user=self.user)
+
+        self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
+
+
+    def get_credentials(self):
+        credentials = self.create_apikey(username=self.user.username, api_key=self.user.api_key.key)
+        return credentials
+
+
+    def test_get_list_of_messages(self):
+        url = '/api/v1/person/'
+        response = self.api_client.get(url, authentication=self.get_credentials())
+
+
+        self.assertValidJSONResponse(response)
+
+        persons = self.deserialize(response)['objects']
+        self.assertEqual(len(persons), Person.objects.count()) #All the instances
+
+
+    def test_unauthorized_list_of_persons(self):
+        url = '/api/v1/person/'
+        response = self.api_client.get(url)
+
+        self.assertHttpUnauthorized(response)
+
+
+    def test_the_remote_url_of_the_person_points_to_its_popit_instance(self):
+        url = '/api/v1/person/'
+        response = self.api_client.get(url, authentication=self.get_credentials())
+        persons = self.deserialize(response)['objects']
+        self.assertEquals(persons[0]['popit_url'], persons[0]['resource_uri'])
+
+
+
 
 
 
@@ -133,6 +267,9 @@ class MessageResourceTestCase(ResourceTestCase):
         previous_amount_of_messages = Message.objects.count()
         response = self.api_client.post(url, data = message_data, format='json', authentication=self.get_credentials())
         self.assertHttpCreated(response)
+        self.assertValidJSON(force_text(response.content))
+        message_as_json = force_text(response.content)
+        self.assertIn('resource_uri', message_as_json)
 
         post_amount_of_messages = Message.objects.count()
         self.assertEquals(post_amount_of_messages, previous_amount_of_messages + 1)
@@ -144,6 +281,29 @@ class MessageResourceTestCase(ResourceTestCase):
         self.assertTrue(outbound_messages.count() > 0)
         for outbound_message in outbound_messages:
             self.assertEquals(outbound_message.status, 'ready')
+
+    def test_create_a_new_message_with_a_non_existing_person(self):
+        writeitinstance = WriteItInstance.objects.all()[0]
+        message_data = {
+            'author_name' : 'Felipipoo',
+            'subject': 'new message',
+            'content': 'the content thing',
+            'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
+            'persons': [
+            writeitinstance.persons.all()[0].popit_url,
+            'http://this.person.does.not.exist'
+            ]
+        }
+
+
+        url = '/api/v1/message/'
+        previous_amount_of_messages = Message.objects.count()
+        response = self.api_client.post(url, data = message_data, format='json', authentication=self.get_credentials())
+        self.assertHttpCreated(response)
+        the_message = Message.objects.get(author_name='Felipipoo')
+        outbound_messages = the_message.outboundmessage_set.all()
+        self.assertEquals(outbound_messages.count(), 1)
+        self.assertEquals(outbound_messages[0].contact.person,writeitinstance.persons.all()[0] )
 
     def test_create_a_new_message_confirmated(self):
         writeitinstance = WriteItInstance.objects.all()[0]
@@ -181,32 +341,6 @@ class MessageResourceTestCase(ResourceTestCase):
         self.assertEquals(len(the_message.people), writeitinstance.persons.count())
         self.assertEquals(the_message.people,list(writeitinstance.persons.all()))
 
-
-
-
-    # def test_get_message_detail_that_was_created_using_the_api(self):
-    #     writeitinstance = WriteItInstance.objects.all()[0]
-    #     message_data = {
-    #         'author_name' : 'Felipipoo',
-    #         'subject': 'new message',
-    #         'content': 'the content thing',
-    #         'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
-    #         'persons': [writeitinstance.persons.all()[0].popit_url]
-    #     }
-    #     url = '/api/v1/message/'
-    #     response = self.api_client.post(url, data = message_data, format='json', authentication=self.get_credentials())
-
-    #     the_message = Message.objects.get(author_name='Felipipoo')
-    #     #this message is confirmated but has no confirmation object
-    #     #this occurs when creating a message throu the API
-    #     url = reverse('message_detail', kwargs={'slug':the_message.slug})
-    #     response = self.client.get(url)
-    #     self.assertEquals(response.status_code, 200)
-    #     self.assertTrue(False)
-
-
-
-
 from nuntium.api import AnswerResource
 from django.http import HttpRequest
 from nuntium.models import Answer
@@ -225,16 +359,6 @@ class AnswersResourceTestCase(ResourceTestCase):
         answers_json = self.deserialize(resource.get_list(request))['objects']
         self.assertEquals(len(answers_json), Answer.objects.count())
         self.assertEquals(answers_json[0]["id"], self.answer.id)
-
-# from nuntium.api import OnlyOwnerAuthorization
-
-# class OwnerAuthorizationTestCase(TestCase):
-#     def setUp(self):
-#         super(OwnerAuthorizationTestCase,self).setUp()
-#         self.authorization = OnlyOwnerAuthorization()
-
-#     def test_only_owner_of_an_election_is_authorized(self):
-#         self.assertTrue(False)
 
 from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Answer
 

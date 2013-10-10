@@ -3,29 +3,44 @@
 {% load i18n %}
 {% block content %}
 {% load markdown_deux_tags %}
-<h1>{{ message.subject }}</h1>
-
-<h2>
-    {{ message.content|linebreaks }}
-</h2>
-<span class="author_name">
-	<small>
-		{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}
-	</small>
-</span><br />
-<div class="sent_to">
-    {% trans 'This message was sent to' %}
-    <ul>
-        {% for person in message.people %}
-        <li>{{ person.name }}</li>
-        {% endfor %}
-    </ul>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1 class="panel-title">{{ message.subject }}</h1>
+  </div>
+  <div class="panel-body">
+    <p class="lead">{{ message.content|linebreaks }}</p>
+    <div class="sent_to">
+        {% trans 'This message was sent to' %}
+        <br />
+            {% for person in message.people %}
+            <span class="label label-default">{{ person.name }}</span>
+            {% endfor %}
+    </div>
+  </div>
+  <div class="panel-footer">
+    <span class="author_name">
+        <small>
+            {% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}
+        </small>
+    </span>
+    
+  </div>
 </div>
-<h4>{% trans "Answers" %}</h4>
+
+
+
+
+
+
+<br />
+
+{% if message.answers.all %}
+<h3>{% trans "Answers" %}</h3>
+{% endif %}
 {% for answer in message.answers.all %}
     {% include "nuntium/answer/answer_in_list.html" with answer=answer %}
 {% endfor %}
 
 
-<div class="getbacktotheinstance"> <a href="{% url 'instance_detail' subdomain=message.writeitinstance.slug %}">< {% blocktrans %} Get back to the messages.{% endblocktrans %} </a></div>
+<div class="getbacktotheinstance"> <a href="{% url 'instance_detail' subdomain=message.writeitinstance.slug %}"><i class="icon-chevron-left"></i> {% blocktrans %} Get back to the messages.{% endblocktrans %} </a></div>
 {% endblock %}

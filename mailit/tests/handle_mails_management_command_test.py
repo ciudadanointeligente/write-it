@@ -58,12 +58,24 @@ class ManagementCommandAnswerBehaviour(TestCase):
 
         self.assertTrue(self.outbound_message.contact.is_bounced)
 
+    def test_it_sets_the_outbound_message_to_error(self):
+        self.email_answer.report_bounce()
+        outbound_message = OutboundMessage.objects.get(id=self.outbound_message.id)
+        self.assertEquals(outbound_message.status, 'error')
+
     def test_it_handles_bounces_in_send_back_function(self):
         #the email is a bounce
         self.email_answer.is_bounced = True
         self.email_answer.send_back()
 
+
         self.assertTrue(self.outbound_message.contact.is_bounced)
+
+    def test_it_does_not_create_an_answer_when_it_is_a_bounce(self):
+        self.email_answer.is_bounced = True
+        self.email_answer.send_back()
+
+        self.assertEquals(Answer.objects.filter(message=self.outbound_message.message).count(), 0)
 
     def test_it_creates_an_answer_when_is_not_bounced(self):
         #the email is not a bounce

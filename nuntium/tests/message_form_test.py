@@ -5,6 +5,9 @@ from contactos.models import Contact, ContactType
 from nuntium.models import Message, Confirmation, WriteItInstance, OutboundMessage
 from nuntium.forms import MessageCreateForm, PersonMultipleChoiceField
 from django.forms import ValidationError,CheckboxSelectMultiple
+from django.contrib.auth.models import User
+from django.forms.forms import NON_FIELD_ERRORS
+from django.utils.translation import ugettext as _
 
 
 class PersonMultipleChoiceFieldTestCase(TestCase):
@@ -42,6 +45,8 @@ class MessageFormTestCase(TestCase):
         self.assertTrue("author_email" in form.fields)
         self.assertTrue("slug" not in form.fields)
         self.assertTrue("public"  in form.fields)
+        self.assertNotIn('moderated', form.fields)
+        self.assertNotIn('confirmated', form.fields)
 
     def test_create_form(self):
         #spanish
@@ -144,3 +149,36 @@ class MessageFormTestCase(TestCase):
     #there should be a test to prove that it does something when like sending 
     #a mental message or save it for later when we save the message
     #we save it
+
+
+class RateLimitingInForm(TestCase):
+    def setUp(self):
+        super(RateLimitingInForm, self).setUp()
+        self.owner = User.objects.all()[0]
+        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.writeitinstance1.rate_limiter = 1
+        self.writeitinstance1.save()
+        self.person1 = Person.objects.all()[0]
+        self.person2 = Person.objects.all()[1]
+        self.message = Message.objects.all()[0]
+        message1 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="fiera@votainteligente.cl",
+            confirmated = True,
+            subject='Test',
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+    def test_clean_method_throws_error_when_rate_limit_is_reached(self):
+        data = {
+        'subject':u'Fiera no está',
+        'content':u'¿Dónde está Fiera Feroz? en la playa?',
+        'author_name':u"Felipe",
+        'author_email':u"fiera@votainteligente.cl",
+        'persons': [self.person1.id]
+        }
+        form = MessageCreateForm(data, writeitinstance=self.writeitinstance1)
+
+        form.full_clean()
+        self.assertFalse(form.errors is None)
+        self.assertIn(_('You have reached your limit for today please try again tomorrow'), form.non_field_errors())

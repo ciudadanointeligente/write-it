@@ -1,0 +1,10 @@
+Hello {{ person }}:
+You have a new message:
+subject: {{ subject }} 
+content: {{ content }}
+
+
+If you want to see all the other messages please visit {{ writeit_url }}.
+Seeya
+--
+You writeIt and we deliverit.

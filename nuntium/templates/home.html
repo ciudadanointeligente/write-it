@@ -2,6 +2,10 @@
 {% load subdomainurls %}
 {% load i18n %}
 
+{% block extrajs %}
+{% include "home.js" %}
+{% endblock extrajs %}
+
 {% block content %}
 <h1>{% trans "You writeit and we deliver it!" %}</h1>
 <p>{% trans "Current instances of write it" %}</p>

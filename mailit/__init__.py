@@ -3,7 +3,13 @@ from nuntium.plugins import OutputPlugin
 from django.core.mail import send_mail
 from contactos.models import ContactType
 from django.conf import settings
+
+import logging
+from django.template import Context
+from django.template.loader import get_template_from_string
 from smtplib import SMTPServerDisconnected, SMTPRecipientsRefused, SMTPResponseException
+
+logging.basicConfig(filename="send_mails.log", level=logging.INFO)
 
 class MailChannel(OutputPlugin):
     name = 'mail-channel'
@@ -32,18 +38,33 @@ class MailChannel(OutputPlugin):
             'subject':outbound_message.message.subject,
             'content':outbound_message.message.content,
             'person':outbound_message.contact.person.name,
-            'author':outbound_message.message.author_name
+            'author':outbound_message.message.author_name,
+            'writeit_url': outbound_message.message.writeitinstance.get_absolute_url()
         }
+        d = Context(format)
+        mail_as_txt = get_template_from_string(template.content_template)
+
+        text_content = mail_as_txt.render(d)
+
+
         subject = template.subject_template % format
-        content = template.content_template % format
-        from_email = outbound_message.message.writeitinstance.slug+"+"+outbound_message.outboundmessageidentifier.key\
-                                +'@'+settings.DEFAULT_FROM_DOMAIN
+        content = text_content
+        author_name = outbound_message.message.author_name
+        from_email = author_name + " <" + outbound_message.message.writeitinstance.slug+"+"+outbound_message.outboundmessageidentifier.key\
+                                +'@'+settings.DEFAULT_FROM_DOMAIN + ">"
 
         #here there should be a try and except looking
         #for errors and stuff
         from django.core.mail import send_mail
         try:
             send_mail(subject, content, from_email,[outbound_message.contact.value], fail_silently=False)
+            log = "Mail sent from %(from)s to %(to)s"
+
+            log = log % {
+                'from':from_email,
+                'to':outbound_message.contact.value
+                }
+            logging.info(log)
         except SMTPServerDisconnected, e:
             return False, False
         except SMTPResponseException, e:

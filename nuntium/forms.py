@@ -28,11 +28,11 @@ class MessageCreateForm(ModelForm):
         self.writeitinstance = writeitinstance
         persons = Person.objects.filter(writeit_instances=writeitinstance)
         super(MessageCreateForm, self).__init__(*args, **kwargs)
+        self.instance.writeitinstance = self.writeitinstance
         self.fields['persons'].queryset = persons
 
     def save(self, force_insert=False, force_update=False, commit=True):
         message = super(MessageCreateForm, self).save(commit=False)
-        message.writeitinstance = self.writeitinstance
         if commit:
             persons = self.cleaned_data['persons']
             message.persons = persons
@@ -56,7 +56,7 @@ class MessageCreateForm(ModelForm):
 
     class Meta:
         model = Message
-        exclude = ("writeitinstance", "status", "slug")
+        exclude = ("writeitinstance", "status", "slug", "moderated", "confirmated")
 
 
 class MessageSearchForm(SearchForm):

@@ -1,8 +1,8 @@
 from django.db.models.signals import post_save, pre_save
 from django.db import models
 from django.utils.translation import ugettext as _
-from django.core.exceptions import ValidationError
-from popit.models import Person
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from popit.models import Person, ApiInstance
 from contactos.models import Contact
 from nuntium.plugins import OutputPlugin
 from django.contrib.contenttypes.models import ContentType
@@ -13,7 +13,7 @@ from django.utils.timezone import utc
 from djangoplugins.models import Plugin
 from django.core.mail import send_mail #Remove this when emailMultiAlternatives works
 from django.core.mail import EmailMultiAlternatives
-from django.template.loader import get_template
+from django.template.loader import get_template, get_template_from_string
 from django.template import Context
 from django.conf import settings
 from subdomains.utils import reverse
@@ -25,23 +25,48 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db import IntegrityError
 from django.db.models import Q
+import requests
+from autoslug import AutoSlugField
 
 
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
     name = models.CharField(max_length=255)
-    slug = models.CharField(max_length=255)
+    slug = AutoSlugField(populate_from='name', unique=True)
     persons = models.ManyToManyField(Person, related_name='writeit_instances', through='Membership')
     moderation_needed_in_all_messages = models.BooleanField(help_text=_("Every message is going to have a moderation mail"))
     owner = models.ForeignKey(User)
     allow_messages_using_form = models.BooleanField(help_text=_("Allow the creation of new messages using throu the web"), default=True)
+    rate_limiter = models.IntegerField(default=0)
 
-    
+    def load_persons_from_a_popit_api(self, popit_url):
+        api_instance, created = ApiInstance.objects.get_or_create(url=popit_url)
+        api_instance.fetch_all_from_api()
+        persons = Person.objects.filter(api_instance=api_instance)
+        for person in persons:
+            Membership.objects.create(writeitinstance=self, person=person)
+
     def get_absolute_url(self):
         return reverse('instance_detail',subdomain=self.slug)
 
     def __unicode__(self):
         return self.name
+
+
+def new_write_it_instance(sender,instance, created, **kwargs):
+    if(created):
+        new_answer_html = ''
+        with open('nuntium/templates/nuntium/mails/new_answer.html', 'r') as f:
+            new_answer_html += f.read()
+
+
+        NewAnswerNotificationTemplate.objects.create(
+            template = new_answer_html,
+            writeitinstance=instance
+            )
+
+post_save.connect(new_write_it_instance, sender=WriteItInstance)
+
 
 class Membership(models.Model):
     person = models.ForeignKey(Person)
@@ -90,6 +115,19 @@ class Message(models.Model):
 
         super(Message, self).__init__(*args, **kwargs)
 
+    def clean(self):
+        try:
+            rate_limiter = RateLimiter.objects.get(
+                writeitinstance=self.writeitinstance, 
+                email=self.author_email,
+                day = datetime.date.today()
+                )
+            if self.writeitinstance.rate_limiter > 0 and rate_limiter.count >= self.writeitinstance.rate_limiter:
+                raise ValidationError(_('You have reached your limit for today please try again tomorrow'))
+        except ObjectDoesNotExist:
+            pass
+        super(Message, self).clean()
+
 
     #TODO: only new outbound_messages
     def recently_confirmated(self):
@@ -101,6 +139,8 @@ class Message(models.Model):
         for outbound_message in self.outboundmessage_set.all():
             outbound_message.status = status
             outbound_message.save()
+        if self.author_email:
+            Subscriber.objects.create(email=self.author_email, message=self)
             
         self.confirmated = True
         self.save()
@@ -240,6 +280,39 @@ class Answer(models.Model):
             'message': self.message.subject
             }
 
+subject_template = '%(person)s has answered to your message %(message)s'
+def send_new_answer_payload(sender,instance, created, **kwargs):
+    if created:
+        for subscriber in instance.message.subscribers.all():
+            new_answer_template = instance.message.writeitinstance.new_answer_notification_template
+            htmly = get_template_from_string(new_answer_template.template)
+            d = Context({ 
+                'user': instance.message.author_name,
+                'person':instance.person,
+                'message':instance.message,
+                'answer':instance
+             })
+            html_content = htmly.render(d)
+            from_email = instance.message.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
+            subject = subject_template % {
+            'person':instance.person.name,
+            'message':instance.message.subject
+            }
+            send_mail(subject, html_content, from_email,[subscriber.email], fail_silently=False)
+
+
+        for webhook in instance.message.writeitinstance.answer_webhooks.all():
+            payload = {
+                    'message_id':'/api/v1/message/{0}/'.format(instance.message.id),
+                    'content': instance.content,
+                    'person':instance.person.name
+            }
+            requests.post(webhook.url, data=payload)
+
+
+post_save.connect(send_new_answer_payload, sender=Answer)
+
+
 
 class OutboundMessageManager(models.Manager):
     def to_send(self, *args, **kwargs):
@@ -289,7 +362,6 @@ class OutboundMessage(models.Model):
                 outbound_message_plugin = plugin
                 break
         outbound_record, created = OutboundMessagePluginRecord.objects.get_or_create(outbound_message=self, plugin=plugin.get_model())
-
         if not outbound_record.try_again:
             return
 
@@ -437,6 +509,52 @@ class Moderation(models.Model):
         return reverse('moderation_rejected', kwargs={
             'slug': self.key
             })
-        
+
+class AnswerWebHook(models.Model):
+    url = models.URLField(max_length=255)
+    writeitinstance = models.ForeignKey(WriteItInstance, related_name='answer_webhooks')
+
+    def __unicode__(self):
+        return '%(url)s at %(instance)s'%{
+            'url':self.url,
+            'instance':self.writeitinstance.name
+        }
 
 
+class Subscriber(models.Model):
+    message = models.ForeignKey(Message, related_name='subscribers')
+    email = models.EmailField()
+
+class NewAnswerNotificationTemplate(models.Model):
+    writeitinstance = models.OneToOneField(WriteItInstance, related_name='new_answer_notification_template')
+    template = models.TextField()
+    subject_template = models.CharField(max_length=255, default=_('%(person)s has answered to your message %(message)s'))
+
+
+class RateLimiter(models.Model):
+    writeitinstance = models.ForeignKey(WriteItInstance)
+    email = models.EmailField()
+    day = models.DateField()
+    count = models.PositiveIntegerField(default=1)
+
+    def save(self, *args, **kwargs):
+        if not self.day:
+            self.day = datetime.date.today()
+        super(RateLimiter, self).save(*args, **kwargs)
+
+
+
+
+def rate_limiting(sender,instance, created, **kwargs):
+
+    if instance.author_email:
+        rate_limiter, created = RateLimiter.objects.get_or_create(
+            writeitinstance=instance.writeitinstance, 
+            email=instance.author_email,
+            day = datetime.date.today()
+            )
+        if not created:
+            rate_limiter.count = rate_limiter.count + 1
+            rate_limiter.save()
+
+post_save.connect(rate_limiting, sender=Message)

@@ -87,7 +87,6 @@ class EmailHandler():
         self.answer_class = answer_class
 
     def handle(self, lines):
-        
         answer = self.answer_class()
         msgtxt = ''
         for line in lines:
@@ -99,12 +98,13 @@ class EmailHandler():
         
         if temporary or permanent:
             answer.is_bounced = True
-            the_recipient = scan_message(msg).pop()
+            answer.email_from = scan_message(msg).pop()
         else:
-            the_recipient = msg["To"]
+            answer.email_from = msg["From"]
 
+
+        the_recipient = msg["To"]
         answer.subject = msg["Subject"]
-        answer.email_from = msg["From"]
         answer.when = msg["Date"]
 
         regex = re.compile(r".*[\+\-](.*)@.*")
@@ -112,9 +112,11 @@ class EmailHandler():
         charset = msg.get_charset()
         if not charset:
             charset = 'ISO-8859-1'
-
+        logging.info("Reading the parts")
         for part in msg.walk():
+            logging.info("Part of type "+part.get_content_type())
             if part.get_content_type() == 'text/plain':
+
                 text = EmailReplyParser.parse_reply(part.get_payload(decode=True))
                 #text2 = quopri.decodestring(text)
                 
@@ -132,6 +134,7 @@ class EmailHandler():
             }
         logging.info(log)
         return answer
+
 
 
 
