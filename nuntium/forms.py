@@ -47,6 +47,13 @@ class MessageCreateForm(ModelForm):
 
         return message
 
+    def clean(self):
+        cleaned_data = super(MessageCreateForm, self).clean()
+
+        if not self.writeitinstance.allow_messages_using_form:
+            raise ValidationError("")
+        return cleaned_data
+
     class Meta:
         model = Message
         exclude = ("writeitinstance", "status", "slug")

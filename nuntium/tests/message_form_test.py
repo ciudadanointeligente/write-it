@@ -58,6 +58,22 @@ class MessageFormTestCase(TestCase):
         self.assertTrue(form)
         self.assertTrue(form.is_valid())
 
+    def test_when_an_instance_does_not_allow_new_messages_throu_the_form_it_does_not_validate(self):
+        #spanish
+        data = {
+        'subject':u'Fiera no está',
+        'content':u'¿Dónde está Fiera Feroz? en la playa?',
+        'author_name':u"Felipe",
+        'author_email':u"falvarez@votainteligente.cl",
+        'persons': [self.person1.id]
+        }
+        self.writeitinstance1.allow_messages_using_form = False
+        self.writeitinstance1.save()
+
+        form = MessageCreateForm(data, writeitinstance = self.writeitinstance1)
+        self.assertTrue(form)
+        self.assertFalse(form.is_valid())
+
 
     def test_person_multiple_choice_field(self):
         form = MessageCreateForm(writeitinstance = self.writeitinstance1)
