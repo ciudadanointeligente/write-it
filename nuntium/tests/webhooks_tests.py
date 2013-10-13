@@ -1,13 +1,48 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from nuntium.models import Message, WriteItInstance, AnswerWebHook, Answer
+from nuntium.models import Message, WriteItInstance, AnswerWebHook, Answer, ApiKeyCredential, WebHookCredential
 from django.core.exceptions import ValidationError
 from tastypie.models import ApiKey
 from mock import patch
+from django.utils.unittest import skip
+from django.db import models
 
 class PostMock():
     def __init__(self):
         self.status_code = 201
+
+
+class WebHookCredentialTestCase(TestCase):
+    def setUp(self):
+        super(WebHookCredentialTestCase, self).setUp()
+
+    def test_it_is_not_an_abstract_class(self):
+        #am I planning too much?
+
+        instance = WebHookCredential.objects.create()
+
+        self.assertTrue(instance)
+
+    def test_it_has_method_get_auth(self):
+        class TheCredential(WebHookCredential):
+            pass
+
+        instance = TheCredential()
+        with self.assertRaises(NotImplementedError) as error:
+            instance.get_auth()
+
+
+class ApiKeyCredentials(TestCase):
+    def setUp(self):
+        super(ApiKeyCredentials, self).setUp()
+
+    def test_create_model(self):
+        api_key_credential = ApiKeyCredential.objects.create(username='admin', api_key='a')
+        self.assertIsInstance(api_key_credential, WebHookCredential)
+
+        self.assertTrue(api_key_credential)
+        self.assertEquals(api_key_credential.username, 'admin')
+        self.assertEquals(api_key_credential.api_key, 'a')
 
 
 class NewAnswerWebhooks(TestCase):
@@ -28,6 +63,24 @@ class NewAnswerWebhooks(TestCase):
         self.assertEquals(webhook.writeitinstance, self.writeitinstance)
         self.assertEquals(webhook.url, 'http://someaddress.to.be.mocked')
         self.assertIn(webhook, self.writeitinstance.answer_webhooks.all())
+
+    def test_a_webhook_can_haz_an_api_key_credential(self):
+
+        class AnyCredential(WebHookCredential):
+            pass
+
+        any_credential = AnyCredential()
+        any_credential.id = 1
+
+        webhook = AnswerWebHook.objects.create(
+            writeitinstance=self.writeitinstance,
+            url='http://someaddress.to.be.mocked',
+            credential=any_credential
+            )
+
+        self.assertEquals(webhook.credential, any_credential)
+        
+
 
     def test_unicode(self):
         webhook = AnswerWebHook.objects.create(

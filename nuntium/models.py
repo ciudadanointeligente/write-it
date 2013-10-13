@@ -509,15 +509,7 @@ class Moderation(models.Model):
             'slug': self.key
             })
 
-class AnswerWebHook(models.Model):
-    url = models.URLField(max_length=255)
-    writeitinstance = models.ForeignKey(WriteItInstance, related_name='answer_webhooks')
 
-    def __unicode__(self):
-        return '%(url)s at %(instance)s'%{
-            'url':self.url,
-            'instance':self.writeitinstance.name
-        }
 
 
 class Subscriber(models.Model):
@@ -557,3 +549,24 @@ def rate_limiting(sender,instance, created, **kwargs):
             rate_limiter.save()
 
 post_save.connect(rate_limiting, sender=Message)
+
+class WebHookCredential(models.Model):
+    def get_auth(self):
+        raise NotImplementedError("The class should implement this method")
+
+
+class ApiKeyCredential(WebHookCredential):
+    username = models.CharField(max_length=256)
+    api_key = models.CharField(max_length=256)
+
+
+class AnswerWebHook(models.Model):
+    url = models.URLField(max_length=255)
+    writeitinstance = models.ForeignKey(WriteItInstance, related_name='answer_webhooks')
+    credential = models.ForeignKey(WebHookCredential, related_name='credential', null=True)
+
+    def __unicode__(self):
+        return '%(url)s at %(instance)s'%{
+            'url':self.url,
+            'instance':self.writeitinstance.name
+        }
