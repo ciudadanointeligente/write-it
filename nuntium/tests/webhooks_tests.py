@@ -53,7 +53,8 @@ class NewAnswerWebhooks(TestCase):
         expected_payload = {
                 'message_id':'/api/v1/message/{0}/'.format(message.id),
                 'content':'holiwi',
-                'person':pedro.name
+                'person':pedro.name,
+                'person_id':pedro.popit_url
         }
         with patch('requests.post') as post:
             post.return_value = PostMock()
@@ -73,7 +74,8 @@ class NewAnswerWebhooks(TestCase):
         expected_payload = {
                 'message_id':'/api/v1/message/{0}/'.format(message.id),
                 'content':'holiwi',
-                'person':pedro.name
+                'person':pedro.name,
+                'person_id':pedro.popit_url
         }
         with patch('requests.post') as post:
             post.return_value = PostMock()
