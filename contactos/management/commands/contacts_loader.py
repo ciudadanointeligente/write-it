@@ -23,22 +23,13 @@ class Command(BaseCommand):
       person = Person.objects.get(name = line[name_index])
       for index in mail_indices:
         mail = line[index].decode('utf-8')
-        try:
-          Contact.objects.create(\
-            contact_type= mail_type,\
-            person_id = person.id,\
-            owner_id = owner_id,
-            value = mail)
-        except Exception:
-          print u'excepción con el contacto ' + person.name 
-          pass
-
-      # try:
-      #   Contact.objects.create(contact_type= mail_type)
-      #   election = Election.objects.get(name=election_name)
-      #   for tag in tags.split(','):
-      #     tag = tag.decode('utf-8').strip()
-      #     election.tags.add(tag)
-      # except Exception:
-      #   print u'excepción con la elección ' + election_name 
-      #   pass
+        if mail != '':
+          try:
+            Contact.objects.create(\
+              contact_type= mail_type,\
+              person_id = person.id,\
+              owner_id = owner_id,
+              value = mail)
+          except Exception:
+            print u'excepción con el contacto ' + person.name 
+            pass
