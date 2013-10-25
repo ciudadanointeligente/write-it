@@ -4,6 +4,7 @@ import logging
 from nuntium.models import OutboundMessageIdentifier, OutboundMessage, OutboundMessagePluginRecord
 from django.core.management.base import BaseCommand, CommandError
 import sys
+from django.core.mail import mail_admins
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
@@ -35,5 +36,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         lines = sys.stdin.readlines()
         handler = EmailHandler(answer_class = AnswerForManageCommand)
-        answer = handler.handle(lines)
-        answer.send_back()
+        try:
+            answer = handler.handle(lines)
+            answer.send_back()
+        except Exception, e:
+            html_message = '</br> there was an error, and this was the message </ br>'
+            for line in lines:
+                html_message += line
+            mail_admins('[WRITEIT] Error handling incoming email', html_message, html_message=html_message)
+        
