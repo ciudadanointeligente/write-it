@@ -7,6 +7,8 @@ from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Answer
 from django.utils.unittest import skip
 from mock import patch, Mock
 import sys
+from django.core import mail
+from django.test.utils import override_settings
 
 
 class ManagementCommandAnswer(TestCase):
@@ -100,6 +102,13 @@ def readlines2_mock():
     f.close()
     return lines
 
+def readlines3_mock():
+    file_name='mailit/tests/fixture/mail_for_no_message.txt'
+    f = open(file_name)
+    lines = f.readlines()
+    f.close()
+    return lines
+
 class HandleIncomingEmailCommand(TestCase):
     def setUp(self):
         super(HandleIncomingEmailCommand, self).setUp()
@@ -132,7 +141,17 @@ class HandleIncomingEmailCommand(TestCase):
             self.assertEquals(the_answers.count(), 1)
             self.assertFalse(identifier.key in the_answers[0].content)
 
-
+    @override_settings(ADMINS=(('Felipe', 'falvarez@admins.org'),))
+    def test_it_sends_an_email_to_the_admin_if_any_failure(self):
+        with patch('sys.stdin') as stdin:
+            stdin.attach_mock(readlines3_mock,'readlines')
+            call_command('handleemail','mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+            content_text = ''
+            for line in readlines3_mock():
+                content_text += line
+            self.assertEquals(len(mail.outbox), 1)
+            self.assertIn(content_text, mail.outbox[0].body)
+            self.assertEquals(mail.outbox[0].to[0],'falvarez@admins.org')
 
             
 
