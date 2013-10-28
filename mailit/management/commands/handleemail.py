@@ -43,5 +43,5 @@ class Command(BaseCommand):
             html_message = '</br> there was an error, and this was the message </ br>'
             for line in lines:
                 html_message += line
-            mail_admins('[WRITEIT] Error handling incoming email', html_message, html_message=html_message)
+            mail_admins('Error handling incoming email', html_message, html_message=html_message)
         

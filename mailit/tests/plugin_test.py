@@ -211,8 +211,14 @@ class SmtpErrorHandling(TestCase):
 
         #I'm not sure if this kind of error is definitive but
         #I'm taking it as if we should not try to send this
-        #message again, but for example 
+        #message again, but for example
 
+    def test_any_other_exception(self):
+        with patch("django.core.mail.send_mail") as send_mail:
+            send_mail.side_effect = Exception(401,"Something very bad")
+            result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+            self.assertFalse(result_of_sending)
+            self.assertTrue(fatal_error)
 
     def test_smpt_error_code_501(self):
         #to handle this kind of error
