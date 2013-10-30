@@ -1,7 +1,6 @@
 from django.contrib import admin
 from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, Answer, AnswerWebHook, NewAnswerNotificationTemplate
 from popit.models import ApiInstance, Person
-from contactos.models import Contact, ContactType
 from django.forms.models import BaseInlineFormSet
 from mailit.models import MailItTemplate
 
@@ -70,14 +69,3 @@ class PersonAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Person, PersonAdmin)
 
-class ContactAdmin(admin.ModelAdmin):
-    actions = ['resend_errored_mails']
-    def resend_errored_mails(self, request, queryset):
-        for contact in queryset:
-            contact.resend_messages()
-    resend_errored_mails.short_description = "Resends bounced mails"
-admin.site.register(Contact, ContactAdmin)
-
-class ContactTypeAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(ContactType, ContactTypeAdmin)
