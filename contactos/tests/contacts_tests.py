@@ -9,7 +9,7 @@ from django.conf import settings
 from nuntium.models import OutboundMessage, Message, OutboundMessageIdentifier
 from mailit.bin.handleemail import EmailHandler
 from mailit.management.commands.handleemail import AnswerForManageCommand
-from nuntium.admin import ContactAdmin
+from contactos.admin import ContactAdmin
 
 class ContactTestCase(TestCase):
     def setUp(self):
@@ -39,9 +39,10 @@ class ContactTestCase(TestCase):
     def test_contact_unicode(self):
         contact_type = ContactType.objects.create(name='mental message', label_name = 'mental address id')
         contact1 = Contact.objects.create(contact_type= contact_type, value = 'contact point', person= self.person, owner=self.user)
-        expected_unicode = _('%(contact)s (%(type)s)') % {
+        expected_unicode = _('%(contact)s (%(type)s) for %(person)s') % {
             'contact':contact1.value,
-            'type':contact_type.label_name
+            'type':contact_type.label_name,
+            'person':self.person.name
         }
 
         self.assertEquals(contact1.__unicode__(), expected_unicode)

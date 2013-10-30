@@ -25,9 +25,10 @@ class Contact(models.Model):
     owner = models.ForeignKey(User)
 
     def __unicode__(self):
-    	return _('%(contact)s (%(type)s)') % {
+    	return _('%(contact)s (%(type)s) for %(person)s') % {
 	            'contact' : self.value,
-	            'type' : self.contact_type.label_name
+	            'type' : self.contact_type.label_name,
+                'person': self.person.name
 	        }
 
     def set_outbound_messages_to_ready(self):
