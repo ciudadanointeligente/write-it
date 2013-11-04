@@ -48,7 +48,7 @@ class Command(BaseCommand):
                 settings.DEFAULT_FROM_EMAIL,#From
                 [a[1] for a in settings.ADMINS]#To
                 )
-            mail.attach('mail.txt', '\n'.join(lines), 'text/plain')
+            mail.attach('mail.txt', ''.join(lines), 'text/plain')
             mail.send()
 
         handler = EmailHandler(answer_class = AnswerForManageCommand)
