@@ -242,6 +242,8 @@ CELERYBEAT_SCHEDULE = {
         'schedule': crontab(minute='*/2'),
     },
 }  
+#Logs every incoming email??
+INCOMING_EMAIL_LOGGING = 'None'
 
 #setting to avoid db changes during test
 SOUTH_TESTS_MIGRATE = False
