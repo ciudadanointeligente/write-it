@@ -35,9 +35,10 @@ class TasksTestCase(TestCase):
         with patch('logging.info') as info:
             info.return_value = None
 
-            expected_log = 'Sending a message to %(contact)s'
+            expected_log = 'Sending "%(message)s" to %(contact)s and the result is sent'
             expected_log = expected_log % {
-            'contact':outbound_message.contact.value
+            'contact':outbound_message.contact.value,
+            'message':outbound_message.__unicode__()
             }
             
 
