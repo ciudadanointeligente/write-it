@@ -82,6 +82,9 @@
 - fields: {contact_type: 1, person: 3, value: mailnoexistente@ciudadanointeligente.org, owner: 1}
   model: contactos.contact
   pk: 3
+- fields: {contact_type: 1, person: 3, value: falvarez@ciudadanointeligente.cl, owner: 1}
+  model: contactos.contact
+  pk: 4
 - fields: {content_template: "Hello {{person}}:\r\nYou have a new message:\r\nsubject:\
       \ {{subject}} \r\ncontent: {{content}}\r\n\r\nSeeya\r\n--\r\nYou writeIt and\
       \ we deliverit.", subject_template: 'WriteIT Message: %(subject)s', writeitinstance: 1}
