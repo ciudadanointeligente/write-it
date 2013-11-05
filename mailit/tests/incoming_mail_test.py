@@ -73,6 +73,7 @@ class AnswerHandlerTestCase(TestCase):
         self.assertEquals(email_answer.when, 'Wed Jun 26 21:05:33 2013')
         self.assertFalse(email_answer.is_bounced)
 
+    @skip("not yet I'm going to do something")
     def test_getter_removes_the_identifier(self):
         email_answer = EmailAnswer()
         email_answer.subject = 'prueba4'
@@ -80,7 +81,7 @@ class AnswerHandlerTestCase(TestCase):
         email_answer.content_text = 'prueba4lafieritaespeluda y lo mandé desde este mail devteam+8974aabsdsfierapulgosa@chile.com'
 
         self.assertFalse(email_answer.outbound_message_identifier in email_answer.content_text)
-
+        self.assertNotIn("devteam+@chile.com", email_answer.content_text)
 
 
 

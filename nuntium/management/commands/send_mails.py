@@ -9,8 +9,10 @@ def send_mails():
     logging.info('Sending messages')
     for outbound_message in outbound_messages:
         result =  outbound_message.send()
-        log = 'Sending a message to %(contact)s' % {
-            'contact':outbound_message.contact.value
+        log = 'Sending "%(message)s" to %(contact)s and the result is %(status)s' % {
+            'contact':outbound_message.contact.value,
+            'message':outbound_message.__unicode__(),
+            'status':outbound_message.status
             }
         logging.info(log)
 

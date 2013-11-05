@@ -71,6 +71,15 @@ class MailChannel(OutputPlugin):
             if e.smtp_code == 552:
                 return False, False
             return False, True
+
+        except Exception, e:
+            log = "Error with outbound id %(outbound_id)i, contact '%(contact)s' and message '%(message)s'"
+            log = log % {
+                'outbound_id':outbound_message.id,
+                'contact':outbound_message.contact.value,
+                'message':outbound_message.message
+                }
+            return False, True
             
         return (True,None)
 
