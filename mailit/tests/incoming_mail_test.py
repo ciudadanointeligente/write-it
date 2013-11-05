@@ -98,7 +98,6 @@ class ReplyHandlerTestCase(ResourceTestCase):
         config.WRITEIT_USERNAME = self.user.username
         self.handler = EmailHandler()
 
-    #@skip("This test is currently failing reported in here https://github.com/zapier/email-reply-parser/issues/4 ")
     def test_get_only_new_content_and_not_original(self):
         self.answer = self.handler.handle(self.email)
         self.assertEquals(self.answer.content_text, u"aass áéíóúñ")
@@ -129,7 +128,9 @@ class DoesNotIncludeTheIdentifierInTheContent(TestCase):
         }
 
         data = json.dumps(data)
+
         self.assertFalse(self.answer.outbound_message_identifier in self.answer.content_text)
+        self.assertNotIn("prueba+@mailit.ciudadanointeligente.org", self.answer.content_text)
         with patch('requests.Session.post') as post:
             post.return_value = PostMock()
             self.answer.send_back()
@@ -400,3 +401,43 @@ class BouncedMailInGmail(TestCase):
     def test_it_marks_the_outbound_record_to_try_again(self):
         record = OutboundMessagePluginRecord.objects.get(outbound_message=self.outbound_message)
         self.assertTrue(record.try_again)
+
+class EmailReadingExamplesTestCase(TestCase):
+    def setUp(self):
+        super(EmailReadingExamplesTestCase, self).setUp()
+        self.message = Message.objects.all()[0]
+        self.contact = Contact.objects.get(value="falvarez@ciudadanointeligente.cl")
+        self.outbound_message = OutboundMessage.objects.create(message = self.message, contact=self.contact)
+        self.outbound_message.send()
+        identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
+        identifier.key = "7e460e9c462411e38ef81231400178dd"
+        identifier.save()
+        self.handler = EmailHandler()
+
+
+    def test_example1_gmail(self):
+        f = open('mailit/tests/fixture/example1_gmail.txt')
+        email = f.readlines()
+        f.close()
+
+        answer = self.handler.handle(email)
+        self.assertEquals(answer.content_text, u"si prueba no más")
+
+    @skip("this fails because it still has some parts from the origina email, probably this is not easy taken away")
+    def test_example2_gmail(self):
+        f = open('mailit/tests/fixture/example2_gmail.txt')
+        email = f.readlines()
+        f.close()
+
+        answer = self.handler.handle(email)
+        self.assertEquals(answer.content_text, u"de nuevo de nuevo")
+
+    def test_example3_ipad(self):
+        f = open('mailit/tests/fixture/example3_ipad.txt')
+        email = f.readlines()
+        f.close()
+
+        answer = self.handler.handle(email)
+        self.assertEquals(answer.content_text, u"Primero que todo los felicito por la iniciativa , ojalá lleguen más preguntas .")
+
+

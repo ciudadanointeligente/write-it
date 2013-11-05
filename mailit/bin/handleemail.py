@@ -42,8 +42,14 @@ class EmailAnswer(object):
         self.is_bounced = False
 
     def get_content_text(self):
-        cleaned_content = self._content_text.replace(self.outbound_message_identifier, '')
+        cleaned_content = self._content_text
+        pattern = '[\w\.-]+@[\w\.-]+'
+        expression = re.compile(pattern)
+        # cleaned_content = re.sub(expression, '', cleaned_content)
+        cleaned_content = re.sub(r'[\w\.-\.+]+@[\w\.-]+','', cleaned_content)
 
+
+        cleaned_content = cleaned_content.replace(self.outbound_message_identifier, '')
         return cleaned_content
 
     def set_content_text(self, value):
@@ -88,9 +94,7 @@ class EmailHandler():
 
     def handle(self, lines):
         answer = self.answer_class()
-        msgtxt = ''
-        for line in lines:
-            msgtxt += str(line)
+        msgtxt = ''.join(lines)
 
         msg = email.message_from_string(msgtxt)
         temporary, permanent = all_failures(msg)
@@ -110,19 +114,17 @@ class EmailHandler():
         regex = re.compile(r".*[\+\-](.*)@.*")
         answer.outbound_message_identifier = regex.match(the_recipient).groups()[0]
         charset = msg.get_charset()
-        if not charset:
-            charset = 'ISO-8859-1'
         logging.info("Reading the parts")
         for part in msg.walk():
             logging.info("Part of type "+part.get_content_type())
             if part.get_content_type() == 'text/plain':
-
-                text = EmailReplyParser.parse_reply(part.get_payload(decode=True))
-                #text2 = quopri.decodestring(text)
-                
-                text2 = text.decode(charset)
-                text2.strip()
-                answer.content_text = text2
+                charset = part.get_content_charset()
+                if not charset:
+                    charset = "ISO-8859-1"
+                data = part.get_payload(decode=True).decode(charset)
+                text = EmailReplyParser.parse_reply(data)
+                text.strip()
+                answer.content_text = text
         #logging stuff
         
         log = 'New incoming email from %(from)s sent on %(date)s with subject %(subject)s and content %(content)s'
