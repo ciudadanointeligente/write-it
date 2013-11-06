@@ -150,9 +150,9 @@ class HandleIncomingEmailCommand(TestCase):
             for line in readlines3_mock():
                 content_text += line
             self.assertEquals(len(mail.outbox), 1)
-            self.assertIn(content_text, mail.outbox[0].body)
+            self.assertNotIn(content_text, mail.outbox[0].body)
             self.assertEquals(mail.outbox[0].to[0],'falvarez@admins.org')
-
+            self.assertEquals(len(mail.outbox[0].attachments), 1)
             
 
 

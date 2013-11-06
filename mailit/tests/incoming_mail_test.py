@@ -448,3 +448,12 @@ class EmailReadingExamplesTestCase(TestCase):
 
         answer = self.handler.handle(email)
         self.assertIn(u"chilen@ está ausente más de 10 horas de su hogar despreocup", answer.content_text)
+
+    def test_example5_michellebachelet(self):
+        f = open('mailit/tests/fixture/example5_michellebachelet.txt')
+        email = f.readlines()
+        f.close()
+
+        answer = self.handler.handle(email)
+        print answer.content_text
+        self.assertIn(u"Realizaremos un proceso de consulta con los Pueblos", answer.content_text)
