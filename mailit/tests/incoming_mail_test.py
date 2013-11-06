@@ -448,4 +448,3 @@ class EmailReadingExamplesTestCase(TestCase):
 
         answer = self.handler.handle(email)
         self.assertIn(u"chilen@ está ausente más de 10 horas de su hogar despreocup", answer.content_text)
-        self.fail()
