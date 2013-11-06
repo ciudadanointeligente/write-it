@@ -457,4 +457,3 @@ class EmailReadingExamplesTestCase(TestCase):
         answer = self.handler.handle(email)
         print answer.content_text
         self.assertIn(u"Realizaremos un proceso de consulta con los Pueblos", answer.content_text)
-        self.fail()
