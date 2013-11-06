@@ -441,4 +441,10 @@ class EmailReadingExamplesTestCase(TestCase):
         answer = self.handler.handle(email)
         self.assertEquals(answer.content_text, u"Primero que todo los felicito por la iniciativa , ojalá lleguen más preguntas .")
 
+    def test_example4_hotmail(self):
+        f = open('mailit/tests/fixture/example4_hotmail.txt')
+        email = f.readlines()
+        f.close()
 
+        answer = self.handler.handle(email)
+        self.assertIn(u"chilen@ está ausente más de 10 horas de su hogar despreocup", answer.content_text)

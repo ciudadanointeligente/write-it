@@ -111,7 +111,10 @@ class EmailHandler():
         answer.subject = msg["Subject"]
         answer.when = msg["Date"]
 
+        the_recipient = re.sub(r"\n", "", the_recipient)
+
         regex = re.compile(r".*[\+\-](.*)@.*")
+
         answer.outbound_message_identifier = regex.match(the_recipient).groups()[0]
         charset = msg.get_charset()
         logging.info("Reading the parts")
