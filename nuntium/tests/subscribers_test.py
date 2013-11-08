@@ -105,6 +105,16 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
         self.assertEquals(notification_template.writeitinstance, self.instance)
         self.assertEquals(self.instance.new_answer_notification_template, notification_template)
 
+    def test_notification_template_unicode(self):
+        notification_template = NewAnswerNotificationTemplate.objects.create(
+            template_html = "asdasd",
+            template_text = "asdasd",
+            writeitinstance=self.instance,
+            subject_template=subject_template
+            )
+
+        self.assertEquals(notification_template.__unicode__(), "Notification template for %s"%(self.instance.name))
+
     def test_a_new_one_is_always_created_with_some_default_values(self):
         new_answer_html = ''
         with open('nuntium/templates/nuntium/mails/new_answer.html', 'r') as f:
@@ -155,6 +165,9 @@ class NewAnswerNotificationToSubscribers(TestCase):
              })
         self.template_str_html = template_str_html.render(d)
         self.template_str_txt = template_str_txt.render(d)
+
+
+
 
     def test_when_an_answer_is_created_then_a_mail_is_sent_to_the_subscribers(self):
         self.assertEquals(len(mail.outbox),1)

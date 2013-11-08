@@ -544,6 +544,9 @@ class NewAnswerNotificationTemplate(models.Model):
                 new_answer_text += f.read()
             self.template_text = new_answer_text
 
+    def __unicode__(self):
+        return _("Notification template for %s")%(self.writeitinstance.name)
+
 
 class RateLimiter(models.Model):
     writeitinstance = models.ForeignKey(WriteItInstance)
