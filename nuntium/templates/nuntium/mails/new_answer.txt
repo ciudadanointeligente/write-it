@@ -1,29 +1,9 @@
-Hi {{ message.writeitinstance.owner.username }}:
+Dear {{user}}:
 
-Please moderate this message:
+We received an answer from {{person}} to your message "{{message.subject}}" and the answer is:
 
-====================================
-From: {{ message.author_name }}
-From Email: {{ message.author_email }}
-Subject: {{ message.subject }}
-To:{% for person in message.people %}{{ person.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
-The message:
+{{answer.content}}
 
-{{ message.content|linebreaks }}
-
-
-
-=============================
-
-If you want to accept this message please click on the next link:
-{{ url_accept }}
-
-
-In order to reject this message please click on the next link:
-{{ url_rejected }}
-Note that this message will be deleted.
-
-
-Thanks
---
-The WriteIt-team
+Thanks for using Write-It
+-- 
+The Write-it Team

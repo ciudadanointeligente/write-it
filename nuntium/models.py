@@ -275,7 +275,7 @@ class Answer(models.Model):
             'message': self.message.subject
             }
 
-subject_template = settings.NEW_ANSWER_DEFAULT_SUBJECT_TEMPLATE
+
 def send_new_answer_payload(sender,instance, created, **kwargs):
     if created:
         for subscriber in instance.message.subscribers.all():
@@ -291,6 +291,7 @@ def send_new_answer_payload(sender,instance, created, **kwargs):
             html_content = htmly.render(d)
             txt_content = texty.render(d)
             from_email = instance.message.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
+            subject_template = new_answer_template.subject_template
             subject = subject_template % {
             'person':instance.person.name,
             'message':instance.message.subject

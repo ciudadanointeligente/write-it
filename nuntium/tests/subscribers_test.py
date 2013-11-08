@@ -148,6 +148,9 @@ class NewAnswerNotificationToSubscribers(TestCase):
         self.subscriber = Subscriber.objects.create(message=self.message, email=self.message.author_email)
         self.pedro = Person.objects.all()[0]
         self.owner = User.objects.all()[0]
+        self.instance.new_answer_notification_template.subject_template = 'weeena pelao %(person)s %(message)s'
+        self.instance.new_answer_notification_template.save()
+        
         self.answer = Answer.objects.create(
             content="Ola ke ase? pedalea o ke ase?",
             person=self.pedro,
@@ -155,8 +158,11 @@ class NewAnswerNotificationToSubscribers(TestCase):
             )
         template_str = get_template('nuntium/mails/new_answer.html')
         
+        
+
         template_str_html = get_template_from_string(self.instance.new_answer_notification_template.template_html)
         template_str_txt = get_template_from_string(self.instance.new_answer_notification_template.template_text)
+
         d = Context({ 
             'user': self.message.author_name,
             'person':self.pedro,
@@ -174,7 +180,7 @@ class NewAnswerNotificationToSubscribers(TestCase):
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertEquals(mail.outbox[0].to[0], self.subscriber.email)
         self.assertEquals(mail.outbox[0].body, self.template_str_txt)
-        subject = subject_template%{
+        subject = self.instance.new_answer_notification_template.subject_template%{
             'person':self.pedro.name,
             'message':self.message.subject
         }
