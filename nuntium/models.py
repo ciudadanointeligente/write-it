@@ -27,6 +27,7 @@ from django.db import IntegrityError
 from django.db.models import Q
 import requests
 from autoslug import AutoSlugField
+from django.core.mail import EmailMultiAlternatives
 
 
 class WriteItInstance(models.Model):
@@ -55,13 +56,7 @@ class WriteItInstance(models.Model):
 
 def new_write_it_instance(sender,instance, created, **kwargs):
     if(created):
-        new_answer_html = ''
-        with open('nuntium/templates/nuntium/mails/new_answer.html', 'r') as f:
-            new_answer_html += f.read()
-
-
         NewAnswerNotificationTemplate.objects.create(
-            template = new_answer_html,
             writeitinstance=instance
             )
 
@@ -280,12 +275,13 @@ class Answer(models.Model):
             'message': self.message.subject
             }
 
-subject_template = '%(person)s has answered to your message %(message)s'
+subject_template = settings.NEW_ANSWER_DEFAULT_SUBJECT_TEMPLATE
 def send_new_answer_payload(sender,instance, created, **kwargs):
     if created:
         for subscriber in instance.message.subscribers.all():
             new_answer_template = instance.message.writeitinstance.new_answer_notification_template
-            htmly = get_template_from_string(new_answer_template.template)
+            htmly = get_template_from_string(new_answer_template.template_html)
+            texty = get_template_from_string(new_answer_template.template_text)
             d = Context({ 
                 'user': instance.message.author_name,
                 'person':instance.person,
@@ -293,12 +289,15 @@ def send_new_answer_payload(sender,instance, created, **kwargs):
                 'answer':instance
              })
             html_content = htmly.render(d)
+            txt_content = texty.render(d)
             from_email = instance.message.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
             subject = subject_template % {
             'person':instance.person.name,
             'message':instance.message.subject
             }
-            send_mail(subject, html_content, from_email,[subscriber.email], fail_silently=False)
+            msg = EmailMultiAlternatives(subject, txt_content, from_email, [subscriber.email])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
 
 
         for webhook in instance.message.writeitinstance.answer_webhooks.all():
@@ -528,8 +527,25 @@ class Subscriber(models.Model):
 
 class NewAnswerNotificationTemplate(models.Model):
     writeitinstance = models.OneToOneField(WriteItInstance, related_name='new_answer_notification_template')
-    template = models.TextField()
-    subject_template = models.CharField(max_length=255, default=_('%(person)s has answered to your message %(message)s'))
+    template_html = models.TextField(default="")
+    template_text = models.TextField(default="")
+    subject_template = models.CharField(max_length=255, default=settings.NEW_ANSWER_DEFAULT_SUBJECT_TEMPLATE)
+
+    def __init__(self, *args, **kwargs):
+        super(NewAnswerNotificationTemplate, self).__init__(*args, **kwargs)
+        if not self.id and not self.template_html:
+            new_answer_html = ''
+            with open('nuntium/templates/nuntium/mails/new_answer.html', 'r') as f:
+                new_answer_html += f.read()
+            self.template_html = new_answer_html
+        if not self.id and not self.template_text:
+            new_answer_text = ''
+            with open('nuntium/templates/nuntium/mails/new_answer.txt', 'r') as f:
+                new_answer_text += f.read()
+            self.template_text = new_answer_text
+
+    def __unicode__(self):
+        return _("Notification template for %s")%(self.writeitinstance.name)
 
 
 class RateLimiter(models.Model):

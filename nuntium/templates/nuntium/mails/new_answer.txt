@@ -1,0 +1,29 @@
+Hi {{ message.writeitinstance.owner.username }}:
+
+Please moderate this message:
+
+====================================
+From: {{ message.author_name }}
+From Email: {{ message.author_email }}
+Subject: {{ message.subject }}
+To:{% for person in message.people %}{{ person.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+The message:
+
+{{ message.content|linebreaks }}
+
+
+
+=============================
+
+If you want to accept this message please click on the next link:
+{{ url_accept }}
+
+
+In order to reject this message please click on the next link:
+{{ url_rejected }}
+Note that this message will be deleted.
+
+
+Thanks
+--
+The WriteIt-team

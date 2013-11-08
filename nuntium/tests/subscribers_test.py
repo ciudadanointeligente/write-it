@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.core import mail
 from django.utils.translation import ugettext as _
 from django.conf import settings
+from django.template.loader import get_template_from_string
 
 
 subject_template = '%(person)s has answered to your message %(message)s'
@@ -87,16 +88,47 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
 
 
     def test_creation_of_one(self):
+        # content_template = ''
+        # with open('nuntium/mails/new_answer.html', 'r') as f:
+        #     content_template += f.read()
+        # print content_template
         notification_template = NewAnswerNotificationTemplate.objects.create(
-            template = self.template_str,
+            template_html = "asdasd",
+            template_text = "asdasd",
             writeitinstance=self.instance,
             subject_template=subject_template
             )
 
         self.assertTrue(notification_template)
-        self.assertEquals(notification_template.template, self.template_str)
+        self.assertEquals(notification_template.template_html, "asdasd")
+        self.assertEquals(notification_template.template_text, "asdasd")
         self.assertEquals(notification_template.writeitinstance, self.instance)
         self.assertEquals(self.instance.new_answer_notification_template, notification_template)
+
+    def test_notification_template_unicode(self):
+        notification_template = NewAnswerNotificationTemplate.objects.create(
+            template_html = "asdasd",
+            template_text = "asdasd",
+            writeitinstance=self.instance,
+            subject_template=subject_template
+            )
+
+        self.assertEquals(notification_template.__unicode__(), "Notification template for %s"%(self.instance.name))
+
+    def test_a_new_one_is_always_created_with_some_default_values(self):
+        new_answer_html = ''
+        with open('nuntium/templates/nuntium/mails/new_answer.html', 'r') as f:
+            new_answer_html += f.read()
+
+        new_answer_txt = ''
+        with open('nuntium/templates/nuntium/mails/new_answer.txt', 'r') as f:
+            new_answer_txt += f.read()
+
+        notification_template = NewAnswerNotificationTemplate.objects.create(writeitinstance=self.instance)
+
+        self.assertEquals(notification_template.template_html, new_answer_html)
+        self.assertEquals(notification_template.template_text, new_answer_txt)
+        self.assertEquals(notification_template.subject_template, settings.NEW_ANSWER_DEFAULT_SUBJECT_TEMPLATE)
 
 
     def test_when_I_create_a_new_writeitinstance_then_a_notification_template_is_created(self):
@@ -104,7 +136,7 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
 
         notification_template = instance.new_answer_notification_template
         self.assertTrue(notification_template)
-        self.assertEquals(notification_template.template, self.new_answer_html)
+        self.assertEquals(notification_template.template_html, self.new_answer_html)
         self.assertEquals(notification_template.subject_template, subject_template)
 
 
@@ -122,19 +154,26 @@ class NewAnswerNotificationToSubscribers(TestCase):
             message=self.message
             )
         template_str = get_template('nuntium/mails/new_answer.html')
+        
+        template_str_html = get_template_from_string(self.instance.new_answer_notification_template.template_html)
+        template_str_txt = get_template_from_string(self.instance.new_answer_notification_template.template_text)
         d = Context({ 
             'user': self.message.author_name,
             'person':self.pedro,
             'message':self.message,
             'answer':self.answer
              })
-        self.template_str = template_str.render(d)
+        self.template_str_html = template_str_html.render(d)
+        self.template_str_txt = template_str_txt.render(d)
+
+
+
 
     def test_when_an_answer_is_created_then_a_mail_is_sent_to_the_subscribers(self):
         self.assertEquals(len(mail.outbox),1)
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertEquals(mail.outbox[0].to[0], self.subscriber.email)
-        self.assertEquals(mail.outbox[0].body, self.template_str)
+        self.assertEquals(mail.outbox[0].body, self.template_str_txt)
         subject = subject_template%{
             'person':self.pedro.name,
             'message':self.message.subject
