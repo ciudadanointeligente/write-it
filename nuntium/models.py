@@ -275,7 +275,7 @@ class Answer(models.Model):
             'message': self.message.subject
             }
 
-subject_template = '%(person)s has answered to your message %(message)s'
+subject_template = settings.NEW_ANSWER_DEFAULT_SUBJECT_TEMPLATE
 def send_new_answer_payload(sender,instance, created, **kwargs):
     if created:
         for subscriber in instance.message.subscribers.all():
