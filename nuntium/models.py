@@ -61,7 +61,7 @@ def new_write_it_instance(sender,instance, created, **kwargs):
 
 
         NewAnswerNotificationTemplate.objects.create(
-            template = new_answer_html,
+            template_html = new_answer_html,
             writeitinstance=instance
             )
 
@@ -285,7 +285,7 @@ def send_new_answer_payload(sender,instance, created, **kwargs):
     if created:
         for subscriber in instance.message.subscribers.all():
             new_answer_template = instance.message.writeitinstance.new_answer_notification_template
-            htmly = get_template_from_string(new_answer_template.template)
+            htmly = get_template_from_string(new_answer_template.template_html)
             d = Context({ 
                 'user': instance.message.author_name,
                 'person':instance.person,
@@ -528,8 +528,22 @@ class Subscriber(models.Model):
 
 class NewAnswerNotificationTemplate(models.Model):
     writeitinstance = models.OneToOneField(WriteItInstance, related_name='new_answer_notification_template')
-    template = models.TextField()
-    subject_template = models.CharField(max_length=255, default=_('%(person)s has answered to your message %(message)s'))
+    template_html = models.TextField(default="")
+    template_text = models.TextField(default="")
+    subject_template = models.CharField(max_length=255, default=settings.NEW_ANSWER_DEFAULT_SUBJECT_TEMPLATE)
+
+    def __init__(self, *args, **kwargs):
+        super(NewAnswerNotificationTemplate, self).__init__(*args, **kwargs)
+        if not self.id and not self.template_html:
+            new_answer_html = ''
+            with open('nuntium/templates/nuntium/mails/new_answer.html', 'r') as f:
+                new_answer_html += f.read()
+            self.template_html = new_answer_html
+        if not self.id and not self.template_text:
+            new_answer_text = ''
+            with open('nuntium/templates/nuntium/mails/new_answer.txt', 'r') as f:
+                new_answer_text += f.read()
+            self.template_text = new_answer_text
 
 
 class RateLimiter(models.Model):

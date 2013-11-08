@@ -87,16 +87,37 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
 
 
     def test_creation_of_one(self):
+        # content_template = ''
+        # with open('nuntium/mails/new_answer.html', 'r') as f:
+        #     content_template += f.read()
+        # print content_template
         notification_template = NewAnswerNotificationTemplate.objects.create(
-            template = self.template_str,
+            template_html = "asdasd",
+            template_text = "asdasd",
             writeitinstance=self.instance,
             subject_template=subject_template
             )
 
         self.assertTrue(notification_template)
-        self.assertEquals(notification_template.template, self.template_str)
+        self.assertEquals(notification_template.template_html, "asdasd")
+        self.assertEquals(notification_template.template_text, "asdasd")
         self.assertEquals(notification_template.writeitinstance, self.instance)
         self.assertEquals(self.instance.new_answer_notification_template, notification_template)
+
+    def test_a_new_one_is_always_created_with_some_default_values(self):
+        new_answer_html = ''
+        with open('nuntium/templates/nuntium/mails/new_answer.html', 'r') as f:
+            new_answer_html += f.read()
+
+        new_answer_txt = ''
+        with open('nuntium/templates/nuntium/mails/new_answer.txt', 'r') as f:
+            new_answer_txt += f.read()
+
+        notification_template = NewAnswerNotificationTemplate.objects.create(writeitinstance=self.instance)
+
+        self.assertEquals(notification_template.template_html, new_answer_html)
+        self.assertEquals(notification_template.template_text, new_answer_txt)
+        self.assertEquals(notification_template.subject_template, settings.NEW_ANSWER_DEFAULT_SUBJECT_TEMPLATE)
 
 
     def test_when_I_create_a_new_writeitinstance_then_a_notification_template_is_created(self):
@@ -104,7 +125,7 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
 
         notification_template = instance.new_answer_notification_template
         self.assertTrue(notification_template)
-        self.assertEquals(notification_template.template, self.new_answer_html)
+        self.assertEquals(notification_template.template_html, self.new_answer_html)
         self.assertEquals(notification_template.subject_template, subject_template)
 
 
