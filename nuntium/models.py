@@ -27,6 +27,7 @@ from django.db import IntegrityError
 from django.db.models import Q
 import requests
 from autoslug import AutoSlugField
+from django.core.mail import EmailMultiAlternatives
 
 
 class WriteItInstance(models.Model):
@@ -55,13 +56,7 @@ class WriteItInstance(models.Model):
 
 def new_write_it_instance(sender,instance, created, **kwargs):
     if(created):
-        new_answer_html = ''
-        with open('nuntium/templates/nuntium/mails/new_answer.html', 'r') as f:
-            new_answer_html += f.read()
-
-
         NewAnswerNotificationTemplate.objects.create(
-            template_html = new_answer_html,
             writeitinstance=instance
             )
 
@@ -286,6 +281,7 @@ def send_new_answer_payload(sender,instance, created, **kwargs):
         for subscriber in instance.message.subscribers.all():
             new_answer_template = instance.message.writeitinstance.new_answer_notification_template
             htmly = get_template_from_string(new_answer_template.template_html)
+            texty = get_template_from_string(new_answer_template.template_text)
             d = Context({ 
                 'user': instance.message.author_name,
                 'person':instance.person,
@@ -293,12 +289,15 @@ def send_new_answer_payload(sender,instance, created, **kwargs):
                 'answer':instance
              })
             html_content = htmly.render(d)
+            txt_content = texty.render(d)
             from_email = instance.message.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
             subject = subject_template % {
             'person':instance.person.name,
             'message':instance.message.subject
             }
-            send_mail(subject, html_content, from_email,[subscriber.email], fail_silently=False)
+            msg = EmailMultiAlternatives(subject, txt_content, from_email, [subscriber.email])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
 
 
         for webhook in instance.message.writeitinstance.answer_webhooks.all():

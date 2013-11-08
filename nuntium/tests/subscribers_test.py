@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.core import mail
 from django.utils.translation import ugettext as _
 from django.conf import settings
+from django.template.loader import get_template_from_string
 
 
 subject_template = '%(person)s has answered to your message %(message)s'
@@ -143,19 +144,23 @@ class NewAnswerNotificationToSubscribers(TestCase):
             message=self.message
             )
         template_str = get_template('nuntium/mails/new_answer.html')
+        
+        template_str_html = get_template_from_string(self.instance.new_answer_notification_template.template_html)
+        template_str_txt = get_template_from_string(self.instance.new_answer_notification_template.template_text)
         d = Context({ 
             'user': self.message.author_name,
             'person':self.pedro,
             'message':self.message,
             'answer':self.answer
              })
-        self.template_str = template_str.render(d)
+        self.template_str_html = template_str_html.render(d)
+        self.template_str_txt = template_str_txt.render(d)
 
     def test_when_an_answer_is_created_then_a_mail_is_sent_to_the_subscribers(self):
         self.assertEquals(len(mail.outbox),1)
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertEquals(mail.outbox[0].to[0], self.subscriber.email)
-        self.assertEquals(mail.outbox[0].body, self.template_str)
+        self.assertEquals(mail.outbox[0].body, self.template_str_txt)
         subject = subject_template%{
             'person':self.pedro.name,
             'message':self.message.subject
