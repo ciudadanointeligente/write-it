@@ -1,5 +1,5 @@
 from django.contrib import admin
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, Answer, AnswerWebHook, NewAnswerNotificationTemplate
+from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, Answer, AnswerWebHook, NewAnswerNotificationTemplate, NewAnswerNotificationTemplate
 from popit.models import ApiInstance, Person
 from django.forms.models import BaseInlineFormSet
 from mailit.models import MailItTemplate
@@ -68,4 +68,8 @@ admin.site.register(ApiInstance, ApiInstanceAdmin)
 class PersonAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Person, PersonAdmin)
+
+class NewAnswerNotificationTemplateAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(NewAnswerNotificationTemplate, NewAnswerNotificationTemplateAdmin)
 
