@@ -35,10 +35,14 @@ class WriteItInstance(models.Model):
     name = models.CharField(max_length=255)
     slug = AutoSlugField(populate_from='name', unique=True)
     persons = models.ManyToManyField(Person, related_name='writeit_instances', through='Membership')
-    moderation_needed_in_all_messages = models.BooleanField(help_text=_("Every message is going to have a moderation mail"))
+    moderation_needed_in_all_messages = models.BooleanField(help_text=_("Every message is going to \
+        have a moderation mail"))
     owner = models.ForeignKey(User)
-    allow_messages_using_form = models.BooleanField(help_text=_("Allow the creation of new messages using throu the web"), default=True)
+    allow_messages_using_form = models.BooleanField(help_text=_("Allow the creation of new messages \
+        using throu the web"), default=True)
     rate_limiter = models.IntegerField(default=0)
+    automatically_add_owner_as_a_subscriber = models.BooleanField(help_text=_("The owner of this election \
+        should be automatically added as a subscriber"), default=False)
 
     def load_persons_from_a_popit_api(self, popit_url):
         api_instance, created = ApiInstance.objects.get_or_create(url=popit_url)
