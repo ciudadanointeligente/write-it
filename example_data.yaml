@@ -4,7 +4,7 @@
 - fields:
     date_joined: 2013-04-26 21:09:22.224616+00:00
     email: admin@admines.cl
-    first_name: ''
+    first_name: 'Administrador del system'
     groups: []
     is_active: true
     is_staff: true

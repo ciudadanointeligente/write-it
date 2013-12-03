@@ -41,8 +41,8 @@ class WriteItInstance(models.Model):
     allow_messages_using_form = models.BooleanField(help_text=_("Allow the creation of new messages \
         using throu the web"), default=True)
     rate_limiter = models.IntegerField(default=0)
-    automatically_add_owner_as_a_subscriber = models.BooleanField(help_text=_("The owner of this election \
-        should be automatically added as a subscriber"), default=False)
+    notify_owner_when_new_answer = models.BooleanField(help_text=_("The owner of this instance \
+        should be automatically is going to be notified when a new answer comes in"), default=False)
 
     def load_persons_from_a_popit_api(self, popit_url):
         api_instance, created = ApiInstance.objects.get_or_create(url=popit_url)
@@ -281,36 +281,53 @@ class Answer(models.Model):
 
 
 def send_new_answer_payload(sender,instance, created, **kwargs):
+    answer = instance
     if created:
-        for subscriber in instance.message.subscribers.all():
-            new_answer_template = instance.message.writeitinstance.new_answer_notification_template
-            htmly = get_template_from_string(new_answer_template.template_html)
-            texty = get_template_from_string(new_answer_template.template_text)
+        new_answer_template = answer.message.writeitinstance.new_answer_notification_template
+        htmly = get_template_from_string(new_answer_template.template_html)
+        texty = get_template_from_string(new_answer_template.template_text)
+        from_email = answer.message.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
+        subject_template = new_answer_template.subject_template
+        for subscriber in answer.message.subscribers.all():
             d = Context({ 
-                'user': instance.message.author_name,
-                'person':instance.person,
-                'message':instance.message,
-                'answer':instance
-             })
+                'user': answer.message.author_name,
+                'person':answer.person,
+                'message':answer.message,
+                'answer':answer
+            })
             html_content = htmly.render(d)
-            txt_content = texty.render(d)
-            from_email = instance.message.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
-            subject_template = new_answer_template.subject_template
+            txt_content = texty.render(d)            
             subject = subject_template % {
-            'person':instance.person.name,
-            'message':instance.message.subject
+            'person':answer.person.name,
+            'message':answer.message.subject
             }
             msg = EmailMultiAlternatives(subject, txt_content, from_email, [subscriber.email])
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
+        if answer.message.writeitinstance.notify_owner_when_new_answer:
+            d = Context({ 
+                'user': answer.message.writeitinstance.owner,
+                'person':answer.person,
+                'message':answer.message,
+                'answer':answer
+            })
+            html_content = htmly.render(d)
+            txt_content = texty.render(d)            
+            subject = subject_template % {
+            'person':answer.message.writeitinstance.owner.username,
+            'message':answer.message.subject
+            }
+            msg = EmailMultiAlternatives(subject, txt_content, from_email, [answer.message.writeitinstance.owner.email])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
 
-        for webhook in instance.message.writeitinstance.answer_webhooks.all():
+        for webhook in answer.message.writeitinstance.answer_webhooks.all():
             payload = {
-                    'message_id':'/api/v1/message/{0}/'.format(instance.message.id),
-                    'content': instance.content,
-                    'person':instance.person.name,
-                    'person_id':instance.person.popit_url
+                    'message_id':'/api/v1/message/{0}/'.format(answer.message.id),
+                    'content': answer.content,
+                    'person':answer.person.name,
+                    'person_id':answer.person.popit_url
             }
             requests.post(webhook.url, data=payload)
 
