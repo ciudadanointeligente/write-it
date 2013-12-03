@@ -68,7 +68,7 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
             self.new_answer_html += f.read()
         super(NewAnswerToSubscribersMessageTemplate, self).setUp()
         self.instance = WriteItInstance.objects.all()[0]
-        self.instance.new_answer_notification_template.delete()
+        
         self.message = Message.objects.all()[0]
         self.pedro = Person.objects.all()[0]
         self.owner = User.objects.all()[0]
@@ -85,6 +85,7 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
             'answer':self.answer
              })
         self.template_str = template_str.render(d)
+        self.instance.new_answer_notification_template.delete()
 
 
     def test_creation_of_one(self):
