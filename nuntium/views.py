@@ -1,5 +1,6 @@
 # Create your views here.
-from django.views.generic import TemplateView, CreateView, DetailView, RedirectView
+from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, View
+from django.views.generic.edit import UpdateView
 from django.core.urlresolvers import reverse
 from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation
 from nuntium.forms import MessageCreateForm
@@ -179,7 +180,16 @@ class PerInstanceSearchView(SearchView):
 
 class UserAccountView(TemplateView):
     template_name = 'nuntium/user_account.html'
-    
+
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(UserAccountView, self).dispatch(*args, **kwargs)
+
+class WriteItInstanceUpdateView(UpdateView):
+    model = WriteItInstance
+    fields = ['name','persons',]
+    template_name_suffix = '_update_form'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(WriteItInstanceUpdateView, self).dispatch(*args, **kwargs)
