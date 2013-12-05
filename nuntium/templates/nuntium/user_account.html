@@ -6,13 +6,46 @@
 {% endblock extrajs %}
 
 {% block content %}
-<p>{% trans "Your Profile" %}</p>
+<p></p>
 
+<ul class="nav nav-pills">
+  <li class="active"><a href="#profile" data-toggle="tab">{% trans "Your Profile" %}</a></li>
+  <li><a href="#instances" data-toggle="tab">{% trans "Your instances" %}</a></li>
+  <li><a href="#nothing" data-toggle="tab">{% trans "Don't click me!" %}</a></li>
 
-<p>{% trans "Your instances" %}</p>
-<ul>
-{% for writeitinstance in user.writeitinstances.all %}
-    <li>{{ writeitinstance }}</li>
-{% endfor %}
 </ul>
+
+
+<!-- Tab panes -->
+<div class="tab-content">
+  <div class="tab-pane active" id="profile">
+
+    <dl class="dl-horizontal">
+      <dt>{% trans "Username" %}</dt>
+      <dd>{{ user.username }}</dd>
+      <dt>{% trans "First Name" %}</dt>
+      <dd>{{ user.first_name }}</dd>
+      <dt>{% trans "Last Name" %}</dt>
+      <dd>{{ user.last_name }}</dd>
+      <dt>{% trans "Email" %}</dt>
+      <dd>{{ user.email }}</dd>
+      <dt>{% trans "Password" %}</dt>
+      <dd>************ (<a href="{% url 'django.contrib.auth.views.password_reset' %}">{% trans "Change" %}</a>)</dd>
+    </dl>
+
+  </div>
+  <div class="tab-pane" id="instances">
+    <p>{% trans "Your instances" %}</p>
+    <ul>
+    {% for writeitinstance in user.writeitinstances.all %}
+        <li>{{ writeitinstance }}</li>
+    {% endfor %}
+    </ul>
+  </div>
+  <div class="tab-pane" id="nothing"><a href="http://github.com/ciudadanointeligente/write-it" data-toggle="tab">{% trans "please don't go any further" %}</a></div>
+</div>
+
+
+
+
 {% endblock content%}
