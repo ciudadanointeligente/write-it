@@ -11,6 +11,8 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from nuntium.forms import  MessageSearchForm, PerInstanceSearchForm
 from haystack.views import SearchView
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 class HomeTemplateView(TemplateView):
@@ -173,3 +175,11 @@ class PerInstanceSearchView(SearchView):
         form_kwargs['writeitinstance']=self.writeitinstance
 
         return super(PerInstanceSearchView, self).build_form(form_kwargs)
+
+
+class UserAccountView(TemplateView):
+    template_name = 'nuntium/user_account.html'
+    
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(UserAccountView, self).dispatch(*args, **kwargs)

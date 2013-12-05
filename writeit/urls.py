@@ -30,10 +30,12 @@ urlpatterns = patterns('',
     url(r'^moderation_accept/(?P<slug>[-\w]+)/?$', AcceptModerationView.as_view(), name = 'moderation_accept'),
     url(r'^moderation_reject/(?P<slug>[-\w]+)/?$', RejectModerationView.as_view(), name = 'moderation_rejected'),
     (r'^api/', include(v1_api.urls)),
+
 )
 
 
 urlpatterns += i18n_patterns('',
     
     url(r'^', include('nuntium.urls')),
+    (r'', include('django.contrib.auth.urls')),
 )
