@@ -49,6 +49,19 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
           </ul>
+          <ul class="nav navbar-nav navbar-right">
+            {% if not user.is_authenticated %}
+            <li><a href="{% url 'django.contrib.auth.views.login' %}">Login</a></li>
+            {% else %}
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user }}<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'account' %}">{% trans "Profile" %}</a></li>
+                <li><a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a></li>
+              </ul>
+            </li>
+            {% endif %}
+          </ul>
               {% block search_form %}
               {% endblock search_form%}
         </div><!--/.nav-collapse -->

@@ -41,9 +41,9 @@ def popit_load_data(fixture_name='default'):
         raise Exception("Error loading fixtures for '%s'" % fixture_name)   
 
 class WriteItTestCaseMixin(object):
+    fixtures = ['example_data.yaml']
     def setUp(self):
         self.site = Site.objects.get_current()
-        call_command('loaddata', 'example_data', verbosity=0)
 
     def assertModerationMailSent(self, message, moderation_mail):
         self.assertEquals(moderation_mail.to[0], message.writeitinstance.owner.email)
