@@ -36,7 +36,7 @@ class WriteItInstance(models.Model):
     slug = AutoSlugField(populate_from='name', unique=True)
     persons = models.ManyToManyField(Person, related_name='writeit_instances', through='Membership')
     moderation_needed_in_all_messages = models.BooleanField(help_text=_("Every message is going to have a moderation mail"))
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, related_name="writeitinstances")
     allow_messages_using_form = models.BooleanField(help_text=_("Allow the creation of new messages using throu the web"), default=True)
     rate_limiter = models.IntegerField(default=0)
 

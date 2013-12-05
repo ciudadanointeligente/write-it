@@ -6,4 +6,13 @@
 {% endblock extrajs %}
 
 {% block content %}
+<p>{% trans "Your Profile" %}</p>
+
+
+<p>{% trans "Your instances" %}</p>
+<ul>
+{% for writeitinstance in user.writeitinstances.all %}
+    <li>{{ writeitinstance }}</li>
+{% endfor %}
+</ul>
 {% endblock content%}
