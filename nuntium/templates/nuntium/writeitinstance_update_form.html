@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load subdomainurls %}
+{% load i18n %}
+
+{% block extrajs %}
+{% endblock extrajs %}
+
+{% block content %}
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Update" />
+</form>
+{% endblock content %}

@@ -68,3 +68,9 @@ class PerInstanceSearchForm(SearchForm):
         self.writeitinstance = kwargs.pop('writeitinstance', None)
         super(PerInstanceSearchForm, self).__init__(*args, **kwargs)
         self.searchqueryset = self.searchqueryset.filter(writeitinstance=self.writeitinstance.id)
+
+
+class WriteItInstanceBasicForm(ModelForm):
+    class Meta:
+        model = WriteItInstance
+        fields = ['name', 'persons']
