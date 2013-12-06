@@ -3,7 +3,7 @@ from django.views.generic import TemplateView, CreateView, DetailView, RedirectV
 from django.views.generic.edit import UpdateView
 from django.core.urlresolvers import reverse
 from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation
-from nuntium.forms import MessageCreateForm
+from nuntium.forms import MessageCreateForm, WriteItInstanceBasicForm
 from datetime import datetime
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -187,7 +187,7 @@ class UserAccountView(TemplateView):
 
 class WriteItInstanceUpdateView(UpdateView):
     model = WriteItInstance
-    fields = ['name','persons',]
+    form_class = WriteItInstanceBasicForm
     template_name_suffix = '_update_form'
 
     @method_decorator(login_required)

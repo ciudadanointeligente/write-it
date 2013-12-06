@@ -38,7 +38,7 @@
     <p>{% trans "Your instances" %}</p>
     <ul>
     {% for writeitinstance in user.writeitinstances.all %}
-        <li>{{ writeitinstance }}</li>
+        <li>{{ writeitinstance }} - <a href="{% url 'writeitinstance_update' pk=writeitinstance.pk %}">Edit me!</a></li>
     {% endfor %}
     </ul>
   </div>

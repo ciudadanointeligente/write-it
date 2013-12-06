@@ -10,6 +10,7 @@ from django.forms import ModelForm
 from django.contrib.sites.models import Site
 from django.conf import settings
 from django.utils.translation import activate
+from nuntium.forms import WriteItInstanceBasicForm
 
 
 urlconf = settings.SUBDOMAIN_URLCONFS.get(None, settings.ROOT_URLCONF)
@@ -37,6 +38,11 @@ class UserSectionTestCase(TestCase):
             current_domain = "http://" + Site.objects.get_current().domain
             next_url = next_url.replace(current_domain, "")
             self.assertTrue(location_this_response_is_taking_us_to.endswith("?next="+next_url))
+
+
+    #this code smels not nice
+    #but it serves its porpouse for now if there is anyone that can improve it
+    #feel free to do so
 
 
 class UserViewTestCase(UserSectionTestCase):
@@ -70,28 +76,37 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         self.factory = RequestFactory()
         self.writeitinstance = WriteItInstance.objects.all()[0]
 
-
     def test_writeit_instance_edit_url_exists(self):
-        url = reverse('writeitinstance_update', kwargs={'pk':self.writeitinstance.pk})
+        url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
 
         self.assertTrue(url)
 
-    def test_update_view(self):
-        url = reverse('writeitinstance_update', kwargs={'pk':self.writeitinstance.pk})
-        request = self.factory.get(url)
-        request.user = self.user
-
-        view = WriteItInstanceUpdateView()
-        form = view.get_form_class()
-        self.assertEquals(form._meta.model, WriteItInstance)
-        self.assertEquals(view.fields, ["name","persons",])
-        self.assertEquals(view.template_name_suffix, '_update_form')
-
     def test_update_view_is_not_reachable_by_a_non_user(self):
-        url = reverse('writeitinstance_update', kwargs={'pk':self.writeitinstance.pk})
+        url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
         client = Client()
         response = client.get(url)
         self.assertRedirectToLogin(response, next_url=url)
 
+    def test_writeitinstance_basic_form(self):
+        form = WriteItInstanceBasicForm()
+        self.assertTrue(form._meta.model, WriteItInstance)
+        self.assertEquals(form._meta.fields, ['name', 'persons'])
+
+    def test_writeitinstance_basic_form_save(self):
+        form = WriteItInstanceBasicForm(instance = self.writeitinstance)
+        self.assertTrue(form.is_valid())
 
 
+
+
+
+    def test_update_view(self):
+        url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
+        request = self.factory.get(url)
+        request.user = self.user
+
+        view = WriteItInstanceUpdateView()
+        form_class = view.get_form_class()
+
+        self.assertEquals(view.template_name_suffix, '_update_form')
+        self.assertEquals(form_class, WriteItInstanceBasicForm)
