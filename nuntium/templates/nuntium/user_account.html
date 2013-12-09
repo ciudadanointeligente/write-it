@@ -1,21 +1,26 @@
-{% extends "base.html" %}
+{% extends "base_edit.html" %}
 {% load subdomainurls %}
 {% load i18n %}
 
 {% block extrajs %}
 {% endblock extrajs %}
 
-{% block content %}
-<p></p>
+{% block header %}
+<ul class="breadcrumb">
+  <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+  <li class="active">{% trans "Your profile" %}</li>
+</ul>
+
 
 <ul class="nav nav-pills">
   <li class="active"><a href="#profile" data-toggle="tab">{% trans "Your Profile" %}</a></li>
   <li><a href="#instances" data-toggle="tab">{% trans "Your instances" %}</a></li>
+  <li><a href="#olinwi" data-toggle="tab">{% trans "Your contacts" %}</a></li>
   <li><a href="#nothing" data-toggle="tab">{% trans "Don't click me!" %}</a></li>
-
 </ul>
+{% endblock header %}
 
-
+{% block content %}
 <!-- Tab panes -->
 <div class="tab-content">
   <div class="tab-pane active" id="profile">
@@ -35,10 +40,9 @@
 
   </div>
   <div class="tab-pane" id="instances">
-    <p>{% trans "Your instances" %}</p>
     <ul>
     {% for writeitinstance in user.writeitinstances.all %}
-        <li>{{ writeitinstance }} - <a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">Edit me!</a></li>
+        <li>{{ writeitinstance }} - <a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Edit me!" %}</a></li>
     {% endfor %}
     </ul>
   </div>
