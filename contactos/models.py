@@ -22,7 +22,7 @@ class Contact(models.Model):
     person = models.ForeignKey(Person)
     value = models.CharField(max_length=512)
     is_bounced = models.BooleanField()
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, related_name="contacts")
 
     def __unicode__(self):
     	return _('%(contact)s (%(type)s) for %(person)s') % {
