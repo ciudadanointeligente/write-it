@@ -2,7 +2,7 @@
 from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, View
 from django.views.generic.edit import UpdateView
 from django.core.urlresolvers import reverse
-from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation
+from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation, Membership
 from nuntium.forms import MessageCreateForm, WriteItInstanceBasicForm
 from datetime import datetime
 from django.http import Http404
@@ -193,3 +193,22 @@ class WriteItInstanceUpdateView(UpdateView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(WriteItInstanceUpdateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):
+    # I've been using this 
+    #     # solution http://stackoverflow.com/questions/12224442/class-based-views-for-m2m-relationship-with-intermediate-model
+    #     # but I think this logic can be moved to the form instead
+    #     # and perhaps use the same form for creating and updating
+    #     # a writeit instance
+        self.object = form.save(commit=False)
+
+        for person in form.cleaned_data['persons']:
+            membership = Membership.objects.create(writeitinstance=self.object, person=person)
+
+        del form.cleaned_data['persons']
+
+
+        form.save_m2m()
+        response = super(WriteItInstanceUpdateView, self).form_valid(form)
+        
+        return response

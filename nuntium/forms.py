@@ -1,5 +1,5 @@
 from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, CharField, EmailField
-from nuntium.models import Message, WriteItInstance, OutboundMessage, Confirmation
+from nuntium.models import Message, WriteItInstance, OutboundMessage, Confirmation, Membership
 from contactos.models import Contact
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _

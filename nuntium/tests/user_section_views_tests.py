@@ -11,6 +11,8 @@ from django.contrib.sites.models import Site
 from django.conf import settings
 from django.utils.translation import activate
 from nuntium.forms import WriteItInstanceBasicForm
+from popit.models import Person
+from django.forms.models import model_to_dict
 
 
 urlconf = settings.SUBDOMAIN_URLCONFS.get(None, settings.ROOT_URLCONF)
@@ -75,6 +77,10 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         super(WriteitInstanceUpdateTestCase, self).setUp()
         self.factory = RequestFactory()
         self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.owner = self.writeitinstance.owner
+        self.pedro = Person.objects.get(name="Pedro")
+        self.marcel = Person.objects.get(name="Marcel")
+
 
     def test_writeit_instance_edit_url_exists(self):
         url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
@@ -93,8 +99,25 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         self.assertEquals(form._meta.fields, ['name', 'persons'])
 
     def test_writeitinstance_basic_form_save(self):
-        form = WriteItInstanceBasicForm(instance = self.writeitinstance)
-        self.assertTrue(form.is_valid())
+        data = {
+            'name': 'name 1',
+            'persons':[self.pedro.id, self.marcel.id]
+        }
+        url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
+        c = Client()
+        c.login(username=self.owner.username, password='admin')
+
+        response = c.post(url,data=data, follow=True)
+
+        self.assertEquals(response.status_code, 200)
+
+
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertEquals(writeitinstance.name, data['name'])
+        self.assertIn(self.pedro, writeitinstance.persons.all())
+        self.assertIn(self.marcel, writeitinstance.persons.all())
+
+
 
 
 
