@@ -1,13 +1,37 @@
-{% extends "base.html" %}
+{% extends "base_edit.html" %}
 {% load subdomainurls %}
 {% load i18n %}
 
 {% block extrajs %}
 {% endblock extrajs %}
 
+{% block header %}
+<ul class="breadcrumb">
+    <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+    <li><a href="{% url 'account' %}">{% trans "Your profile" %}</a></li>
+    <li class="active">{{ writeitinstance }}</li>
+</ul>
+
+<div class="page-header">
+    <h2>{% blocktrans with writeitinstance=writeitinstance %}
+Editing {{ writeitinstance }}
+{% endblocktrans %}</h2>
+</div>
+
+{% endblock header %}
+
+{% block editheader %}
+<ul class="nav nav-pills">
+  <li class="active"><a href="#profile" data-toggle="tab">{% trans "Your Profile" %}</a></li>
+  <li><a href="#instances" data-toggle="tab">{% trans "Your instances" %}</a></li>
+  <li><a href="#nothing" data-toggle="tab">{% trans "Don't click me!" %}</a></li>
+
+</ul>
+{% endblock editheader %}
+
 {% block content %}
 <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Update" />
+    <input type="submit" class='btn btn-primary' value="Update" />
 </form>
 {% endblock content %}
