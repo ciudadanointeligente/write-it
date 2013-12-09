@@ -1,7 +1,8 @@
 # Create your views here.
 from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, View
 from django.views.generic.edit import UpdateView
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
+from django.core.urlresolvers import reverse as original_reverse
 from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation, Membership
 from nuntium.forms import MessageCreateForm, WriteItInstanceBasicForm
 from datetime import datetime
@@ -151,7 +152,7 @@ class RejectModerationView(ModerationView):
 class RootRedirectView(RedirectView):
     def get_redirect_url(self, **kwargs):
 
-        url = reverse("home")
+        url = original_reverse("home")
         return url
 
 class MessageSearchView(SearchView):
@@ -194,12 +195,15 @@ class WriteItInstanceUpdateView(UpdateView):
         self.queryset = WriteItInstance.objects.filter(owner=self.request.user)
         return super(WriteItInstanceUpdateView, self).dispatch(*args, **kwargs)
 
+    def get_success_url(self):
+        return reverse('writeitinstance_basic_update', kwargs={'pk':self.object.pk})
+
     def form_valid(self, form):
-    # I've been using this 
-    # solution http://stackoverflow.com/questions/12224442/class-based-views-for-m2m-relationship-with-intermediate-model
-    # but I think this logic can be moved to the form instead
-    # and perhaps use the same form for creating and updating
-    # a writeit instance
+        # I've been using this 
+        # solution http://stackoverflow.com/questions/12224442/class-based-views-for-m2m-relationship-with-intermediate-model
+        # but I think this logic can be moved to the form instead
+        # and perhaps use the same form for creating and updating
+        # a writeit instance
         self.object = form.save(commit=False)
 
         for person in form.cleaned_data['persons']:

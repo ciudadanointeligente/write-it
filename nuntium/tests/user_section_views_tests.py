@@ -71,7 +71,6 @@ class UserViewTestCase(UserSectionTestCase):
         self.assertTemplateUsed(response, "nuntium/user_account.html")
         self.assertTemplateUsed(response, "base.html")
 
-
 class WriteitInstanceUpdateTestCase(UserSectionTestCase):
     def setUp(self):
         super(WriteitInstanceUpdateTestCase, self).setUp()
@@ -108,7 +107,8 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
 
         response = c.post(url,data=data, follow=True)
 
-        self.assertEquals(response.status_code, 200)
+        #self.assertEquals(response.status_code, 200)
+        self.assertRedirects(response, url)
 
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
         self.assertEquals(writeitinstance.name, data['name'])
