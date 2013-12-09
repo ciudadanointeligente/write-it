@@ -29,12 +29,28 @@ class ContactTestCase(TestCase):
 
     def test_create_contact(self):
         contact_type = ContactType.objects.create(name='mental message', label_name = 'mental address id')
-        contact1 = Contact.objects.create(contact_type= contact_type, value = 'contact point', person= self.person, owner=self.user)
+        contact1 = Contact.objects.create(contact_type= contact_type, \
+            value = 'contact point', \
+            person= self.person, \
+            owner=self.user)
         self.assertTrue(contact1)
         self.assertFalse(contact1.is_bounced)
         self.assertEquals(contact1.contact_type, contact_type)
         self.assertEquals(contact1.value, 'contact point')
         self.assertEquals(contact1.person, self.person)
+
+    def test_contacts_reverse_name(self):
+        #Yeah I did another test just to say that I have one more
+        # I don't see anything wrong with that
+        contact_type = ContactType.objects.create(name='mental message', label_name = 'mental address id')
+        contact1 = Contact.objects.create(contact_type= contact_type, \
+            value = 'contact point', \
+            person= self.person, \
+            owner=self.user)
+
+        self.assertIn(contact1, self.user.contacts.all())
+
+
 
     def test_contact_unicode(self):
         contact_type = ContactType.objects.create(name='mental message', label_name = 'mental address id')
