@@ -115,6 +115,21 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         self.assertIn(self.pedro, writeitinstance.persons.all())
         self.assertIn(self.marcel, writeitinstance.persons.all())
 
+
+    def test_removing_a_person_from_writeitinstance_basic_form_save(self):
+        data = {
+            'name': 'name 1',
+            'persons':[self.marcel.id]
+        }
+        url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
+        c = Client()
+        c.login(username=self.owner.username, password='admin')
+
+        response = c.post(url,data=data, follow=True)
+
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertNotIn(self.pedro, writeitinstance.persons.all())
+
     def test_when_a_non_owner_saves_it_does_not_get_200_status_code(self):
         # I think that this test is unnecesary but
         # it could be of some use in the future

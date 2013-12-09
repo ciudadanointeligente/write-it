@@ -205,7 +205,7 @@ class WriteItInstanceUpdateView(UpdateView):
         # and perhaps use the same form for creating and updating
         # a writeit instance
         self.object = form.save(commit=False)
-
+        Membership.objects.filter(writeitinstance=self.object).delete()
         for person in form.cleaned_data['persons']:
             membership = Membership.objects.create(writeitinstance=self.object, person=person)
 
