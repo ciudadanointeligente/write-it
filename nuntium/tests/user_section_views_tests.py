@@ -81,7 +81,6 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         self.pedro = Person.objects.get(name="Pedro")
         self.marcel = Person.objects.get(name="Marcel")
 
-
     def test_writeit_instance_edit_url_exists(self):
         url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
 
@@ -111,17 +110,27 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
 
         self.assertEquals(response.status_code, 200)
 
-
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
         self.assertEquals(writeitinstance.name, data['name'])
         self.assertIn(self.pedro, writeitinstance.persons.all())
         self.assertIn(self.marcel, writeitinstance.persons.all())
 
+    def test_when_a_non_owner_saves_it_does_not_get_200_status_code(self):
+        # I think that this test is unnecesary but
+        # it could be of some use in the future
+        # I have no opinion on this =/
+        fiera = User.objects.create_user(username="fierita", email="fiera@votainteligente.cl", password="feroz")
+        data = {
+            'name': 'name 1',
+            'persons':[self.pedro.id, self.marcel.id]
+        }
+        url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
+        c = Client()
+        c.login(username=fiera.username, password='feroz')
 
+        response = c.post(url,data=data, follow=True)
 
-
-
-
+        self.assertEquals(response.status_code, 404)
 
     def test_update_view(self):
         url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
@@ -133,3 +142,15 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
 
         self.assertEquals(view.template_name_suffix, '_update_form')
         self.assertEquals(form_class, WriteItInstanceBasicForm)
+
+    def test_updating_is_not_reachable_by_a_non_owner(self):
+        fiera = User.objects.create_user(username="fierita", email="fiera@votainteligente.cl", password="feroz")
+
+        c = Client()
+        c.login(username=fiera.username, password='feroz')
+
+        url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
+
+        response = c.get(url)
+
+        self.assertEquals(response.status_code, 404)

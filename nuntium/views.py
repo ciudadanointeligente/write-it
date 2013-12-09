@@ -186,20 +186,20 @@ class UserAccountView(TemplateView):
         return super(UserAccountView, self).dispatch(*args, **kwargs)
 
 class WriteItInstanceUpdateView(UpdateView):
-    model = WriteItInstance
     form_class = WriteItInstanceBasicForm
     template_name_suffix = '_update_form'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
+        self.queryset = WriteItInstance.objects.filter(owner=self.request.user)
         return super(WriteItInstanceUpdateView, self).dispatch(*args, **kwargs)
 
     def form_valid(self, form):
     # I've been using this 
-    #     # solution http://stackoverflow.com/questions/12224442/class-based-views-for-m2m-relationship-with-intermediate-model
-    #     # but I think this logic can be moved to the form instead
-    #     # and perhaps use the same form for creating and updating
-    #     # a writeit instance
+    # solution http://stackoverflow.com/questions/12224442/class-based-views-for-m2m-relationship-with-intermediate-model
+    # but I think this logic can be moved to the form instead
+    # and perhaps use the same form for creating and updating
+    # a writeit instance
         self.object = form.save(commit=False)
 
         for person in form.cleaned_data['persons']:
