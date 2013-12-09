@@ -13,25 +13,33 @@
 </ul>
 
 <div class="page-header">
-    <h2>{% blocktrans with writeitinstance=writeitinstance %}
-Editing {{ writeitinstance }}
-{% endblocktrans %}</h2>
+    <h2>{% blocktrans with writeitinstance=writeitinstance %}Editing {{ writeitinstance }}{% endblocktrans %}</h2>
 </div>
 
+
+<ul class="nav nav-pills">
+  <li class="active"><a href="#basic-update" data-toggle="tab">{% trans "Basic Update" %}</a></li>
+  <li><a href="#webhooks" data-toggle="tab">{% trans "Webhooks" %}</a></li>
+  <li><a href="#advanced-update" data-toggle="tab">{% trans "Advanced Update" %}</a></li>
+  <li><a href="#nothing" data-toggle="tab">{% trans "Nothing" %}</a></li>
+</ul>
 {% endblock header %}
 
-{% block editheader %}
-<ul class="nav nav-pills">
-  <li class="active"><a href="#profile" data-toggle="tab">{% trans "Your Profile" %}</a></li>
-  <li><a href="#instances" data-toggle="tab">{% trans "Your instances" %}</a></li>
-  <li><a href="#nothing" data-toggle="tab">{% trans "Don't click me!" %}</a></li>
-
-</ul>
-{% endblock editheader %}
-
 {% block content %}
-<form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" class='btn btn-primary' value="Update" />
-</form>
+<div class="tab-content">
+  <div class="tab-pane active" id="basic-update">
+    <form action="" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" class='btn btn-primary' value="Update" />
+    </form>
+  </div>
+  <div class="tab-pane" id="webhooks">I'm not implemented</div>
+  <div class="tab-pane" id="advanced-update">I'm not implemented</div>
+  <div class="tab-pane" id="nothing"><a href="https://s3-sa-east-1.amazonaws.com/candideitstatic/fiera_trabajando.jpg">Really nothing, don't click!</a></div>
+</div>
+
+
+
+
+
 {% endblock content %}
