@@ -29,6 +29,7 @@
         <link rel="stylesheet" href="{% static 'css/bootstrap-responsive.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/main.css' %}">
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/jquery-1.10.1.min.js"><\/script>')</script>
     </head>
     <body ng-app="writeit">
@@ -90,7 +91,7 @@
 
         </div> <!-- /container -->
 
-        
+        <script src="{% static 'js/jquery.cookie.js' %}"></script>
         <script src="{% static 'js/modernizr-2.6.2-respond-1.1.0.min.js' %}"></script>
         <script src="{% static 'js/removeDiacritics.js' %}"></script>
         
@@ -99,10 +100,26 @@
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 
         <script src="{% static 'js/main.js' %}"></script>
+        {% block extrascripts %}
+        {% endblock extrascripts %}
         <script type="text/javascript">
+        var csrftoken = $.cookie('csrftoken');
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            crossDomain: false, // obviates need for sameOrigin test
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
         {% block extrajs %}
         {% endblock extrajs %}
         </script>
+
         <script>
             var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
             (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
