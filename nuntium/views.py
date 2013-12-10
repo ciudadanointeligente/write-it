@@ -38,8 +38,6 @@ class WriteItInstanceDetailView(CreateView):
 
 
     def form_valid(self, form):
-        
-        
         response = super(WriteItInstanceDetailView, self).form_valid(form)
         moderations = Moderation.objects.filter(message=self.object)
         if moderations.count() > 0 or self.object.writeitinstance.moderation_needed_in_all_messages:

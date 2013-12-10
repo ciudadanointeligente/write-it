@@ -1,9 +1,22 @@
 {% extends "base_edit.html" %}
-{% load subdomainurls %}
 {% load i18n %}
+{% load staticfiles %}
 
 {% block extrajs %}
+$.fn.editable.defaults.mode = 'inline';
+$('.contact_value').editable({
+  'success' : function(response, newValue) {
+      $(this).closest('li').removeClass('alert-danger')
+    }
+});
 {% endblock extrajs %}
+
+
+{% block extrascripts %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+{% endblock extrascripts %}
+
 
 {% block header %}
 <ul class="breadcrumb">
@@ -40,14 +53,24 @@
 
   </div>
   <div class="tab-pane" id="instances">
-    <ul>
+    <ul class="list-group">
     {% for writeitinstance in user.writeitinstances.all %}
-        <li>{{ writeitinstance }} - <a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Edit me!" %}</a></li>
+        <li class="list-group-item">{{ writeitinstance }} - <a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Edit me!" %}</a></li>
     {% endfor %}
     </ul>
   </div>
   <div class="tab-pane" id="contacts">
-    {% trans "I'm not implemented yet but I'm on my way" %}
+    <ul class="list-group">
+    {% for contact in user.contacts.all %}
+        <li class="list-group-item {% if contact.is_bounced %}alert-danger{% endif %}">
+          <span>
+            <a href="#" class="contact_value" data-pk="{{contact.id}}" data-type="text" data-name="value" data-url="{% url 'contact_value_update' pk=contact.id %}" data-title="{% trans 'Update contact' %}">{{ contact.value }}</a>
+            <span class="badge">{{ contact.person.name }}</span>
+          </span>
+          <span class="badge pull-right">{{ contact.contact_type }}</span>
+        </li>
+    {% endfor %}
+    </ul>
   </div>
   <div class="tab-pane" id="nothing"><a href="http://github.com/ciudadanointeligente/write-it" data-toggle="tab">{% trans "please don't go any further" %}</a></div>
 </div>

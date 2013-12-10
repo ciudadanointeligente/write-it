@@ -93,7 +93,7 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
 
     def test_writeitinstance_basic_form(self):
         form = WriteItInstanceBasicForm()
-        self.assertTrue(form._meta.model, WriteItInstance)
+        self.assertEquals(form._meta.model, WriteItInstance)
         self.assertEquals(form._meta.fields, ['name', 'persons'])
 
     def test_writeitinstance_basic_form_save(self):
@@ -169,3 +169,4 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         response = c.get(url)
 
         self.assertEquals(response.status_code, 404)
+
