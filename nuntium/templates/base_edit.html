@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load subdomainurls %}
+{% load i18n %}
+
+{% block extrajs %}
+{% endblock extrajs %}
+
+
+{% block header %}
+<ul class="breadcrumb">
+{% block breadcrumbs %}
+{% endblock breadcrumbs %}
+</ul>
+
+<p></p>
+<ul class="nav nav-pills">
+{% block editheader %}
+{% endblock editheader %}
+</ul>
+
+
+{% endblock header %}
+
+{% block content %}
+{% endblock content%}

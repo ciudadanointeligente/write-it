@@ -1,4 +1,5 @@
 from global_test_case import GlobalTestCase as TestCase
+from nuntium.tests.user_section_views_tests import UserSectionTestCase
 from django.utils.unittest import skip
 from contactos.models import ContactType, Contact
 from popit.models import Person, ApiInstance
@@ -10,6 +11,12 @@ from nuntium.models import OutboundMessage, Message, OutboundMessageIdentifier
 from mailit.bin.handleemail import EmailHandler
 from mailit.management.commands.handleemail import AnswerForManageCommand
 from contactos.admin import ContactAdmin
+from contactos.forms import ContactUpdateForm
+from django.test.client import RequestFactory, Client
+from django.forms import ModelForm
+from subdomains.utils import reverse
+from django.core.urlresolvers import reverse as original_reverse
+import simplejson as json
 
 class ContactTestCase(TestCase):
     def setUp(self):
@@ -29,12 +36,28 @@ class ContactTestCase(TestCase):
 
     def test_create_contact(self):
         contact_type = ContactType.objects.create(name='mental message', label_name = 'mental address id')
-        contact1 = Contact.objects.create(contact_type= contact_type, value = 'contact point', person= self.person, owner=self.user)
+        contact1 = Contact.objects.create(contact_type= contact_type, \
+            value = 'contact point', \
+            person= self.person, \
+            owner=self.user)
         self.assertTrue(contact1)
         self.assertFalse(contact1.is_bounced)
         self.assertEquals(contact1.contact_type, contact_type)
         self.assertEquals(contact1.value, 'contact point')
         self.assertEquals(contact1.person, self.person)
+
+    def test_contacts_reverse_name(self):
+        #Yeah I did another test just to say that I have one more
+        # I don't see anything wrong with that
+        contact_type = ContactType.objects.create(name='mental message', label_name = 'mental address id')
+        contact1 = Contact.objects.create(contact_type= contact_type, \
+            value = 'contact point', \
+            person= self.person, \
+            owner=self.user)
+
+        self.assertIn(contact1, self.user.contacts.all())
+
+
 
     def test_contact_unicode(self):
         contact_type = ContactType.objects.create(name='mental message', label_name = 'mental address id')
@@ -145,3 +168,106 @@ class ResendOutboundMessages(TestCase):
         contact = Contact.objects.get(id=self.contact.id)
 
         self.assertFalse(contact.is_bounced)
+
+#Loving long names =)
+class ContactUpdateFormAndViewTestCase(UserSectionTestCase):
+    def setUp(self):
+        super(ContactUpdateFormAndViewTestCase, self).setUp()
+        self.factory = RequestFactory()
+        self.user = User.objects.get(username="fiera")
+        # the password is already fiera but I'm making this just 
+        # explicit
+        self.user.set_password('fiera')
+        # making it explicit
+
+        self.contact = Contact.objects.all()[0]
+        self.contact.owner = self.user
+        self.contact.save()
+
+
+    def test_create_form(self):
+        form = ContactUpdateForm()
+        self.assertIsInstance(form, ModelForm)
+        self.assertEquals(form.Meta.model, Contact)
+        self.assertEquals(form.Meta.fields, ['value',])
+
+
+    def test_get_contact_value_update_view_not_allowed(self):
+        url = reverse('contact_value_update', kwargs={'pk':self.contact.pk})
+
+        c = Client()
+        c.login(username='fiera', password="feroz")
+        response =  c.get(url)
+        self.assertEquals(response.status_code, 405)
+
+
+    def test_get_update_contact(self):
+        url = reverse('contact_value_update', kwargs={'pk':self.contact.pk})
+
+        c = Client()
+        c.login(username='fiera', password="feroz")
+
+        data = {
+        'value':'thenewvalue@value.com'
+        }
+
+        response = c.post(url, data=data)
+        self.assertEquals(response.status_code, 200)
+
+        contact = Contact.objects.get(id=self.contact.id)
+
+        self.assertEquals(contact.value, data['value'])
+
+        self.assertEquals(response['Content-Type'], 'application/json')
+        json_answer = json.loads(response.content)
+        self.assertEquals(json_answer['contact']['value'], data['value'])
+
+
+    def test_get_update_contact_bounced_status(self):
+        url = reverse('contact_value_update', kwargs={'pk':self.contact.pk})
+        self.contact.is_bounced = True
+        self.contact.save()
+
+        c = Client()
+        c.login(username='fiera', password="feroz")
+
+        data = {
+        'value':'thenewvalue@value.com'
+        }
+
+        response = c.post(url, data=data)
+        
+
+        contact = Contact.objects.get(id=self.contact.id)
+
+        self.assertFalse(contact.is_bounced)
+
+
+    def test_a_non_login_cannot_update(self):
+        url = reverse('contact_value_update', kwargs={'pk':self.contact.pk})
+        #not_the_owner = User.objects.create_user(username="not_owner", password="123456")
+        c = Client()
+        #c.login(username='not_owner', password='123456')
+        data = {
+        'value':'thenewvalue@value.com'
+        }
+
+        response = c.post(url, data=data)
+
+        self.assertRedirectToLogin(response)
+
+    def test_a_non_owner_cannot_update_a_contact(self):
+        url = reverse('contact_value_update', kwargs={'pk':self.contact.pk})
+        not_the_owner = User.objects.create_user(username="not_owner", password="123456")
+        c = Client()
+        c.login(username='not_owner', password='123456')
+        data = {
+        'value':'thenewvalue@value.com'
+        }
+
+        response = c.post(url, data=data)
+
+        self.assertEquals(response.status_code, 404)
+
+
+

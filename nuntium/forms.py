@@ -1,5 +1,5 @@
 from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, CharField, EmailField
-from nuntium.models import Message, WriteItInstance, OutboundMessage, Confirmation
+from nuntium.models import Message, WriteItInstance, OutboundMessage, Confirmation, Membership
 from contactos.models import Contact
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
@@ -68,3 +68,9 @@ class PerInstanceSearchForm(SearchForm):
         self.writeitinstance = kwargs.pop('writeitinstance', None)
         super(PerInstanceSearchForm, self).__init__(*args, **kwargs)
         self.searchqueryset = self.searchqueryset.filter(writeitinstance=self.writeitinstance.id)
+
+
+class WriteItInstanceBasicForm(ModelForm):
+    class Meta:
+        model = WriteItInstance
+        fields = ['name', 'persons']

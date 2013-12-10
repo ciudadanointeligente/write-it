@@ -1,8 +1,10 @@
 # Create your views here.
-from django.views.generic import TemplateView, CreateView, DetailView, RedirectView
-from django.core.urlresolvers import reverse
-from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation
-from nuntium.forms import MessageCreateForm
+from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, View
+from django.views.generic.edit import UpdateView
+from subdomains.utils import reverse
+from django.core.urlresolvers import reverse as original_reverse
+from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation, Membership
+from nuntium.forms import MessageCreateForm, WriteItInstanceBasicForm
 from datetime import datetime
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -11,6 +13,8 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from nuntium.forms import  MessageSearchForm, PerInstanceSearchForm
 from haystack.views import SearchView
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 class HomeTemplateView(TemplateView):
@@ -34,8 +38,6 @@ class WriteItInstanceDetailView(CreateView):
 
 
     def form_valid(self, form):
-        
-        
         response = super(WriteItInstanceDetailView, self).form_valid(form)
         moderations = Moderation.objects.filter(message=self.object)
         if moderations.count() > 0 or self.object.writeitinstance.moderation_needed_in_all_messages:
@@ -148,7 +150,7 @@ class RejectModerationView(ModerationView):
 class RootRedirectView(RedirectView):
     def get_redirect_url(self, **kwargs):
 
-        url = reverse("home")
+        url = original_reverse("home")
         return url
 
 class MessageSearchView(SearchView):
@@ -173,3 +175,42 @@ class PerInstanceSearchView(SearchView):
         form_kwargs['writeitinstance']=self.writeitinstance
 
         return super(PerInstanceSearchView, self).build_form(form_kwargs)
+
+
+class UserAccountView(TemplateView):
+    template_name = 'nuntium/user_account.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(UserAccountView, self).dispatch(*args, **kwargs)
+
+class WriteItInstanceUpdateView(UpdateView):
+    form_class = WriteItInstanceBasicForm
+    template_name_suffix = '_update_form'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        self.queryset = WriteItInstance.objects.filter(owner=self.request.user)
+        return super(WriteItInstanceUpdateView, self).dispatch(*args, **kwargs)
+
+    def get_success_url(self):
+        return reverse('writeitinstance_basic_update', kwargs={'pk':self.object.pk})
+
+    def form_valid(self, form):
+        # I've been using this 
+        # solution http://stackoverflow.com/questions/12224442/class-based-views-for-m2m-relationship-with-intermediate-model
+        # but I think this logic can be moved to the form instead
+        # and perhaps use the same form for creating and updating
+        # a writeit instance
+        self.object = form.save(commit=False)
+        Membership.objects.filter(writeitinstance=self.object).delete()
+        for person in form.cleaned_data['persons']:
+            membership = Membership.objects.create(writeitinstance=self.object, person=person)
+
+        del form.cleaned_data['persons']
+
+
+        form.save_m2m()
+        response = super(WriteItInstanceUpdateView, self).form_valid(form)
+        
+        return response
