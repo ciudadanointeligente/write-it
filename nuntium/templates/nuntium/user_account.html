@@ -6,7 +6,7 @@
 $.fn.editable.defaults.mode = 'inline';
 $('.contact_value').editable({
   'success' : function(response, newValue) {
-      $(this).closest('li').removeClass('alert-danger')
+      $(this).closest('li').removeClass('alert-danger', 1000 )
     }
 });
 {% endblock extrajs %}
