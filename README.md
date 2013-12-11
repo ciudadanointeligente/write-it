@@ -3,6 +3,7 @@ You write it, and we deliver it.
 
 [![Build Status](https://travis-ci.org/ciudadanointeligente/write-it.png?branch=master)](https://travis-ci.org/ciudadanointeligente/write-it)
 [![Coverage Status](https://coveralls.io/repos/ciudadanointeligente/write-it/badge.png?branch=master)](https://coveralls.io/r/ciudadanointeligente/write-it)
+[![Code Health](https://landscape.io/github/ciudadanointeligente/write-it/master/landscape.png)](https://landscape.io/github/ciudadanointeligente/write-it/master)
 
 Write-it is an application that aims to deliver messages to people whose contacts are to be private or the messages should be public, for example: members of congress. 
 
