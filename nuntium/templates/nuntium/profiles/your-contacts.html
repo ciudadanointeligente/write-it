@@ -26,9 +26,9 @@ $('.contact_value').editable({
 
 
 <ul class="nav nav-pills">
-  <li class="active"><a href="#profile" data-toggle="tab">{% trans "Your Profile" %}</a></li>
-  <li><a href="#instances" data-toggle="tab">{% trans "Your instances" %}</a></li>
-  <li><a href="#contacts" data-toggle="tab">{% trans "Your contacts" %}</a></li>
+  <li><a href="{% url 'account' %}">{% trans "Your Profile" %}</a></li>
+  <li><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
+  <li class="active"><a href="{% url 'your-contacts' %}">{% trans "Your contacts" %}</a></li>
   <li><a href="#nothing" data-toggle="tab">{% trans "Don't click me!" %}</a></li>
 </ul>
 {% endblock header %}
@@ -36,32 +36,9 @@ $('.contact_value').editable({
 {% block content %}
 <!-- Tab panes -->
 <div class="tab-content">
-  <div class="tab-pane active" id="profile">
-
-    <dl class="dl-horizontal">
-      <dt>{% trans "Username" %}</dt>
-      <dd>{{ user.username }}</dd>
-      <dt>{% trans "First Name" %}</dt>
-      <dd>{{ user.first_name }}</dd>
-      <dt>{% trans "Last Name" %}</dt>
-      <dd>{{ user.last_name }}</dd>
-      <dt>{% trans "Email" %}</dt>
-      <dd>{{ user.email }}</dd>
-      <dt>{% trans "Password" %}</dt>
-      <dd>************ (<a href="{% url 'django.contrib.auth.views.password_reset' %}">{% trans "Change" %}</a>)</dd>
-    </dl>
-
-  </div>
-  <div class="tab-pane" id="instances">
+  <div class="tab-pane active" id="contacts">
     <ul class="list-group">
-    {% for writeitinstance in user.writeitinstances.all %}
-        <li class="list-group-item">{{ writeitinstance }} - <a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Edit me!" %}</a></li>
-    {% endfor %}
-    </ul>
-  </div>
-  <div class="tab-pane" id="contacts">
-    <ul class="list-group">
-    {% for contact in user.contacts.all %}
+    {% for contact in object_list %}
         <li class="list-group-item {% if contact.is_bounced %}alert-danger{% endif %}">
           <span>
             <a href="#" class="contact_value" data-pk="{{contact.id}}" data-type="text" data-name="value" data-url="{% url 'contact_value_update' pk=contact.id %}" data-title="{% trans 'Update contact' %}">{{ contact.value }}</a>

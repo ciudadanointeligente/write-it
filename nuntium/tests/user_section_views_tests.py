@@ -13,6 +13,7 @@ from django.utils.translation import activate
 from nuntium.forms import WriteItInstanceBasicForm
 from popit.models import Person
 from django.forms.models import model_to_dict
+from contactos.models import Contact
 
 
 urlconf = settings.SUBDOMAIN_URLCONFS.get(None, settings.ROOT_URLCONF)
@@ -68,8 +69,73 @@ class UserViewTestCase(UserSectionTestCase):
         response = c.get(url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, "nuntium/user_account.html")
-        self.assertTemplateUsed(response, "base.html")
+        self.assertTemplateUsed(response, "nuntium/profiles/your-profile.html")
+        self.assertTemplateUsed(response, "base_edit.html")
+
+class YourContactsViewTestCase(UserSectionTestCase):
+    def setUp(self):
+        super(YourContactsViewTestCase, self).setUp()
+        self.contact = Contact.objects.all()[0]
+        self.contact.owner = self.user
+        # The user fiera and the password is feroz
+        # but seriously I don't know how to make this more 
+        # explicit
+        self.contact.save()
+
+    def test_your_contacts_url_exist(self):
+        url = reverse('your-contacts')
+
+        self.assertTrue(url)
+
+    def test_it_is_reachable(self):
+        url = reverse('your-contacts')
+        c = Client()
+
+        c.login(username="fiera", password="feroz")
+
+        response = c.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertIn('object_list', response.context)
+        self.assertEquals(len(response.context['object_list']), 1)
+        self.assertEquals(response.context['object_list'][0], self.contact)
+        self.assertTemplateUsed(response, 'base_edit.html')
+        self.assertTemplateUsed(response, 'nuntium/profiles/your-contacts.html')
+
+    def test_it_is_not_reachable_by_a_non_user(self):
+        url = reverse('your-contacts')
+        client = Client()
+        response = client.get(url)
+        self.assertRedirectToLogin(response, next_url=url)
+
+
+class YourInstancesViewTestCase(UserSectionTestCase):
+    def setUp(self):
+        super(YourInstancesViewTestCase, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.writeitinstance.owner = self.user
+        self.writeitinstance.save()
+
+    def test_url_is_reachable(self):
+        url = reverse('your-instances')
+        self.assertTrue(url)
+
+    def test_it_brings_the_list_of_instances(self):
+        url = reverse('your-instances')
+        c = Client()
+        c.login(username="fiera", password="feroz")
+        response = c.get(url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(response.context['object_list']), 1)
+        self.assertEquals(response.context['object_list'][0], self.writeitinstance)
+        self.assertTemplateUsed(response, 'nuntium/profiles/your-instances.html')
+
+    def test_it_is_not_reachable_by_a_non_user(self):
+        url = reverse('your-instances')
+        client = Client()
+        response = client.get(url)
+        self.assertRedirectToLogin(response, next_url=url)
+
 
 class WriteitInstanceUpdateTestCase(UserSectionTestCase):
     def setUp(self):
@@ -169,4 +235,3 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         response = c.get(url)
 
         self.assertEquals(response.status_code, 404)
-

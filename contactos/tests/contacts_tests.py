@@ -11,7 +11,7 @@ from nuntium.models import OutboundMessage, Message, OutboundMessageIdentifier
 from mailit.bin.handleemail import EmailHandler
 from mailit.management.commands.handleemail import AnswerForManageCommand
 from contactos.admin import ContactAdmin
-from contactos.forms import ContactUpdateForm
+from contactos.forms import ContactUpdateForm, ContactCreateForm
 from django.test.client import RequestFactory, Client
 from django.forms import ModelForm
 from subdomains.utils import reverse
@@ -169,7 +169,42 @@ class ResendOutboundMessages(TestCase):
 
         self.assertFalse(contact.is_bounced)
 
-#Loving long names =)
+#Loving long names <3
+class ContactCreateFormAndViewTestCase(UserSectionTestCase):
+    def setUp(self):
+        super(ContactCreateFormAndViewTestCase, self).setUp()
+        self.factory = RequestFactory()
+        self.user = User.objects.get(username="fiera")
+        # the password is already 'fiera' but I'm making this just 
+        # explicit
+        self.user.set_password('fiera')
+        # making it explicit
+        self.contact_type = ContactType.objects.all()[0]
+        self.pedro = Person.objects.get(name="Pedro")
+
+
+    def test_create_a_new_contact_form(self):
+        data = {
+            'contact_type':self.contact_type.id,
+            'value': 'mail@the-real-mail.com',
+            'person': self.pedro.id
+        }
+        form = ContactCreateForm(data=data, owner=self.user)
+
+        print form.errors
+
+        self.assertTrue(form.is_valid())
+        form.save()
+
+        self.assertEquals(self.user.contacts.count(), 1)
+        contact = self.user.contacts.all()[0]
+        self.assertEquals(contact.owner, self.user)
+        self.assertEquals(contact.contact_type, self.contact_type)
+        self.assertEquals(contact.value, data['value'])
+
+
+
+
 class ContactUpdateFormAndViewTestCase(UserSectionTestCase):
     def setUp(self):
         super(ContactUpdateFormAndViewTestCase, self).setUp()

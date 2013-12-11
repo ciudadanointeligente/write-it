@@ -1,0 +1,52 @@
+{% extends "base_edit.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block extrajs %}
+$.fn.editable.defaults.mode = 'inline';
+$('.contact_value').editable({
+  'success' : function(response, newValue) {
+      $(this).closest('li').removeClass('alert-danger', 1000 )
+    }
+});
+{% endblock extrajs %}
+
+
+{% block extrascripts %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+{% endblock extrascripts %}
+
+
+{% block header %}
+<ul class="breadcrumb">
+  <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+  <li class="active">{% trans "Your profile" %}</li>
+</ul>
+
+
+<ul class="nav nav-pills">
+  <li><a href="{% url 'account' %}">{% trans "Your Profile" %}</a></li>
+  <li class="active"><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
+  <li><a href="{% url 'your-contacts' %}">{% trans "Your contacts" %}</a></li>
+  <li><a href="#nothing" data-toggle="tab">{% trans "Don't click me!" %}</a></li>
+</ul>
+{% endblock header %}
+
+{% block content %}
+<!-- Tab panes -->
+<div class="tab-content">
+  <div class="tab-pane active" id="instances">
+    <ul class="list-group">
+    {% for writeitinstance in object_list %}
+        <li class="list-group-item">{{ writeitinstance }} - <a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Edit me!" %}</a></li>
+    {% endfor %}
+    </ul>
+  </div>
+  <div class="tab-pane" id="nothing"><a href="http://github.com/ciudadanointeligente/write-it" data-toggle="tab">{% trans "please don't go any further" %}</a></div>
+</div>
+
+
+
+
+{% endblock content%}
