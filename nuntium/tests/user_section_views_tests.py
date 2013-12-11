@@ -69,8 +69,8 @@ class UserViewTestCase(UserSectionTestCase):
         response = c.get(url)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, "nuntium/user_account.html")
-        self.assertTemplateUsed(response, "base.html")
+        self.assertTemplateUsed(response, "nuntium/profiles/your-profile.html")
+        self.assertTemplateUsed(response, "base_edit.html")
 
 class YourContactsViewTestCase(UserSectionTestCase):
     def setUp(self):

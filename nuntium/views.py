@@ -179,7 +179,7 @@ class PerInstanceSearchView(SearchView):
 
 
 class UserAccountView(TemplateView):
-    template_name = 'nuntium/user_account.html'
+    template_name = 'nuntium/profiles/your-profile.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
