@@ -1,0 +1,7 @@
+doc-warnings: yes
+test-warnings: no
+strictness: high
+uses:
+    - django
+    - celery
+autodetect: yes
