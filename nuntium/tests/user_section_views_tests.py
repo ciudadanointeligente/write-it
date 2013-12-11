@@ -101,6 +101,13 @@ class YourContactsViewTestCase(UserSectionTestCase):
         self.assertTemplateUsed(response, 'base_edit.html')
         self.assertTemplateUsed(response, 'nuntium/profiles/your-contacts.html')
 
+    def test_it_is_not_reachable_by_a_non_user(self):
+        url = reverse('your-contacts')
+        client = Client()
+        response = client.get(url)
+        self.assertRedirectToLogin(response, next_url=url)
+
+
 class WriteitInstanceUpdateTestCase(UserSectionTestCase):
     def setUp(self):
         super(WriteitInstanceUpdateTestCase, self).setUp()

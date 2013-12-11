@@ -222,6 +222,10 @@ class YourContactsView(ListView):
     template_name = 'nuntium/profiles/your-contacts.html'
     context_object_name = 'contacts'
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(YourContactsView, self).dispatch(*args, **kwargs)
+
     def get_queryset(self):
         queryset = super(YourContactsView, self).get_queryset().filter(owner=self.request.user)
         return queryset

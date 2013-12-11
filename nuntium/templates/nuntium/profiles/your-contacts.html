@@ -26,9 +26,9 @@ $('.contact_value').editable({
 
 
 <ul class="nav nav-pills">
-  <li><a href="#profile" data-toggle="tab">{% trans "Your Profile" %}</a></li>
+  <li><a href="{% url 'account' %}">{% trans "Your Profile" %}</a></li>
   <li><a href="#instances" data-toggle="tab">{% trans "Your instances" %}</a></li>
-  <li class="active"><a href="#contacts" data-toggle="tab">{% trans "Your contacts" %}</a></li>
+  <li class="active"><a href="{% url 'your-contacts' %}">{% trans "Your contacts" %}</a></li>
   <li><a href="#nothing" data-toggle="tab">{% trans "Don't click me!" %}</a></li>
 </ul>
 {% endblock header %}
@@ -36,22 +36,6 @@ $('.contact_value').editable({
 {% block content %}
 <!-- Tab panes -->
 <div class="tab-content">
-  <div class="tab-pane active" id="profile">
-
-    <dl class="dl-horizontal">
-      <dt>{% trans "Username" %}</dt>
-      <dd>{{ user.username }}</dd>
-      <dt>{% trans "First Name" %}</dt>
-      <dd>{{ user.first_name }}</dd>
-      <dt>{% trans "Last Name" %}</dt>
-      <dd>{{ user.last_name }}</dd>
-      <dt>{% trans "Email" %}</dt>
-      <dd>{{ user.email }}</dd>
-      <dt>{% trans "Password" %}</dt>
-      <dd>************ (<a href="{% url 'django.contrib.auth.views.password_reset' %}">{% trans "Change" %}</a>)</dd>
-    </dl>
-
-  </div>
   <div class="tab-pane" id="instances">
     <ul class="list-group">
     {% for writeitinstance in user.writeitinstances.all %}
@@ -59,7 +43,7 @@ $('.contact_value').editable({
     {% endfor %}
     </ul>
   </div>
-  <div class="tab-pane" id="contacts">
+  <div class="tab-pane active" id="contacts">
     <ul class="list-group">
     {% for contact in contacts %}
         <li class="list-group-item {% if contact.is_bounced %}alert-danger{% endif %}">
