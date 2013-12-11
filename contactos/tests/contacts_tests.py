@@ -223,29 +223,7 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
         self.assertEquals(contact.value,data['value'])
         self.assertEquals(contact.person, self.pedro)
         self.assertEquals(contact.contact_type, self.contact_type)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
 class ContactUpdateFormAndViewTestCase(UserSectionTestCase):
     def setUp(self):
         super(ContactUpdateFormAndViewTestCase, self).setUp()
