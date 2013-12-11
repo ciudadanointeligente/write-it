@@ -6,12 +6,38 @@
 {% include "home.js" %}
 {% endblock extrajs %}
 
+{% block menu-home-active %}
+ class="active"
+{% endblock menu-home-active %}
+
 {% block content %}
-<h1>{% trans "You writeit and we deliver it!" %}</h1>
-<p>{% trans "Current instances of write it" %}</p>
+<div class="jumbotron">
+  <h2>{% trans "You writeit and we deliver it!" %}</h2>
+
+  <p class="leading">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic, veritatis, corporis, nisi, repellat aut ipsam nemo non recusandae nostrum voluptatibus dolor quis vero velit placeat soluta iure adipisci? Ut, animi.</p>
+  
+  <div class="text-center">
+    <span class="fa-stack fa-lg">
+      <i class="fa fa-circle fa-stack-2x"></i>
+      <i class="fa fa-rocket fa-stack-1x fa-inverse"></i>
+    </span>
+  </div>
+</div>
+
+<div class="row marketing">
+  <div class="col-md-6">
+    <h3><i class="fa fa-github-alt"></i> We talk Open Source</h3>
+    <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+  </div>
+  <div class="col-md-6">
+    <h3><i class="fa fa-beer"></i> Free as a beer</h3>
+    <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+  </div>
+</div>
+<!-- <p>{% trans "Current instances of write it" %}</p>
 <ul>
 {% for instance in writeitinstances %}
 <li><a href="{% url 'instance_detail' subdomain=instance.slug %}">{{ instance.name }}</a></li>
 {% endfor %}
-</ul>
+</ul> -->
 {% endblock content%}
