@@ -1,4 +1,4 @@
-from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, CharField, EmailField
+from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, CharField, EmailField, SelectMultiple
 from nuntium.models import Message, WriteItInstance, OutboundMessage, Confirmation, Membership
 from contactos.models import Contact
 from django.forms import ValidationError
@@ -74,3 +74,7 @@ class WriteItInstanceBasicForm(ModelForm):
     class Meta:
         model = WriteItInstance
         fields = ['name', 'persons']
+
+        widgets = {
+            'persons': SelectMultiple(attrs={'class': 'chosen-person-select'}),
+        }
