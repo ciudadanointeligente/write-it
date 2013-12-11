@@ -16,6 +16,7 @@ from haystack.views import SearchView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from contactos.models import Contact
+from contactos.forms import ContactCreateForm
 
 
 class HomeTemplateView(TemplateView):
@@ -231,6 +232,12 @@ class UserSectionListView(ListView):
 class YourContactsView(UserSectionListView):
     model = Contact
     template_name = 'nuntium/profiles/your-contacts.html'
+
+
+    def get_context_data(self,**kwargs):
+        context = super(YourContactsView, self).get_context_data(**kwargs)
+        context['form'] = ContactCreateForm(owner=self.request.user)
+        return context
 
 class YourInstancesView(UserSectionListView):
     model = WriteItInstance
