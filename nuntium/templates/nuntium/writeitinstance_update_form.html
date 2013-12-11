@@ -1,9 +1,15 @@
 {% extends "base_edit.html" %}
 {% load subdomainurls %}
 {% load i18n %}
+{% load staticfiles %}
 
+
+{% block extrascripts %}
+<link rel="stylesheet" href="{% static 'css/chosen.css' %}">
+<script src="{% static 'js/chosen.jquery.min.js' %}"></script>
+{% endblock extrascripts %}
 {% block extrajs %}
-
+$(".chosen-person-select").chosen();
 {% endblock extrajs %}
 
 {% block header %}
