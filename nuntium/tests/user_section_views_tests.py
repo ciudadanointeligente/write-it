@@ -13,6 +13,7 @@ from django.utils.translation import activate
 from nuntium.forms import WriteItInstanceBasicForm
 from popit.models import Person
 from django.forms.models import model_to_dict
+from contactos.models import Contact
 
 
 urlconf = settings.SUBDOMAIN_URLCONFS.get(None, settings.ROOT_URLCONF)
@@ -70,6 +71,35 @@ class UserViewTestCase(UserSectionTestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "nuntium/user_account.html")
         self.assertTemplateUsed(response, "base.html")
+
+class YourContactsViewTestCase(UserSectionTestCase):
+    def setUp(self):
+        super(YourContactsViewTestCase, self).setUp()
+        self.contact = Contact.objects.all()[0]
+        self.contact.owner = self.user
+        # The user fiera and the password is feroz
+        # but seriously I don't know how to make this more 
+        # explicit
+        self.contact.save()
+
+    def test_your_contacts_url_exist(self):
+        url = reverse('your-contacts')
+
+        self.assertTrue(url)
+
+    def test_it_is_reachable(self):
+        url = reverse('your-contacts')
+        c = Client()
+
+        c.login(username="fiera", password="feroz")
+
+        response = c.get(url)
+        self.assertTrue(response.status_code, 200)
+        self.assertIn('contacts', response.context)
+        self.assertEquals(len(response.context['contacts']), 1)
+        self.assertEquals(response.context['contacts'][0], self.contact)
+        self.assertTemplateUsed(response, 'base_edit.html')
+        self.assertTemplateUsed(response, 'nuntium/profiles/your-contacts.html')
 
 class WriteitInstanceUpdateTestCase(UserSectionTestCase):
     def setUp(self):
@@ -169,4 +199,3 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         response = c.get(url)
 
         self.assertEquals(response.status_code, 404)
-
