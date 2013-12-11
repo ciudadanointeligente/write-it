@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, Select
 from contactos.models import Contact
 
 class ContactUpdateForm(ModelForm):
@@ -22,4 +22,11 @@ class ContactCreateForm(ModelForm):
     class Meta:
         model = Contact
         fields = ['contact_type', 'value','person',]
-
+        widgets = {
+            'person': Select(attrs={
+                'class': 'chosen-person-select'
+                }),
+            'contact_type': Select(attrs={
+                'class': 'chosen-person-select'
+                }),
+        }

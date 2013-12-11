@@ -190,9 +190,6 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
             'person': self.pedro.id
         }
         form = ContactCreateForm(data=data, owner=self.user)
-
-        print form.errors
-
         self.assertTrue(form.is_valid())
         form.save()
 
@@ -203,8 +200,30 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
         self.assertEquals(contact.value, data['value'])
 
 
+    def test_can_create_a_new_contact_from_a_view(self):
+        url = reverse('create-new-contact')
+        self.assertTrue(url)
 
 
+        c = Client()
+        c.login(username="fiera", password="feroz")
+
+        data = {
+            'contact_type':self.contact_type.id,
+            'value': 'mail@the-real-mail.com',
+            'person': self.pedro.id
+        }
+
+        response = c.post(url, data=data)
+        self.assertEquals(response.status_code, 302)
+        url_for_list_of_contacts = reverse('your-contacts')
+        self.assertEquals(response["Location"], url_for_list_of_contacts)
+
+        contact = Contact.objects.get(owner=self.user)
+        self.assertEquals(contact.value,data['value'])
+        self.assertEquals(contact.person, self.pedro)
+        self.assertEquals(contact.contact_type, self.contact_type)
+        
 class ContactUpdateFormAndViewTestCase(UserSectionTestCase):
     def setUp(self):
         super(ContactUpdateFormAndViewTestCase, self).setUp()

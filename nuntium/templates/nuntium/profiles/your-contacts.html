@@ -9,12 +9,15 @@ $('.contact_value').editable({
       $(this).closest('li').removeClass('alert-danger', 1000 )
     }
 });
+$(".chosen-person-select").chosen({width: "95%"});
 {% endblock extrajs %}
 
 
 {% block extrascripts %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
 <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/chosen.css' %}">
+<script src="{% static 'js/chosen.jquery.min.js' %}"></script>
 {% endblock extrascripts %}
 
 
@@ -34,6 +37,60 @@ $('.contact_value').editable({
 {% endblock header %}
 
 {% block content %}
+
+<!-- Button trigger modal -->
+<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  {% trans "Add a new contact" %}
+</button>
+
+<!-- Modal -->
+<form method="POST" action="{% url 'create-new-contact' %}">{% csrf_token %}
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">{% trans "Add a new contact" %}</h4>
+      </div>
+      <div class="modal-body">
+        {{ form.non_field_errors }}
+        <div class="fieldWrapper">
+            {{ form.contact_type.errors }}
+            <label for="id_subject">{{ form.contact_type.label_tag }}</label>
+            {{ form.contact_type }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.person.errors }}
+            <label for="id_subject">{{ form.person.label_tag }}</label>
+            {{ form.person }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.value.errors }}
+            <label for="id_subject">{{ form.value.label_tag }}</label>
+            {{ form.value }}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+        <input type="submit" class='btn btn-primary' value="Create" />
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- Tab panes -->
 <div class="tab-content">
   <div class="tab-pane active" id="contacts">

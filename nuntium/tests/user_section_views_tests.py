@@ -14,6 +14,7 @@ from nuntium.forms import WriteItInstanceBasicForm
 from popit.models import Person
 from django.forms.models import model_to_dict
 from contactos.models import Contact
+from contactos.forms import ContactCreateForm
 
 
 urlconf = settings.SUBDOMAIN_URLCONFS.get(None, settings.ROOT_URLCONF)
@@ -98,6 +99,9 @@ class YourContactsViewTestCase(UserSectionTestCase):
         self.assertIn('object_list', response.context)
         self.assertEquals(len(response.context['object_list']), 1)
         self.assertEquals(response.context['object_list'][0], self.contact)
+        self.assertIn('form', response.context)
+        form = response.context['form']
+        self.assertIsInstance(form, ContactCreateForm)
         self.assertTemplateUsed(response, 'base_edit.html')
         self.assertTemplateUsed(response, 'nuntium/profiles/your-contacts.html')
 
