@@ -1,5 +1,5 @@
 # Create your views here.
-from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, View
+from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, View, ListView
 from django.views.generic.edit import UpdateView
 from subdomains.utils import reverse
 from django.core.urlresolvers import reverse as original_reverse
@@ -15,6 +15,7 @@ from nuntium.forms import  MessageSearchForm, PerInstanceSearchForm
 from haystack.views import SearchView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from contactos.models import Contact
 
 
 class HomeTemplateView(TemplateView):
@@ -178,7 +179,7 @@ class PerInstanceSearchView(SearchView):
 
 
 class UserAccountView(TemplateView):
-    template_name = 'nuntium/user_account.html'
+    template_name = 'nuntium/profiles/your-profile.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
@@ -214,3 +215,23 @@ class WriteItInstanceUpdateView(UpdateView):
         response = super(WriteItInstanceUpdateView, self).form_valid(form)
         
         return response
+
+
+class UserSectionListView(ListView):
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(UserSectionListView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super(UserSectionListView, self).get_queryset().filter(owner=self.request.user)
+        return queryset
+
+
+
+class YourContactsView(UserSectionListView):
+    model = Contact
+    template_name = 'nuntium/profiles/your-contacts.html'
+
+class YourInstancesView(UserSectionListView):
+    model = WriteItInstance
+    template_name = 'nuntium/profiles/your-instances.html'
