@@ -27,11 +27,12 @@ $('.contact_value').editable({
 
 <ul class="nav nav-pills">
   <li class="active"><a href="{% url 'account' %}" data-toggle="tab">{% trans "Your Profile" %}</a></li>
-  <li><a href="#instances" data-toggle="tab">{% trans "Your instances" %}</a></li>
+  <li><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
   <li><a href="{% url 'your-contacts' %}">{% trans "Your contacts" %}</a></li>
   <li><a href="#nothing" data-toggle="tab">{% trans "Don't click me!" %}</a></li>
 </ul>
 {% endblock header %}
+
 
 {% block content %}
 <!-- Tab panes -->
@@ -51,26 +52,6 @@ $('.contact_value').editable({
       <dd>************ (<a href="{% url 'django.contrib.auth.views.password_reset' %}">{% trans "Change" %}</a>)</dd>
     </dl>
 
-  </div>
-  <div class="tab-pane" id="instances">
-    <ul class="list-group">
-    {% for writeitinstance in user.writeitinstances.all %}
-        <li class="list-group-item">{{ writeitinstance }} - <a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Edit me!" %}</a></li>
-    {% endfor %}
-    </ul>
-  </div>
-  <div class="tab-pane" id="contacts">
-    <ul class="list-group">
-    {% for contact in user.contacts.all %}
-        <li class="list-group-item {% if contact.is_bounced %}alert-danger{% endif %}">
-          <span>
-            <a href="#" class="contact_value" data-pk="{{contact.id}}" data-type="text" data-name="value" data-url="{% url 'contact_value_update' pk=contact.id %}" data-title="{% trans 'Update contact' %}">{{ contact.value }}</a>
-            <span class="badge">{{ contact.person.name }}</span>
-          </span>
-          <span class="badge pull-right">{{ contact.contact_type }}</span>
-        </li>
-    {% endfor %}
-    </ul>
   </div>
   <div class="tab-pane" id="nothing"><a href="http://github.com/ciudadanointeligente/write-it" data-toggle="tab">{% trans "please don't go any further" %}</a></div>
 </div>

@@ -94,15 +94,44 @@ class YourContactsViewTestCase(UserSectionTestCase):
         c.login(username="fiera", password="feroz")
 
         response = c.get(url)
-        self.assertTrue(response.status_code, 200)
-        self.assertIn('contacts', response.context)
-        self.assertEquals(len(response.context['contacts']), 1)
-        self.assertEquals(response.context['contacts'][0], self.contact)
+        self.assertEquals(response.status_code, 200)
+        self.assertIn('object_list', response.context)
+        self.assertEquals(len(response.context['object_list']), 1)
+        self.assertEquals(response.context['object_list'][0], self.contact)
         self.assertTemplateUsed(response, 'base_edit.html')
         self.assertTemplateUsed(response, 'nuntium/profiles/your-contacts.html')
 
     def test_it_is_not_reachable_by_a_non_user(self):
         url = reverse('your-contacts')
+        client = Client()
+        response = client.get(url)
+        self.assertRedirectToLogin(response, next_url=url)
+
+
+class YourInstancesViewTestCase(UserSectionTestCase):
+    def setUp(self):
+        super(YourInstancesViewTestCase, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.writeitinstance.owner = self.user
+        self.writeitinstance.save()
+
+    def test_url_is_reachable(self):
+        url = reverse('your-instances')
+        self.assertTrue(url)
+
+    def test_it_brings_the_list_of_instances(self):
+        url = reverse('your-instances')
+        c = Client()
+        c.login(username="fiera", password="feroz")
+        response = c.get(url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(response.context['object_list']), 1)
+        self.assertEquals(response.context['object_list'][0], self.writeitinstance)
+        self.assertTemplateUsed(response, 'nuntium/profiles/your-instances.html')
+
+    def test_it_is_not_reachable_by_a_non_user(self):
+        url = reverse('your-instances')
         client = Client()
         response = client.get(url)
         self.assertRedirectToLogin(response, next_url=url)

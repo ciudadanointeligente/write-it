@@ -217,16 +217,21 @@ class WriteItInstanceUpdateView(UpdateView):
         return response
 
 
-class YourContactsView(ListView):
-    model = Contact
-    template_name = 'nuntium/profiles/your-contacts.html'
-    context_object_name = 'contacts'
-
+class UserSectionListView(ListView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        return super(YourContactsView, self).dispatch(*args, **kwargs)
+        return super(UserSectionListView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        queryset = super(YourContactsView, self).get_queryset().filter(owner=self.request.user)
+        queryset = super(UserSectionListView, self).get_queryset().filter(owner=self.request.user)
         return queryset
 
+
+
+class YourContactsView(UserSectionListView):
+    model = Contact
+    template_name = 'nuntium/profiles/your-contacts.html'
+
+class YourInstancesView(UserSectionListView):
+    model = WriteItInstance
+    template_name = 'nuntium/profiles/your-instances.html'
