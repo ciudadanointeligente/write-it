@@ -1,5 +1,6 @@
 from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, CharField, EmailField, SelectMultiple
-from nuntium.models import Message, WriteItInstance, OutboundMessage, Confirmation, Membership
+from nuntium.models import Message, WriteItInstance, OutboundMessage, \
+                            Confirmation, Membership, NewAnswerNotificationTemplate
 from contactos.models import Contact
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
@@ -78,3 +79,8 @@ class WriteItInstanceBasicForm(ModelForm):
         widgets = {
             'persons': SelectMultiple(attrs={'class': 'chosen-person-select'}),
         }
+
+
+class NewAnswerNotificationTemplate(ModelForm):
+    class Meta:
+        model = NewAnswerNotificationTemplate

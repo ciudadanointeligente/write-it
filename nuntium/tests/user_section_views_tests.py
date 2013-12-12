@@ -15,6 +15,7 @@ from popit.models import Person
 from django.forms.models import model_to_dict
 from contactos.models import Contact
 from contactos.forms import ContactCreateForm
+from nuntium.forms import NewAnswerNotificationTemplate
 
 
 urlconf = settings.SUBDOMAIN_URLCONFS.get(None, settings.ROOT_URLCONF)
@@ -239,3 +240,20 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         response = c.get(url)
 
         self.assertEquals(response.status_code, 404)
+
+
+class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
+    def setUp(self):
+        super(NewAnswerNotificationUpdateViewForm, self).setUp()
+        self.factory = RequestFactory()
+        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.owner = self.writeitinstance.owner
+        self.pedro = Person.objects.get(name="Pedro")
+        self.marcel = Person.objects.get(name="Marcel")
+
+
+    def atest_update_template_form(self):
+        form = NewAnswerNotificationTemplate(instance=self.writeitinstance.new_answer_notification_template)
+        print form
+        self.assertTrue(form.is_valid())
+
