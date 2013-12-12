@@ -24,29 +24,39 @@ $('.contact_value').editable({
   <li class="active">{% trans "Your profile" %}</li>
 </ul>
 
-
-<ul class="nav nav-pills">
+<ul class="nav nav-tabs">
   <li><a href="{% url 'account' %}">{% trans "Your Profile" %}</a></li>
   <li class="active"><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
   <li><a href="{% url 'your-contacts' %}">{% trans "Your contacts" %}</a></li>
-  <li><a href="#nothing" data-toggle="tab">{% trans "Don't click me!" %}</a></li>
 </ul>
 {% endblock header %}
 
 {% block content %}
 <!-- Tab panes -->
 <div class="tab-content">
+  <div class="page-header">
+    <h3>{% trans 'Instances' %}</h3>
+  </div>
   <div class="tab-pane active" id="instances">
-    <ul class="list-group">
-    {% for writeitinstance in object_list %}
-        <li class="list-group-item">{{ writeitinstance }} - <a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Edit me!" %}</a></li>
-    {% endfor %}
-    </ul>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th width="90%">
+            {% trans 'Name' %}
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for writeitinstance in object_list %}
+        <tr>
+          <td>{{ writeitinstance }}</td>
+          <td><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}"><i class="fa fa-pencil"></i> {% trans "Edit me!" %}</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
   <div class="tab-pane" id="nothing"><a href="http://github.com/ciudadanointeligente/write-it" data-toggle="tab">{% trans "please don't go any further" %}</a></div>
 </div>
-
-
-
-
 {% endblock content%}
