@@ -24,27 +24,38 @@ $(".chosen-person-select").chosen();
 </div>
 
 
-<ul class="nav nav-pills">
+<ul class="nav nav-tabs">
   <li class="active"><a href="#basic-update" data-toggle="tab">{% trans "Basic Update" %}</a></li>
-  <li><a href="#webhooks" data-toggle="tab">{% trans "Webhooks" %}</a></li>
+  <!-- <li><a href="#webhooks" data-toggle="tab">{% trans "Webhooks" %}</a></li>
   <li><a href="#advanced-update" data-toggle="tab">{% trans "Advanced Update" %}</a></li>
   <li><a href="#templates" data-toggle="tab">{% trans "Templates" %}</a></li>
-  <li><a href="#nothing" data-toggle="tab">{% trans "Nothing" %}</a></li>
+  <li><a href="#nothing" data-toggle="tab">{% trans "Nothing" %}</a></li> -->
 </ul>
 {% endblock header %}
 
 {% block content %}
 <div class="tab-content">
   <div class="tab-pane active" id="basic-update">
-    <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" class='btn btn-primary' value="Update" />
+    <form role="form" action="" method="post">
+      <div class="form-group">
+        {{form.name.label_tag}}
+        {{form.name}}
+      </div>
+      <div class="form-group">
+        {{form.persons.label_tag}}
+        {{form.persons}}
+      </div>
+      <div class="text-right">
+        <input type="button" onclick="javascript:history.back();" class='btn btn-default' value="{% trans 'Cancel' %}" />
+        <input type="submit" class='btn btn-primary' value="{% trans 'Update' %}" />
+      </div>
+      {% csrf_token %}
     </form>
   </div>
-  <div class="tab-pane" id="webhooks">I'm not implemented</div>
+  <!-- <div class="tab-pane" id="webhooks">I'm not implemented</div>
   <div class="tab-pane" id="advanced-update">I'm not implemented</div>
   <div class="tab-pane" id="templates">I'm not implemented</div>
-  <div class="tab-pane" id="nothing"><a href="https://s3-sa-east-1.amazonaws.com/candideitstatic/fiera_trabajando.jpg">Really nothing, don't click!</a></div>
+  <div class="tab-pane" id="nothing"><a href="https://s3-sa-east-1.amazonaws.com/candideitstatic/fiera_trabajando.jpg">Really nothing, don't click!</a></div> -->
 </div>
 
 

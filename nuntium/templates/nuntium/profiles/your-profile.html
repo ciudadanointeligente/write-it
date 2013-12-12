@@ -26,13 +26,15 @@
   <li class="active"><a href="{% url 'account' %}">{% trans "Your Profile" %}</a></li>
   <li><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
   <li><a href="{% url 'your-contacts' %}">{% trans "Your contacts" %}</a></li>
-  <li><a href="#nothing">{% trans "Don't click me!" %}</a></li>
 </ul>
 {% endblock header %}
 
 {% block content %}
 <!-- Tab panes -->
 <div class="tab-content">
+  <div class="page-header">
+    <h3>{% trans 'Profile' %}</h3>
+  </div>
   <div class="tab-pane active" id="profile">
     <form class="form-horizontal" method="post" action="" role="form">
       <div class="form-group">
