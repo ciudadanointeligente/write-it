@@ -1,4 +1,5 @@
-from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, CharField, EmailField, SelectMultiple
+from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, \
+                        CharField, EmailField, SelectMultiple, TextInput
 from nuntium.models import Message, WriteItInstance, OutboundMessage, \
                             Confirmation, Membership, NewAnswerNotificationTemplate
 from contactos.models import Contact
@@ -77,7 +78,8 @@ class WriteItInstanceBasicForm(ModelForm):
         fields = ['name', 'persons']
 
         widgets = {
-            'persons': SelectMultiple(attrs={'class': 'chosen-person-select'}),
+            'name': TextInput(attrs={'class': 'form-control'}),
+            'persons': SelectMultiple(attrs={'class': 'form-control chosen-person-select'}),
         }
 
 

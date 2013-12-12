@@ -93,7 +93,7 @@
             <ul class="nav navbar-nav navbar-right">
               {% if not user.is_authenticated %}
               <li><a href="#" data-toggle="modal" data-target="#ModalRegister">{% trans 'Register' %}</a></li>
-              <li><a href="{% url 'django.contrib.auth.views.login' %}">Login</a></li>
+              <li{% block menu-login-active %}{% endblock menu-login-active %}><a href="{% url 'django.contrib.auth.views.login' %}">Login</a></li>
               {% else %}
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ user }} <b class="caret"></b></a>

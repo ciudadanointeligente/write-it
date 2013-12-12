@@ -5,10 +5,9 @@
 {% block extrajs %}
 {% endblock extrajs %}
 
+{% block menu-login-active %} class="active"{% endblock menu-login-active %}
+
 {% block content %}
-
-
-
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default">
@@ -26,14 +25,13 @@
             {% endif %}
             <form role="form" method="post" action="{% url 'django.contrib.auth.views.login' %}">
               <div class="form-group">
-                <!-- <label for="username">{% trans 'Username' %}</label> -->
-                <input type="username" class="form-control" id="username" placeholder="{% trans 'Username' %}">
+                <input type="text" class="form-control" id="username" name="username" placeholder="{% trans 'Username' %}">
               </div>
               <div class="form-group">
-                <!-- <label for="password">{% trans 'Password' %}</label> -->
-                <input type="password" class="form-control" id="password" placeholder="{% trans 'Password' %}">
+                <input type="password" class="form-control" id="password" name="password" placeholder="{% trans 'Password' %}">
               </div>
               <button type="submit" class="btn btn-primary btn-lg btn-block">{% trans 'Sign In' %}</button>
+              <input type="hidden" name="next" value="{{ next }}" />
               {% csrf_token %}
             </form>
           </div>
