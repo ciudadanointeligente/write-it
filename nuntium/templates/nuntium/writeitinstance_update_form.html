@@ -16,13 +16,9 @@ $(".chosen-person-select").chosen();
 <ul class="breadcrumb">
     <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
     <li><a href="{% url 'account' %}">{% trans "Your profile" %}</a></li>
+    <li><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
     <li class="active">{{ writeitinstance }}</li>
 </ul>
-
-<div class="page-header">
-    <h2>{% blocktrans with writeitinstance=writeitinstance %}Editing {{ writeitinstance }}{% endblocktrans %}</h2>
-</div>
-
 
 <ul class="nav nav-tabs">
   <li class="active"><a href="#basic-update" data-toggle="tab">{% trans "Basic Update" %}</a></li>
@@ -36,6 +32,10 @@ $(".chosen-person-select").chosen();
 {% block content %}
 <div class="tab-content">
   <div class="tab-pane active" id="basic-update">
+    <div class="page-header">
+        <h2>{% blocktrans with writeitinstance=writeitinstance %}Editing {{ writeitinstance }}{% endblocktrans %}</h2>
+    </div>
+
     <form role="form" action="" method="post">
       <div class="form-group">
         {{form.name.label_tag}}
