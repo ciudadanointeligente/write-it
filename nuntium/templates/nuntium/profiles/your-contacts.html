@@ -39,7 +39,7 @@ $('.contact_value').editable({
     Contacts
   </h3>
   <div class="tab-pane active" id="contacts">
-    <table class="table table-striped">
+    <table class="table">
       <thead>
         <tr>
           <th>Email</th>
@@ -49,11 +49,12 @@ $('.contact_value').editable({
       </thead>
       <tbody>
         {% for contact in object_list %}
-        <tr>
+        <tr{% if contact.is_bounced %} class="danger"{% endif %}>
           <td>
             <span>
-              <a href="#" class="contact_value" data-pk="{{contact.id}}" data-type="text" data-name="value" data-url="{% url 'contact_value_update' pk=contact.id %}" data-title="{% trans 'Update contact' %}">{{ contact.value }}</a>
+              <a href="#" title="{% trans 'Click to edit' %}" class="contact_value" data-pk="{{contact.id}}" data-type="text" data-name="value" data-url="{% url 'contact_value_update' pk=contact.id %}" data-title="{% trans 'Update contact' %}">{{ contact.value }}</a>
             </span>
+            {% if contact.is_bounced %}<span class="badge">{% trans 'Bounced' %}</span>{% endif %}
           </td>
           <td>{{ contact.person.name }}</td>
           <td>{{ contact.contact_type }}</td>
