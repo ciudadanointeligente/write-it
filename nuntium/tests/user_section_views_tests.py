@@ -15,6 +15,7 @@ from popit.models import Person
 from django.forms.models import model_to_dict
 from contactos.models import Contact
 from contactos.forms import ContactCreateForm
+from nuntium.forms import NewAnswerNotificationTemplateForm
 
 
 urlconf = settings.SUBDOMAIN_URLCONFS.get(None, settings.ROOT_URLCONF)
@@ -237,5 +238,104 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
 
         response = c.get(url)
+
+        self.assertEquals(response.status_code, 404)
+
+    def test_updating_templates_views(self):
+        self.writeitinstance.owner.set_password("feroz")
+        self.writeitinstance.owner.save()
+        c = Client()
+        c.login(username=self.writeitinstance.owner.get_username(), password='feroz')
+
+        url = reverse('writeitinstance_template_update', kwargs={'pk':self.writeitinstance.pk})
+
+        response = c.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'base_edit.html')
+        self.assertTemplateUsed(response, 'nuntium/profiles/templates.html')
+        self.assertIsInstance(response.context['new_answer_template_form'], NewAnswerNotificationTemplateForm)
+        form = response.context['new_answer_template_form']
+        self.assertEquals(form.instance, self.writeitinstance.new_answer_notification_template)
+
+        non_user = Client()
+
+        response2 = non_user.get(url)
+        self.assertRedirectToLogin(response2,next_url=url)
+
+        # Benito does not own the instance
+        fiera = User.objects.create_user(username="benito", email="benito@votainteligente.cl", password="feroz")
+
+        fiera_client = Client()
+        fiera_client.login(username="benito", password="feroz")
+
+        response = fiera_client.get(url)
+        self.assertEquals(response.status_code, 404)
+
+
+
+class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
+    def setUp(self):
+        super(NewAnswerNotificationUpdateViewForm, self).setUp()
+        self.factory = RequestFactory()
+        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.writeitinstance.owner = self.user
+        self.writeitinstance.save()
+        self.pedro = Person.objects.get(name="Pedro")
+        self.marcel = Person.objects.get(name="Marcel")
+
+
+    def test_update_template_form(self):
+        data = {
+        'template_html':self.writeitinstance.new_answer_notification_template.template_html,
+        'template_text':self.writeitinstance.new_answer_notification_template.template_text,
+        'subject_template':'subject =)'
+        }
+        form = NewAnswerNotificationTemplateForm(data, 
+            writeitinstance=self.writeitinstance, 
+            instance=self.writeitinstance.new_answer_notification_template)
+        self.assertTrue(form.is_valid())
+
+        template = form.save()
+        self.assertEquals(template.subject_template, data['subject_template'])
+
+    def test_update_template_view(self):
+
+        url = reverse('edit_new_answer_notification_template', kwargs={'pk':self.writeitinstance.id})
+
+        self.assertTrue(url)
+
+        c = Client()
+        # OK THE USER AND PASSWORD ARE CORRECT BUT THEY ARE NOT EXPLICIT, CAN YOU PLEASE HELP ME FIND A WAY
+        # TO MAKE IT So?!?!?
+        c.login(username="fiera", password="feroz")
+
+        data = {
+        'template_html':self.writeitinstance.new_answer_notification_template.template_html,
+        'template_text':self.writeitinstance.new_answer_notification_template.template_text,
+        'subject_template':'subject =)'
+        }
+
+        response = c.post(url, data=data)
+        url = reverse('writeitinstance_template_update', kwargs={'pk':self.writeitinstance.pk})
+        self.assertRedirects(response, url)
+
+        actual_subject = self.writeitinstance.new_answer_notification_template.subject_template
+
+
+    def test_a_non_owner_cannot_update_a_template(self):
+        not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
+
+        url = reverse('edit_new_answer_notification_template', kwargs={'pk':self.writeitinstance.id})
+        c = Client()
+        #logging in as another person different to the owner
+        c.login(username="not_owner", password="secreto")
+
+        data = {
+        'template_html':self.writeitinstance.new_answer_notification_template.template_html,
+        'template_text':self.writeitinstance.new_answer_notification_template.template_text,
+        'subject_template':'subject =)'
+        }
+
+        response = c.post(url, data=data)
 
         self.assertEquals(response.status_code, 404)

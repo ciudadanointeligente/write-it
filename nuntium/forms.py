@@ -1,7 +1,7 @@
 from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, \
                         CharField, EmailField, SelectMultiple, TextInput
-from nuntium.models import Message, WriteItInstance, OutboundMessage, Confirmation, \
-                            Membership
+from nuntium.models import Message, WriteItInstance, OutboundMessage, \
+                            Confirmation, Membership, NewAnswerNotificationTemplate
 from contactos.models import Contact
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
@@ -81,3 +81,21 @@ class WriteItInstanceBasicForm(ModelForm):
             'name': TextInput(attrs={'class': 'form-control'}),
             'persons': SelectMultiple(attrs={'class': 'form-control chosen-person-select'}),
         }
+
+
+class NewAnswerNotificationTemplateForm(ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        self.writeitinstance = kwargs.pop('writeitinstance')
+        super(NewAnswerNotificationTemplateForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        template = super(NewAnswerNotificationTemplateForm, self).save(commit=False)
+        template.writeitinstance = self.writeitinstance
+        if commit:
+            template.save()
+        return template
+
+    class Meta:
+        model = NewAnswerNotificationTemplate
+        fields = ['template_html', 'template_text', 'subject_template']
