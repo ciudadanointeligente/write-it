@@ -3,21 +3,22 @@ from django.views.generic import TemplateView, CreateView, DetailView, RedirectV
 from django.views.generic.edit import UpdateView
 from subdomains.utils import reverse
 from django.core.urlresolvers import reverse as original_reverse
-from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation, Membership
-from nuntium.forms import MessageCreateForm, WriteItInstanceBasicForm
+from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation, Membership,\
+                            NewAnswerNotificationTemplate
+from nuntium.forms import MessageCreateForm, WriteItInstanceBasicForm, NewAnswerNotificationTemplateForm,\
+                        MessageSearchForm, PerInstanceSearchForm
 from datetime import datetime
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.contrib import messages
-from nuntium.forms import  MessageSearchForm, PerInstanceSearchForm
 from haystack.views import SearchView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from contactos.models import Contact
 from contactos.forms import ContactCreateForm
-
+from django.http import Http404
 
 class HomeTemplateView(TemplateView):
     def get_context_data(self, **kwargs):
@@ -186,6 +187,26 @@ class UserAccountView(TemplateView):
     def dispatch(self, *args, **kwargs):
         return super(UserAccountView, self).dispatch(*args, **kwargs)
 
+class WriteItInstanceTemplateUpdateView(DetailView):
+    model = WriteItInstance
+    template_name = 'nuntium/profiles/templates.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(WriteItInstanceTemplateUpdateView, self).dispatch(*args, **kwargs)
+
+    def get_object(self, queryset=None):
+        self.object = super(WriteItInstanceTemplateUpdateView, self).get_object(queryset=queryset)
+        #OK I don't know if it is better to test by id
+        if not self.object.owner.__eq__(self.request.user):
+            raise Http404
+        return self.object
+
+    def get_context_data(self,**kwargs):
+        context = super(WriteItInstanceTemplateUpdateView, self).get_context_data(**kwargs)
+        context['new_answer_template_form'] = NewAnswerNotificationTemplateForm(writeitinstance=self.object)
+        return context
+
 class WriteItInstanceUpdateView(UpdateView):
     form_class = WriteItInstanceBasicForm
     template_name_suffix = '_update_form'
@@ -242,3 +263,23 @@ class YourContactsView(UserSectionListView):
 class YourInstancesView(UserSectionListView):
     model = WriteItInstance
     template_name = 'nuntium/profiles/your-instances.html'
+
+
+class NewAnswerNotificationTemplateUpdateView(UpdateView):
+    form_class = NewAnswerNotificationTemplateForm
+    model = NewAnswerNotificationTemplate
+
+
+    def get_queryset(self):
+        self.writeitinstance = get_object_or_404(WriteItInstance, pk=self.kwargs['pk'])
+        queryset = NewAnswerNotificationTemplate.objects.filter(writeitinstance=self.writeitinstance)
+
+        return queryset
+
+    def get_form_kwargs(self):
+        kwargs = super(NewAnswerNotificationTemplateUpdateView, self).get_form_kwargs()
+        kwargs['writeitinstance'] = self.writeitinstance        
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('writeitinstance_template_update', kwargs={'pk':self.writeitinstance.pk})
