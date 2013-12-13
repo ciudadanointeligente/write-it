@@ -88,6 +88,7 @@
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
               <li{% block menu-home-active %}{% endblock menu-home-active %}><a href="{% url 'home' %}"><span class="glyphicon glyphicon-home"></span> {% trans "Home" %}</a></li>
+              <li{% block menu-list-active %}{% endblock menu-list-active %}><a href="{% url 'instance_list' %}"><span class="glyphicon glyphicon-send"></span>{% trans 'Instances' %}</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">

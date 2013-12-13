@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 from nuntium.views import HomeTemplateView, MessageSearchView, UserAccountView, \
                             WriteItInstanceDetailView, WriteItInstanceUpdateView, \
                             YourContactsView, YourInstancesView, WriteItInstanceTemplateUpdateView,\
-                            NewAnswerNotificationTemplateUpdateView
+                            NewAnswerNotificationTemplateUpdateView, WriteItInstanceListView
 
 
 # Uncomment the next two lines to enable the admin:
@@ -13,6 +13,8 @@ from nuntium.views import HomeTemplateView, MessageSearchView, UserAccountView, 
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', HomeTemplateView.as_view(template_name='home.html'), name='home'),
+    url(r'^instances/?$', WriteItInstanceListView.as_view(template_name='nuntium/template_list.html'), name='instance_list'),
+
     url(r'^search/?$', MessageSearchView(), name='search_messages'),
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
     url(r'^accounts/your_contacts/?$', YourContactsView.as_view(), name='your-contacts'),

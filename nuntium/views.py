@@ -28,6 +28,9 @@ class HomeTemplateView(TemplateView):
         context['writeitinstances'] = all_instances
         return context
 
+class WriteItInstanceListView(ListView):
+    model = WriteItInstance
+
 class WriteItInstanceDetailView(CreateView):
     form_class = MessageCreateForm
     model = WriteItInstance

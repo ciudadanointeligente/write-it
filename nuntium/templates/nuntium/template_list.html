@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load subdomainurls %}
+{% load i18n %}
+
+{% block extrajs %}
+{% include "home.js" %}
+{% endblock extrajs %}
+
+{% block menu-list-active %}
+ class="active"
+{% endblock menu-list-active %}
+
+{% block content %}
+<div class="jumbotron">
+
+  <h2>{% trans "Current instances of write it" %}</h2>
+  <ul>
+  {% for instance in object_list %}
+  <li><a href="{% url 'instance_detail' subdomain=instance.slug %}">{{ instance.name }}</a></li>
+  {% endfor %}
+  </ul>
+</div>
+{% endblock content%}
