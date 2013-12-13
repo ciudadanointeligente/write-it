@@ -30,12 +30,14 @@ $(".chosen-person-select").chosen();
 {% endblock header %}
 
 {% block content %}
+
 <div class="tab-content">
   <div class="tab-pane active" id="basic-update">
     <div class="page-header">
         <h2>{% blocktrans with writeitinstance=writeitinstance %}Editing {{ writeitinstance }}{% endblocktrans %}</h2>
     </div>
-
+    <h3>{% trans "New answer notification template" %}</h3>
+    <h4>{% trans "When a new answer comes in it will notify all the subscribers with this template" %}</h4>
     <form role="form" action="{% url 'edit_new_answer_notification_template' pk=writeitinstance.pk %}" method="post">
       <div class="text-right">
         {{ new_answer_template_form.as_p }}
