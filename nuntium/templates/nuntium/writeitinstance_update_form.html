@@ -21,7 +21,8 @@ $(".chosen-person-select").chosen();
 </ul>
 
 <ul class="nav nav-tabs">
-  <li class="active"><a href="#basic-update" data-toggle="tab">{% trans "Basic Update" %}</a></li>
+  <li class="active"><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Basic Update" %}</a></li>
+  <li class=""><a href="{% url 'writeitinstance_template_update' pk=writeitinstance.pk %}">{% trans "Templates" %}</a></li>
   <!-- <li><a href="#webhooks" data-toggle="tab">{% trans "Webhooks" %}</a></li>
   <li><a href="#advanced-update" data-toggle="tab">{% trans "Advanced Update" %}</a></li>
   <li><a href="#templates" data-toggle="tab">{% trans "Templates" %}</a></li>

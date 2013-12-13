@@ -204,7 +204,8 @@ class WriteItInstanceTemplateUpdateView(DetailView):
 
     def get_context_data(self,**kwargs):
         context = super(WriteItInstanceTemplateUpdateView, self).get_context_data(**kwargs)
-        context['new_answer_template_form'] = NewAnswerNotificationTemplateForm(writeitinstance=self.object)
+        context['new_answer_template_form'] = NewAnswerNotificationTemplateForm(writeitinstance=self.object, 
+            instance=self.object.new_answer_notification_template)
         return context
 
 class WriteItInstanceUpdateView(UpdateView):

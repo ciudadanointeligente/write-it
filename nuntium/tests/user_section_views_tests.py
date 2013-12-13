@@ -254,6 +254,8 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         self.assertTemplateUsed(response, 'base_edit.html')
         self.assertTemplateUsed(response, 'nuntium/profiles/templates.html')
         self.assertIsInstance(response.context['new_answer_template_form'], NewAnswerNotificationTemplateForm)
+        form = response.context['new_answer_template_form']
+        self.assertEquals(form.instance, self.writeitinstance.new_answer_notification_template)
 
         non_user = Client()
 
