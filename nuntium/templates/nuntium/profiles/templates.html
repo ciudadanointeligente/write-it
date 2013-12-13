@@ -21,32 +21,26 @@ $(".chosen-person-select").chosen();
 </ul>
 
 <ul class="nav nav-tabs">
-  <li class="active"><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Basic Update" %}</a></li>
-  <li class=""><a href="{% url 'writeitinstance_template_update' pk=writeitinstance.pk %}">{% trans "Templates" %}</a></li>
-  <!-- <li><a href="#webhooks" data-toggle="tab">{% trans "Webhooks" %}</a></li>
-  <li><a href="#advanced-update" data-toggle="tab">{% trans "Advanced Update" %}</a></li>
+  <li class=""><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Basic Update" %}</a></li>
+  <li class="active"><a href="{% url 'writeitinstance_template_update' pk=writeitinstance.pk %}">{% trans "Templates" %}</a></li>
+  <!-- <li><a href="#advanced-update" data-toggle="tab">{% trans "Advanced Update" %}</a></li>
   <li><a href="#templates" data-toggle="tab">{% trans "Templates" %}</a></li>
   <li><a href="#nothing" data-toggle="tab">{% trans "Nothing" %}</a></li> -->
 </ul>
 {% endblock header %}
 
 {% block content %}
+
 <div class="tab-content">
   <div class="tab-pane active" id="basic-update">
     <div class="page-header">
         <h2>{% blocktrans with writeitinstance=writeitinstance %}Editing {{ writeitinstance }}{% endblocktrans %}</h2>
     </div>
-
-    <form role="form" action="" method="post">
-      <div class="form-group">
-        {{form.name.label_tag}}
-        {{form.name}}
-      </div>
-      <div class="form-group">
-        {{form.persons.label_tag}}
-        {{form.persons}}
-      </div>
+    <h3>{% trans "New answer notification template" %}</h3>
+    <h4>{% trans "When a new answer comes in it will notify all the subscribers with this template" %}</h4>
+    <form role="form" action="{% url 'edit_new_answer_notification_template' pk=writeitinstance.pk %}" method="post">
       <div class="text-right">
+        {{ new_answer_template_form.as_p }}
         <input type="button" onclick="javascript:history.back();" class='btn btn-default' value="{% trans 'Cancel' %}" />
         <input type="submit" class='btn btn-primary' value="{% trans 'Update' %}" />
       </div>
