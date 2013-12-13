@@ -1,6 +1,6 @@
 
 from global_test_case import LiveServerWriteItTestCase as TestCase
-from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.phantomjs.webdriver import WebDriver
 from subdomains.utils import reverse
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -20,6 +20,7 @@ class LoginWebTests(TestCase):
     def test_login(self):
         timeout = 2
         url = reverse('django.contrib.auth.views.login')
+        print self.selenium
         self.selenium.get(url)
         username_input = self.selenium.find_element_by_name("username")
         username_input.send_keys('admin')
@@ -31,5 +32,5 @@ class LoginWebTests(TestCase):
         driver.find_element_by_tag_name('body')
 
         )
-        element = self.selenium.find_element_by_link_text("admin")
+        element = self.selenium.find_elements_by_partial_link_text("admin")
         self.assertTrue(element)
