@@ -35,6 +35,7 @@
     html,
     body {
       height: 100%;
+      background: url("{% static 'img/imagenFondo.png' %}") no-repeat scroll 100% 50px #E6E7E7;
       /* The html and body elements cannot have any padding or margin. */
     }
 
@@ -57,7 +58,36 @@
     #wrap > .container {
       padding: 60px 15px 0;
     }
-
+    .jumbotron {
+      background-color: transparent;
+    }
+    #footer {
+      background-color: #2E353F;
+    }
+    .logo-image {
+    max-width: 100%;
+    height: auto;
+    }
+    .navbar-brand {
+      padding-top: 3px;
+      padding-bottom: 0px;
+    }
+    .contactBtn {
+      background: none repeat scroll 0 0 #57D6AC;
+        border-radius: 6px 6px 6px 6px;
+        color: #FFFFFF;
+        font-size: 24px;
+        line-height: 21.2px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        opacity: 0.9;
+        padding: 15px 10px;
+        position: relative;
+        text-align: center;
+        text-decoration: none;
+        width: 100%;
+        margin-top: 80px;
+    }
     </style>
 
     <!-- Just for debugging purposes. Don't actually copy this line! -->
@@ -83,14 +113,16 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Write-it</a>
+            <a class="navbar-brand" href="#"><img class="logo-image" src="{% static 'img/writeit.png' %}"></a>
           </div>
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
               <li{% block menu-home-active %}{% endblock menu-home-active %}><a href="{% url 'home' %}"><span class="glyphicon glyphicon-home"></span> {% trans "Home" %}</a></li>
+              <li{% block menu-list-active %}{% endblock menu-list-active %}><a href="{% url 'instance_list' %}"><span class="glyphicon glyphicon-send"></span> {% trans 'Instances' %}</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
+              <li class="poplus-logo"><a href="http://poplus.org/"><img src="{% static 'img/icon-poplus.png' %}"> Poplus</a></li>
               {% if not user.is_authenticated %}
               <li><a href="#" data-toggle="modal" data-target="#ModalRegister">{% trans 'Register' %}</a></li>
               <li{% block menu-login-active %}{% endblock menu-login-active %}><a href="{% url 'django.contrib.auth.views.login' %}">Login</a></li>

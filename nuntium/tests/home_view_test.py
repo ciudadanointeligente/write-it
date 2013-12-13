@@ -4,6 +4,7 @@ from django.utils.translation import activate
 from popit.models import ApiInstance
 from nuntium.models import WriteItInstance
 from subdomains.tests import SubdomainTestMixin
+from django.test.client import Client
 
 class HomeViewTestCase(TestCase, SubdomainTestMixin):
     def setUp(self):
@@ -44,4 +45,18 @@ class HomeViewTestCase(TestCase, SubdomainTestMixin):
         self.assertTrue(response.context['writeitinstances'])
         self.assertEquals(response.context['writeitinstances'].count(),2)
         self.assertEquals(response.context['writeitinstances'][0],instance1)
+
+    def test_list_instances_view(self):
+        url = reverse('instance_list')
+        self.assertTrue(url)
+        c = Client()
+        response = c.get(url)
+        self.assertTrue(response.status_code, 200)
+        self.assertIn('object_list', response.context)
+        self.assertIsInstance(response.context['object_list'][0], WriteItInstance)
+        self.assertEquals(len(response.context['object_list']), WriteItInstance.objects.count())
+
+        self.assertTemplateUsed(response, 'nuntium/template_list.html')
+        self.assertTemplateUsed(response, 'base.html')
+
         

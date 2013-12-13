@@ -13,6 +13,7 @@ class PersonMultipleChoiceField(ModelMultipleChoiceField):
 
     def label_from_instance(self, obj):
         return obj.name
+        
 
 class MessageCreateForm(ModelForm):
     ''' docstring for MessageCreateForm'''
