@@ -4,7 +4,7 @@ from popit.models import Person, ApiInstance
 from contactos.models import Contact, ContactType
 from nuntium.models import Message, Confirmation, WriteItInstance, OutboundMessage
 from nuntium.forms import MessageCreateForm, PersonMultipleChoiceField
-from django.forms import ValidationError,CheckboxSelectMultiple
+from django.forms import ValidationError,SelectMultiple
 from django.contrib.auth.models import User
 from django.forms.forms import NON_FIELD_ERRORS
 from django.utils.translation import ugettext as _
@@ -19,7 +19,7 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
         field = PersonMultipleChoiceField(queryset=Person.objects.none())
         widget = field.widget
 
-        self.assertTrue(isinstance(widget, CheckboxSelectMultiple))
+        self.assertTrue(isinstance(widget, SelectMultiple))
 
     def test_get_label_from_instance(self):
         field = PersonMultipleChoiceField(queryset=Person.objects.all())

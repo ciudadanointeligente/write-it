@@ -1,11 +1,14 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load subdomainurls %}
+{% load staticfiles %}
 
+{% block extrascripts %}
+<link rel="stylesheet" href="{% static 'css/chosen.css' %}">
+<script src="{% static 'js/chosen.jquery.min.js' %}"></script>
+{% endblock extrascripts %}
 {% block extrajs %}
-{% if writeitinstance.allow_messages_using_form %}
-{% include 'nuntium/instance_detail.js' with writeitinstance=writeitinstance%}
-{% endif %}
+$(".chosen-person-select").chosen();
 {% endblock extrajs %}
 
 
@@ -42,14 +45,7 @@
                     <label for="id_persons">{% trans "To whom" %}</label>
                     {{ form.persons.errors }}
                     <ul>
-                        <input type="search" placeholder="{% trans 'Filter people' %}" class="form-control" ng-model="searchTerm"/>
-                            <li ng-repeat="person in persons | filter:comp" >
-                                <div class="checkbox">
-                                    <label for="id_persons_[[$index]]">
-                                        <input id="id_persons_[[$index]]" name="persons" type="checkbox" value="[[person.id]]" /> [[person.name]]
-                                    </label>
-                                </div>
-                            </li>
+                        {{ form.persons }}
                     </ul>
                 </div>
                 <div class="form-group{% if form.subject.errors %} has-error{% endif %}">

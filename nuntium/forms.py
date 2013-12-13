@@ -1,5 +1,7 @@
-from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, CharField, EmailField, SelectMultiple, TextInput
-from nuntium.models import Message, WriteItInstance, OutboundMessage, Confirmation, Membership
+from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, \
+                        CharField, EmailField, SelectMultiple, TextInput
+from nuntium.models import Message, WriteItInstance, OutboundMessage, Confirmation, \
+                            Membership
 from contactos.models import Contact
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
@@ -7,7 +9,7 @@ from popit.models import Person
 from haystack.forms import SearchForm
 
 class PersonMultipleChoiceField(ModelMultipleChoiceField):
-    widget = CheckboxSelectMultiple()
+    widget = SelectMultiple(attrs={'class': 'chosen-person-select form-control'})
 
     def label_from_instance(self, obj):
         return obj.name
