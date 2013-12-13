@@ -9,7 +9,7 @@ from popit.models import Person
 from haystack.forms import SearchForm
 
 class PersonMultipleChoiceField(ModelMultipleChoiceField):
-    widget = CheckboxSelectMultiple()
+    widget = SelectMultiple(attrs={'class': 'chosen-person-select form-control'})
 
     def label_from_instance(self, obj):
         return obj.name
