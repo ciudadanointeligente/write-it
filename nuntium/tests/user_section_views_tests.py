@@ -318,3 +318,22 @@ class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
         self.assertRedirects(response, url)
 
         actual_subject = self.writeitinstance.new_answer_notification_template.subject_template
+
+
+    def test_a_non_owner_cannot_update_a_template(self):
+        not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
+
+        url = reverse('edit_new_answer_notification_template', kwargs={'pk':self.writeitinstance.id})
+        c = Client()
+        #logging in as another person different to the owner
+        c.login(username="not_owner", password="secreto")
+
+        data = {
+        'template_html':self.writeitinstance.new_answer_notification_template.template_html,
+        'template_text':self.writeitinstance.new_answer_notification_template.template_text,
+        'subject_template':'subject =)'
+        }
+
+        response = c.post(url, data=data)
+
+        self.assertEquals(response.status_code, 404)

@@ -270,11 +270,12 @@ class NewAnswerNotificationTemplateUpdateView(UpdateView):
     model = NewAnswerNotificationTemplate
 
 
-    def get_queryset(self):
+    def get_object(self):
         self.writeitinstance = get_object_or_404(WriteItInstance, pk=self.kwargs['pk'])
-        queryset = NewAnswerNotificationTemplate.objects.filter(writeitinstance=self.writeitinstance)
-
-        return queryset
+        if not self.writeitinstance.owner.__eq__(self.request.user):
+            raise Http404
+        self.object = NewAnswerNotificationTemplate.objects.get(writeitinstance=self.writeitinstance)
+        return self.object
 
     def get_form_kwargs(self):
         kwargs = super(NewAnswerNotificationTemplateUpdateView, self).get_form_kwargs()
