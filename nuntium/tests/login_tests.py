@@ -20,7 +20,6 @@ class LoginWebTests(TestCase):
     def test_login(self):
         timeout = 2
         url = reverse('django.contrib.auth.views.login')
-        print self.selenium
         self.selenium.get(url)
         username_input = self.selenium.find_element_by_name("username")
         username_input.send_keys('admin')
@@ -30,7 +29,6 @@ class LoginWebTests(TestCase):
         WebDriverWait(self.selenium, timeout).until(
         lambda driver: 
         driver.find_element_by_tag_name('body')
-
         )
-        element = self.selenium.find_elements_by_partial_link_text("admin")
-        self.assertTrue(element)
+        element = self.selenium.find_element_by_css_selector("p#your_username")
+        self.assertEquals(element.text, "admin")
