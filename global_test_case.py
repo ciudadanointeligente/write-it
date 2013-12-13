@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.test import LiveServerTestCase
 from django.core.management import call_command
 from tastypie.test import ResourceTestCase
 from django.conf import settings
@@ -70,4 +71,11 @@ class SearchIndexTestCase(GlobalTestCase):
     def setUp(self):
         super(SearchIndexTestCase, self).setUp()
         call_command('rebuild_index', verbosity=0, interactive = False)
+
+class LiveServerWriteItTestCase(LiveServerTestCase, WriteItTestCaseMixin):
+    def setUp(self):
+        super(LiveServerWriteItTestCase, self).setUp()
+        self.site = Site.objects.get_current()
+        self.site.domain = os.environ['DJANGO_LIVE_TEST_SERVER_ADDRESS']
+        self.site.save()
     

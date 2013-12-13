@@ -1,5 +1,6 @@
 # Django settings for writeit project.
 import sys
+import os
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -259,6 +260,8 @@ EXTRA_APPS = ()
 SUBDOMAIN_URLCONFS = {
     None: 'writeit.urls',
 }
+
+os.environ['DJANGO_LIVE_TEST_SERVER_ADDRESS'] = 'localhost:8082'
 
 try:
     from local_settings import *
