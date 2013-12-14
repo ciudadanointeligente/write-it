@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from tastypie.resources import ModelResource, ALL_WITH_RELATIONS, Resource
-from nuntium.models import WriteItInstance, Message, Answer, OutboundMessageIdentifier, OutboundMessage
-from tastypie.authentication import ApiKeyAuthentication, Authentication
+from nuntium.models import WriteItInstance, Message, Answer, \
+                            OutboundMessageIdentifier, OutboundMessage
+from tastypie.authentication import ApiKeyAuthentication
 from tastypie.authorization import Authorization
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf.urls import url
 from tastypie import fields
 from tastypie.exceptions import ImmediateHttpResponse
 from tastypie import http
-from django.http import HttpRequest
 from popit.models import Person
 from contactos.models import Contact
 
@@ -23,24 +23,31 @@ class PersonResource(ModelResource):
         return bundle
 
 class WriteItInstanceResource(ModelResource):
-    # I should add persons but the thing is that it breaks some other tests and I'm running out of time
-    # so now you cannot create a writeit instance with persons just with a popit-instance =) 
+    # I should add persons but the thing is that
+    # it breaks some other tests and I'm running out of time
+    # so now you cannot create a writeit instance with persons
+    # just with a popit-instance =)
     # regards the lazy programmer
     class Meta:
         queryset = WriteItInstance.objects.all()
         resource_name = 'instance'
         authorization = Authorization()
-        authentication = ApiKeyAuthentication() 
+        authentication = ApiKeyAuthentication()
         always_return_data = True
 
     def prepend_urls(self):
         return [
-            url(r"^(?P<resource_name>%s)/(?P<id>[-\d]+)/messages/$" % self._meta.resource_name, self.wrap_view('handle_instance_messages'), name="api_handle_messages"),
+            url(
+                r"^(?P<resource_name>%s)/(?P<id>[-\d]+)/messages/$" %
+                 self._meta.resource_name,\
+                 self.wrap_view('handle_instance_messages'),
+                 name="api_handle_messages"),
         ]
 
     def handle_instance_messages(self,request, *args, **kwargs):
         basic_bundle = self.build_bundle(request=request)
-        obj = self.cached_obj_get(bundle=basic_bundle, **self.remove_api_resource_names(kwargs))
+        obj = self.cached_obj_get(bundle=basic_bundle, \
+                        **self.remove_api_resource_names(kwargs))
         resource = MessageResource()
         return resource.get_list(request, writeitinstance=obj)
 
@@ -70,8 +77,10 @@ class AnswerResource(ModelResource):
         resource_name = 'answer'
 
 class MessageResource(ModelResource):
-    writeitinstance = fields.ToOneField(WriteItInstanceResource, 'writeitinstance')
-    answers = fields.ToManyField(AnswerResource, 'answers', null=True, full=True)
+    writeitinstance = fields.ToOneField(WriteItInstanceResource, \
+        'writeitinstance')
+    answers = fields.ToManyField(AnswerResource, 'answers', \
+        null=True, full=True)
 
     class Meta:
         queryset = Message.objects.all()
@@ -86,7 +95,9 @@ class MessageResource(ModelResource):
     def hydrate(self, bundle):
         persons = []
         if bundle.data['persons'] == 'all':
-            instance = WriteItInstanceResource().get_via_uri(bundle.data["writeitinstance"])
+            instance = WriteItInstanceResource().get_via_uri(
+                bundle.data["writeitinstance"]
+                )
             for person in instance.persons.all():
                 persons.append(person)
         else:
@@ -119,7 +130,7 @@ class AnswerCreationResource(Resource):
         identifier = OutboundMessageIdentifier.objects.get(key=bundle.data['key'])
         owner = identifier.outbound_message.message.writeitinstance.owner
         
-        if owner!=bundle.request.user:
+        if owner != bundle.request.user:
             raise ImmediateHttpResponse(response=http.HttpUnauthorized())
 
         answer_content = bundle.data['content']
@@ -136,8 +147,11 @@ class HandleBouncesResource(Resource):
 
     def obj_create(self, bundle, **kwargs):
         identifier_key = bundle.data['key']
-        identifier = OutboundMessageIdentifier.objects.get(key=bundle.data['key'])
-        outbound_message = OutboundMessage.objects.get(outboundmessageidentifier=identifier)
+        identifier = OutboundMessageIdentifier.objects.get(key=identifier_key)
+        outbound_message = OutboundMessage.objects.get(
+            outboundmessageidentifier=identifier
+            )
         contact = outbound_message.contact
         contact.is_bounced = True
         contact.save()
+        

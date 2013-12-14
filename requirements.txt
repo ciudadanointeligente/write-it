@@ -20,3 +20,4 @@ django-celery
 django-autoslug
 pytz>=2013b
 django-admin-bootstrapped
+prospector
