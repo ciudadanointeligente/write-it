@@ -19,6 +19,7 @@ from django.utils.decorators import method_decorator
 from contactos.models import Contact
 from contactos.forms import ContactCreateForm
 from django.http import Http404
+from mailit.forms import MailitTemplateForm
 
 class HomeTemplateView(TemplateView):
     def get_context_data(self, **kwargs):
@@ -209,6 +210,10 @@ class WriteItInstanceTemplateUpdateView(DetailView):
         context = super(WriteItInstanceTemplateUpdateView, self).get_context_data(**kwargs)
         context['new_answer_template_form'] = NewAnswerNotificationTemplateForm(writeitinstance=self.object, 
             instance=self.object.new_answer_notification_template)
+
+        context['mailit_template_form'] = MailitTemplateForm(writeitinstance=self.object, \
+            instance=self.object.mailit_template
+            )
         return context
 
 class WriteItInstanceUpdateView(UpdateView):
@@ -273,6 +278,9 @@ class NewAnswerNotificationTemplateUpdateView(UpdateView):
     form_class = NewAnswerNotificationTemplateForm
     model = NewAnswerNotificationTemplate
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(NewAnswerNotificationTemplateUpdateView, self).dispatch(*args, **kwargs)
 
     def get_object(self):
         self.writeitinstance = get_object_or_404(WriteItInstance, pk=self.kwargs['pk'])
