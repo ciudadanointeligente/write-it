@@ -3,8 +3,7 @@ from subdomains.utils import reverse, get_domain
 from django.core.urlresolvers import reverse as original_reverse
 from nuntium.models import WriteItInstance
 from django.contrib.auth.models import User
-from django.test.client import Client
-from django.test.client import RequestFactory
+from django.test.client import Client, RequestFactory
 from nuntium.views import WriteItInstanceUpdateView
 from django.forms import ModelForm
 from django.contrib.sites.models import Site

@@ -1,6 +1,8 @@
 from django.forms import ModelForm
 from popit.models import Person
 from .models import MailItTemplate
+from django.forms import ValidationError
+from django.utils.translation import ugettext as _
 
 class MailitTemplateForm(ModelForm):
 
