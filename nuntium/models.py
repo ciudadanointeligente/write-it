@@ -279,7 +279,9 @@ class Answer(models.Model):
             'message': self.message.subject
             }
 
-
+# Possible values are: \n {{ user }} is the name of who created the message, \n {{ person }}
+# is the person who this message was written to
+# {{ message }} is the message that {{ person }} got in the first place, and {{ answer }} is what {{ person }} wrote back
 def send_new_answer_payload(sender,instance, created, **kwargs):
     answer = instance
     if created:
@@ -549,9 +551,12 @@ class Subscriber(models.Model):
 
 class NewAnswerNotificationTemplate(models.Model):
     writeitinstance = models.OneToOneField(WriteItInstance, related_name='new_answer_notification_template')
-    template_html = models.TextField(default="")
-    template_text = models.TextField(default="")
-    subject_template = models.CharField(max_length=255, default=settings.NEW_ANSWER_DEFAULT_SUBJECT_TEMPLATE)
+    template_html = models.TextField(default=""\
+        , help_text=_('You can use {{ user }}, {{ person }}, {{ message.subject }} and {{ answer.content }}'))
+    template_text = models.TextField(default=""\
+        , help_text=_('You can use {{ user }}, {{ person }}, {{ message.subject }} and {{ answer.content }}'))
+    subject_template = models.CharField(max_length=255, default=settings.NEW_ANSWER_DEFAULT_SUBJECT_TEMPLATE\
+        , help_text=_('You can use %(message)s and %(person)s'))
 
     def __init__(self, *args, **kwargs):
         super(NewAnswerNotificationTemplate, self).__init__(*args, **kwargs)

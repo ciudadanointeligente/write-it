@@ -1,12 +1,13 @@
 from django.db import models
 from django.db.models.signals import post_save
 from nuntium.models import WriteItInstance, OutboundMessage
-
-# Create your models here.
+from django.utils.translation import ugettext as _
 
 class MailItTemplate(models.Model):
-    subject_template = models.CharField(max_length=255, default="[WriteIT] Message: %(subject)s")
-    content_template = models.TextField()
+    subject_template = models.CharField(max_length=255, default="[WriteIT] Message: %(subject)s"
+        , help_text=_("You can use {{ subject }}, {{ content }}, {{ person }} and {{ author }}"))
+    content_template = models.TextField(\
+        help_text=_("You can use {{ subject }}, {{ content }}, {{ person }} and {{ author }}"))
     writeitinstance = models.OneToOneField(WriteItInstance, related_name='mailit_template')
 
     def __init__(self, *args, **kwargs):
