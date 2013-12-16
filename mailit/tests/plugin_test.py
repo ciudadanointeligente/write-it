@@ -9,6 +9,8 @@ from mailit.models import MailItTemplate
 from django.core import mail
 from django.contrib.auth.models import User
 from django.conf import settings
+from mailit.forms import MailitTemplateForm
+from nuntium.tests.user_section_views_tests import UserSectionTestCase
 
 class MailChannelTestCase(TestCase):
 
@@ -308,6 +310,30 @@ class SmtpErrorHandling(TestCase):
         
 
 
+class MailitTemplateUpdateTestCase(UserSectionTestCase):
+    def setUp(self):
+        super(MailitTemplateUpdateTestCase, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.writeitinstance.owner = self.user
+        self.writeitinstance.save()
+        self.pedro = Person.objects.get(name="Pedro")
+        self.marcel = Person.objects.get(name="Marcel")
+
+    def test_mailit_template_form(self):
+        data = {
+            'subject_template':'Hello there you have a new mail this is subject',
+            'content_template':'hello there this is the content and you got this message',
+        }
+        form = MailitTemplateForm(data=data, 
+            writeitinstance=self.writeitinstance,
+            instance=self.writeitinstance.mailit_template
+            )
+        print form.errors
+        self.assertTrue(form.is_valid())
+        template = form.save()
+
+        self.assertEquals(template.subject_template, data['subject_template'])
+        self.assertEquals(template.content_template, data['content_template'])
 
 
 
