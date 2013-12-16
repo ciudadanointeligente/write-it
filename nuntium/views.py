@@ -273,6 +273,9 @@ class NewAnswerNotificationTemplateUpdateView(UpdateView):
     form_class = NewAnswerNotificationTemplateForm
     model = NewAnswerNotificationTemplate
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(NewAnswerNotificationTemplateUpdateView, self).dispatch(*args, **kwargs)
 
     def get_object(self):
         self.writeitinstance = get_object_or_404(WriteItInstance, pk=self.kwargs['pk'])

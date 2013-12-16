@@ -338,3 +338,15 @@ class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
         response = c.post(url, data=data)
 
         self.assertEquals(response.status_code, 404)
+
+    def test_login_required_to_do_this_kind_of_stuff(self):
+        url = reverse('edit_new_answer_notification_template', kwargs={'pk':self.writeitinstance.id})
+        c = Client()
+        data = {
+        'template_html':self.writeitinstance.new_answer_notification_template.template_html,
+        'template_text':self.writeitinstance.new_answer_notification_template.template_text,
+        'subject_template':'subject =)'
+        }
+
+        response = c.post(url, data=data)
+        self.assertRedirectToLogin(response)
