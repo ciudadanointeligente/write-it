@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, TextInput, Textarea
 from popit.models import Person
 from .models import MailItTemplate
 from django.forms import ValidationError
@@ -25,3 +25,8 @@ class MailitTemplateForm(ModelForm):
     class Meta:
         model = MailItTemplate
         fields = ("subject_template", "content_template",)
+
+        widgets = {
+            'subject_template': TextInput(attrs={'class': 'form-control'}),
+            'content_template': Textarea(attrs={'class': 'form-control'}),
+        }

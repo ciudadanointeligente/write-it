@@ -1,5 +1,5 @@
 from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, \
-                        CharField, EmailField, SelectMultiple, TextInput
+                        CharField, EmailField, SelectMultiple, TextInput, Textarea
 from nuntium.models import Message, WriteItInstance, OutboundMessage, \
                             Confirmation, Membership, NewAnswerNotificationTemplate
 from contactos.models import Contact
@@ -99,4 +99,10 @@ class NewAnswerNotificationTemplateForm(ModelForm):
 
     class Meta:
         model = NewAnswerNotificationTemplate
-        fields = ['template_html', 'template_text', 'subject_template']
+        fields = ['subject_template', 'template_html', 'template_text']
+
+        widgets = {
+            'subject_template': TextInput(attrs={'class': 'form-control'}),
+            'template_html': Textarea(attrs={'class': 'form-control'}),
+            'template_text': Textarea(attrs={'class': 'form-control'}),
+        }
