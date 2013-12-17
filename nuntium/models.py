@@ -36,7 +36,7 @@ class WriteItInstance(models.Model):
     slug = AutoSlugField(populate_from='name', unique=True)
     persons = models.ManyToManyField(Person, related_name='writeit_instances', through='Membership')
     moderation_needed_in_all_messages = models.BooleanField(help_text=_("Every message is going to \
-        have a moderation mail"))
+        have a moderation mail"), default=False)
     owner = models.ForeignKey(User, related_name="writeitinstances")
     allow_messages_using_form = models.BooleanField(help_text=_("Allow the creation of new messages \
         using throu the web"), default=True)
@@ -440,7 +440,7 @@ post_save.connect(create_a_message_record, sender=OutboundMessage)
 class OutboundMessagePluginRecord(models.Model):
     outbound_message = models.ForeignKey(OutboundMessage)
     plugin = models.ForeignKey(Plugin)
-    sent = models.BooleanField()
+    sent = models.BooleanField(default=False)
     number_of_attempts = models.PositiveIntegerField(default=0)
     try_again = models.BooleanField(default=True)
 

@@ -39,7 +39,7 @@ class MessagesSearchTestCase(TestCase):
 
         self.assertEquals(self.index.get_model(), Message)
 
-        self.assertQuerysetEqual(self.index.index_queryset(), [repr(r) for r in public_messages])
+        self.assertQuerysetEqual(self.index.index_queryset(), [repr(r) for r in public_messages], ordered=False)
 
         self.assertIsInstance(self.index.text, CharField)
         
