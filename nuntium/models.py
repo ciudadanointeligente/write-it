@@ -30,6 +30,10 @@ from autoslug import AutoSlugField
 from django.core.mail import EmailMultiAlternatives
 
 
+class WriteItPerson(Person):
+    pass
+
+
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
     name = models.CharField(max_length=255)
