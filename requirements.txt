@@ -1,11 +1,11 @@
-Django==1.5.5
-django-plugins==0.2.2
+Django==1.6.1
+-e hg+https://bitbucket.org/lfalvarez/django-plugins#egg=django-plugins
 South
 coveralls
 -e git://github.com/mysociety/popit-django.git#egg=popit-django
 mock
 python-mimeparse
-django-tastypie==0.9.16 #the latest version has this bug https://github.com/toastdriven/django-tastypie/issues/1005
+django-tastypie==0.11.0 #the latest version has this bug https://github.com/toastdriven/django-tastypie/issues/1005
 django-nose
 email_reply_parser
 flufl.bounce
