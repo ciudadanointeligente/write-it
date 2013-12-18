@@ -24,6 +24,28 @@ class ContactTestCase(TestCase):
         self.person = Person.objects.all()[0]
         self.user = User.objects.all()[0]
 
+    def test_are_there_contacts_for_a_person_when_non_empty(self):
+        felipe = Person.objects.get(name="Felipe")
+
+        result = Contact.are_there_contacts_for(felipe)
+        self.assertTrue(result)
+
+    def test_are_there_contacts_for_a_person_when_empty(self):
+        felipe = Person.objects.get(name="Felipe")
+        felipe.contact_set.all().delete()
+
+        result = Contact.are_there_contacts_for(felipe)
+        self.assertFalse(result)
+
+    def test_are_there_contacts_for_a_person_when_bounced(self):
+        felipe = Person.objects.get(name="Felipe")
+        for contact in felipe.contact_set.all():
+            contact.is_bounced = True
+            contact.save()
+
+        result = Contact.are_there_contacts_for(felipe)
+        self.assertFalse(result)
+
     def test_create_contact_type(self):
         contact_type = ContactType.objects.create(name='mental message', label_name = 'mental address id')
         self.assertTrue(contact_type)

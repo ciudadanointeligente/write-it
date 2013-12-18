@@ -46,7 +46,9 @@ $(".chosen-person-select").chosen();
                     {{ form.persons.errors }}
                     <ul>
                         {{ form.persons }}
+
                     </ul>
+                        <span>{% trans "Trailing * means that we don't have how to contact the person" %}</span>
                 </div>
                 <div class="form-group{% if form.subject.errors %} has-error{% endif %}">
                     

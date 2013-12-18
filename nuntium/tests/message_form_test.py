@@ -27,6 +27,25 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
 
         self.assertEquals(label, self.person1.name)
 
+    def test_persons_without_a_contact(self):
+        felipe = Person.objects.get(name="Felipe")
+        felipe.contact_set.all().delete()
+        #This guy does not have any contacts
+        field = PersonMultipleChoiceField(queryset=Person.objects.all())
+        rendered_field = field.widget.render(name='oli', value=None)
+        self.assertIn(">Felipe *</option>",rendered_field)
+
+    def test_persons_with_bounced_contact(self):
+        felipe = Person.objects.get(name="Felipe")
+        for contact in felipe.contact_set.all():
+            contact.is_bounced = True
+            contact.save()
+
+        #This guy does not have any good contacts
+        field = PersonMultipleChoiceField(queryset=Person.objects.all())
+        rendered_field = field.widget.render(name='oli', value=None)
+        self.assertIn(">Felipe *</option>",rendered_field)
+
 class MessageFormTestCase(TestCase):
 
     def setUp(self):
