@@ -156,6 +156,9 @@ class Message(models.Model):
         return reverse('message_detail', subdomain=self.writeitinstance.slug, kwargs={'slug': self.slug})
 
     def slugifyme(self):
+        if not slugify(self.subject):
+            self.subject = '-'
+
         self.slug = slugify(self.subject)
         #Previously created messages with the same slug
         

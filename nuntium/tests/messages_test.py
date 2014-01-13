@@ -128,6 +128,19 @@ class TestMessages(TestCase):
 
         self.assertEquals(message2.slug, 'test-3')
 
+    def test_create_a_message_with_a_non_sluggable_subject(self):
+        message1 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject=':)',
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+        message1.save()
+
+        self.assertGreater(len(message1.slug), 0)
+
         
     def test_four_messaes_with_the_same_slug(self):
         message1 = Message.objects.create(content = 'Content 1', 
