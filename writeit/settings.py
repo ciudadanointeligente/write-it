@@ -1,6 +1,7 @@
 # Django settings for writeit project.
 import sys
 DEBUG = True
+TASTYPIE_FULL_DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
