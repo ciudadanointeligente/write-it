@@ -16,6 +16,8 @@ from django.test.client import RequestFactory, Client
 from django.forms import ModelForm
 from subdomains.utils import reverse
 from django.core.urlresolvers import reverse as original_reverse
+from django.forms.widgets import Select
+from contactos.forms import SelectSinglePersonField
 import simplejson as json
 
 class ContactTestCase(TestCase):
@@ -245,6 +247,17 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
         self.assertEquals(contact.value,data['value'])
         self.assertEquals(contact.person, self.pedro)
         self.assertEquals(contact.contact_type, self.contact_type)
+
+    def test_select_widget_contains_api_instance(self):
+        form = ContactCreateForm(owner=self.user)
+        self.assertIsInstance(form.fields['person'], SelectSinglePersonField)
+        self.assertIsInstance(form.fields['person'].widget, Select)
+        rendered_field = form.fields['person'].widget.render(name='The name', value=None)
+        self.assertIn("Pedro (http://popit.org/api/v1)", rendered_field)
+        self.assertIn("Marcel (http://popit.mysociety.org/api/v1/)", rendered_field)
+        self.assertIn("Felipe (http://popit.mysociety.org/api/v1/)", rendered_field)
+
+
         
 class ContactUpdateFormAndViewTestCase(UserSectionTestCase):
     def setUp(self):
