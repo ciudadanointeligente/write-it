@@ -14,7 +14,7 @@ class NewAnswerWebhooks(TestCase):
     def setUp(self):
         super(NewAnswerWebhooks, self).setUp()
         self.writeitinstance = WriteItInstance.objects.all()[0]
-        self.api_key = ApiKey.objects.create(user=self.writeitinstance.owner)
+        self.api_key = self.writeitinstance.owner.api_key
 
 
     def test_creation_of_a_new_answer_webhook(self):
