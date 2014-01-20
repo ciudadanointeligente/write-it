@@ -605,3 +605,7 @@ def rate_limiting(sender,instance, created, **kwargs):
             rate_limiter.save()
 
 post_save.connect(rate_limiting, sender=Message)
+
+from tastypie.models import create_api_key
+
+models.signals.post_save.connect(create_api_key, sender=User)
