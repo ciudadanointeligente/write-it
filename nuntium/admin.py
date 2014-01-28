@@ -30,11 +30,6 @@ class WriteItInstanceAdmin(admin.ModelAdmin):
 admin.site.register(WriteItInstance, WriteItInstanceAdmin)
 
 
-
-# class AnswerInlineFormset(BaseInlineFormSet):
-#     def __init__(self, *args, **kwargs):
-#         super(AnswerInlineFormset, self).__init__(*args, **kwargs)
-
 class AnswerAdmin(admin.ModelAdmin):
     pass
 
