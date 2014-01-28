@@ -217,6 +217,7 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
             subject='a private message', 
             writeitinstance = self.writeitinstance1, 
             persons=[self.person1], 
+            confirmated = True,
             public=False)
 
         confirmation_for_message2 = Confirmation.objects.create(message=message2)

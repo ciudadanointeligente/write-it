@@ -1,0 +1,18 @@
+{% extends "admin/change_form.html" %}
+
+{% block object-tools-items %}
+  {% if not original.moderated %}
+  	  {% if original.confirmated %}
+	  <a href='tools/moderate_this/' class="btn btn-inverse" title='Moderate this message'>
+	  Moderate
+	  </a>
+	  {% else %}
+	  In order to moderate this message has to be confirmed by the author first
+	  {% endif %}
+  {% else %}
+      This message has been moderated
+  {% endif %}
+  
+  
+  {{ block.super }}
+{% endblock %}
