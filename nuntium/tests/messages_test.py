@@ -591,6 +591,11 @@ class ModerationMessagesTestCase(TestCase, SubdomainTestMixin):
             send_moderation_mail.assert_called_once_with()
 
     def test_message_has_a_method_for_moderate(self):
+        self.confirmation.confirmated_at = datetime.datetime.now()
+        self.confirmation.save()
+        self.private_message.confirmated = True
+        self.private_message.save()
+
         self.private_message.moderate()
         outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message)
 
@@ -625,6 +630,11 @@ class ModerationMessagesTestCase(TestCase, SubdomainTestMixin):
 
 
     def test_there_is_a_moderation_url_that_sets_the_message_to_ready(self):
+        self.confirmation.confirmated_at = datetime.datetime.now()
+        self.confirmation.save()
+        self.private_message.confirmated = True
+        self.private_message.save()
+        
         url = reverse('moderation_accept', kwargs={
             'slug': self.private_message.moderation.key
             })

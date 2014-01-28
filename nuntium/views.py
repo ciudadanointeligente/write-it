@@ -145,8 +145,7 @@ class AcceptModerationView(ModerationView):
 
     def get(self, *args, **kwargs):
         moderation = self.get_object()
-        moderation.message.set_to_ready()
-        moderation.success()
+        moderation.message.moderate()
         return super(AcceptModerationView, self).get(*args,**kwargs)
 
 
