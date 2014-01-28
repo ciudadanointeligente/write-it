@@ -43,6 +43,13 @@ class Contact(models.Model):
             outbound_message.send()
 
 
+    @classmethod
+    def are_there_contacts_for(cls, person):
+        if person.contact_set.\
+                    exclude(is_bounced=True).exists():
+            return True
+        return False
+
 
 def notify_bounce(sender, instance, update_fields, **kwargs):
     contact = instance

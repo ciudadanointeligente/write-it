@@ -7,6 +7,7 @@ from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Messa
                             NewAnswerNotificationTemplate
 from nuntium.forms import MessageCreateForm, WriteItInstanceBasicForm, NewAnswerNotificationTemplateForm,\
                         MessageSearchForm, PerInstanceSearchForm
+from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -40,7 +41,11 @@ class WriteItInstanceDetailView(CreateView):
     def get_object(self):
         subdomain = self.request.subdomain
         if not self.object:
-            self.object = self.model.objects.get(slug=subdomain)
+            try:
+                self.object = self.model.objects.get(slug=subdomain)
+            except WriteItInstance.DoesNotExist, e:
+                raise Http404
+            
         return self.object
 
 

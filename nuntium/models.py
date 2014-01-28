@@ -160,6 +160,9 @@ class Message(models.Model):
         return reverse('message_detail', subdomain=self.writeitinstance.slug, kwargs={'slug': self.slug})
 
     def slugifyme(self):
+        if not slugify(self.subject):
+            self.subject = '-'
+
         self.slug = slugify(self.subject)
         #Previously created messages with the same slug
         
@@ -606,3 +609,7 @@ def rate_limiting(sender,instance, created, **kwargs):
             rate_limiter.save()
 
 post_save.connect(rate_limiting, sender=Message)
+
+from tastypie.models import create_api_key
+
+models.signals.post_save.connect(create_api_key, sender=User)

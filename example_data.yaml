@@ -49,7 +49,7 @@
 - fields: {url: 'http://popit.org/api/v1'}
   model: popit.apiinstance
   pk: 1
-- fields: {url: 'http://popit.org/api/v2'}
+- fields: {url: 'http://popit.mysociety.org/api/v1/'}
   model: popit.apiinstance
   pk: 2
 - fields: {api_instance: 1, name: Pedro, popit_url: 'http://popit.mysociety.org/api/v1/persons/1'}
