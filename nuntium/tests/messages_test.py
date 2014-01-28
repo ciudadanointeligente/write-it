@@ -345,7 +345,12 @@ class TestMessages(TestCase):
             Message.objects.create(content = 'Content 1', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Subject 1', writeitinstance= self.writeitinstance1)
 
     def test_message_set_new_outbound_messages_to_ready(self):
-        message = Message.objects.create(content = 'Content 1', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Subject 1', 
+            writeitinstance= self.writeitinstance1, 
+            persons = [self.person1])
 
         message.recently_confirmated()
 
@@ -584,6 +589,13 @@ class ModerationMessagesTestCase(TestCase, SubdomainTestMixin):
 
             number_of_moderations = Moderation.objects.filter(message=message).count()
             send_moderation_mail.assert_called_once_with()
+
+    def test_message_has_a_method_for_moderate(self):
+        self.private_message.moderate()
+        outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message)
+
+        self.assertTrue(self.private_message.moderated)
+        self.assertEquals(outbound_message_to_pedro.status, 'ready')
 
     def test_there_is_a_moderation_url_that_sets_the_message_to_ready(self):
         url = reverse('moderation_accept', kwargs={

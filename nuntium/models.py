@@ -247,6 +247,11 @@ class Message(models.Model):
         msg.attach_alternative(html_content, "text/html")
         msg.send()
 
+    def moderate(self):
+        self.set_to_ready()
+        self.moderation.success()
+        
+
     def __unicode__(self):
         return _('%(subject)s at %(instance)s') % {
             'subject':self.subject,
