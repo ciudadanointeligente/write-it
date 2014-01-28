@@ -5,6 +5,25 @@
 <div class="panel panel-default">
 	<div class="panel-heading">
 	<h4>{{ message.subject }} <a href="{{ message.get_absolute_url }}"><span class="glyphicon glyphicon-link"></span></a></h4>
+	
+	{% if message.answers.all.count > 1 %}
+		{% blocktrans with answers_count=message.answers.all.count %}
+		There are {{ answers_count }} answers
+		{% endblocktrans %}
+	{% endif %}
+	{% if message.answers.all.count < 1 %}
+		{% blocktrans with answers_count=message.answers.all.count %}
+		There are no answers yet
+		{% endblocktrans %}
+	{% endif %}
+	{% if message.answers.all.count == 1 %}
+		{% blocktrans with answers_count=message.answers.all.count %}
+		There is {{ answers_count }} answer
+		{% endblocktrans %}
+	{% endif %}
+
+	
+	
 	</div>
 	<div class="panel-body">
 	<p>{% markdown %}{{ message.content }}{% endmarkdown %}</p>
