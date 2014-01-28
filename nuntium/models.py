@@ -30,6 +30,10 @@ from autoslug import AutoSlugField
 from django.core.mail import EmailMultiAlternatives
 
 
+class WriteItPerson(Person):
+    pass
+
+
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people for usability purposes. E.g. 'Candidates running for president'"""
     name = models.CharField(max_length=255)
@@ -242,6 +246,13 @@ class Message(models.Model):
             )
         msg.attach_alternative(html_content, "text/html")
         msg.send()
+
+    def moderate(self):
+        if not self.confirmated:
+            raise ValidationError(_('The message needs to be confirmated first'))
+        self.set_to_ready()
+        self.moderation.success()
+        
 
     def __unicode__(self):
         return _('%(subject)s at %(instance)s') % {
