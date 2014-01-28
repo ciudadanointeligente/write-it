@@ -46,6 +46,7 @@ class AnswerInline(admin.TabularInline):
     # formset = AnswerInlineFormset
 
 class MessageAdmin(DjangoObjectActions, admin.ModelAdmin):
+    change_form_template = "admin/nuntium/message/change_form.html"
     exclude = ('slug', 'moderated', 'confirmated')
     inlines = [
         AnswerInline
