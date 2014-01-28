@@ -4,7 +4,7 @@
 <dl class="dl-horizontal">
 <div class="panel panel-default">
 	<div class="panel-heading">
-	<h4>{{ message.subject }} <a href="{{ message.get_absolute_url }}"><i class="icon-link"></i></a></h4>
+	<h4>{{ message.subject }} <a href="{{ message.get_absolute_url }}"><span class="glyphicon glyphicon-link"></span></a></h4>
 	</div>
 	<div class="panel-body">
 	<p>{% markdown %}{{ message.content }}{% endmarkdown %}</p>
