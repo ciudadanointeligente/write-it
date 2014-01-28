@@ -597,6 +597,33 @@ class ModerationMessagesTestCase(TestCase, SubdomainTestMixin):
         self.assertTrue(self.private_message.moderated)
         self.assertEquals(outbound_message_to_pedro.status, 'ready')
 
+    def test_message_that_has_not_been_confirmed_cannot_be_moderated(self):
+        #this message has not been confirmed
+        #and is private therefore requires moderation
+        message = Message.objects.create(content = 'Content 1', 
+                author_name='Felipe', 
+                author_email="falvarez@votainteligente.cl", 
+                subject='Fiera es una perra feroz', 
+                public=False,
+                writeitinstance= self.writeitinstance1, 
+                persons = [self.person1])
+
+        with self.assertRaises(ValidationError) as context:
+            # this was taken from here
+            # http://stackoverflow.com/questions/8215653/using-a-context-manager-with-python-assertraises#8215739
+            try:
+                message.moderate()
+            except ValidationError as e:
+                self.assertEqual(e.message,
+                    _('The message needs to be confirmated first',))
+                raise 
+
+        self.assertFalse(message.moderated)
+        outbound_message_to_pedro = OutboundMessage.objects.get(message=message)
+        self.assertEquals(outbound_message_to_pedro.status, 'new')
+
+
+
     def test_there_is_a_moderation_url_that_sets_the_message_to_ready(self):
         url = reverse('moderation_accept', kwargs={
             'slug': self.private_message.moderation.key
