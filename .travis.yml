@@ -7,7 +7,8 @@ services:
   - rabbitmq
   - mongodb
 install:
-  - pip install -r requirements.txt 
+  - pip install -r requirements.txt
+  - pip install -r requirements_testing.txt
 # command to run tests
 env:
   - DJANGO_VERSION=1.6.1
