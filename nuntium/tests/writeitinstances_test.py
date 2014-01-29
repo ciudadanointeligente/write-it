@@ -45,15 +45,6 @@ class InstanceTestCase(TestCase, SubdomainTestMixin):
 
         self.assertIn(writeitinstance, self.owner.writeitinstances.all())
 
-    def test_owner_related_name(self):
-        writeitinstance = WriteItInstance.objects.create(
-            name='instance 1', 
-            slug='instance-1',
-
-            owner=self.owner)
-
-        self.assertIn(writeitinstance, self.owner.writeitinstances.all())
-
     def test_moderation_needed_in_all_messages(self):
         
         writeitinstance = WriteItInstance.objects.create(
