@@ -281,6 +281,20 @@ class TestMessages(TestCase):
 
         self.assertEquals(message.people, [self.person1, self.person2])
 
+    @skip("I don't know how to do this =)")
+    def test_a_person_has_a_messages_property(self):
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Same subject hey', 
+            writeitinstance= self.writeitinstance1, 
+            persons = [self.person1, self.person2])
+
+        self.assertEquals(len(self.person1.messages), 1)
+        self.assertEquals(len(self.person2.messages), 1)
+        self.assertIn(message, self.person1.messages)
+        self.assertIn(message, self.person2.messages)
+
 
     def test_message_unicode(self):
         message = Message.objects.create(content = 'Content 1', author_name='Felipe', author_email="falvarez@votainteligente.cl", subject='Subject 1', writeitinstance= self.writeitinstance1, persons = [self.person1])

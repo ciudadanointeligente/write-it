@@ -60,6 +60,14 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
         rendered_field = field.widget.render(name='oli', value=None)
         self.assertIn(u">Felipe Álvarez *</option>",rendered_field)
 
+    def test_previously_selected_persons(self):
+        felipe = Person.objects.get(name="Felipe")
+        field = PersonMultipleChoiceField(queryset=Person.objects.all())
+        rendered_field = field.widget.render(name='oli', 
+            value=[3])
+        self.assertIn('<option value="3" selected="selected">Felipe</option>', rendered_field)
+
+
 class MessageFormTestCase(TestCase):
 
     def setUp(self):
