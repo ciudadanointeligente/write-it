@@ -98,6 +98,14 @@ class InstanceTestCase(TestCase, SubdomainTestMixin):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'nuntium/instance_detail.html')
 
+
+    def test_get_non_existing_instance(self):
+        url = reverse('instance_detail',
+            subdomain="non-existing-slug")
+        host = self.get_host_for_subdomain("non-existing-slug")
+        response = self.client.get(url, HTTP_HOST=host)
+        self.assertEquals(response.status_code, 404)
+
     def test_membership(self):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
 
@@ -209,6 +217,7 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
             subject='a private message', 
             writeitinstance = self.writeitinstance1, 
             persons=[self.person1], 
+            confirmated = True,
             public=False)
 
         confirmation_for_message2 = Confirmation.objects.create(message=message2)

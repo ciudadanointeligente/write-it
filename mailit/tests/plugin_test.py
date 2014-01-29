@@ -9,6 +9,10 @@ from mailit.models import MailItTemplate
 from django.core import mail
 from django.contrib.auth.models import User
 from django.conf import settings
+from mailit.forms import MailitTemplateForm
+from nuntium.tests.user_section_views_tests import UserSectionTestCase
+from subdomains.utils import reverse
+from django.test.client import Client
 
 class MailChannelTestCase(TestCase):
 
@@ -308,10 +312,82 @@ class SmtpErrorHandling(TestCase):
         
 
 
+class MailitTemplateUpdateTestCase(UserSectionTestCase):
+    def setUp(self):
+        super(MailitTemplateUpdateTestCase, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.writeitinstance.owner = self.user
+        self.writeitinstance.save()
+        self.pedro = Person.objects.get(name="Pedro")
+        self.marcel = Person.objects.get(name="Marcel")
+
+    def test_mailit_template_form(self):
+        data = {
+            'subject_template':'Hello there you have a new mail this is subject',
+            'content_template':'hello there this is the content and you got this message',
+        }
+        form = MailitTemplateForm(data=data, 
+            writeitinstance=self.writeitinstance,
+            instance=self.writeitinstance.mailit_template
+            )
+        self.assertTrue(form.is_valid())
+        template = form.save()
+
+        self.assertEquals(template.subject_template, data['subject_template'])
+        self.assertEquals(template.content_template, data['content_template'])
 
 
+    def test_url_update(self):
+        url = reverse('mailit-template-update', kwargs={'pk':self.writeitinstance.pk})
+
+        self.assertTrue(url)
+
+        c = Client()
+        c.login(username="fiera", password="feroz")
+
+        data = {
+            'subject_template':'Hello there you have a new mail this is subject',
+            'content_template':'hello there this is the content and you got this message',
+        }
+
+        response = c.post(url, data=data)
+        url = reverse('writeitinstance_template_update', 
+            kwargs={'pk':self.writeitinstance.pk})
+        self.assertRedirects(response, url)
 
 
+        self.assertEquals(self.writeitinstance.mailit_template.subject_template, 
+            data['subject_template'])
+        self.assertEquals(self.writeitinstance.mailit_template.content_template, 
+            data['content_template'])
 
 
+    def test_a_non_owner_cannot_update_a_template(self):
+        not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
+
+        url = reverse('mailit-template-update', kwargs={'pk':self.writeitinstance.pk})
+        c = Client()
+        c.login(username="not_owner", password="secreto")
+
+        data = {
+            'subject_template':'Hello there you have a new mail this is subject',
+            'content_template':'hello there this is the content and you got this message',
+        }
+
+        response = c.post(url, data=data)
+
+        self.assertEquals(response.status_code, 404)
+
+    def test_a_non_logged_user_is_told_to_login(self):
+        url = reverse('mailit-template-update', kwargs={'pk':self.writeitinstance.pk})
+        c = Client()
+
+        data = {
+            'subject_template':'Hello there you have a new mail this is subject',
+            'content_template':'hello there this is the content and you got this message',
+        }
+
+        response = c.post(url, data=data)
+
+        self.assertRedirectToLogin(response)
 

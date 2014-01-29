@@ -21,7 +21,7 @@ class Contact(models.Model):
     contact_type = models.ForeignKey('ContactType')
     person = models.ForeignKey(Person)
     value = models.CharField(max_length=512)
-    is_bounced = models.BooleanField()
+    is_bounced = models.BooleanField(default=False)
     owner = models.ForeignKey(User, related_name="contacts")
 
     def __unicode__(self):
@@ -42,6 +42,13 @@ class Contact(models.Model):
         for outbound_message in self.outboundmessage_set.filter(status="error"):
             outbound_message.send()
 
+
+    @classmethod
+    def are_there_contacts_for(cls, person):
+        if person.contact_set.\
+                    exclude(is_bounced=True).exists():
+            return True
+        return False
 
 
 def notify_bounce(sender, instance, update_fields, **kwargs):

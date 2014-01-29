@@ -27,7 +27,7 @@ class TestApiKeyAuthentification(TestCase):
     def setUp(self):
         super(TestApiKeyAuthentification,self).setUp()
         self.user = User.objects.all()[0]
-        self.api_key = ApiKey.objects.create(user=self.user)
+        self.api_key = self.user.api_key
 
     def test_creation(self):
         auth = ApiKeyAuth(username = self.user.username, api_key=self.api_key.key)
@@ -48,7 +48,6 @@ class AnswerHandlerTestCase(TestCase):
     def setUp(self):
         super(AnswerHandlerTestCase,self).setUp()
         self.user = User.objects.all()[0]
-        ApiKey.objects.create(user=self.user)
         self.where_to_post_creation_of_the_answer = 'http://writeit.ciudadanointeligente.org/api/v1/create_answer/'
         config.WRITEIT_API_ANSWER_CREATION = self.where_to_post_creation_of_the_answer
         config.WRITEIT_API_KEY = self.user.api_key.key
@@ -89,7 +88,6 @@ class ReplyHandlerTestCase(ResourceTestCase):
     def setUp(self):
         super(ReplyHandlerTestCase, self).setUp()
         self.user = User.objects.all()[0]
-        ApiKey.objects.create(user=self.user)
         f = open('mailit/tests/fixture/reply_mail.txt')
         self.email = f.readlines()
         f.close()
@@ -107,7 +105,6 @@ class DoesNotIncludeTheIdentifierInTheContent(TestCase):
     def setUp(self):
         super(DoesNotIncludeTheIdentifierInTheContent,self).setUp()
         self.user = User.objects.all()[0]
-        ApiKey.objects.create(user=self.user)
         f = open('mailit/tests/fixture/mail_with_identifier_in_the_content.txt')
         self.email = f.readlines()
         f.close()
@@ -144,7 +141,6 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
     def setUp(self):
         super(IncomingEmailHandlerTestCase,self).setUp()
         self.user = User.objects.all()[0]
-        ApiKey.objects.create(user=self.user)
         f = open('mailit/tests/fixture/mail.txt')
         self.email = f.readlines()
         f.close()
@@ -273,7 +269,6 @@ class HandleBounces(TestCase):
     def setUp(self):
         super(HandleBounces, self).setUp()
         self.user = User.objects.all()[0]
-        ApiKey.objects.create(user=self.user)
         f = open('mailit/tests/fixture/bounced_mail2.txt')
         self.email = f.readlines()
         f.close()

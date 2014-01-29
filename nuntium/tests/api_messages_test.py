@@ -11,6 +11,16 @@ from django.conf import settings
 import re
 from django.utils.encoding import force_text
 
+class UserApiKeyTestCase(TestCase):
+    def setUp(self):
+        pass
+
+    def test_automatic_creation_of_api_key_for_new_user(self):
+        user = User.objects.create_user(username="new_user", password="password")
+        self.assertIsNotNone(user.api_key)
+        self.assertTrue(user.api_key.key)
+
+
 class InstanceResourceTestCase(ResourceTestCase):
     def setUp(self):
         super(InstanceResourceTestCase,self).setUp()
@@ -18,9 +28,6 @@ class InstanceResourceTestCase(ResourceTestCase):
         self.user = User.objects.all()[0]
         self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
         self.api_client = TestApiClient()
-        
-        ApiKey.objects.create(user=self.user)
-
         self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
 
     def get_credentials(self):
@@ -169,9 +176,6 @@ class PersonResourceTestCase(ResourceTestCase):
         self.user = User.objects.all()[0]
         self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
         self.api_client = TestApiClient()
-        
-        
-        ApiKey.objects.create(user=self.user)
 
         self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
 
@@ -217,10 +221,6 @@ class MessageResourceTestCase(ResourceTestCase):
         self.user = User.objects.all()[0]
         self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
         self.api_client = TestApiClient()
-        
-        
-        ApiKey.objects.create(user=self.user)
-
         self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
 
     def test_get_list_of_messages(self):
@@ -370,7 +370,6 @@ class AnswerCreationResource(ResourceTestCase):
         self.identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
         self.api_client = TestApiClient()
         self.user = User.objects.all()[0]
-        ApiKey.objects.create(user=self.user)
         self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
 
     def get_credentials(self):
@@ -406,7 +405,7 @@ class AnswerCreationResource(ResourceTestCase):
 
     def test_only_the_owner_can_create_an_answer(self):
         not_the_owner = User.objects.create(username='not_the_owner')
-        his_api_key = ApiKey.objects.create(user=not_the_owner)
+        his_api_key = not_the_owner.api_key
         credentials = self.create_apikey(username=not_the_owner.username, api_key=his_api_key.key)
         url = '/api/v1/create_answer/'
         content = 'una sola'
@@ -442,7 +441,6 @@ class HandleBounces(ResourceTestCase):
         call_command('loaddata', 'example_data', verbosity=0)
         self.api_client = TestApiClient()
         self.user = User.objects.all()[0]
-        ApiKey.objects.create(user=self.user)
         self.outbound_message = OutboundMessage.objects.all()[0]
         self.identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
 

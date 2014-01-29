@@ -3,8 +3,7 @@ from subdomains.utils import reverse, get_domain
 from django.core.urlresolvers import reverse as original_reverse
 from nuntium.models import WriteItInstance
 from django.contrib.auth.models import User
-from django.test.client import Client
-from django.test.client import RequestFactory
+from django.test.client import Client, RequestFactory
 from nuntium.views import WriteItInstanceUpdateView
 from django.forms import ModelForm
 from django.contrib.sites.models import Site
@@ -16,6 +15,7 @@ from django.forms.models import model_to_dict
 from contactos.models import Contact
 from contactos.forms import ContactCreateForm
 from nuntium.forms import NewAnswerNotificationTemplateForm
+from mailit.forms import MailitTemplateForm
 
 
 urlconf = settings.SUBDOMAIN_URLCONFS.get(None, settings.ROOT_URLCONF)
@@ -254,6 +254,9 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         self.assertTemplateUsed(response, 'base_edit.html')
         self.assertTemplateUsed(response, 'nuntium/profiles/templates.html')
         self.assertIsInstance(response.context['new_answer_template_form'], NewAnswerNotificationTemplateForm)
+        self.assertIsInstance(response.context['mailit_template_form'], MailitTemplateForm)
+        mailit_template_form = response.context['mailit_template_form']
+        self.assertEquals(mailit_template_form.instance, self.writeitinstance.mailit_template)
         form = response.context['new_answer_template_form']
         self.assertEquals(form.instance, self.writeitinstance.new_answer_notification_template)
 
@@ -339,3 +342,15 @@ class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
         response = c.post(url, data=data)
 
         self.assertEquals(response.status_code, 404)
+
+    def test_login_required_to_do_this_kind_of_stuff(self):
+        url = reverse('edit_new_answer_notification_template', kwargs={'pk':self.writeitinstance.id})
+        c = Client()
+        data = {
+        'template_html':self.writeitinstance.new_answer_notification_template.template_html,
+        'template_text':self.writeitinstance.new_answer_notification_template.template_text,
+        'subject_template':'subject =)'
+        }
+
+        response = c.post(url, data=data)
+        self.assertRedirectToLogin(response)
