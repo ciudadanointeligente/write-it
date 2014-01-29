@@ -1,0 +1,4 @@
+coveralls
+mock
+django-nose
+prospector

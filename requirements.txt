@@ -18,10 +18,3 @@ django-autoslug
 pytz>=2013b
 django-admin-bootstrapped
 django-object-actions
-
-#TESTING
-coveralls
-mock
-django-nose
-prospector
-
