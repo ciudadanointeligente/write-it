@@ -98,6 +98,16 @@ class MessageRecord(models.Model):
 
 
 class PublicMessagesManager(models.Manager):
+    def filter(self, *args, **kwargs):
+        person = None
+        if 'person' in kwargs:
+            person = kwargs.pop('person')
+
+        queryset = super(PublicMessagesManager, self).filter(*args, **kwargs)
+        if person:
+            queryset = queryset.filter(outboundmessage__contact__person=person)
+        return queryset
+
     def public(self, *args, **kwargs):
         query = super(PublicMessagesManager, self).filter(*args, **kwargs)
         query = query.filter(Q(public=True), Q(confirmated=True), \
