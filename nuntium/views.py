@@ -303,7 +303,10 @@ class MessagesPerPersonView(ListView):
         return super(MessagesPerPersonView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        qs = Message.objects.public(person=self.person,)
+        qs = Message.objects.public(
+            person=self.person,
+            writeitinstance=self.writeitinstance,
+            )
         return qs
 
     def get_context_data(self,**kwargs):

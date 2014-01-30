@@ -32,9 +32,6 @@ class MessagesPerPersonViewTestCase(TestCase, SubdomainTestMixin):
 		url = reverse('messages_per_person'
 			, kwargs={'pk':self.pedro.id}
             , subdomain=self.writeitinstance.slug)
-
-		
-
 		response = self.client.get(url, HTTP_HOST=self.host)
 
 		expected_messages = Message.objects.filter(
@@ -75,10 +72,23 @@ class MessagesPerPersonViewTestCase(TestCase, SubdomainTestMixin):
 		self.assertNotIn(private_message, response.context['message_list'])
 
 
+	def test_show_only_messages_that_are_related_to_the_writeitinstance(self):
+		the_other_instance = WriteItInstance.objects.get(id=2)
 
+		message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Fiera es una perra feroz', 
+            writeitinstance= the_other_instance,
+            public=True,
+            confirmated = True,
+            persons = [self.pedro])
 
+		url = reverse('messages_per_person'
+			, kwargs={'pk':self.pedro.id}
+            , subdomain=self.writeitinstance.slug)
 
+		response = self.client.get(url, HTTP_HOST=self.host)
 
-
-
-
+		#should not be here cause it belongs to other writeit instance
+		self.assertNotIn(message, response.context['message_list'])
