@@ -20,4 +20,4 @@ class SendMessagesTestCaseTestCase(TestCase):
         call_command('send_mails', *args, **opts)
 
         self.assertEquals(OutboundMessage.objects.filter(status="new").count(), 0)
-        self.assertEquals(OutboundMessage.objects.filter(status="sent").count(), 3)
+        self.assertEquals(OutboundMessage.objects.filter(status="sent").count(), 4)

@@ -37,9 +37,10 @@ class OutboundMessageTestCase(TestCase):
         self.assertEquals(outbound_message.__unicode__(), expected_unicode)
 
     def test_outbound_messsages_creation_on_message_save(self):
-        # si new message then x neew outbound TestMessages
         new_outbound_messages = OutboundMessage.objects.all()
-        self.assertEquals(new_outbound_messages.count(), 3)
+        #I need to fix the correct number is now 4 based on example_data.yaml
+        #wich makes not robust to changes in example_data.yaml
+        self.assertEquals(new_outbound_messages.count(), 4)
 
 
     def test_successful_send(self):

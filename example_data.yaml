@@ -46,6 +46,9 @@
 - fields: {contact: 3, message: 1}
   model: nuntium.outboundmessage
   pk: 3
+- fields: {contact: 1, message: 2}
+  model: nuntium.outboundmessage
+  pk: 4
 - fields: {url: 'http://popit.org/api/v1'}
   model: popit.apiinstance
   pk: 1

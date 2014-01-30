@@ -109,7 +109,7 @@ class PublicMessagesManager(models.Manager):
         return queryset
 
     def public(self, *args, **kwargs):
-        query = super(PublicMessagesManager, self).filter(*args, **kwargs)
+        query = self.filter(*args, **kwargs)
         query = query.filter(Q(public=True), Q(confirmated=True), \
             Q(moderated=True) | Q(moderated=None))
         return query

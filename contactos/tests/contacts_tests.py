@@ -133,8 +133,11 @@ class ContactTestCase(TestCase):
         contact = Contact.objects.get(id=1)#pedro
         contact.set_outbound_messages_to_ready()
 
-        outbound_message = OutboundMessage.objects.get(contact=contact)
-        self.assertEquals(outbound_message.status, 'ready')
+        outbound_messages = OutboundMessage.objects.filter(contact=contact)
+        # I'm not entirely sure if this form of testing is correct
+        # but what the f**k?
+        for outbound_message in outbound_messages:
+            self.assertEquals(outbound_message.status, 'ready')
 
 
 class ResendOutboundMessages(TestCase):
