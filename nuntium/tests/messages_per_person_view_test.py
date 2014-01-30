@@ -28,7 +28,7 @@ class MessagesPerPersonViewTestCase(TestCase, SubdomainTestMixin):
 		self.assertTrue(url)
 
 
-	def atest_it_is_reachable(self):
+	def test_it_is_reachable(self):
 		url = reverse('messages_per_person'
 			, kwargs={'pk':self.pedro.id}
             , subdomain=self.writeitinstance.slug)
@@ -37,22 +37,9 @@ class MessagesPerPersonViewTestCase(TestCase, SubdomainTestMixin):
 
 		response = self.client.get(url, HTTP_HOST=self.host)
 
-		# the next step is done mainly because the expected message is not confirmed
-		# messages = Message.objects.filter(
-		# 	person=self.pedro,
-		# 	writeitinstance=self.writeitinstance
-		# 	)
-
-		# messages.update(confirmated=True)
-
-		# for message in messages:
-		# 	print message.confirmated
-		message = Message.objects.get(id=2)
-		print message.people
-		# the previous step is done because the expected message is not confirmed
-
 		expected_messages = Message.objects.filter(
 			person=self.pedro,
+			confirmated=True,
 			writeitinstance=self.writeitinstance)
 
 		self.assertEquals(response.status_code, 200)
@@ -65,11 +52,6 @@ class MessagesPerPersonViewTestCase(TestCase, SubdomainTestMixin):
 		)
 		self.assertTemplateUsed(response, 'nuntium/message/per_person.html')
 		self.assertTemplateUsed(response, 'base.html')
-
-		message = response.context['message_list'][0]
-		self.assertTrue(message.public)
-		self.assertIn(self.pedro, message.people)
-		self.assertEquals(message.writeitinstance, self.writeitinstance)
 
 	def test_it_does_not_show_private_messages(self):
 		private_message = Message.objects.create(content = 'Content 1', 
