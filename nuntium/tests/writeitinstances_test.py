@@ -27,7 +27,6 @@ class InstanceTestCase(TestCase, SubdomainTestMixin):
         writeitinstance = WriteItInstance.objects.create(
             name='instance 1', 
             slug='instance-1',
-
             owner=self.owner)
         self.assertTrue(writeitinstance.id)
         self.assertEquals(writeitinstance.name, 'instance 1')

@@ -80,7 +80,6 @@ class MessageDetailView(DetailView):
     model=Message
 
     def get_queryset(self):
-        #get_object_or_404(Message, slug__iexact=self.kwargs['slug'])
         qs = Message.objects.filter(slug__iexact=self.kwargs['slug'])
         return qs
 
