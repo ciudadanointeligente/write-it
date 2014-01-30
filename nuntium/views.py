@@ -21,6 +21,7 @@ from contactos.models import Contact
 from contactos.forms import ContactCreateForm
 from django.http import Http404
 from mailit.forms import MailitTemplateForm
+from popit.models import Person
 
 class HomeTemplateView(TemplateView):
     def get_context_data(self, **kwargs):
@@ -289,3 +290,23 @@ class NewAnswerNotificationTemplateUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('writeitinstance_template_update', kwargs={'pk':self.writeitinstance.pk})
+
+
+class MessagesPerPersonView(ListView):
+    model = Message
+    template_name = "nuntium/message/per_person.html"
+
+    def dispatch(self, *args, **kwargs):
+        self.person = Person.objects.get(id=self.kwargs['pk'])
+        self.subdomain = self.request.subdomain
+        self.writeitinstance = WriteItInstance.objects.get(slug=self.subdomain)
+        return super(MessagesPerPersonView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        qs = Message.objects.filter(person=self.person, writeitinstance=self.writeitinstance)
+        return qs
+
+    def get_context_data(self,**kwargs):
+        context = super(MessagesPerPersonView, self).get_context_data(**kwargs)
+        context['person'] = self.person
+        return context
