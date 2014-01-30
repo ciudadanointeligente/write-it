@@ -10,3 +10,4 @@ mailing_logger.txt
 celerybeat-schedule
 
 popit-api-for-testing
+src
