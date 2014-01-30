@@ -9,5 +9,7 @@ local_settings.py
 mailing_logger.txt
 celerybeat-schedule
 
+*.sublime-project
+*.sublime-workspace
 popit-api-for-testing
 src
