@@ -16,8 +16,6 @@ from itertools import chain
 
 class PersonSelectMultipleWidget(SelectMultiple):
     def render_option(self, selected_choices, option_value, option_label):
-        if option_value is None:
-            option_value = ''
         person = Person.objects.get(id=option_value)
         contacts_exist = Contact.are_there_contacts_for(person)
         if not contacts_exist:

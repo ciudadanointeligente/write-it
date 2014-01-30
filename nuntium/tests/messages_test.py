@@ -5,7 +5,9 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, Confirmation, Moderation
+from nuntium.models import Message, WriteItInstance, \
+                            OutboundMessage, MessageRecord, Confirmation, \
+                            Moderation
 from popit.models import Person, ApiInstance
 from subdomains.utils import reverse
 from django.contrib.contenttypes.models import ContentType
@@ -280,6 +282,25 @@ class TestMessages(TestCase):
             persons = [self.person1, self.person2])
 
         self.assertEquals(message.people, [self.person1, self.person2])
+
+    def test_a_person_has_a_messages_property(self):
+        Message.objects.all().delete()
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Same subject hey', 
+            writeitinstance= self.writeitinstance1, 
+            persons = [self.person1])
+
+        messages_to_person1 = Message.objects.filter(person=self.person1)
+        messages_to_person2 = Message.objects.filter(person=self.person2)
+
+
+        self.assertIn(message, messages_to_person1)
+        self.assertNotIn(message, messages_to_person2)
+
+        self.assertEqual(len(messages_to_person1), 1)
+        self.assertEqual(len(messages_to_person2), 0)
 
 
     def test_message_unicode(self):

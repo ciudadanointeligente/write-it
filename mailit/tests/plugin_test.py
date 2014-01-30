@@ -13,6 +13,7 @@ from mailit.forms import MailitTemplateForm
 from nuntium.tests.user_section_views_tests import UserSectionTestCase
 from subdomains.utils import reverse
 from django.test.client import Client
+from django.forms import ValidationError
 
 class MailChannelTestCase(TestCase):
 
@@ -335,6 +336,19 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
 
         self.assertEquals(template.subject_template, data['subject_template'])
         self.assertEquals(template.content_template, data['content_template'])
+
+    def test_raises_error_when_no_instance_is_provided(self):
+        data = {
+            'subject_template':'Hello there you have a new mail this is subject',
+            'content_template':'hello there this is the content and you got this message',
+        }
+        with self.assertRaises(ValidationError) as error:
+            form = MailitTemplateForm(data=data, 
+                #NO INSTANCE
+                #writeitinstance=self.writeitinstance,
+                #NO INSTANCE
+                instance=self.writeitinstance.mailit_template
+                )
 
 
     def test_url_update(self):

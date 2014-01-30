@@ -21,6 +21,7 @@ from contactos.models import Contact
 from contactos.forms import ContactCreateForm
 from django.http import Http404
 from mailit.forms import MailitTemplateForm
+from popit.models import Person
 
 class HomeTemplateView(TemplateView):
     def get_context_data(self, **kwargs):
@@ -80,7 +81,6 @@ class MessageDetailView(DetailView):
     model=Message
 
     def get_queryset(self):
-        #get_object_or_404(Message, slug__iexact=self.kwargs['slug'])
         qs = Message.objects.filter(slug__iexact=self.kwargs['slug'])
         return qs
 
@@ -93,16 +93,6 @@ class MessageDetailView(DetailView):
             is_confirmed = the_message.confirmated
         else:
             is_confirmed = the_message.confirmation.is_confirmed
-        #these lines were removed because there was a time
-        # when they help me pass a test but now if I comment them 
-        # they don't break anything
-        # I'm gonna keep them just in case something in the future breaks
-        #     try:
-        #         is_confirmed = the_message.confirmation.is_confirmed
-        #     except :
-        #         pass
-        # if not is_confirmed:
-        #     raise Http404
 
         return the_message
 
@@ -300,3 +290,26 @@ class NewAnswerNotificationTemplateUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('writeitinstance_template_update', kwargs={'pk':self.writeitinstance.pk})
+
+
+class MessagesPerPersonView(ListView):
+    model = Message
+    template_name = "nuntium/message/per_person.html"
+
+    def dispatch(self, *args, **kwargs):
+        self.person = Person.objects.get(id=self.kwargs['pk'])
+        self.subdomain = self.request.subdomain
+        self.writeitinstance = WriteItInstance.objects.get(slug=self.subdomain)
+        return super(MessagesPerPersonView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        qs = Message.objects.public(
+            person=self.person,
+            writeitinstance=self.writeitinstance,
+            )
+        return qs
+
+    def get_context_data(self,**kwargs):
+        context = super(MessagesPerPersonView, self).get_context_data(**kwargs)
+        context['person'] = self.person
+        return context

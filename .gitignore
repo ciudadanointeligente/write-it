@@ -8,6 +8,8 @@ local_settings.py
 .coverage
 mailing_logger.txt
 celerybeat-schedule
+
 *.sublime-project
 *.sublime-workspace
 popit-api-for-testing
+src
