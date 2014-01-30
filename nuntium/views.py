@@ -93,16 +93,6 @@ class MessageDetailView(DetailView):
             is_confirmed = the_message.confirmated
         else:
             is_confirmed = the_message.confirmation.is_confirmed
-        #these lines were removed because there was a time
-        # when they help me pass a test but now if I comment them 
-        # they don't break anything
-        # I'm gonna keep them just in case something in the future breaks
-        #     try:
-        #         is_confirmed = the_message.confirmation.is_confirmed
-        #     except :
-        #         pass
-        # if not is_confirmed:
-        #     raise Http404
 
         return the_message
 
