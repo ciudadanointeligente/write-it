@@ -111,6 +111,12 @@ class MessageResource(ModelResource):
         bundle.obj.confirmated = True
         return bundle
 
+    def dehydrate(self, bundle):
+        bundle.data['persons'] = []
+        for person in bundle.obj.people:
+            bundle.data['persons'].append(person.popit_url)
+        return bundle
+
     def obj_create(self, bundle, **kwargs):
         bundle = super(MessageResource, self).obj_create(bundle, **kwargs)
         bundle.obj.recently_confirmated()
