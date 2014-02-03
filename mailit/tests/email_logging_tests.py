@@ -36,3 +36,16 @@ class LoggingTests(TestCase):
             the_file = mail.outbox[0].attachments[0]
             self.assertEquals(the_file[0], 'mail.txt')
             self.assertEquals(the_file[2], 'text/plain')
+
+    @override_settings(ADMINS=None)
+    def test_if_there_are_no_admins_does_not_send_emails(self):
+        identifier = OutboundMessageIdentifier.objects.all()[0]
+        identifier.key = '4aaaabbb'
+        identifier.save()
+
+        with patch('sys.stdin') as stdin:
+            stdin.attach_mock(readlines1_mock,'readlines')
+            
+            call_command('handleemail','mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+
+            self.assertEquals(len(mail.outbox), 0)
