@@ -145,4 +145,6 @@ class MessageResourceTestCase(ResourceTestCase):
         the_message = Message.objects.get(author_name='Felipipoo')
 
         self.assertEquals(len(the_message.people), writeitinstance.persons.count())
-        self.assertEquals(the_message.people,list(writeitinstance.persons.all()))
+        self.assertQuerysetEqual(the_message.people.all(), \
+            [repr(r) for r in writeitinstance.persons.all()]
+            )
