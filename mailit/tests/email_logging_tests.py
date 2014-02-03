@@ -37,7 +37,7 @@ class LoggingTests(TestCase):
             self.assertEquals(the_file[0], 'mail.txt')
             self.assertEquals(the_file[2], 'text/plain')
 
-    @override_settings(ADMINS=None)
+    @override_settings(ADMINS=None, INCOMING_EMAIL_LOGGING='ALL')
     def test_if_there_are_no_admins_does_not_send_emails(self):
         identifier = OutboundMessageIdentifier.objects.all()[0]
         identifier.key = '4aaaabbb'
