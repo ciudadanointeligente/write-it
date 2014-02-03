@@ -80,7 +80,12 @@ class MessageResource(ModelResource):
     writeitinstance = fields.ToOneField(WriteItInstanceResource, \
         'writeitinstance')
     answers = fields.ToManyField(AnswerResource, 'answers', \
-        null=True, full=True)
+        null=True, \
+        full=True)
+    people = fields.ToManyField(PersonResource, 'people', \
+        null=True, \
+        readonly=True, \
+        full=True)
 
     class Meta:
         queryset = Message.objects.all()

@@ -171,11 +171,9 @@ class Message(models.Model):
 
     @property
     def people(self):
-        people = []
-        for outbound_message in self.outboundmessage_set.all():
-            if outbound_message.contact.person not in people:
-                people.append(outbound_message.contact.person)
-        return people
+        return Person.objects\
+                        .filter(contact__outboundmessage__message=self)\
+                        .distinct()
 
     def get_absolute_url(self):
         return reverse('message_detail', \
