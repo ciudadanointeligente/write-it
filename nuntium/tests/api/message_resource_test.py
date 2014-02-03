@@ -20,6 +20,10 @@ class MessageResourceTestCase(ResourceTestCase):
         self.api_client = TestApiClient()
         self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
 
+    def get_credentials(self):
+        credentials = self.create_apikey(username=self.user.username, api_key=self.user.api_key.key)
+        return credentials
+
     def test_get_list_of_messages(self):
         url = '/api/v1/message/'
         response = self.api_client.get(url,data = self.data)
@@ -35,7 +39,6 @@ class MessageResourceTestCase(ResourceTestCase):
         url = '/api/v1/message/'
         response = self.api_client.get(url)
 
-
         self.assertHttpUnauthorized(response)
 
     def test_a_list_of_messages_have_answers(self):
@@ -46,9 +49,18 @@ class MessageResourceTestCase(ResourceTestCase):
 
         self.assertTrue('answers' in messages[0])
 
-    def get_credentials(self):
-        credentials = self.create_apikey(username=self.user.username, api_key=self.user.api_key.key)
-        return credentials
+    def test_the_message_has_the_people_it_was_sent_to(self):
+        url = '/api/v1/message/'
+        response = self.api_client.get(url,data = self.data)
+        self.assertValidJSONResponse(response)
+        messages = self.deserialize(response)['objects']
+
+        self.assertTrue('persons' in messages[0])
+        message = Message.objects.get(id=messages[0]['id'])
+        for person in message.people:
+            self.assertIn(person.popit_url, messages[0]['persons'])
+
+
 
     def test_create_a_new_message(self):
         writeitinstance = WriteItInstance.objects.all()[0]
@@ -91,8 +103,6 @@ class MessageResourceTestCase(ResourceTestCase):
             'http://this.person.does.not.exist'
             ]
         }
-
-
         url = '/api/v1/message/'
         previous_amount_of_messages = Message.objects.count()
         response = self.api_client.post(url, data = message_data, format='json', authentication=self.get_credentials())
@@ -117,7 +127,6 @@ class MessageResourceTestCase(ResourceTestCase):
         the_message = Message.objects.get(author_name='Felipipoo')
 
         self.assertTrue(the_message.confirmated)
-
 
     def test_create_a_new_message_to_all_persons_in_the_instance(self):
         #here it is the thing I don't know yet how to do this and I'll go for 
