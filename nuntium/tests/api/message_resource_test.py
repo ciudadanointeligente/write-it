@@ -56,11 +56,16 @@ class MessageResourceTestCase(ResourceTestCase):
         messages = self.deserialize(response)['objects']
 
         self.assertTrue('persons' in messages[0])
+        message_from_the_api = messages[0]
         message = Message.objects.get(id=messages[0]['id'])
-        for person in message.people:
-            self.assertIn(person.popit_url, messages[0]['persons'])
+        for person in message_from_the_api['people']:
+            self.assertIn('popit_url', person)
 
-
+            self.assertIn(
+                Person.objects.get(id=person['id']), \
+                message.people.all()
+                )
+        self.assertEquals(len(message_from_the_api['people']), message.people.count())
 
     def test_create_a_new_message(self):
         writeitinstance = WriteItInstance.objects.all()[0]
