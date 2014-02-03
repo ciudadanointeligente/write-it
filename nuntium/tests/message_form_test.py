@@ -2,9 +2,11 @@
 from global_test_case import GlobalTestCase as TestCase
 from popit.models import Person, ApiInstance
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, Confirmation, WriteItInstance, OutboundMessage
-from nuntium.forms import MessageCreateForm, PersonMultipleChoiceField
-from django.forms import ValidationError,SelectMultiple
+from nuntium.models import Message, Confirmation, WriteItInstance, \
+                            OutboundMessage
+from nuntium.forms import MessageCreateForm, PersonMultipleChoiceField, \
+                            PersonSelectMultipleWidget
+from django.forms import ValidationError,SelectMultiple, ChoiceField
 from django.contrib.auth.models import User
 from django.forms.forms import NON_FIELD_ERRORS
 from django.utils.translation import ugettext as _
@@ -66,7 +68,6 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
         rendered_field = field.widget.render(name='oli', 
             value=[3])
         self.assertIn('<option value="3" selected="selected">Felipe</option>', rendered_field)
-
 
 class MessageFormTestCase(TestCase):
 

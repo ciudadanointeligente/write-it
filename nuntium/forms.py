@@ -23,9 +23,12 @@ class PersonSelectMultipleWidget(SelectMultiple):
         option_value = force_text(option_value)
         if option_value in selected_choices:
             selected_html = mark_safe(u' selected="selected"')
-            if not self.allow_multiple_selected:
-                # Only allow for a single selection.
-                selected_choices.remove(option_value)
+            # I copied this from the original SelectMultiple
+            # but this lines of code is not being used currently
+            # for this reason the following lines of code are comented
+            # if not self.allow_multiple_selected:
+            #     # Only allow for a single selection.
+            #     selected_choices.remove(option_value)
         else:
             selected_html = ''
         return format_html(u'<option value="{0}"{1}>{2}</option>',
