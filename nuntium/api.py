@@ -80,7 +80,12 @@ class MessageResource(ModelResource):
     writeitinstance = fields.ToOneField(WriteItInstanceResource, \
         'writeitinstance')
     answers = fields.ToManyField(AnswerResource, 'answers', \
-        null=True, full=True)
+        null=True, \
+        full=True)
+    people = fields.ToManyField(PersonResource, 'people', \
+        null=True, \
+        readonly=True, \
+        full=True)
 
     class Meta:
         queryset = Message.objects.all()
@@ -109,6 +114,12 @@ class MessageResource(ModelResource):
                     pass
         bundle.obj.persons = persons
         bundle.obj.confirmated = True
+        return bundle
+
+    def dehydrate(self, bundle):
+        bundle.data['persons'] = []
+        for person in bundle.obj.people:
+            bundle.data['persons'].append(person.popit_url)
         return bundle
 
     def obj_create(self, bundle, **kwargs):

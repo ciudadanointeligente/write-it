@@ -21,6 +21,7 @@ import datetime
 from django.utils.translation import activate
 from subdomains.tests import SubdomainTestMixin
 from django.core.management import call_command
+from django.db.models.query import QuerySet
 
 
 class TestMessages(TestCase):
@@ -188,8 +189,10 @@ class TestMessages(TestCase):
         message1.slug = 'a-new-slug1'
 
         message1.save()
-
-        self.assertEquals(message1.people, previous_people)
+        self.assertQuerysetEqual(message1.people.all(), \
+            [repr(r) for r in previous_people], \
+            ordered=False
+            )
 
 
     def test_message_has_a_permalink(self):
@@ -253,7 +256,8 @@ class TestMessages(TestCase):
             persons = [self.person1])
 
 
-        self.assertEquals(message.people, [self.person1])
+        self.assertIn(self.person1, message.people.all())
+        self.assertEquals(message.people.count(), 1)
 
 
     def test_resave_a_message_should_not_change_slug(self):
@@ -281,7 +285,10 @@ class TestMessages(TestCase):
             writeitinstance= self.writeitinstance1, 
             persons = [self.person1, self.person2])
 
-        self.assertEquals(message.people, [self.person1, self.person2])
+        self.assertIsInstance(message.people, QuerySet)
+        self.assertIn(self.person1, message.people.all())
+        self.assertIn(self.person2, message.people.all())
+        self.assertEquals(message.people.count(), 2)
 
     def test_a_person_has_a_messages_property(self):
         Message.objects.all().delete()
