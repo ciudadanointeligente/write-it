@@ -23,6 +23,7 @@ import re
 from django.db.models import Q
 import requests
 from autoslug import AutoSlugField
+from unidecode import unidecode
 
 
 class WriteItPerson(Person):
@@ -181,10 +182,10 @@ class Message(models.Model):
             kwargs={'slug': self.slug})
 
     def slugifyme(self):
-        if not slugify(self.subject):
+        if not slugify(unidecode(self.subject)):
             self.subject = '-'
 
-        self.slug = slugify(self.subject)
+        self.slug = slugify(unidecode(self.subject))
         #Previously created messages with the same slug
 
         regex = "^"+self.slug+"(-[0-9]*){0,1}$"
