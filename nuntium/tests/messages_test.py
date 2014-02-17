@@ -1,5 +1,7 @@
 # coding=utf-8
+from django.test import TestCase as OriginalTestCase
 from global_test_case import GlobalTestCase as TestCase
+from global_test_case import UsingDbMixin
 from django.utils.unittest import skip
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
@@ -104,32 +106,6 @@ class TestMessages(TestCase):
             persons = [self.person1])
 
         self.assertNotEqual(message1.slug, message2.slug)
-
-    def test_a_message_with_a_changed_slug(self):
-        message1 = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl",
-            confirmated = True,
-            subject='Test',
-            writeitinstance= self.writeitinstance1,
-            persons = [self.person1])
-
-        message1.slug = 'test-2'
-        message1.save()
-
-        regex = "^"+message1.slug+"(-\d+){0,1}$"
-        previously = Message.objects.filter(slug__regex=regex).count()
-
-        message2 = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl",
-            confirmated = True,
-            subject='test', 
-            writeitinstance= self.writeitinstance1,
-            persons = [self.person1])
-
-
-        self.assertEquals(message2.slug, 'test-3')
 
     def test_create_a_message_with_a_non_sluggable_subject(self):
         message1 = Message.objects.create(content = 'Content 1', 
@@ -385,3 +361,48 @@ class TestMessages(TestCase):
         outbound_message_to_pedro = OutboundMessage.objects.filter(message=message)[0]
         self.assertEquals(outbound_message_to_pedro.status, 'ready')
         self.assertTrue(message.confirmated)
+
+
+class MysqlTesting(UsingDbMixin, OriginalTestCase):
+    using_db = 'mysql'
+
+    def setUp(self):
+        super(MysqlTesting,self).setUp()
+        user = User.objects.create_user(username='admin', password='a')
+        popit_instance = ApiInstance.objects.create(
+            url='http://popit.ciudadanointeligente.org'
+            )
+
+        self.writeitinstance1 = writeitinstance = WriteItInstance.objects.create(
+            name='instance 1', 
+            slug='instance-1',
+            owner=user)
+        self.person1 = Person.objects.create(name='Pedro', api_instance=popit_instance)
+
+
+    #This test was a bug agains mysql
+    def test_a_message_with_a_changed_slug(self):
+        message1 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='Test',
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+        message1.slug = 'test-2'
+        message1.save()
+
+        regex = "^"+message1.slug+"(-\d+){0,1}$"
+        previously = Message.objects.filter(slug__regex=regex).count()
+
+        message2 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='test', 
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+
+        self.assertEquals(message2.slug, 'test-3')
