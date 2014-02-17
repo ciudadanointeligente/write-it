@@ -8,6 +8,7 @@ services:
   - mongodb
 install:
   - pip install -r requirements.txt
+  - pip install MySQL-python
   - pip install -r requirements_testing.txt
 # command to run tests
 before_script:
