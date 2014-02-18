@@ -408,6 +408,20 @@ class MysqlTesting(UsingDbMixin, OriginalTestCase):
         self.assertEquals(message2.slug, 'test-3')
 
 
+    def test_a_message_with_a_RTL_language(self):
+        content = u"رسمية هي اللغة العربية، وهي جزء من المغرب العربي الكبير. وبصفتها"
+        subject = u"مواصلة العمل للمحافظة على السلام والأمن"
+        message1 = Message.objects.create(content = content, 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject=subject,
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+        self.assertEquals(message1.content, content)
+        self.assertEquals(message1.subject, subject)
+
 class PostgresTesting(UsingDbMixin, OriginalTestCase):
     using_db = 'postgres'
 
@@ -451,3 +465,17 @@ class PostgresTesting(UsingDbMixin, OriginalTestCase):
 
 
         self.assertEquals(message2.slug, 'test-3')
+
+    def test_a_message_with_a_RTL_language(self):
+        content = u"رسمية هي اللغة العربية، وهي جزء من المغرب العربي الكبير. وبصفتها"
+        subject = u"مواصلة العمل للمحافظة على السلام والأمن"
+        message1 = Message.objects.create(content = content, 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject=subject,
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+        self.assertEquals(message1.content, content)
+        self.assertEquals(message1.subject, subject)
