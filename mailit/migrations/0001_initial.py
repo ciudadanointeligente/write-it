@@ -7,6 +7,10 @@ from django.db import models
 
 class Migration(SchemaMigration):
 
+    depends_on = (
+        ("nuntium", "0004_auto__del_instance__add_writeitinstance"),
+    )
+
     def forwards(self, orm):
         # Adding model 'MailItTemplate'
         db.create_table(u'mailit_mailittemplate', (

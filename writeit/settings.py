@@ -142,7 +142,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_nose',
+    
     'nuntium',
     'djangoplugins',
     'popit',
@@ -163,6 +163,12 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
+if TESTING:
+    INSTALLED_APPS += (
+        'django_nose',
+        )
+    
 #SEARCH INDEX WITH SOLR
 if TESTING:
     HAYSTACK_CONNECTIONS = {
@@ -267,3 +273,7 @@ try:
     INSTALLED_APPS += EXTRA_APPS
 except ImportError:
     pass
+
+if TESTING:
+    from testing_settings import *
+    

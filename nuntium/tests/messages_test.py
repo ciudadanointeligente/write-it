@@ -1,5 +1,7 @@
 # coding=utf-8
+from django.test import TestCase as OriginalTestCase
 from global_test_case import GlobalTestCase as TestCase
+from global_test_case import UsingDbMixin
 from django.utils.unittest import skip
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
@@ -104,32 +106,6 @@ class TestMessages(TestCase):
             persons = [self.person1])
 
         self.assertNotEqual(message1.slug, message2.slug)
-
-    def test_a_message_with_a_changed_slug(self):
-        message1 = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl",
-            confirmated = True,
-            subject='Test',
-            writeitinstance= self.writeitinstance1,
-            persons = [self.person1])
-
-        message1.slug = 'test-2'
-        message1.save()
-
-        regex = "^"+message1.slug+"(-\d+){0,1}$"
-        previously = Message.objects.filter(slug__regex=regex).count()
-
-        message2 = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl",
-            confirmated = True,
-            subject='test', 
-            writeitinstance= self.writeitinstance1,
-            persons = [self.person1])
-
-
-        self.assertEquals(message2.slug, 'test-3')
 
     def test_create_a_message_with_a_non_sluggable_subject(self):
         message1 = Message.objects.create(content = 'Content 1', 
@@ -387,416 +363,119 @@ class TestMessages(TestCase):
         self.assertTrue(message.confirmated)
 
 
-class PublicMessagesManager(TestCase, SubdomainTestMixin):
+class MysqlTesting(UsingDbMixin, OriginalTestCase):
+    using_db = 'mysql'
+
     def setUp(self):
-        super(PublicMessagesManager, self).setUp()
-        self.moderation_not_needed_instance = WriteItInstance.objects.all()[0]
-        self.person1 = Person.objects.all()[0]
-        self.moderable_instance = WriteItInstance.objects.all()[1]
-        self.moderable_instance.moderation_needed_in_all_messages = True
+        super(MysqlTesting,self).setUp()
+        user = User.objects.create_user(username='admin', password='a')
+        popit_instance = ApiInstance.objects.create(
+            url='http://popit.ciudadanointeligente.org'
+            )
 
-        self.moderable_instance.save()
+        self.writeitinstance1 = writeitinstance = WriteItInstance.objects.create(
+            name='instance 1', 
+            slug='instance-1',
+            owner=user)
+        self.person1 = Person.objects.create(name='Pedro', api_instance=popit_instance)
 
-    def test_public_non_confirmated_message_is_not_in_the_public(self):
-        message = Message.objects.create(content = 'Content 1', 
+
+    #This test was a bug agains mysql
+    def test_a_message_with_a_changed_slug(self):
+        message1 = Message.objects.create(content = 'Content 1', 
             author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl", 
-            subject='public non confirmated message', 
-            writeitinstance= self.moderation_not_needed_instance, 
-            persons = [self.person1])
-        Confirmation.objects.create(message=message)
-
-        self.assertNotIn(message, Message.objects.public())
-
-        message.recently_confirmated()
-
-        self.assertIn(message, Message.objects.public())
-
-    def test_confirmated_but_non_moderated_message_in_a_moderable_instance_is_not_shown(self):
-        message = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl", 
-            subject='public non confirmated message', 
-            writeitinstance= self.moderable_instance, 
-            persons = [self.person1])
-
-        Confirmation.objects.create(message=message)
-        self.assertNotIn(message, Message.objects.public())
-        message.recently_confirmated()
-
-        #the important one
-        self.assertNotIn(message, Message.objects.public())
-
-class MessageDetailView(TestCase, SubdomainTestMixin):
-    def setUp(self):
-        super(MessageDetailView,self).setUp()
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
-        self.person1 = Person.objects.all()[0]
-        self.message = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl", 
-            subject='Subject 1', 
-            writeitinstance= self.writeitinstance1, 
-            persons = [self.person1])
-        Confirmation.objects.create(message=self.message, confirmated_at = datetime.datetime.now())
-
-    def test_get_message_detail_page(self):
-        #I'm kind of feeling like I need 
-        #something like rspec or cucumber
-        host = self.get_host_for_subdomain(self.message.writeitinstance.slug)
-        url = self.message.get_absolute_url()
-        self.assertTrue(url)
-
-        response = self.client.get(url,HTTP_HOST=host)
-
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.context['message'], self.message)
-
-    def test_get_message_detail_that_was_created_using_the_api(self):
-        message = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl", 
-            subject='Subject 1', 
-            public=True,
-            writeitinstance= self.writeitinstance1, 
-            confirmated = True,
-            persons = [self.person1])
-
-        #this message is confirmated but has no confirmation object
-        #this occurs when creating a message throu the API
-        url = message.get_absolute_url()
-        host = self.get_host_for_subdomain(self.message.writeitinstance.slug)
-        response = self.client.get(url,HTTP_HOST=host)
-        self.assertEquals(response.status_code, 200)
-
-    def test_get_messages_without_confirmation_and_not_confirmed(self):
-        message = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl", 
-            subject='Subject 1', 
-            public=False,
-            writeitinstance= self.writeitinstance1, 
-            confirmated = False,
-            persons = [self.person1])
-
-        #this message is confirmated but has no confirmation object
-        #this occurs when creating a message throu the API
-        host = self.get_host_for_subdomain(message.writeitinstance.slug)
-        url = message.get_absolute_url()
-        response = self.client.get(url,HTTP_HOST=host)
-        self.assertEquals(response.status_code, 404)
-        
-class AllMessagesWithModerationInAWriteItInstances(TestCase):
-    def setUp(self):
-        super(AllMessagesWithModerationInAWriteItInstances,self).setUp()
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
-        self.writeitinstance1.moderation_needed_in_all_messages = True
-        self.writeitinstance1.save()
-        self.person1 = Person.objects.all()[0]
-        self.message = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl", 
-            subject='Subject 1',
-            writeitinstance= self.writeitinstance1, 
-            persons = [self.person1])
-
-    def test_a_message_is_considered_not_moderated(self):
-        
-        self.assertFalse(self.message.moderated is None)
-        self.assertFalse(self.message.moderated)
-
-    def test_a_message_moderated_status_is_changed(self):
-        self.message.moderated = True
-        self.message.save()
-
-        message = Message.objects.get(id=self.message.id)
-
-        self.assertTrue(message.moderated)
-
-    def test_a_message_does_not_have_a_moderation_previous_to_confirmation(self):
-        self.assertEquals(Moderation.objects.filter(message=self.message).count(), 0)
-
-    def test_when_you_create_a_public_message_in_the_instance(self):
-        self.assertEquals(len(mail.outbox),0)
-        #the message is confirmated
-        self.message.recently_confirmated()
-
-        self.assertFalse(self.message.moderation is None)
-        self.assertEquals(len(mail.outbox),1)
-        #the second should be the confirmation thing
-        #just to make sure 
-        self.assertModerationMailSent(self.message, mail.outbox[0])
-
-
-class ModerationMessagesTestCase(TestCase, SubdomainTestMixin):
-    def setUp(self):
-        super(ModerationMessagesTestCase,self).setUp()
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
-        self.person1 = Person.objects.all()[0]
-        self.private_message = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl", 
-            subject='Subject 1', 
-            public=False,
-            writeitinstance= self.writeitinstance1, 
-            persons = [self.person1])
-        self.confirmation = Confirmation.objects.create(message=self.private_message)
-        self.host = self.get_host_for_subdomain(self.writeitinstance1.slug)
-
-    def test_private_messages_confirmation_created_move_from_new_to_needs_moderation(self):
-        moderation, created = Moderation.objects.get_or_create(message=self.private_message)
-        self.private_message.recently_confirmated()
-        
-        outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message)
-        self.assertEquals(outbound_message_to_pedro.status, 'needmodera')
-
-
-    def test_private_message_is_not_accesible(self):
-        self.confirmation.confirmated_at = datetime.datetime.now()
-        self.confirmation.save()
-        self.private_message.confirmated = True
-        self.private_message.save()
-        host = self.get_host_for_subdomain(self.private_message.writeitinstance.slug)
-        url = self.private_message.get_absolute_url()
-        response = self.client.get(url,HTTP_HOST=host)
-
-        self.assertEquals(response.status_code, 404)
-
-
-    def test_outbound_messages_of_a_confirmed_message_are_waiting_for_moderation(self):
-        #I need to do a get to the confirmation url
-        moderation, created = Moderation.objects.get_or_create(message=self.private_message)
-        url = reverse('confirm', kwargs={
-            'slug':self.confirmation.key
-            })
-        response = self.client.get(url)
-        #this works proven somewhere else
-        outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message)
-        self.assertEquals(outbound_message_to_pedro.status, 'needmodera')
-
-    def test_message_send_moderation_message(self):
-        moderation, created = Moderation.objects.get_or_create(message=self.private_message)
-        self.private_message.send_moderation_mail()
-
-        self.assertEquals(len(mail.outbox),2)
-        moderation_mail = mail.outbox[1]
-        self.assertModerationMailSent(self.private_message, moderation_mail)
-        
-    def test_create_a_moderation(self):
-        #I make sure that uuid.uuid1 is called and I get a sort of random key
-        with patch('uuid.uuid1') as string:
-            string.return_value.hex = 'oliwi'
-            message = Message.objects.create(content = 'Content 1', 
-                author_name='Felipe', 
-                author_email="falvarez@votainteligente.cl", 
-                subject='Fiera es una perra feroz', 
-                public=False,
-                writeitinstance= self.writeitinstance1, 
-                persons = [self.person1])
-
-            self.assertFalse(message.moderation is None)
-            self.assertEquals(message.moderation.key, 'oliwi')
-            string.assert_called()
-    #issue 114 found at https://github.com/ciudadanointeligente/write-it/issues/114
-    def test_send_mails_only_once(self):
-        with patch('nuntium.models.Message.send_moderation_mail') as send_moderation_mail:
-            self.writeitinstance1.moderation_needed_in_all_messages = True
-            self.writeitinstance1.save()
-
-            send_moderation_mail.return_value = None
-            message = Message.objects.create(content = 'Content 1', 
-                author_name='Felipe', 
-                author_email="falvarez@votainteligente.cl", 
-                subject='Fiera es una perra feroz', 
-                public=False,
-                writeitinstance= self.writeitinstance1, 
-                persons = [self.person1])
-
-            message.recently_confirmated()
-
-
-            number_of_moderations = Moderation.objects.filter(message=message).count()
-            send_moderation_mail.assert_called_once_with()
-
-    def test_message_has_a_method_for_moderate(self):
-        self.confirmation.confirmated_at = datetime.datetime.now()
-        self.confirmation.save()
-        self.private_message.confirmated = True
-        self.private_message.save()
-
-        self.private_message.moderate()
-        outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message)
-
-        self.assertTrue(self.private_message.moderated)
-        self.assertEquals(outbound_message_to_pedro.status, 'ready')
-
-    def test_message_that_has_not_been_confirmed_cannot_be_moderated(self):
-        #this message has not been confirmed
-        #and is private therefore requires moderation
-        message = Message.objects.create(content = 'Content 1', 
-                author_name='Felipe', 
-                author_email="falvarez@votainteligente.cl", 
-                subject='Fiera es una perra feroz', 
-                public=False,
-                writeitinstance= self.writeitinstance1, 
-                persons = [self.person1])
-
-        with self.assertRaises(ValidationError) as context:
-            # this was taken from here
-            # http://stackoverflow.com/questions/8215653/using-a-context-manager-with-python-assertraises#8215739
-            try:
-                message.moderate()
-            except ValidationError as e:
-                self.assertEqual(e.message,
-                    _('The message needs to be confirmated first',))
-                raise 
-
-        self.assertFalse(message.moderated)
-        outbound_message_to_pedro = OutboundMessage.objects.get(message=message)
-        self.assertEquals(outbound_message_to_pedro.status, 'new')
-
-
-
-    def test_there_is_a_moderation_url_that_sets_the_message_to_ready(self):
-        self.confirmation.confirmated_at = datetime.datetime.now()
-        self.confirmation.save()
-        self.private_message.confirmated = True
-        self.private_message.save()
-        
-        url = reverse('moderation_accept', kwargs={
-            'slug': self.private_message.moderation.key
-            })
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'nuntium/moderation_accepted.html')
-
-        #private_message = Message.objects.get(id=self.private_message.id)
-        outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message.id)
-        self.assertEquals(outbound_message_to_pedro.status, 'ready')
-        private_message = Message.objects.get(id=self.private_message.id)
-        self.assertTrue(private_message.moderated)
-
-    def test_moderation_get_success_url(self):
-        expected_url = reverse('moderation_accept', kwargs={
-            'slug': self.private_message.moderation.key
-            })
-        self.assertEquals(self.private_message.moderation.get_success_url(), expected_url)
-
-    def test_moderation_get_reject_url(self):
-        expected_url = reverse('moderation_rejected', kwargs={
-            'slug': self.private_message.moderation.key
-            })
-        self.assertEquals(self.private_message.moderation.get_reject_url(), expected_url)
-
-    def test_there_is_a_reject_moderation_url_that_deletes_the_message(self):
-        '''
-        This is the case when you proud owner of a writeitInstance 
-        think that the private message should not go anywhere
-        and it should be deleted
-        '''
-        url = reverse('moderation_rejected', kwargs={
-            'slug': self.private_message.moderation.key
-            })
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'nuntium/moderation_rejected.html')
-        #If someone knows how to do the DoesNotExist or where to extend from 
-        #I could do a self.assertRaises but I'm not taking any more time in this
-        self.assertEquals(Message.objects.filter(id=self.private_message.id).count(), 0)
-
-
-    def test_when_moderation_needed_a_mail_for_its_owner_is_sent(self):
-        self.private_message.recently_confirmated()
-        #There should be two 
-        #One is created for confirmation
-        #The other one is created for the moderation thing
-        self.assertEquals(len(mail.outbox),2)
-        moderation_mail = mail.outbox[1]
-        #it is sent to the owner of the instance
-        self.assertEquals(moderation_mail.to[0], self.private_message.writeitinstance.owner.email)
-        self.assertTrue(self.private_message.content in moderation_mail.body)
-        self.assertTrue(self.private_message.subject in moderation_mail.body)
-        self.assertTrue(self.private_message.author_name in moderation_mail.body)
-        self.assertTrue(self.private_message.author_email in moderation_mail.body)
-        current_site = Site.objects.get_current()
-        current_domain = 'http://'+current_site.domain
-        url_rejected = reverse('moderation_rejected', kwargs={
-            'slug': self.private_message.moderation.key
-            })
-
-        url_accept = reverse('moderation_accept', kwargs={
-            'slug': self.private_message.moderation.key
-            })
-
-
-        self.assertFalse(current_domain+url_rejected in moderation_mail.body)
-        self.assertTrue(url_rejected in moderation_mail.body)
-        self.assertFalse(current_domain+url_accept in moderation_mail.body)
-        self.assertTrue(url_accept in moderation_mail.body)
-
-
-
-    def test_creates_automatically_a_moderation_when_a_private_message_is_created(self):
-        message = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl", 
-            subject='Fiera es una perra feroz', 
-            public=False,
-            writeitinstance= self.writeitinstance1, 
-            persons = [self.person1])
-
-        self.assertFalse(message.moderation is None)
-
-
-    def test_a_moderation_does_not_change_its_key_on_save(self):
-        '''
-        I found that everytime I did resave a moderation
-        it key was regenerated
-        '''
-        previous_key = self.private_message.moderation.key
-        self.private_message.moderation.save()
-        moderation = Moderation.objects.get(message=self.private_message)
-        post_key = moderation.key
-
-        self.assertEquals(previous_key, post_key)
-
-    def test_moderates_method(self):
-        moderation = Moderation.objects.get(message=self.private_message)
-        moderation.success()
-
-        message = Message.objects.get(moderation=moderation)
-        self.assertTrue(message.moderated)
-
-
-    #this test is for the issue https://github.com/ciudadanointeligente/write-it/issues/186
-    #
-    def test_confirmated_but_not_moderated_message_in_a_moderable_instance_is_in_needs_moderation_status(self):
-        mail_count = len(mail.outbox)
-        self.writeitinstance1.moderation_needed_in_all_messages = True
-        self.writeitinstance1.save()
-
-        data = {
-            'author_email':u'falvarez@votainteligente.cl',
-            'author_name':u'feli',
-            'public':True,
-            'subject':u'Fiera no está',
-            'content':u'¿Dónde está Fiera Feroz? en la playa?',
-            'persons': [self.person1.id]
-        }
-        url = self.writeitinstance1.get_absolute_url()
-        response = self.client.post(url, data, follow=True, HTTP_HOST=self.host)
-        message = Message.objects.get(
-            author_name="feli", 
             author_email="falvarez@votainteligente.cl",
-            subject="Fiera no está", 
-            content='¿Dónde está Fiera Feroz? en la playa?')
-        confirmation = Confirmation.objects.get(message=message)
+            confirmated = True,
+            subject='Test',
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
 
-        confirmation_response = self.client.get(confirmation.get_absolute_url())
+        message1.slug = 'test-2'
+        message1.save()
 
-        #one message to Pedro
-        outbound_message = OutboundMessage.objects.get(message=message)
-        #Here I have the bug!!!!!
-        self.assertEquals(outbound_message.status, 'needmodera')
-        #This one is the bug!!\
+        regex = "^"+message1.slug+"(-\d+){0,1}$"
+        previously = Message.objects.filter(slug__regex=regex).count()
 
+        message2 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='test', 
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+
+        self.assertEquals(message2.slug, 'test-3')
+
+
+    def test_a_message_with_a_RTL_language(self):
+        content = u"رسمية هي اللغة العربية، وهي جزء من المغرب العربي الكبير. وبصفتها"
+        subject = u"مواصلة العمل للمحافظة على السلام والأمن"
+        message1 = Message.objects.create(content = content, 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject=subject,
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+        self.assertEquals(message1.content, content)
+        self.assertEquals(message1.subject, subject)
+
+class PostgresTesting(UsingDbMixin, OriginalTestCase):
+    using_db = 'postgres'
+
+    def setUp(self):
+        super(PostgresTesting,self).setUp()
+        user = User.objects.create_user(username='admin', password='a')
+        popit_instance = ApiInstance.objects.create(
+            url='http://popit.ciudadanointeligente.org'
+            )
+
+        self.writeitinstance1 = writeitinstance = WriteItInstance.objects.create(
+            name='instance 1', 
+            slug='instance-1',
+            owner=user)
+        self.person1 = Person.objects.create(name='Pedro', api_instance=popit_instance)
+
+
+    #This test was a bug agains mysql
+    def test_a_message_with_a_changed_slug(self):
+        message1 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='Test',
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+        message1.slug = 'test-2'
+        message1.save()
+
+        regex = "^"+message1.slug+"(-\d+){0,1}$"
+        previously = Message.objects.filter(slug__regex=regex).count()
+
+        message2 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='test', 
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+
+        self.assertEquals(message2.slug, 'test-3')
+
+    def test_a_message_with_a_RTL_language(self):
+        content = u"رسمية هي اللغة العربية، وهي جزء من المغرب العربي الكبير. وبصفتها"
+        subject = u"مواصلة العمل للمحافظة على السلام والأمن"
+        message1 = Message.objects.create(content = content, 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject=subject,
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+        self.assertEquals(message1.content, content)
+        self.assertEquals(message1.subject, subject)

@@ -14,6 +14,7 @@ from nuntium.tests.user_section_views_tests import UserSectionTestCase
 from subdomains.utils import reverse
 from django.test.client import Client
 from django.forms import ValidationError
+from django.test.utils import override_settings
 
 class MailChannelTestCase(TestCase):
 
@@ -107,7 +108,7 @@ class MailSendingTestCase(TestCase):
 
         self.template1 = MailItTemplate.objects.all()[0]
 
-
+    @override_settings(EMAIL_SUBJECT_PREFIX='[WriteIT]')
     def test_sending_email(self):
         
         result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
@@ -115,8 +116,8 @@ class MailSendingTestCase(TestCase):
         self.assertTrue(result_of_sending)
         self.assertTrue(fatal_error is None)
         self.assertEquals(len(mail.outbox), 1) #it is sent to one person pointed in the contact
-        self.assertEquals(mail.outbox[0].subject, 'WriteIT Message: Subject 1')
-        self.assertEquals(mail.outbox[0].body, u'Hello Pedro:\r\nYou have a new message:\r\nsubject: Subject 1 \r\ncontent: Content 1\r\n\r\nSeeya\r\n--\r\nYou writeIt and we deliverit.')
+        self.assertEquals(mail.outbox[0].subject, '[WriteIT] Message: Subject 1')
+        self.assertEquals(mail.outbox[0].body, u'Hello Pedro:\nYou have a new message:\nsubject: Subject 1 \ncontent: Content 1\n\n\nIf you want to see all the other messages please visit http://instance1.127.0.0.1.xip.io:8000/en/.\nSeeya\n--\nYou writeIt and we deliverit.')
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertIn("pdaire@ciudadanointeligente.org", mail.outbox[0].to)
 

@@ -18,3 +18,4 @@ django-autoslug
 pytz>=2013b
 django-admin-bootstrapped
 django-object-actions
+unidecode
