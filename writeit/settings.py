@@ -40,7 +40,8 @@ gettext = lambda s: s
 
 LANGUAGES = (
     ('en', gettext('English')),
-    ('es', gettext('Spanish'))
+    ('es', gettext('Spanish')),
+    ('ar', gettext('Arabic'))
     )
 
 SITE_ID = 1
