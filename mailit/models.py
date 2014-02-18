@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from nuntium.models import WriteItInstance, OutboundMessage
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 class MailItTemplate(models.Model):
     subject_template = models.CharField(max_length=255, default="[WriteIT] Message: %(subject)s"
