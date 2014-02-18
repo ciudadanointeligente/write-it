@@ -19,15 +19,6 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
-    },
-    'mysql': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'writeit',                      # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
-        'USER': 'travis',
-        'PASSWORD': '',
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '',                      # Set to empty string for default.
     }
 }
 
@@ -177,6 +168,7 @@ if TESTING:
     INSTALLED_APPS += (
         'django_nose',
         )
+    
 #SEARCH INDEX WITH SOLR
 if TESTING:
     HAYSTACK_CONNECTIONS = {
@@ -281,3 +273,7 @@ try:
     INSTALLED_APPS += EXTRA_APPS
 except ImportError:
     pass
+
+if TESTING:
+    from testing_settings import *
+    

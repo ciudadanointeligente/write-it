@@ -9,10 +9,12 @@ services:
 install:
   - pip install -r requirements.txt
   - pip install MySQL-python
+  - pip install psycopg2
   - pip install -r requirements_testing.txt
 # command to run tests
 before_script:
   - mysql -e 'create database writeit;'
+  - psql -c 'create database writeit;' -U postgres
 env:
   - DJANGO_VERSION=1.6.1
 script:

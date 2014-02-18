@@ -406,3 +406,48 @@ class MysqlTesting(UsingDbMixin, OriginalTestCase):
 
 
         self.assertEquals(message2.slug, 'test-3')
+
+
+class PostgresTesting(UsingDbMixin, OriginalTestCase):
+    using_db = 'postgres'
+
+    def setUp(self):
+        super(PostgresTesting,self).setUp()
+        user = User.objects.create_user(username='admin', password='a')
+        popit_instance = ApiInstance.objects.create(
+            url='http://popit.ciudadanointeligente.org'
+            )
+
+        self.writeitinstance1 = writeitinstance = WriteItInstance.objects.create(
+            name='instance 1', 
+            slug='instance-1',
+            owner=user)
+        self.person1 = Person.objects.create(name='Pedro', api_instance=popit_instance)
+
+
+    #This test was a bug agains mysql
+    def test_a_message_with_a_changed_slug(self):
+        message1 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='Test',
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+        message1.slug = 'test-2'
+        message1.save()
+
+        regex = "^"+message1.slug+"(-\d+){0,1}$"
+        previously = Message.objects.filter(slug__regex=regex).count()
+
+        message2 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='test', 
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+
+        self.assertEquals(message2.slug, 'test-3')
