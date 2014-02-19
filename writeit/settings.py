@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 # Django settings for writeit project.
 import sys
+import os
 DEBUG = True
 TASTYPIE_FULL_DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -276,6 +278,10 @@ try:
 except ImportError:
     pass
 
-if TESTING:
+TRAVIS = 'TRAVIS' in os.environ and os.environ['TRAVIS']
+
+
+
+if TESTING and TRAVIS:
     from testing_settings import *
     
