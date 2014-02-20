@@ -263,7 +263,7 @@ CELERYBEAT_SCHEDULE = {
 INCOMING_EMAIL_LOGGING = 'None'
 
 #setting to avoid db changes during test
-SOUTH_TESTS_MIGRATE = False
+
 
 EXTRA_APPS = ()
 
@@ -272,16 +272,14 @@ SUBDOMAIN_URLCONFS = {
     None: 'writeit.urls',
 }
 
+
+
+if TESTING:
+    from testing_settings import *
+    
+    
 try:
     from local_settings import *
     INSTALLED_APPS += EXTRA_APPS
 except ImportError:
     pass
-
-TRAVIS = 'TRAVIS' in os.environ and os.environ['TRAVIS']
-
-
-
-if TESTING and TRAVIS:
-    from testing_settings import *
-    

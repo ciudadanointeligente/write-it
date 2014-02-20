@@ -5,7 +5,7 @@ from nuntium.models import WriteItInstance, Message, Membership, Confirmation, M
 from nuntium.views import MessageCreateForm, PerInstanceSearchForm
 from contactos.models import Contact, ContactType
 from popit.models import ApiInstance, Person
-from django.utils.unittest import skip
+from django.utils.unittest import skipUnless
 from datetime import datetime
 from django.contrib.auth.models import User
 from subdomains.tests import SubdomainTestMixin
@@ -103,7 +103,7 @@ class InstanceTestCase(TestCase, SubdomainTestMixin):
         self.assertEquals(writeitinstance.persons.get(id=self.person1.id), self.person1)
         self.assertEquals(self.person1.writeit_instances.get(id=writeitinstance.id), writeitinstance)
 
-
+    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
     def test_create_an_instance_and_load_persons_from_an_api(self):
         # We have a popit running locally using the 
         # start_local_popit_api.bash script

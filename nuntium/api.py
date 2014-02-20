@@ -11,6 +11,19 @@ from tastypie.exceptions import ImmediateHttpResponse
 from tastypie import http
 from popit.models import Person
 from contactos.models import Contact
+from tastypie.paginator import Paginator
+
+class PagePaginator(Paginator):
+    def get_offset(self):
+        if 'page' in self.request_data:
+            return self.get_offset_from_page()
+        return super(PagePaginator, self).get_offset()
+
+    def get_offset_from_page(self):
+        page = int(self.request_data.get('page'))
+        offset = (page - 1) * self.get_limit()
+        return offset
+        
 
 class PersonResource(ModelResource):
     class Meta:
@@ -93,6 +106,7 @@ class MessageResource(ModelResource):
         authorization = Authorization()
         authentication = ApiKeyAuthentication()
         always_return_data = True
+        paginator_class = PagePaginator
         filtering = {
             'writeitinstance': ALL_WITH_RELATIONS
         }

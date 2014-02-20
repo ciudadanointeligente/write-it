@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.utils.unittest import skipUnless
 from django.core.management import call_command
 from tastypie.test import ResourceTestCase
 from django.conf import settings
@@ -114,7 +115,7 @@ class GlobalTestCase(WriteItTestCaseMixin, TestCase):
 class ResourceGlobalTestCase(WriteItTestCaseMixin ,ResourceTestCase ):
     pass
 
-
+@skipUnless(settings.LOCAL_ELASTICSEARCH, "No local elasticsearch")
 class SearchIndexTestCase(GlobalTestCase):
     def setUp(self):
         super(SearchIndexTestCase, self).setUp()
