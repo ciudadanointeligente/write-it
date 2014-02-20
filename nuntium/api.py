@@ -15,13 +15,15 @@ from tastypie.paginator import Paginator
 
 class PagePaginator(Paginator):
     def get_offset(self):
-        if not 'page' in self.request_data:
-            return super(PagePaginator, self).get_offset()
-
-
+        if 'page' in self.request_data:
+            return self.get_offset_from_page()
+        return super(PagePaginator, self).get_offset()
+        
+    def get_offset_from_page(self):
         page = self.request_data.get('page')
         offset = (page - 1) * self.get_limit()
         return offset
+        
 
 class PersonResource(ModelResource):
     class Meta:
