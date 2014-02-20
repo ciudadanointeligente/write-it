@@ -12,7 +12,7 @@ class PagePaginationTestCase(ResourceTestCase):
         super(PagePaginationTestCase,self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
         self.user = User.objects.all()[0]
-        self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
+        # self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
         self.api_client = TestApiClient()
         self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
 
@@ -49,3 +49,13 @@ class PagePaginationTestCase(ResourceTestCase):
     	self.assertOffsetEquals(1, 2, 0)
     	self.assertOffsetEquals(2, 1, 1)
     	self.assertOffsetEquals(2, 2, 2)
+
+    def test_get_paginated(self):
+    	url = '/api/v1/message/'
+    	data = self.data
+    	data['page'] = 2
+    	data['limit'] = 1
+        response = self.api_client.get(url,data = data)
+
+        messages = self.deserialize(response)['objects']
+        self.assertEquals(messages[0]['id'], Message.objects.all()[1].id)
