@@ -11,6 +11,10 @@ from tastypie.exceptions import ImmediateHttpResponse
 from tastypie import http
 from popit.models import Person
 from contactos.models import Contact
+from tastypie.paginator import Paginator
+
+class PagePaginator(Paginator):
+    pass
 
 class PersonResource(ModelResource):
     class Meta:
