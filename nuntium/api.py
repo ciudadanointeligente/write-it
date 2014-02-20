@@ -14,7 +14,14 @@ from contactos.models import Contact
 from tastypie.paginator import Paginator
 
 class PagePaginator(Paginator):
-    pass
+    def get_offset(self):
+        if not 'page' in self.request_data:
+            return super(PagePaginator, self).get_offset()
+
+
+        page = self.request_data.get('page')
+        offset = (page - 1) * self.get_limit()
+        return offset
 
 class PersonResource(ModelResource):
     class Meta:
