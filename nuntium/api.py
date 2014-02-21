@@ -68,6 +68,10 @@ class WriteItInstanceResource(ModelResource):
     def dehydrate(self, bundle):
         #not completely sure that this is the right way to get the messages
         bundle.data['messages_uri'] = bundle.data['resource_uri']+'messages/'
+        self.add_persons_to_bundle(bundle)
+        return bundle
+
+    def add_persons_to_bundle(self, bundle):
         bundle.data['persons'] = []
         for person in bundle.obj.persons.all():
             bundle.data['persons'].append(person.popit_url)
