@@ -7,9 +7,3 @@ class MailItTemplateInline(admin.ModelAdmin):
 	pass
 
 admin.site.register(MailItTemplate, MailItTemplateInline)
-
-
-#admin.site.unregister(WriteItInstance)
-#WriteItInstanceAdmin.inlines.append(MailItTemplateInline)
-#admin.site.register(WriteItInstance, WriteItInstanceAdmin)
-

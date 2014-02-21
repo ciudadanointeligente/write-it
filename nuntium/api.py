@@ -68,6 +68,10 @@ class WriteItInstanceResource(ModelResource):
     def dehydrate(self, bundle):
         #not completely sure that this is the right way to get the messages
         bundle.data['messages_uri'] = bundle.data['resource_uri']+'messages/'
+        self.add_persons_to_bundle(bundle)
+        return bundle
+
+    def add_persons_to_bundle(self, bundle):
         bundle.data['persons'] = []
         for person in bundle.obj.persons.all():
             bundle.data['persons'].append(person.popit_url)
@@ -111,6 +115,15 @@ class MessageResource(ModelResource):
             'writeitinstance': ALL_WITH_RELATIONS
         }
 
+    def build_filters(self, filters=None):
+        result = super(MessageResource, self).build_filters(filters)
+        if 'person' in filters:
+            result['person'] = Person.objects.get(id=filters['person'])
+        return result
+
+    def apply_filters(self, request, applicable_filters):
+        return Message.objects.filter(**applicable_filters)
+
     def hydrate(self, bundle):
         persons = []
         if bundle.data['persons'] == 'all':
@@ -140,7 +153,6 @@ class MessageResource(ModelResource):
         bundle = super(MessageResource, self).obj_create(bundle, **kwargs)
         bundle.obj.recently_confirmated()
         return bundle
-
 
 class AnswerCreationResource(Resource):
     class Meta:
