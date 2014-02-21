@@ -1,4 +1,3 @@
-# Create your views here.
 from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, View, ListView
 from django.views.generic.edit import UpdateView
 from subdomains.utils import reverse

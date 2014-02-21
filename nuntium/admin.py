@@ -38,7 +38,6 @@ admin.site.register(Answer, AnswerAdmin)
 
 class AnswerInline(admin.TabularInline):
     model = Answer
-    # formset = AnswerInlineFormset
 
 class MessageAdmin(DjangoObjectActions, admin.ModelAdmin):
     change_form_template = "admin/nuntium/message/change_form.html"
