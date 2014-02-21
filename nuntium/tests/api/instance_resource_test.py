@@ -63,29 +63,7 @@ class InstanceResourceTestCase(ResourceTestCase):
         self.assertIn('persons', instance)
         pedro = Person.objects.all()[0]
         self.assertIn(pedro.popit_url, instance['persons'])
-
-
-    def test_get_list_of_messages_per_instance(self):
-        
-        pedro = Person.objects.all()[0]
-        message = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl", 
-            subject='Fiera es una perra feroz', 
-            writeitinstance= self.writeitinstance, 
-            persons = [pedro])
-
-
-        url = '/api/v1/instance/{0}/messages/'.format(self.writeitinstance.id)
-        response = self.api_client.get(url,data = self.data)
-        self.assertValidJSONResponse(response)
-        messages = self.deserialize(response)['objects']
-        
-
-        self.assertEqual(len(messages), Message.objects.filter(writeitinstance=self.writeitinstance).count()) #All the instances
-        self.assertEqual(messages[0]['id'], message.id)
-        #assert that answers come in the
-
+    
     def test_create_a_new_instance(self):
         instance_data = {
             'name' : 'The instance',
@@ -157,3 +135,54 @@ class InstanceResourceTestCase(ResourceTestCase):
 
         self.assertIn(raton, [r for r in instance.persons.all()])
         self.assertIn(fiera, [r for r in instance.persons.all()])
+
+
+class MessagesPerInstanceTestCase(ResourceTestCase):
+    def setUp(self):
+        super(MessagesPerInstanceTestCase,self).setUp()
+        call_command('loaddata', 'example_data', verbosity=0)
+        self.user = User.objects.all()[0]
+        self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
+        self.api_client = TestApiClient()
+        self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
+
+        #creating messages
+        self.pedro = Person.objects.all()[0]
+        self.message1 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Fiera es una perra feroz', 
+            writeitinstance= self.writeitinstance, 
+            persons = [self.pedro])
+
+        self.marcel = Person.objects.all()[1]
+        self.message2 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Fiera es una perra feroz', 
+            writeitinstance= self.writeitinstance, 
+            persons = [self.marcel])
+
+    def test_get_list_of_messages_per_instance(self):
+        url = '/api/v1/instance/{0}/messages/'.format(self.writeitinstance.id)
+        response = self.api_client.get(url,data = self.data)
+        self.assertValidJSONResponse(response)
+        messages = self.deserialize(response)['objects']
+        
+        self.assertGreater(len(messages), 0)
+        self.assertEqual(len(messages), Message.objects.filter(writeitinstance=self.writeitinstance).count()) #All the instances
+        self.assertEqual(messages[0]['id'], self.message1.id)
+        #assert that answers come in the
+
+    def test_filter_by_person(self):
+        url = '/api/v1/instance/%(writeitinstance_id)i/messages/' % {
+            'writeitinstance_id' : self.writeitinstance.id
+        }
+        data = self.data
+        data['person'] = self.pedro.id
+        response = self.api_client.get(url,data = data)
+        self.assertValidJSONResponse(response)
+        messages = self.deserialize(response)['objects']
+
+        self.assertEquals(len(messages), 1)
+        self.assertEquals(messages[0]['id'], self.message1.id)

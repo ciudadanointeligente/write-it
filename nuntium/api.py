@@ -115,6 +115,15 @@ class MessageResource(ModelResource):
             'writeitinstance': ALL_WITH_RELATIONS
         }
 
+    def build_filters(self, filters=None):
+        result = super(MessageResource, self).build_filters(filters)
+        if 'person' in filters:
+            result['person'] = Person.objects.get(id=filters['person'])
+        return result
+
+    def apply_filters(self, request, applicable_filters):
+        return Message.objects.filter(**applicable_filters)
+
     def hydrate(self, bundle):
         persons = []
         if bundle.data['persons'] == 'all':
@@ -144,7 +153,6 @@ class MessageResource(ModelResource):
         bundle = super(MessageResource, self).obj_create(bundle, **kwargs)
         bundle.obj.recently_confirmated()
         return bundle
-
 
 class AnswerCreationResource(Resource):
     class Meta:
