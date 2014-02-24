@@ -117,8 +117,13 @@ class MessageResource(ModelResource):
 
     def build_filters(self, filters=None):
         result = super(MessageResource, self).build_filters(filters)
+        person = None
         if 'person' in filters:
-            result['person'] = Person.objects.get(id=filters['person'])
+            person = Person.objects.get(id=filters['person'])
+        if 'person__popit_id' in filters:
+            person = Person.objects.get(popit_id=filters['person__popit_id'])
+        if person:
+            result['person'] = person
         return result
 
     def apply_filters(self, request, applicable_filters):
