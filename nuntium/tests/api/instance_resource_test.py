@@ -186,3 +186,16 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
 
         self.assertEquals(len(messages), 1)
         self.assertEquals(messages[0]['id'], self.message1.id)
+
+    def test_filter_by_persons_popit_id(self):
+        url = '/api/v1/instance/%(writeitinstance_id)i/messages/' % {
+            'writeitinstance_id' : self.writeitinstance.id
+        }
+        data = self.data
+        data['person__popit_id'] = self.pedro.popit_id
+        response = self.api_client.get(url,data = data)
+        self.assertValidJSONResponse(response)
+        messages = self.deserialize(response)['objects']
+
+        self.assertEquals(len(messages), 1)
+        self.assertEquals(messages[0]['id'], self.message1.id)
