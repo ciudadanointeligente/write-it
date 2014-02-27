@@ -12,6 +12,7 @@ from tastypie import http
 from popit.models import Person
 from contactos.models import Contact
 from tastypie.paginator import Paginator
+from django.http import Http404
 
 class PagePaginator(Paginator):
     def get_offset(self):
@@ -119,9 +120,15 @@ class MessageResource(ModelResource):
         result = super(MessageResource, self).build_filters(filters)
         person = None
         if 'person' in filters:
-            person = Person.objects.get(id=filters['person'])
+            try:
+                person = Person.objects.get(id=filters['person'])
+            except:
+                raise Http404("Person does not exist")
         if 'person__popit_id' in filters:
-            person = Person.objects.get(popit_id=filters['person__popit_id'])
+            try:
+                person = Person.objects.get(popit_id=filters['person__popit_id'])
+            except ObjectDoesNotExist, e:
+                raise Http404("Person does not exist")
         if person:
             result['person'] = person
         return result

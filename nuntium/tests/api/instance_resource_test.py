@@ -199,3 +199,23 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
 
         self.assertEquals(len(messages), 1)
         self.assertEquals(messages[0]['id'], self.message1.id)
+
+    def test_it_raises_error_404_when_filtering_by_someone_that_doesnot_exist(self):
+        url = '/api/v1/instance/%(writeitinstance_id)i/messages/' % {
+            'writeitinstance_id' : self.writeitinstance.id
+        }
+        data = self.data
+        data['person__popit_id'] = "this-thing-does-not-exist"
+        response = self.api_client.get(url,data = data)
+        self.assertEquals(response.status_code, 404)
+
+    def test_it_raises_error_404_when_filtering_by_person_id(self):
+        url = '/api/v1/instance/%(writeitinstance_id)i/messages/' % {
+            'writeitinstance_id' : self.writeitinstance.id
+        }
+        data = self.data
+        #person with id 42 does not exist
+        data['person'] = 42
+        #person with id 42 does not exist
+        response = self.api_client.get(url,data = data)
+        self.assertEquals(response.status_code, 404)
