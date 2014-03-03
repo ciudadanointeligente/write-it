@@ -65,8 +65,7 @@ class WriteItInstanceResource(ModelResource):
         basic_bundle = self.build_bundle(request=request)
         obj = self.cached_obj_get(bundle=basic_bundle, \
                         **self.remove_api_resource_names(kwargs))
-        resource = MessageResource()
-        return resource.get_list(request, writeitinstance=obj)
+        return MessageResource().get_list(request, writeitinstance=obj)
 
 
     def dehydrate(self, bundle):
@@ -109,7 +108,7 @@ class MessageResource(ModelResource):
         full=True)
 
     class Meta:
-        queryset = Message.objects.all()
+        queryset = Message.objects.public()
         resource_name = 'message'
         authorization = Authorization()
         authentication = ApiKeyAuthentication()
@@ -137,7 +136,7 @@ class MessageResource(ModelResource):
         return result
 
     def apply_filters(self, request, applicable_filters):
-        return Message.objects.filter(**applicable_filters)
+        return Message.objects.public(**applicable_filters)
 
     def hydrate(self, bundle):
         persons = []
