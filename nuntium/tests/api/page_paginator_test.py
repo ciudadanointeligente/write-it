@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.management import call_command
-from nuntium.models import Message, WriteItInstance
+from nuntium.models import Message, WriteItInstance, Confirmation
 from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
 from nuntium.api import PagePaginator
@@ -55,7 +55,14 @@ class PagePaginationTestCase(ResourceTestCase):
     	data = self.data
     	data['page'] = 2
     	data['limit'] = 1
-        response = self.api_client.get(url,data = data)
+        for message in Message.objects.all():
+            Confirmation.objects.create(message=message)
+            message.recently_confirmated()
 
+
+        response = self.api_client.get(url,data = data)
+        # All messages must be confirmed
+        # in order to be in the api
+        
         messages = self.deserialize(response)['objects']
-        self.assertEquals(messages[0]['id'], Message.objects.all()[1].id)
+        self.assertEquals(messages[0]['id'], Message.objects.public()[1].id)

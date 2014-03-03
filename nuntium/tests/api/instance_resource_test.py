@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.management import call_command
-from nuntium.models import Message, WriteItInstance
+from nuntium.models import Message, WriteItInstance, Confirmation
 from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
 from tastypie.models import ApiKey
@@ -155,6 +155,11 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
             writeitinstance= self.writeitinstance, 
             persons = [self.pedro])
 
+        #Confirmating
+        Confirmation.objects.create(message=self.message1)
+        self.message1.recently_confirmated()
+        #Confirmating
+
         self.marcel = Person.objects.all()[1]
         self.message2 = Message.objects.create(content = 'Content 1', 
             author_name='Felipe', 
@@ -162,6 +167,10 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
             subject='Fiera es una perra feroz', 
             writeitinstance= self.writeitinstance, 
             persons = [self.marcel])
+        #Confirmating message 2
+        Confirmation.objects.create(message=self.message2)
+        self.message2.recently_confirmated()
+        #confirmating message 2
 
     def test_get_list_of_messages_per_instance(self):
         url = '/api/v1/instance/{0}/messages/'.format(self.writeitinstance.id)
@@ -183,7 +192,7 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
         response = self.api_client.get(url,data = data)
         self.assertValidJSONResponse(response)
         messages = self.deserialize(response)['objects']
-
+        
         self.assertEquals(len(messages), 1)
         self.assertEquals(messages[0]['id'], self.message1.id)
 
