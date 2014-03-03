@@ -13,8 +13,7 @@ from tastypie import http
 from popit.models import Person
 from contactos.models import Contact
 from tastypie.paginator import Paginator
-from django.http import Http404
-from tastypie.validation import Validation
+from django.http import Http404, HttpResponseBadRequest
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
@@ -98,18 +97,6 @@ class AnswerResource(ModelResource):
         queryset =  Answer.objects.all()
         resource_name = 'answer'
 
-class MessageValidation(Validation):
-    def is_valid(self, bundle, request=None):
-        errors = super(MessageValidation, self).is_valid(bundle, request)
-        if not 'author_email' in bundle.data:
-            errors['author_email'] = ["Author email not present"]
-        else:
-            try:
-                validate_email(bundle.data['author_email'])
-            except ValidationError as e:
-                errors['author_email'] = ['Invalid email']
-        return errors
-
 class MessageResource(ModelResource):
     writeitinstance = fields.ToOneField(WriteItInstanceResource, \
         'writeitinstance')
@@ -154,10 +141,20 @@ class MessageResource(ModelResource):
 
     def hydrate(self, bundle):
         persons = []
-        if bundle.data['persons'] == 'all':
-            instance = WriteItInstanceResource().get_via_uri(
+        instance = WriteItInstanceResource().get_via_uri(
                 bundle.data["writeitinstance"]
                 )
+        if not instance.autoconfirm_api_messages:
+            if not 'author_email' in bundle.data:
+                raise ImmediateHttpResponse(response=HttpResponseBadRequest("The author has no email"))
+        if 'author_email' in bundle.data:
+            # Validating author_email
+            try:
+                validate_email(bundle.data['author_email'])
+            except ValidationError, e:
+                raise ImmediateHttpResponse(response=HttpResponseBadRequest(e.__str__()))
+
+        if bundle.data['persons'] == 'all':
             for person in instance.persons.all():
                 persons.append(person)
         else:
