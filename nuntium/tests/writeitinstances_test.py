@@ -34,6 +34,7 @@ class InstanceTestCase(TestCase, SubdomainTestMixin):
         self.assertEquals(writeitinstance.owner, self.owner)
         self.assertTrue(writeitinstance.allow_messages_using_form)
         self.assertFalse(writeitinstance.notify_owner_when_new_answer)
+        self.assertTrue(writeitinstance.autoconfirm_api_messages)
 
     def test_owner_related_name(self):
         writeitinstance = WriteItInstance.objects.create(

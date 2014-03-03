@@ -50,6 +50,9 @@ class WriteItInstance(models.Model):
         help_text=_("The owner of this instance \
         should be automatically is going to be notified \
         when a new answer comes in"), default=False)
+    autoconfirm_api_messages = models.BooleanField(
+        help_text=_("Messages pushed to the api should \
+            be confirmed automatically"), default=True)
 
     def load_persons_from_a_popit_api(self, popit_url):
         api_instance, created = ApiInstance.objects.get_or_create(url=popit_url)

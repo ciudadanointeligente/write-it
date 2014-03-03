@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from tastypie.resources import ModelResource, ALL_WITH_RELATIONS, Resource
 from nuntium.models import WriteItInstance, Message, Answer, \
-                            OutboundMessageIdentifier, OutboundMessage
+                            OutboundMessageIdentifier, OutboundMessage, \
+                            Confirmation
 from tastypie.authentication import ApiKeyAuthentication
 from tastypie.authorization import Authorization
 from django.core.exceptions import ObjectDoesNotExist
@@ -12,7 +13,9 @@ from tastypie import http
 from popit.models import Person
 from contactos.models import Contact
 from tastypie.paginator import Paginator
-from django.http import Http404
+from django.http import Http404, HttpResponseBadRequest
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 class PagePaginator(Paginator):
     def get_offset(self):
@@ -138,10 +141,20 @@ class MessageResource(ModelResource):
 
     def hydrate(self, bundle):
         persons = []
-        if bundle.data['persons'] == 'all':
-            instance = WriteItInstanceResource().get_via_uri(
+        instance = WriteItInstanceResource().get_via_uri(
                 bundle.data["writeitinstance"]
                 )
+        if not instance.autoconfirm_api_messages:
+            if not 'author_email' in bundle.data:
+                raise ImmediateHttpResponse(response=HttpResponseBadRequest("The author has no email"))
+        if 'author_email' in bundle.data:
+            # Validating author_email
+            try:
+                validate_email(bundle.data['author_email'])
+            except ValidationError, e:
+                raise ImmediateHttpResponse(response=HttpResponseBadRequest(e.__str__()))
+
+        if bundle.data['persons'] == 'all':
             for person in instance.persons.all():
                 persons.append(person)
         else:
@@ -163,7 +176,12 @@ class MessageResource(ModelResource):
 
     def obj_create(self, bundle, **kwargs):
         bundle = super(MessageResource, self).obj_create(bundle, **kwargs)
-        bundle.obj.recently_confirmated()
+        if bundle.obj.writeitinstance.autoconfirm_api_messages:
+            bundle.obj.recently_confirmated()
+        else:
+            bundle.obj.confirmated = False
+            bundle.obj.save()
+            Confirmation.objects.create(message=bundle.obj)
         return bundle
 
 class AnswerCreationResource(Resource):

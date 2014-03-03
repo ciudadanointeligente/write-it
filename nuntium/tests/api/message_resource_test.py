@@ -9,6 +9,7 @@ from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from django.utils.unittest import skip
 from django.conf import settings
 import re
+from django.core import mail
 from django.utils.encoding import force_text
 
 class MessageResourceTestCase(ResourceTestCase):
@@ -153,3 +154,69 @@ class MessageResourceTestCase(ResourceTestCase):
         self.assertQuerysetEqual(the_message.people.all(), \
             [repr(r) for r in writeitinstance.persons.all()]
             )
+
+    def test_not_confirming_automatically_a_message(self):
+        """Push a new message to an instance with no autoconfirm message"""
+        writeitinstance = WriteItInstance.objects.all()[0]
+        writeitinstance.autoconfirm_api_messages = False
+        writeitinstance.save()
+
+        message_data = {
+            'author_name' : 'Felipipoo',
+            'author_email' : "falvarez@votainteligente.cl",
+            'subject': 'new message',
+            'content': 'the content thing',
+            'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
+            'persons': "all"
+        }
+        url = '/api/v1/message/'
+        response = self.api_client.post(url, data = message_data, \
+            format='json', \
+            authentication=self.get_credentials())
+        
+        the_message = Message.objects.get(author_name='Felipipoo')
+
+        self.assertFalse(the_message.confirmated)
+        self.assertIsNotNone(the_message.confirmation)
+
+    def test_not_including_email_in_non_auto_confrim_message(self):
+        """Not Including email causes error 403 in a non auto confirm message"""
+        writeitinstance = WriteItInstance.objects.all()[0]
+        writeitinstance.autoconfirm_api_messages = False
+        writeitinstance.save()
+
+        message_data = {
+            'author_name' : 'Felipipoo',
+            # 'author_email' : "falvarez@votainteligente.cl", # this missing param will cause a 403
+            'subject': 'new message',
+            'content': 'the content thing',
+            'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
+            'persons': "all"
+        }
+        url = '/api/v1/message/'
+        response = self.api_client.post(url, data = message_data, \
+            format='json', \
+            authentication=self.get_credentials())
+
+        self.assertEquals(response.status_code, 400)
+        self.assertFalse(Message.objects.filter(author_name='Felipipoo'))
+
+    def test_including_a_non_email_in_the_author_email(self):
+        """When it has an author_email it validates it"""
+        writeitinstance = WriteItInstance.objects.all()[0]
+
+        message_data = {
+            'author_name' : 'Felipipoo',
+            'author_email' : "This is not an email", # this missing param will cause a 403
+            'subject': 'new message',
+            'content': 'the content thing',
+            'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
+            'persons': "all"
+        }
+        url = '/api/v1/message/'
+        response = self.api_client.post(url, data = message_data, \
+            format='json', \
+            authentication=self.get_credentials())
+
+        self.assertEquals(response.status_code, 400)
+        self.assertFalse(Message.objects.filter(author_name='Felipipoo'))
