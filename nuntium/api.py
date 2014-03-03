@@ -119,6 +119,7 @@ class MessageResource(ModelResource):
     def build_filters(self, filters=None):
         result = super(MessageResource, self).build_filters(filters)
         person = None
+        # TODO: please refactor me
         if 'person' in filters:
             try:
                 person = Person.objects.get(id=filters['person'])
