@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from tastypie.resources import ModelResource, ALL_WITH_RELATIONS, Resource
 from nuntium.models import WriteItInstance, Message, Answer, \
-                            OutboundMessageIdentifier, OutboundMessage
+                            OutboundMessageIdentifier, OutboundMessage, \
+                            Confirmation
 from tastypie.authentication import ApiKeyAuthentication
 from tastypie.authorization import Authorization
 from django.core.exceptions import ObjectDoesNotExist
@@ -163,7 +164,12 @@ class MessageResource(ModelResource):
 
     def obj_create(self, bundle, **kwargs):
         bundle = super(MessageResource, self).obj_create(bundle, **kwargs)
-        bundle.obj.recently_confirmated()
+        if bundle.obj.writeitinstance.autoconfirm_api_messages:
+            bundle.obj.recently_confirmated()
+        else:
+            bundle.obj.confirmated = False
+            bundle.obj.save()
+            Confirmation.objects.create(message=bundle.obj)
         return bundle
 
 class AnswerCreationResource(Resource):

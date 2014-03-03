@@ -153,3 +153,27 @@ class MessageResourceTestCase(ResourceTestCase):
         self.assertQuerysetEqual(the_message.people.all(), \
             [repr(r) for r in writeitinstance.persons.all()]
             )
+
+    def test_not_confirming_automatically_a_message(self):
+        """Push a new message to an instance with no autoconfirm message"""
+        writeitinstance = WriteItInstance.objects.all()[0]
+        writeitinstance.autoconfirm_api_messages = False
+        writeitinstance.save()
+
+        message_data = {
+            'author_name' : 'Felipipoo',
+            'subject': 'new message',
+            'content': 'the content thing',
+            'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
+            'persons': "all"
+        }
+        url = '/api/v1/message/'
+        response = self.api_client.post(url, data = message_data, \
+            format='json', \
+            authentication=self.get_credentials())
+        
+        the_message = Message.objects.get(author_name='Felipipoo')
+
+        self.assertFalse(the_message.confirmated)
+        self.assertIsNotNone(the_message.confirmation)
+
