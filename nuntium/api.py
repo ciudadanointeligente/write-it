@@ -14,6 +14,9 @@ from popit.models import Person
 from contactos.models import Contact
 from tastypie.paginator import Paginator
 from django.http import Http404
+from tastypie.validation import Validation
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 class PagePaginator(Paginator):
     def get_offset(self):
@@ -94,6 +97,18 @@ class AnswerResource(ModelResource):
     class Meta:
         queryset =  Answer.objects.all()
         resource_name = 'answer'
+
+class MessageValidation(Validation):
+    def is_valid(self, bundle, request=None):
+        errors = super(MessageValidation, self).is_valid(bundle, request)
+        if not 'author_email' in bundle.data:
+            errors['author_email'] = ["Author email not present"]
+        else:
+            try:
+                validate_email(bundle.data['author_email'])
+            except ValidationError as e:
+                errors['author_email'] = ['Invalid email']
+        return errors
 
 class MessageResource(ModelResource):
     writeitinstance = fields.ToOneField(WriteItInstanceResource, \
