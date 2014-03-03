@@ -1,9 +1,12 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
+from django.core.management import call_command
 from global_test_case import GlobalTestCase as TestCase
 from subdomains.tests import SubdomainTestMixin
 from nuntium.models import WriteItInstance, Message, \
                             Confirmation
 from popit.models import Person
+from django.contrib.auth.models import User
+from tastypie.test import ResourceTestCase, TestApiClient
 
 class PublicMessagesManager(TestCase, SubdomainTestMixin):
     def setUp(self):
@@ -44,3 +47,37 @@ class PublicMessagesManager(TestCase, SubdomainTestMixin):
 
         #the important one
         self.assertNotIn(message, Message.objects.public())
+
+
+class PublicMessagesInAPI(ResourceTestCase):
+    def setUp(self):
+        super(PublicMessagesInAPI,self).setUp()
+        call_command('loaddata', 'example_data', verbosity=0)
+        self.user = User.objects.all()[0]
+        self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
+        self.writeitinstance.moderation_needed_in_all_messages = True
+        self.writeitinstance.save()
+        self.person1 = Person.objects.all()[0]
+        self.api_client = TestApiClient()
+        self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
+
+    def test_non_confirmated_message_not_showing_in_api(self):
+        """Non confirmated message is not in the API"""
+
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='public non confirmated message', 
+            writeitinstance= self.writeitinstance, 
+            persons = [self.person1])
+
+        #OK this is just to show that this message is not confirmed
+        self.assertFalse(message.confirmated)
+        self.assertNotIn(message, Message.objects.public())
+        #I've tested this in messages_test.py 
+
+        url = '/api/v1/instance/{0}/messages/'.format(self.writeitinstance.id)
+        response = self.api_client.get(url,data = self.data)
+        self.assertValidJSONResponse(response)
+        messages = self.deserialize(response)['objects']
+        self.assertFalse(messages)
