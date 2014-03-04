@@ -135,9 +135,6 @@ class MessageResource(ModelResource):
             result['person'] = person
         return result
 
-    def apply_filters(self, request, applicable_filters):
-        return Message.public_objects.all().filter(**applicable_filters)
-
     def hydrate(self, bundle):
         persons = []
         instance = WriteItInstanceResource().get_via_uri(
