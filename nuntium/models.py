@@ -117,9 +117,22 @@ class PublicMessagesManager(models.Manager):
         # in the way to remove all the fucking uses of this method
         return query
 
+from django.db.models.query import QuerySet
+class MessagesQuerySet(QuerySet):
+    def filter(self, *args, **kwargs):
+        person = None
+        if 'person' in kwargs:
+            person = kwargs.pop('person')
+
+        queryset = super(MessagesQuerySet, self).filter(*args, **kwargs)
+        if person:
+            queryset = queryset.filter(outboundmessage__contact__person=person)
+        return queryset
+
 class PublicMessages(PublicMessagesManager):
     def get_queryset(self):
-        return super(PublicMessages, self).get_queryset().filter(Q(public=True), Q(confirmated=True), \
+        queryset = MessagesQuerySet(self.model, using=self._db)
+        return queryset.filter(Q(public=True), Q(confirmated=True), \
             Q(moderated=True) | Q(moderated=None))
 
 class Message(models.Model):
