@@ -131,6 +131,8 @@ class Message(models.Model):
     slug = models.SlugField(max_length=255, unique=True)
     public = models.BooleanField(default=True)
     moderated = models.NullBooleanField()
+    created = models.DateTimeField(auto_now_add=True, null=True)
+    updated = models.DateTimeField(auto_now=True, null=True)
 
     objects = PublicMessagesManager()
 
