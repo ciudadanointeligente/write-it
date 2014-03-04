@@ -20,6 +20,7 @@ from mock import patch
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.sites.models import Site
 import datetime
+from django.utils import timezone
 from django.utils.translation import activate
 from subdomains.tests import SubdomainTestMixin
 from django.core.management import call_command
@@ -36,6 +37,7 @@ class TestMessages(TestCase):
 
 
     def test_create_message(self):
+        now = timezone.now()
         message = Message.objects.create(content = 'Content 1', 
             author_name='Felipe', 
             author_email="falvarez@votainteligente.cl", 
@@ -50,7 +52,14 @@ class TestMessages(TestCase):
         self.assertFalse(message.confirmated)
         self.assertTrue(message.public)
 
-        self.assertTrue(message.moderated is None)
+        self.assertIsNone(message.moderated)
+
+        self.assertIsNotNone(message.created)
+        self.assertIsNotNone(message.updated)
+        self.assertIsInstance(message.created, datetime.datetime)
+        self.assertIsInstance(message.updated, datetime.datetime)
+        self.assertAlmostEqual((message.created - now).total_seconds(), 0, places=2)
+        self.assertAlmostEqual((message.updated - now).total_seconds(), 0, places=2)
 
 
     def test_message_has_a_is_confirmated_field(self):
