@@ -179,8 +179,12 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
         messages = self.deserialize(response)['objects']
         
         self.assertGreater(len(messages), 0)
-        self.assertEqual(len(messages), Message.objects.filter(writeitinstance=self.writeitinstance).count()) #All the instances
-        self.assertEqual(messages[0]['id'], self.message1.id)
+        filtered_messages = Message.objects.filter(writeitinstance=self.writeitinstance)
+        self.assertEqual(len(messages), filtered_messages.count()) #All the instances
+
+
+        self.assertTrue(filtered_messages.filter(id=messages[0]['id']))
+
         #assert that answers come in the
 
     def test_filter_by_person(self):
