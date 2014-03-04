@@ -114,11 +114,10 @@ class PublicMessagesManager(models.Manager):
 
     def public(self, *args, **kwargs):
         query = self.filter(*args, **kwargs)
-        query = query.filter(Q(public=True), Q(confirmated=True), \
-            Q(moderated=True) | Q(moderated=None))
+        # in the way to remove all the fucking uses of this method
         return query
 
-class PublicMessages(models.Manager):
+class PublicMessages(PublicMessagesManager):
     def get_queryset(self):
         return super(PublicMessages, self).get_queryset().filter(Q(public=True), Q(confirmated=True), \
             Q(moderated=True) | Q(moderated=None))

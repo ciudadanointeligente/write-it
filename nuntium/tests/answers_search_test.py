@@ -23,7 +23,7 @@ class AnswerIndexTestCase(TestCase):
 
         self.assertEquals(self.index.get_model(), Answer)
 
-        public_answers = Answer.objects.filter(message__in=Message.objects.public())
+        public_answers = Answer.objects.filter(message__in=Message.public_objects.all())
         first_answer = public_answers[0]
         public_answers_list = list(public_answers)
 
