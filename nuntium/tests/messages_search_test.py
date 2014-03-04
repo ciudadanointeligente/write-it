@@ -184,7 +184,7 @@ class PerInstanceSearchFormTestCase(SearchIndexTestCase, SubdomainTestMixin):
                 ids_of_messages_returned_by_searchqueryset.append(result.object.id)
 
 
-        public_messages = Message.objects.public().filter(writeitinstance=self.writeitinstance)
+        public_messages = Message.public_objects.filter(writeitinstance=self.writeitinstance)
 
         ids_of_public_messages_in_writeitinstance = [r.id for r in public_messages]
 

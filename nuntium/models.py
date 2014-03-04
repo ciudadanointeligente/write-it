@@ -24,7 +24,7 @@ from django.db.models import Q
 import requests
 from autoslug import AutoSlugField
 from unidecode import unidecode
-
+from django.db.models.query import QuerySet
 
 class WriteItPerson(Person):
     pass
@@ -101,23 +101,6 @@ class MessageRecord(models.Model):
             }
 
 
-class PublicMessagesManager(models.Manager):
-    def filter(self, *args, **kwargs):
-        person = None
-        if 'person' in kwargs:
-            person = kwargs.pop('person')
-
-        queryset = super(PublicMessagesManager, self).filter(*args, **kwargs)
-        if person:
-            queryset = queryset.filter(outboundmessage__contact__person=person)
-        return queryset
-
-    def public(self, *args, **kwargs):
-        query = self.filter(*args, **kwargs)
-        # in the way to remove all the fucking uses of this method
-        return query
-
-from django.db.models.query import QuerySet
 class MessagesQuerySet(QuerySet):
     def filter(self, *args, **kwargs):
         person = None
@@ -128,6 +111,10 @@ class MessagesQuerySet(QuerySet):
         if person:
             queryset = queryset.filter(outboundmessage__contact__person=person)
         return queryset
+
+class PublicMessagesManager(models.Manager):
+    def get_queryset(self):
+        return MessagesQuerySet(self.model, using=self._db)
 
 class PublicMessages(PublicMessagesManager):
     def get_queryset(self):

@@ -33,7 +33,7 @@ class MessageResourceTestCase(ResourceTestCase):
         self.assertValidJSONResponse(response)
 
         messages = self.deserialize(response)['objects']
-        self.assertEqual(len(messages), Message.objects.public().count()) #All the instances
+        self.assertEqual(len(messages), Message.public_objects.count()) #All the instances
 
 
     def test_authentication(self):
