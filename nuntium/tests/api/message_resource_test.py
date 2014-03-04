@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.management import call_command
-from nuntium.models import Message, WriteItInstance
+from nuntium.models import Message, WriteItInstance, Confirmation
 from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
 from tastypie.models import ApiKey
@@ -35,6 +35,39 @@ class MessageResourceTestCase(ResourceTestCase):
         messages = self.deserialize(response)['objects']
         self.assertEqual(len(messages), Message.objects.public().count()) #All the instances
 
+
+    def test_list_of_messages_is_ordered(self):
+        """ The list of messages shown in the API is ordered by created date"""
+        # Preparing the test
+        Message.objects.all().delete()
+        person1 = Person.objects.all()[0]
+        #cleaning up the database before 
+        message1 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Fiera es una perra feroz 1', 
+            writeitinstance= self.writeitinstance,
+            persons = [person1])
+        Confirmation.objects.create(message=message1)
+        message1.recently_confirmated()
+
+        message2 = Message.objects.create(content = 'Content 2', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Fiera es una perra feroz 2', 
+            writeitinstance= self.writeitinstance,
+            persons = [person1])
+        Confirmation.objects.create(message=message2)
+        message2.recently_confirmated()
+
+        url = '/api/v1/message/'
+        response = self.api_client.get(url,data = self.data)
+
+        self.assertValidJSONResponse(response)
+
+        messages = self.deserialize(response)['objects']
+        self.assertEquals(messages[0]['id'], message2.id)
+        self.assertEquals(messages[1]['id'], message1.id)
 
     def test_authentication(self):
         url = '/api/v1/message/'

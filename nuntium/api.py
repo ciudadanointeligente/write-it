@@ -136,7 +136,7 @@ class MessageResource(ModelResource):
         return result
 
     def apply_filters(self, request, applicable_filters):
-        return Message.objects.public(**applicable_filters)
+        return Message.objects.public(**applicable_filters).order_by('-created')
 
     def hydrate(self, bundle):
         persons = []
