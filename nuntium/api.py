@@ -108,7 +108,10 @@ class MessageResource(ModelResource):
         full=True)
 
     class Meta:
-        queryset = Message.public_objects.all()
+        queryset = Message.public_objects.all().order_by('-created')
+        # About the ordering
+        # ordering = ['-created']
+        # should work but it doesn't so I put it in the queryset
         resource_name = 'message'
         authorization = Authorization()
         authentication = ApiKeyAuthentication()
