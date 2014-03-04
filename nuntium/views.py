@@ -70,7 +70,7 @@ class WriteItInstanceDetailView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
-        public_messages = Message.objects.public(writeitinstance=self.object)
+        public_messages = Message.public_objects.filter(writeitinstance=self.object)
         context['public_messages'] = public_messages
         context['search_form'] = PerInstanceSearchForm(writeitinstance=self.object)
         return context
@@ -302,7 +302,7 @@ class MessagesPerPersonView(ListView):
         return super(MessagesPerPersonView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        qs = Message.objects.public(
+        qs = Message.public_objects.filter(
             person=self.person,
             writeitinstance=self.writeitinstance,
             )

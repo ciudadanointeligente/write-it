@@ -10,7 +10,7 @@ class MessageIndex(indexes.SearchIndex, indexes.Indexable):
 		return Message
 
 	def index_queryset(self, using=None):
-		return self.get_model().objects.public()
+		return self.get_model().public_objects.all()
 
 
 class AnswerIndex(indexes.SearchIndex, indexes.Indexable):
@@ -21,4 +21,4 @@ class AnswerIndex(indexes.SearchIndex, indexes.Indexable):
 		return Answer
 
 	def index_queryset(self, using=None):
-		return self.get_model().objects.filter(message__in=Message.objects.public())
+		return self.get_model().objects.filter(message__in=Message.public_objects.all())

@@ -27,11 +27,11 @@ class PublicMessagesManager(TestCase, SubdomainTestMixin):
             persons = [self.person1])
         Confirmation.objects.create(message=message)
 
-        self.assertNotIn(message, Message.objects.public())
+        self.assertNotIn(message, Message.public_objects.all())
 
         message.recently_confirmated()
 
-        self.assertIn(message, Message.objects.public())
+        self.assertIn(message, Message.public_objects.all())
 
     def test_confirmated_but_non_moderated_message_in_a_moderable_instance_is_not_shown(self):
         message = Message.objects.create(content = 'Content 1', 
@@ -42,11 +42,11 @@ class PublicMessagesManager(TestCase, SubdomainTestMixin):
             persons = [self.person1])
 
         Confirmation.objects.create(message=message)
-        self.assertNotIn(message, Message.objects.public())
+        self.assertNotIn(message, Message.public_objects.all())
         message.recently_confirmated()
 
         #the important one
-        self.assertNotIn(message, Message.objects.public())
+        self.assertNotIn(message, Message.public_objects.all())
 
 
 class PublicMessagesInAPI(ResourceTestCase):
@@ -73,7 +73,7 @@ class PublicMessagesInAPI(ResourceTestCase):
 
         #OK this is just to show that this message is not confirmed
         self.assertFalse(message.confirmated)
-        self.assertNotIn(message, Message.objects.public())
+        self.assertNotIn(message, Message.public_objects.all())
         #I've tested this in messages_test.py 
 
         url = '/api/v1/instance/{0}/messages/'.format(self.writeitinstance.id)

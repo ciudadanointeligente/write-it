@@ -24,11 +24,7 @@ from django.db.models import Q
 import requests
 from autoslug import AutoSlugField
 from unidecode import unidecode
-
-
-class WriteItPerson(Person):
-    pass
-
+from django.db.models.query import QuerySet
 
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people
@@ -101,22 +97,26 @@ class MessageRecord(models.Model):
             }
 
 
-class PublicMessagesManager(models.Manager):
+class MessagesQuerySet(QuerySet):
     def filter(self, *args, **kwargs):
         person = None
         if 'person' in kwargs:
             person = kwargs.pop('person')
 
-        queryset = super(PublicMessagesManager, self).filter(*args, **kwargs)
+        queryset = super(MessagesQuerySet, self).filter(*args, **kwargs)
         if person:
             queryset = queryset.filter(outboundmessage__contact__person=person)
         return queryset
 
-    def public(self, *args, **kwargs):
-        query = self.filter(*args, **kwargs)
-        query = query.filter(Q(public=True), Q(confirmated=True), \
+class MessagesManager(models.Manager):
+    def get_queryset(self):
+        return MessagesQuerySet(self.model, using=self._db)
+
+class PublicMessagesManager(MessagesManager):
+    def get_queryset(self):
+        queryset = super(PublicMessagesManager, self).get_queryset()
+        return queryset.filter(Q(public=True), Q(confirmated=True), \
             Q(moderated=True) | Q(moderated=None))
-        return query
 
 class Message(models.Model):
     """Message: Class that contain the info for a model, \
@@ -134,7 +134,8 @@ class Message(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
 
-    objects = PublicMessagesManager()
+    objects = MessagesManager()
+    public_objects = PublicMessagesManager()
 
     def __init__(self, *args, **kwargs):
         self.persons = None
