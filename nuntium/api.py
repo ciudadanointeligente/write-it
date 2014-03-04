@@ -108,7 +108,7 @@ class MessageResource(ModelResource):
         full=True)
 
     class Meta:
-        queryset = Message.objects.public()
+        queryset = Message.public_objects.all()
         resource_name = 'message'
         authorization = Authorization()
         authentication = ApiKeyAuthentication()
@@ -136,7 +136,7 @@ class MessageResource(ModelResource):
         return result
 
     def apply_filters(self, request, applicable_filters):
-        return Message.objects.public(**applicable_filters)
+        return Message.public_objects.all().filter(**applicable_filters)
 
     def hydrate(self, bundle):
         persons = []
