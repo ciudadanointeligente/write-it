@@ -26,10 +26,6 @@ from autoslug import AutoSlugField
 from unidecode import unidecode
 from django.db.models.query import QuerySet
 
-class WriteItPerson(Person):
-    pass
-
-
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people
     for usability purposes. E.g. 'Candidates running for president'"""
@@ -112,13 +108,13 @@ class MessagesQuerySet(QuerySet):
             queryset = queryset.filter(outboundmessage__contact__person=person)
         return queryset
 
-class PublicMessagesManager(models.Manager):
+class MessagesManager(models.Manager):
     def get_queryset(self):
         return MessagesQuerySet(self.model, using=self._db)
 
-class PublicMessages(PublicMessagesManager):
+class PublicMessagesManager(MessagesManager):
     def get_queryset(self):
-        queryset = MessagesQuerySet(self.model, using=self._db)
+        queryset = super(PublicMessagesManager, self).get_queryset()
         return queryset.filter(Q(public=True), Q(confirmated=True), \
             Q(moderated=True) | Q(moderated=None))
 
@@ -136,8 +132,8 @@ class Message(models.Model):
     public = models.BooleanField(default=True)
     moderated = models.NullBooleanField()
 
-    objects = PublicMessagesManager()
-    public_objects = PublicMessages()
+    objects = MessagesManager()
+    public_objects = PublicMessagesManager()
 
     def __init__(self, *args, **kwargs):
         self.persons = None
