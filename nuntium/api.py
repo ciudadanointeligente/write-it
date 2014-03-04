@@ -136,6 +136,7 @@ class MessageResource(ModelResource):
         return result
 
     def apply_filters(self, request, applicable_filters):
+        #TODO I'm repeating code here and in queryset what can I do?
         return Message.objects.public(**applicable_filters).order_by('-created')
 
     def hydrate(self, bundle):
