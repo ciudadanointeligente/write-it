@@ -118,6 +118,12 @@ class PublicMessagesManager(MessagesManager):
         return queryset.filter(Q(public=True), Q(confirmated=True), \
             Q(moderated=True) | Q(moderated=None))
 
+class NonModeratedMessagesManager(MessagesManager):
+    def get_queryset(self):
+        queryset = super(NonModeratedMessagesManager, self).get_queryset()
+        return queryset.filter(Q(public=True), Q(confirmated=True))\
+                    .exclude(Q(moderated=True) | Q(moderated=None))
+
 class Message(models.Model):
     """Message: Class that contain the info for a model, \
     despite of the input and the output channels. Subject \
@@ -136,6 +142,7 @@ class Message(models.Model):
 
     objects = MessagesManager()
     public_objects = PublicMessagesManager()
+    moderation_required_objects = NonModeratedMessagesManager()
 
     def __init__(self, *args, **kwargs):
         self.persons = None

@@ -6,6 +6,7 @@ from popit.models import ApiInstance, Person
 from django.forms.models import BaseInlineFormSet
 from mailit.models import MailItTemplate
 from django_object_actions import DjangoObjectActions
+from django.db.models import Q
 
 class PersonInline(admin.TabularInline):
     model=Person
@@ -53,6 +54,18 @@ class MessageAdmin(DjangoObjectActions, admin.ModelAdmin):
     objectactions = ('moderate_this', )
 
 admin.site.register(Message, MessageAdmin)
+
+
+class NeedingModerationMessge(Message):
+    class Meta:
+        proxy = True
+
+class NonModeratedMessageAdmin(MessageAdmin):
+    def get_queryset(self, request):
+        qs = Message.moderation_required_objects.all()
+        return qs
+
+admin.site.register(NeedingModerationMessge, NonModeratedMessageAdmin)
 
 class AnswerWebHookAdmin(admin.ModelAdmin):
     pass
