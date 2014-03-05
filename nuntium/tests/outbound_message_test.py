@@ -254,3 +254,6 @@ class AbstractOutboundMessageTestCase(TestCase):
     def test_abstract_is_acctually_abstract(self):
         """The class is actually abstract"""
         self.assertTrue(AbstractOutboundMessage._meta.abstract)
+        #OK this is a total redunduncy but how else can I test this?
+
+    
