@@ -231,3 +231,26 @@ class PluginMentalMessageTestCase(TestCase):
         self.assertEquals(contact_type.name, "mind")
 
 
+from nuntium.models import AbstractOutboundMessage
+from django.db import models
+class AbstractOutboundMessageTestCase(TestCase):
+    def setUp(self):
+        super(AbstractOutboundMessageTestCase, self).setUp()
+        self.message = Message.objects.all()[0]
+
+
+    def test_create_an_abstract_class(self):
+        """ Create a subclass of abstract class that does not contain contact"""
+        class ImplementationThing(AbstractOutboundMessage):
+            pass
+
+        implementation = ImplementationThing(message=self.message)
+        #This means that there is a link between a contact and a message
+        self.assertTrue(implementation)
+        self.assertIsInstance(implementation, models.Model)
+        self.assertEquals(implementation.status, "new")
+        self.assertEquals(implementation.message, self.message)
+
+    def test_abstract_is_acctually_abstract(self):
+        """The class is actually abstract"""
+        self.assertTrue(AbstractOutboundMessage._meta.abstract)
