@@ -8,6 +8,31 @@ from popit.models import Person
 from django.contrib.auth.models import User
 from tastypie.test import ResourceTestCase, TestApiClient
 
+class NonModeratedMessagesManagerTestCase(TestCase):
+    def setUp(self):
+        super(NonModeratedMessagesManagerTestCase, self).setUp()
+        self.moderation_not_needed_instance = WriteItInstance.objects.all()[0]
+        self.person1 = Person.objects.all()[0]
+        self.moderable_instance = WriteItInstance.objects.all()[1]
+        self.moderable_instance.moderation_needed_in_all_messages = True
+
+        self.moderable_instance.save()
+
+    def test_it_has_a_manager_for_needing_moderation_messages(self):
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='public non moderated message', 
+            writeitinstance= self.moderable_instance, 
+            persons = [self.person1])
+        Confirmation.objects.create(message=message)
+        self.assertNotIn(message, Message.moderation_required_objects.all())
+
+        message.recently_confirmated()
+
+        self.assertIn(message, Message.moderation_required_objects.all())
+        
+
 class PublicMessagesManager(TestCase, SubdomainTestMixin):
     def setUp(self):
         super(PublicMessagesManager, self).setUp()
@@ -81,3 +106,5 @@ class PublicMessagesInAPI(ResourceTestCase):
         self.assertValidJSONResponse(response)
         messages = self.deserialize(response)['objects']
         self.assertFalse(messages)
+
+
