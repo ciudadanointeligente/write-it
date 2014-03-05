@@ -19,6 +19,7 @@ class NonModeratedMessagesManagerTestCase(TestCase):
         self.moderable_instance.save()
 
     def test_it_has_a_manager_for_needing_moderation_messages(self):
+        """There is a manager for the Message model that shows only the messages that need moderation"""
         message = Message.objects.create(content = 'Content 1', 
             author_name='Felipe', 
             author_email="falvarez@votainteligente.cl", 

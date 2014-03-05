@@ -196,8 +196,6 @@ class PerInstanceSearchFormTestCase(SearchIndexTestCase, SubdomainTestMixin):
         self.assertEquals(view.form_class, PerInstanceSearchForm)
         self.assertEquals(view.template, 'nuntium/instance_search.html')
 
-
-    #@skip('Must test view first')
     def test_per_instance_search_url(self):
         url = reverse('instance_search', subdomain=self.writeitinstance.slug)
 
