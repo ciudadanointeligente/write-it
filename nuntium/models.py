@@ -121,7 +121,7 @@ class PublicMessagesManager(MessagesManager):
 class NonModeratedMessagesManager(MessagesManager):
     def get_queryset(self):
         queryset = super(NonModeratedMessagesManager, self).get_queryset()
-        return queryset.filter(Q(public=True), Q(confirmated=True))
+        return queryset.filter(Q(public=True), Q(confirmated=True))\
                     .exclude(Q(moderated=True) | Q(moderated=None))
 
 class Message(models.Model):
