@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'NoContactOM.person'
         db.add_column(u'nuntium_nocontactom', 'person',
-                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['popit.Person']),
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['popit.Person'], null=True),
                       keep_default=False)
 
 
