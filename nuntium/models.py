@@ -185,9 +185,14 @@ class Message(models.Model):
 
     @property
     def people(self):
-        return Person.objects\
-                        .filter(contact__outboundmessage__message=self)\
-                        .distinct()
+        people = Person.objects\
+                        .filter(
+                            Q(contact__outboundmessage__message=self) | \
+                            Q(nocontactom__message=self)
+                         ).distinct()
+
+
+        return people
 
     def get_absolute_url(self):
         return reverse('message_detail', \

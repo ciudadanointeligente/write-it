@@ -291,3 +291,14 @@ class MessagesToPersonWithoutContactsTestCase(TestCase):
         for person in self.people:
             self.assertTrue(no_contact_om.get(person=person))
 
+
+    def test_people_is_included_in_people(self):
+        """It let's you do message.people with people without contacts"""
+        persons_in_message = [person for person in self.people]
+        message = Message.objects.create(content = 'Content 1', subject='RaiseFatalErrorPlz', 
+            writeitinstance= self.writeitinstance, persons = persons_in_message)
+
+        self.assertEquals(message.people.count(), len(persons_in_message))
+        for person in persons_in_message:
+            self.assertTrue(message.people.get(id=person.id))
+
