@@ -225,16 +225,17 @@ class Message(models.Model):
         Moderation.objects.create(message=self)
 
     def create_outbound_messages(self):
+        # This function needs to be refactored to 
+        # do only a single thing
         if self.persons:
             for person in self.persons:
+                if not person.contact_set.all():
+                    NoContactOM.objects.create(message=self, person=person)
                 for contact in person.contact_set.\
-                filter(owner=self.writeitinstance.owner):
+                    filter(owner=self.writeitinstance.owner):
                     if not contact.is_bounced:
                         outbound_message = OutboundMessage.objects.\
                         get_or_create(contact=contact, message=self)
-
-
-
 
     def save(self, *args, **kwargs):
         created = self.id is None
@@ -403,19 +404,14 @@ post_save.connect(send_new_answer_payload, sender=Answer)
 
 
 
+
+
 class OutboundMessageManager(models.Manager):
     def to_send(self, *args, **kwargs):
         query = super(OutboundMessageManager, self).filter(*args, **kwargs)
         return query.filter(status="ready")
 
-
-
-class OutboundMessage(models.Model):
-    """docstring for OutboundMessage: This class is \
-    the message delivery unit. The OutboundMessage is \
-    the one that will be tracked in order \
-    to know the actual status of the message"""
-
+class AbstractOutboundMessage(models.Model):
     STATUS_CHOICES = (
         ("new", _("Newly created")),
         ("ready", _("Ready to send")),
@@ -424,11 +420,25 @@ class OutboundMessage(models.Model):
         ("needmodera", _("Needs moderation")),
         )
 
-    contact = models.ForeignKey(Contact)
+    
     message = models.ForeignKey(Message)
     status = models.CharField(max_length="10", \
                 choices=STATUS_CHOICES, \
                 default="new")
+
+    class Meta:
+        abstract = True
+
+class NoContactOM(AbstractOutboundMessage):
+    person = models.ForeignKey(Person)
+
+class OutboundMessage(AbstractOutboundMessage):
+    """docstring for OutboundMessage: This class is \
+    the message delivery unit. The OutboundMessage is \
+    the one that will be tracked in order \
+    to know the actual status of the message"""
+
+    contact = models.ForeignKey(Contact)
 
     objects = OutboundMessageManager()
 

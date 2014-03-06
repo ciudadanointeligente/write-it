@@ -231,3 +231,63 @@ class PluginMentalMessageTestCase(TestCase):
         self.assertEquals(contact_type.name, "mind")
 
 
+from nuntium.models import AbstractOutboundMessage
+from django.db import models
+class AbstractOutboundMessageTestCase(TestCase):
+    def setUp(self):
+        super(AbstractOutboundMessageTestCase, self).setUp()
+        self.message = Message.objects.all()[0]
+
+
+    def test_create_an_abstract_class(self):
+        """ Create a subclass of abstract class that does not contain contact"""
+        class ImplementationThing(AbstractOutboundMessage):
+            pass
+
+        implementation = ImplementationThing(message=self.message)
+        #This means that there is a link between a contact and a message
+        self.assertTrue(implementation)
+        self.assertIsInstance(implementation, models.Model)
+        self.assertEquals(implementation.status, "new")
+        self.assertEquals(implementation.message, self.message)
+
+    def test_abstract_is_acctually_abstract(self):
+        """The class is actually abstract"""
+        self.assertTrue(AbstractOutboundMessage._meta.abstract)
+        #OK this is a total redunduncy but how else can I test this?
+
+from nuntium.models import NoContactOM
+
+class MessagesToPersonWithoutContactsTestCase(TestCase):
+    def setUp(self):
+        super(MessagesToPersonWithoutContactsTestCase, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.message = Message.objects.all()[0]
+        self.people = self.message.people
+        for person in self.people:
+            person.contact_set.all().delete()
+
+
+    def test_create_concrete_class(self):
+        """Creating a class that holds outbound messages for people without contact"""
+        pedro = self.people[0]
+
+        no_contact_outbound_message = NoContactOM.objects.create(message = self.message, \
+                                        person=pedro)
+        self.assertTrue(no_contact_outbound_message)
+        self.assertEquals(no_contact_outbound_message.message, self.message)
+        self.assertIsInstance(no_contact_outbound_message, AbstractOutboundMessage)
+        self.assertFalse(hasattr(no_contact_outbound_message, 'contact'))
+
+    def test_automatically_creates_no_contact_outbound_messages(self):
+        """ When sending a message to people without contacts it creates NoContactOM"""
+        message = Message.objects.create(content = 'Content 1', subject='RaiseFatalErrorPlz', 
+            writeitinstance= self.writeitinstance, persons = [person for person in self.people])
+
+        outbound_messages = OutboundMessage.objects.filter(message=message)
+        self.assertFalse(outbound_messages)
+        no_contact_om = NoContactOM.objects.filter(message=message)
+        self.assertEquals(no_contact_om.count(), self.people.count())
+        for person in self.people:
+            self.assertTrue(no_contact_om.get(person=person))
+
