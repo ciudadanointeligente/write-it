@@ -428,6 +428,9 @@ class AbstractOutboundMessage(models.Model):
     class Meta:
         abstract = True
 
+class NoContactOM(AbstractOutboundMessage):
+    pass
+
 class OutboundMessage(AbstractOutboundMessage):
     """docstring for OutboundMessage: This class is \
     the message delivery unit. The OutboundMessage is \

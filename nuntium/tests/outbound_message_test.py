@@ -256,4 +256,20 @@ class AbstractOutboundMessageTestCase(TestCase):
         self.assertTrue(AbstractOutboundMessage._meta.abstract)
         #OK this is a total redunduncy but how else can I test this?
 
-    
+from nuntium.models import NoContactOM
+
+class MessagesToPersonWithoutContactsTestCase(TestCase):
+    def setUp(self):
+        super(MessagesToPersonWithoutContactsTestCase, self).setUp()
+        self.message = Message.objects.all()[0]
+        for person in self.message.people:
+            person.contact_set.all().delete()
+
+
+    def test_create_concrete_class(self):
+        """Creating a class that holds outbound messages for people without contact"""
+        no_contact_outbound_message = NoContactOM.objects.create(message = self.message)
+        self.assertTrue(no_contact_outbound_message)
+        self.assertEquals(no_contact_outbound_message.message, self.message)
+        self.assertIsInstance(no_contact_outbound_message, AbstractOutboundMessage)
+        self.assertFalse(hasattr(no_contact_outbound_message, 'contact') )
