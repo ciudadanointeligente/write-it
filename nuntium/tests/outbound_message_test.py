@@ -261,6 +261,7 @@ from nuntium.models import NoContactOM
 class MessagesToPersonWithoutContactsTestCase(TestCase):
     def setUp(self):
         super(MessagesToPersonWithoutContactsTestCase, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.all()[0]
         self.message = Message.objects.all()[0]
         self.people = self.message.people
         for person in self.people:
@@ -278,12 +279,15 @@ class MessagesToPersonWithoutContactsTestCase(TestCase):
         self.assertIsInstance(no_contact_outbound_message, AbstractOutboundMessage)
         self.assertFalse(hasattr(no_contact_outbound_message, 'contact'))
 
-    @skip("Adding person to NoContactOM first")
     def test_automatically_creates_no_contact_outbound_messages(self):
         """ When sending a message to people without contacts it creates NoContactOM"""
+        message = Message.objects.create(content = 'Content 1', subject='RaiseFatalErrorPlz', 
+            writeitinstance= self.writeitinstance, persons = [person for person in self.people])
 
-        outbound_messages = OutboundMessage.objects.filter(message=self.message)
+        outbound_messages = OutboundMessage.objects.filter(message=message)
         self.assertFalse(outbound_messages)
-        no_contact_om = NoContactOM.objects.filter(message=self.message)
+        no_contact_om = NoContactOM.objects.filter(message=message)
         self.assertEquals(no_contact_om.count(), self.people.count())
+        for person in self.people:
+            self.assertTrue(no_contact_om.get(person=person))
 

@@ -225,11 +225,12 @@ class Message(models.Model):
         Moderation.objects.create(message=self)
 
     def create_outbound_messages(self):
+        # This function needs to be refactored to 
+        # do only a single thing
         if self.persons:
             for person in self.persons:
-                # noup not yet
-                # if not person.contact_set.all():
-                #     NoContactOM.objects.create()
+                if not person.contact_set.all():
+                    NoContactOM.objects.create(message=self, person=person)
                 for contact in person.contact_set.\
                     filter(owner=self.writeitinstance.owner):
                     if not contact.is_bounced:
