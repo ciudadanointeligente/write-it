@@ -227,14 +227,14 @@ class Message(models.Model):
     def create_outbound_messages(self):
         if self.persons:
             for person in self.persons:
+                # noup not yet
+                # if not person.contact_set.all():
+                #     NoContactOM.objects.create()
                 for contact in person.contact_set.\
-                filter(owner=self.writeitinstance.owner):
+                    filter(owner=self.writeitinstance.owner):
                     if not contact.is_bounced:
                         outbound_message = OutboundMessage.objects.\
                         get_or_create(contact=contact, message=self)
-
-
-
 
     def save(self, *args, **kwargs):
         created = self.id is None
@@ -429,7 +429,7 @@ class AbstractOutboundMessage(models.Model):
         abstract = True
 
 class NoContactOM(AbstractOutboundMessage):
-    pass
+    person = models.ForeignKey(Person)
 
 class OutboundMessage(AbstractOutboundMessage):
     """docstring for OutboundMessage: This class is \

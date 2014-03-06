@@ -262,14 +262,28 @@ class MessagesToPersonWithoutContactsTestCase(TestCase):
     def setUp(self):
         super(MessagesToPersonWithoutContactsTestCase, self).setUp()
         self.message = Message.objects.all()[0]
-        for person in self.message.people:
+        self.people = self.message.people
+        for person in self.people:
             person.contact_set.all().delete()
 
 
     def test_create_concrete_class(self):
         """Creating a class that holds outbound messages for people without contact"""
-        no_contact_outbound_message = NoContactOM.objects.create(message = self.message)
+        pedro = self.people[0]
+
+        no_contact_outbound_message = NoContactOM.objects.create(message = self.message, \
+                                        person=pedro)
         self.assertTrue(no_contact_outbound_message)
         self.assertEquals(no_contact_outbound_message.message, self.message)
         self.assertIsInstance(no_contact_outbound_message, AbstractOutboundMessage)
-        self.assertFalse(hasattr(no_contact_outbound_message, 'contact') )
+        self.assertFalse(hasattr(no_contact_outbound_message, 'contact'))
+
+    @skip("Adding person to NoContactOM first")
+    def test_automatically_creates_no_contact_outbound_messages(self):
+        """ When sending a message to people without contacts it creates NoContactOM"""
+
+        outbound_messages = OutboundMessage.objects.filter(message=self.message)
+        self.assertFalse(outbound_messages)
+        no_contact_om = NoContactOM.objects.filter(message=self.message)
+        self.assertEquals(no_contact_om.count(), self.people.count())
+
