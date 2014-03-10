@@ -26,6 +26,7 @@ from autoslug import AutoSlugField
 from unidecode import unidecode
 from django.db.models.query import QuerySet
 from itertools import chain
+from django.utils.timezone import now
 
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people
@@ -81,8 +82,7 @@ class Membership(models.Model):
 
 class MessageRecord(models.Model):
     status = models.CharField(max_length=255)
-    datetime = models.DateField(default=datetime.datetime.utcnow()\
-        .replace(tzinfo=utc))
+    datetime = models.DateField(default=now())
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
@@ -331,8 +331,7 @@ class Answer(models.Model):
     person = models.ForeignKey(Person)
     message = models.ForeignKey(Message, \
         related_name='answers')
-    created = models.DateField(default=datetime.datetime.utcnow()\
-        .replace(tzinfo=utc))
+    created = models.DateField(default=now())
 
     def __init__(self, *args, **kwargs):
         super(Answer, self).__init__(*args, **kwargs)
@@ -582,8 +581,7 @@ class OutboundMessagePluginRecord(models.Model):
 class Confirmation(models.Model):
     message = models.OneToOneField(Message)
     key = models.CharField(max_length=64, unique=True)
-    created = models.DateField(default=datetime.\
-                    datetime.utcnow().replace(tzinfo=utc))
+    created = models.DateField(default=now())
     confirmated_at = models.DateField(default=None, null=True)
 
     def save(self, *args, **kwargs):

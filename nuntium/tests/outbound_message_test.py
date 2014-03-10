@@ -225,6 +225,7 @@ class PluginMentalMessageTestCase(TestCase):
         self.assertTrue(fatal_error is None)
 
     def test_plugin_gets_contact_type(self):
+        """From a plugin I can get its contact type"""
         the_mental_channel = MentalMessage()
         contact_type = the_mental_channel.get_contact_type()
 
@@ -332,7 +333,7 @@ class MessagesToPersonWithoutContactsTestCase(TestCase):
 
 
     def test_it_copies_the_status_of_the_outbound_message(self):
-        """ If there is already a NoContactOM it brings the status to the new outbound message"""
+        """If there is already a NoContactOM it brings the status to the new outbound message"""
         persons_in_message = [person for person in self.people]
         peter = self.people[0]
         message = Message.objects.create(content = 'Content 1', subject='aaa', 
