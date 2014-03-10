@@ -247,9 +247,8 @@ class Message(models.Model):
         if created and self.writeitinstance.moderation_needed_in_all_messages:
             self.moderated = False
         super(Message, self).save(*args, **kwargs)
-        if created:
-            if not self.public:
-                self.create_moderation()
+        if created and not self.public:
+            self.create_moderation()
         self.create_outbound_messages()
 
     def set_to_ready(self):
