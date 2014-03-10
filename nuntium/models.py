@@ -178,6 +178,12 @@ class Message(models.Model):
         for outbound_message in self.outboundmessage_set.all():
             outbound_message.status = status
             outbound_message.save()
+
+        #COUPLED THIS IS COUPLED!!!
+        for outbound_message in self.nocontactom_set.all():
+            outbound_message.status = status
+            outbound_message.save()
+
         if self.author_email:
             Subscriber.objects.create(email=self.author_email, message=self)
         self.confirmated = True
@@ -230,18 +236,18 @@ class Message(models.Model):
         Moderation.objects.create(message=self)
 
     def create_outbound_messages(self):
-        # This function needs to be refactored to 
-        # do only a single thing
-        if self.persons:
-            for person in self.persons:
-                self.create_outbound_messages_to_person(person)
+        if not self.persons:
+            return
+        for person in self.persons:
+            self.create_outbound_messages_to_person(person)
                 
 
     def create_outbound_messages_to_person(self, person):
         if not person.contact_set.all():
-            NoContactOM.objects.create(message=self, person=person)
-        for contact in person.contact_set.\
-            filter(owner=self.writeitinstance.owner):
+            NoContactOM.objects.get_or_create(message=self, person=person)
+            return
+        for contact in person.contact_set.filter(
+            owner=self.writeitinstance.owner):
             if not contact.is_bounced:
                 outbound_message = OutboundMessage.objects.\
                 get_or_create(contact=contact, message=self)
@@ -439,6 +445,31 @@ class AbstractOutboundMessage(models.Model):
 
 class NoContactOM(AbstractOutboundMessage):
     person = models.ForeignKey(Person)
+
+# This will happen everytime a contact is created
+
+def create_new_outbound_messages_for_newly_created_contact(sender, instance, created, **kwargs):
+    if kwargs['raw']:
+        return
+    
+    contact = instance
+    if not created:
+        return
+    writeitinstances = WriteItInstance.objects.filter(owner=contact.owner)
+    messages = Message.objects.filter(writeitinstance__in=writeitinstances)
+    no_contact_oms = NoContactOM.objects.filter(\
+        message__in=messages, \
+        person=contact.person)
+    for no_contact_om in no_contact_oms:
+        om = OutboundMessage.objects.create(\
+            contact=contact, \
+            message=no_contact_om.message,
+            #here I should test that it also 
+            # copies the status
+            )
+
+    no_contact_oms.delete()
+post_save.connect(create_new_outbound_messages_for_newly_created_contact, sender=Contact)
 
 class OutboundMessage(AbstractOutboundMessage):
     """docstring for OutboundMessage: This class is \
