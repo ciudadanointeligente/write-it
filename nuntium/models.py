@@ -25,6 +25,7 @@ import requests
 from autoslug import AutoSlugField
 from unidecode import unidecode
 from django.db.models.query import QuerySet
+from itertools import chain
 
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people
@@ -175,12 +176,7 @@ class Message(models.Model):
             moderation, created = Moderation.objects.get_or_create(message=self)
             self.send_moderation_mail()
             status = 'needmodera'
-        for outbound_message in self.outboundmessage_set.all():
-            outbound_message.status = status
-            outbound_message.save()
-
-        #COUPLED THIS IS COUPLED!!!
-        for outbound_message in self.nocontactom_set.all():
+        for outbound_message in self.outbound_messages:
             outbound_message.status = status
             outbound_message.save()
 
@@ -199,6 +195,13 @@ class Message(models.Model):
 
 
         return people
+
+    @property
+    def outbound_messages(self):
+        no_contact_oms = NoContactOM.objects.filter(message=self)
+        outbound_messages = OutboundMessage.objects.filter(message=self)
+
+        return list(chain(no_contact_oms, outbound_messages))
 
     def get_absolute_url(self):
         return reverse('message_detail', \
@@ -262,7 +265,7 @@ class Message(models.Model):
         self.create_outbound_messages()
 
     def set_to_ready(self):
-        for outbound_message in self.outboundmessage_set.all():
+        for outbound_message in self.outbound_messages:
             outbound_message.status = 'ready'
             outbound_message.save()
 
@@ -460,12 +463,17 @@ def create_new_outbound_messages_for_newly_created_contact(sender, instance, cre
     no_contact_oms = NoContactOM.objects.filter(\
         message__in=messages, \
         person=contact.person)
+    # NOTE TO DEVELOPER:
+    # now it is automatic that everytime a contact is created
+    # the nocontact_om is deleted and we create outbound messages
+    # but what if we let the user choose if they want or not that behaviour
     for no_contact_om in no_contact_oms:
         om = OutboundMessage.objects.create(\
             contact=contact, \
             message=no_contact_om.message,
             #here I should test that it also 
             # copies the status
+            status=no_contact_om.status
             )
 
     no_contact_oms.delete()

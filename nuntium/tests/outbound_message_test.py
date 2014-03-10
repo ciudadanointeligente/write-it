@@ -338,10 +338,31 @@ class MessagesToPersonWithoutContactsTestCase(TestCase):
         message = Message.objects.create(content = 'Content 1', subject='aaa', 
             writeitinstance= self.writeitinstance, persons = persons_in_message)
 
-
         message.recently_confirmated()
 
         outbound_message_to_peter = NoContactOM.objects.get(message=message, \
             person=peter)
 
         self.assertEquals(outbound_message_to_peter.status, 'ready')
+
+    def test_it_copies_the_status_to_the_new_outbound_message_when_creating_a_new_contact(self):
+        """When we create a new contact after changing the status it creates OM with that status"""
+        persons_in_message = [person for person in self.people]
+        peter = self.people[0]
+        message = Message.objects.create(content = 'Content 1', subject='aaa', 
+            writeitinstance= self.writeitinstance, persons = persons_in_message)
+
+        message.recently_confirmated()
+
+        email = ContactType.objects.all()[0]
+        contact_for_peter = Contact.objects.create(person=peter, \
+            value="peter@votainteligente.cl", \
+            contact_type=email, \
+            owner=self.writeitinstance.owner)
+
+        outbound_message = OutboundMessage.objects.get(message=message\
+            , contact=contact_for_peter)
+
+        self.assertEquals(outbound_message.status, "ready")
+
+

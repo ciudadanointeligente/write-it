@@ -9,7 +9,7 @@ from django.utils.translation import ugettext as _
 from contactos.models import Contact, ContactType
 from nuntium.models import Message, WriteItInstance, \
                             OutboundMessage, MessageRecord, Confirmation, \
-                            Moderation
+                            Moderation, NoContactOM
 from popit.models import Person, ApiInstance
 from subdomains.utils import reverse
 from django.contrib.contenttypes.models import ContentType
@@ -371,6 +371,23 @@ class TestMessages(TestCase):
         self.assertEquals(outbound_message_to_pedro.status, 'ready')
         self.assertTrue(message.confirmated)
 
+
+    def test_outbound_messages_include_no_contact_and_with_contact(self):
+        self.person1.contact_set.all().delete()
+
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Subject 1', 
+            writeitinstance= self.writeitinstance1, 
+            persons = [self.person1, self.person2])
+        no_contact_om = NoContactOM.objects.get(person=self.person1, message=message)
+        outbound_message = OutboundMessage.objects.get(message=message)
+
+        self.assertTrue(message.outbound_messages)
+        
+        self.assertIn(no_contact_om, message.outbound_messages)
+        self.assertIn(outbound_message, message.outbound_messages)
 
 class MysqlTesting(UsingDbMixin, OriginalTestCase):
     using_db = 'mysql'
