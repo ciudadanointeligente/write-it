@@ -209,10 +209,10 @@ class Message(models.Model):
             kwargs={'slug': self.slug})
 
     def slugifyme(self):
-        if not slugify(unidecode(self.subject)):
+        if not slugify(unidecode(unicode(self.subject))):
             self.subject = '-'
 
-        self.slug = slugify(unidecode(self.subject))
+        self.slug = slugify(unidecode(unicode(self.subject)))
         #Previously created messages with the same slug
 
         regex = "^"+self.slug+"(-[0-9]*){0,1}$"
