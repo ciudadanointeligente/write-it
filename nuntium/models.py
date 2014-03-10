@@ -234,13 +234,17 @@ class Message(models.Model):
         # do only a single thing
         if self.persons:
             for person in self.persons:
-                if not person.contact_set.all():
-                    NoContactOM.objects.create(message=self, person=person)
-                for contact in person.contact_set.\
-                    filter(owner=self.writeitinstance.owner):
-                    if not contact.is_bounced:
-                        outbound_message = OutboundMessage.objects.\
-                        get_or_create(contact=contact, message=self)
+                self.create_outbound_messages_to_person(person)
+                
+
+    def create_outbound_messages_to_person(self, person):
+        if not person.contact_set.all():
+            NoContactOM.objects.create(message=self, person=person)
+        for contact in person.contact_set.\
+            filter(owner=self.writeitinstance.owner):
+            if not contact.is_bounced:
+                outbound_message = OutboundMessage.objects.\
+                get_or_create(contact=contact, message=self)
 
     def save(self, *args, **kwargs):
         created = self.id is None
