@@ -25,6 +25,8 @@ import requests
 from autoslug import AutoSlugField
 from unidecode import unidecode
 from django.db.models.query import QuerySet
+from itertools import chain
+from django.utils.timezone import now
 
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people
@@ -80,8 +82,7 @@ class Membership(models.Model):
 
 class MessageRecord(models.Model):
     status = models.CharField(max_length=255)
-    datetime = models.DateField(default=datetime.datetime.utcnow()\
-        .replace(tzinfo=utc))
+    datetime = models.DateField(default=now())
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
@@ -175,9 +176,10 @@ class Message(models.Model):
             moderation, created = Moderation.objects.get_or_create(message=self)
             self.send_moderation_mail()
             status = 'needmodera'
-        for outbound_message in self.outboundmessage_set.all():
+        for outbound_message in self.outbound_messages:
             outbound_message.status = status
             outbound_message.save()
+
         if self.author_email:
             Subscriber.objects.create(email=self.author_email, message=self)
         self.confirmated = True
@@ -194,16 +196,23 @@ class Message(models.Model):
 
         return people
 
+    @property
+    def outbound_messages(self):
+        no_contact_oms = NoContactOM.objects.filter(message=self)
+        outbound_messages = OutboundMessage.objects.filter(message=self)
+
+        return list(chain(no_contact_oms, outbound_messages))
+
     def get_absolute_url(self):
         return reverse('message_detail', \
             subdomain=self.writeitinstance.slug, \
             kwargs={'slug': self.slug})
 
     def slugifyme(self):
-        if not slugify(unidecode(self.subject)):
+        if not slugify(unidecode(unicode(self.subject))):
             self.subject = '-'
 
-        self.slug = slugify(unidecode(self.subject))
+        self.slug = slugify(unidecode(unicode(self.subject)))
         #Previously created messages with the same slug
 
         regex = "^"+self.slug+"(-[0-9]*){0,1}$"
@@ -230,30 +239,33 @@ class Message(models.Model):
         Moderation.objects.create(message=self)
 
     def create_outbound_messages(self):
-        # This function needs to be refactored to 
-        # do only a single thing
-        if self.persons:
-            for person in self.persons:
-                if not person.contact_set.all():
-                    NoContactOM.objects.create(message=self, person=person)
-                for contact in person.contact_set.\
-                    filter(owner=self.writeitinstance.owner):
-                    if not contact.is_bounced:
-                        outbound_message = OutboundMessage.objects.\
-                        get_or_create(contact=contact, message=self)
+        if not self.persons:
+            return
+        for person in self.persons:
+            self.create_outbound_messages_to_person(person)
+                
+
+    def create_outbound_messages_to_person(self, person):
+        if not person.contact_set.all():
+            NoContactOM.objects.get_or_create(message=self, person=person)
+            return
+        for contact in person.contact_set.filter(
+            owner=self.writeitinstance.owner):
+            if not contact.is_bounced:
+                outbound_message = OutboundMessage.objects.\
+                get_or_create(contact=contact, message=self)
 
     def save(self, *args, **kwargs):
         created = self.id is None
         if created and self.writeitinstance.moderation_needed_in_all_messages:
             self.moderated = False
         super(Message, self).save(*args, **kwargs)
-        if created:
-            if not self.public:
-                self.create_moderation()
+        if created and not self.public:
+            self.create_moderation()
         self.create_outbound_messages()
 
     def set_to_ready(self):
-        for outbound_message in self.outboundmessage_set.all():
+        for outbound_message in self.outbound_messages:
             outbound_message.status = 'ready'
             outbound_message.save()
 
@@ -319,8 +331,7 @@ class Answer(models.Model):
     person = models.ForeignKey(Person)
     message = models.ForeignKey(Message, \
         related_name='answers')
-    created = models.DateField(default=datetime.datetime.utcnow()\
-        .replace(tzinfo=utc))
+    created = models.DateField(default=now())
 
     def __init__(self, *args, **kwargs):
         super(Answer, self).__init__(*args, **kwargs)
@@ -437,6 +448,36 @@ class AbstractOutboundMessage(models.Model):
 class NoContactOM(AbstractOutboundMessage):
     person = models.ForeignKey(Person)
 
+# This will happen everytime a contact is created
+
+def create_new_outbound_messages_for_newly_created_contact(sender, instance, created, **kwargs):
+    if kwargs['raw']:
+        return
+    
+    contact = instance
+    if not created:
+        return
+    writeitinstances = WriteItInstance.objects.filter(owner=contact.owner)
+    messages = Message.objects.filter(writeitinstance__in=writeitinstances)
+    no_contact_oms = NoContactOM.objects.filter(\
+        message__in=messages, \
+        person=contact.person)
+    # NOTE TO DEVELOPER:
+    # now it is automatic that everytime a contact is created
+    # the nocontact_om is deleted and we create outbound messages
+    # but what if we let the user choose if they want or not that behaviour
+    for no_contact_om in no_contact_oms:
+        om = OutboundMessage.objects.create(\
+            contact=contact, \
+            message=no_contact_om.message,
+            #here I should test that it also 
+            # copies the status
+            status=no_contact_om.status
+            )
+
+    no_contact_oms.delete()
+post_save.connect(create_new_outbound_messages_for_newly_created_contact, sender=Contact)
+
 class OutboundMessage(AbstractOutboundMessage):
     """docstring for OutboundMessage: This class is \
     the message delivery unit. The OutboundMessage is \
@@ -540,8 +581,7 @@ class OutboundMessagePluginRecord(models.Model):
 class Confirmation(models.Model):
     message = models.OneToOneField(Message)
     key = models.CharField(max_length=64, unique=True)
-    created = models.DateField(default=datetime.\
-                    datetime.utcnow().replace(tzinfo=utc))
+    created = models.DateField(default=now())
     confirmated_at = models.DateField(default=None, null=True)
 
     def save(self, *args, **kwargs):
