@@ -82,10 +82,6 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
 
     content_text = property(get_content_text, set_content_text)
 
-
-
-    
-
     def send_back(self):
         if self.is_bounced:
             self.report_bounce()
