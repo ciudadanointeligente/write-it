@@ -28,7 +28,23 @@ class ApiKeyAuth(AuthBase):
         r.headers['Authorization'] = 'ApiKey %s:%s' % (self.username, self.api_key)
         return r
 
-class EmailAnswer(object):
+class EmailSaveMixin(object):
+    def save(self):
+        data = {
+        'key': self.outbound_message_identifier,
+        'content': self.content_text,
+        'format' :'json'
+        }
+        headers = {'content-type': 'application/json'}
+        result = self.requests_session.post(config.WRITEIT_API_ANSWER_CREATION, data=json.dumps(data), headers=headers)
+        log = "When sent to %(location)s the status code was %(status_code)d"
+        log = log % {
+            'location':config.WRITEIT_API_ANSWER_CREATION,
+            'status_code':result.status_code
+            }
+        logging.info(log)
+
+class EmailAnswer(EmailSaveMixin):
     def __init__(self):
         self.subject = ''
         self._content_text = ''
@@ -59,20 +75,7 @@ class EmailAnswer(object):
 
 
 
-    def save(self):
-        data = {
-        'key': self.outbound_message_identifier,
-        'content': self.content_text,
-        'format' :'json'
-        }
-        headers = {'content-type': 'application/json'}
-        result = self.requests_session.post(config.WRITEIT_API_ANSWER_CREATION, data=json.dumps(data), headers=headers)
-        log = "When sent to %(location)s the status code was %(status_code)d"
-        log = log % {
-            'location':config.WRITEIT_API_ANSWER_CREATION,
-            'status_code':result.status_code
-            }
-        logging.info(log)
+    
 
     def send_back(self):
         if self.is_bounced:
