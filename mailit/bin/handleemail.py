@@ -28,6 +28,15 @@ class ApiKeyAuth(AuthBase):
         r.headers['Authorization'] = 'ApiKey %s:%s' % (self.username, self.api_key)
         return r
 
+class EmailReportBounceMixin(object):
+
+    def report_bounce(self):
+        data = {
+        'key':self.outbound_message_identifier
+        }
+        headers = {'content-type': 'application/json'}
+        result = self.requests_session.post(config.WRITEIT_API_WHERE_TO_REPORT_A_BOUNCE, data=json.dumps(data), headers=headers)
+
 class EmailSaveMixin(object):
     def save(self):
         data = {
@@ -44,7 +53,7 @@ class EmailSaveMixin(object):
             }
         logging.info(log)
 
-class EmailAnswer(EmailSaveMixin):
+class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
     def __init__(self):
         self.subject = ''
         self._content_text = ''
@@ -83,12 +92,6 @@ class EmailAnswer(EmailSaveMixin):
         else:
             self.save()
 
-    def report_bounce(self):
-        data = {
-        'key':self.outbound_message_identifier
-        }
-        headers = {'content-type': 'application/json'}
-        result = self.requests_session.post(config.WRITEIT_API_WHERE_TO_REPORT_A_BOUNCE, data=json.dumps(data), headers=headers)
 
 class EmailHandler():
     def __init__(self, answer_class=EmailAnswer):
