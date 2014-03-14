@@ -243,7 +243,7 @@ class Message(models.Model):
             return
         for person in self.persons:
             self.create_outbound_messages_to_person(person)
-                
+
 
     def create_outbound_messages_to_person(self, person):
         if not person.contact_set.all():
@@ -436,7 +436,7 @@ class AbstractOutboundMessage(models.Model):
         ("needmodera", _("Needs moderation")),
         )
 
-    
+
     message = models.ForeignKey(Message)
     status = models.CharField(max_length="10", \
                 choices=STATUS_CHOICES, \
@@ -453,7 +453,7 @@ class NoContactOM(AbstractOutboundMessage):
 def create_new_outbound_messages_for_newly_created_contact(sender, instance, created, **kwargs):
     if kwargs['raw']:
         return
-    
+
     contact = instance
     if not created:
         return
@@ -470,7 +470,7 @@ def create_new_outbound_messages_for_newly_created_contact(sender, instance, cre
         om = OutboundMessage.objects.create(\
             contact=contact, \
             message=no_contact_om.message,
-            #here I should test that it also 
+            #here I should test that it also
             # copies the status
             status=no_contact_om.status
             )
@@ -577,6 +577,25 @@ class OutboundMessagePluginRecord(models.Model):
     number_of_attempts = models.PositiveIntegerField(default=0)
     try_again = models.BooleanField(default=True)
 
+
+default_confirmation_template_content = ''
+with open('nuntium/templates/nuntium/mails/confirmation/content_template.html', 'r') as f:
+    default_confirmation_template_content = f.read()
+
+
+default_confirmation_template_content_text = ''
+with open('nuntium/templates/nuntium/mails/confirmation/content_template.txt', 'r') as f:
+    default_confirmation_template_content_text = f.read()
+
+default_confirmation_template_subject = ''
+with open('nuntium/templates/nuntium/mails/confirmation/subject_template.txt', 'r') as f:
+    default_confirmation_template_subject = f.read()
+
+class ConfirmationTemplate(models.Model):
+    writeitinstance = models.ForeignKey(WriteItInstance)
+    content_html = models.TextField(default=default_confirmation_template_content)
+    content_text = models.TextField(default=default_confirmation_template_content_text)
+    subject = models.CharField(max_length=512, default=default_confirmation_template_subject)
 
 class Confirmation(models.Model):
     message = models.OneToOneField(Message)
