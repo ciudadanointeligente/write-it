@@ -2,7 +2,8 @@
 from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, \
                         CharField, EmailField, SelectMultiple, TextInput, Textarea
 from nuntium.models import Message, WriteItInstance, OutboundMessage, \
-                            Confirmation, Membership, NewAnswerNotificationTemplate
+    Confirmation, Membership, NewAnswerNotificationTemplate, \
+    ConfirmationTemplate
 from contactos.models import Contact
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
@@ -41,12 +42,12 @@ class PersonMultipleChoiceField(ModelMultipleChoiceField):
 
     def label_from_instance(self, obj):
         return obj.name
-        
+
 
 class MessageCreateForm(ModelForm):
     ''' docstring for MessageCreateForm'''
-    
-    
+
+
     persons = PersonMultipleChoiceField(queryset=Person.objects.none())
 
 
@@ -55,7 +56,7 @@ class MessageCreateForm(ModelForm):
         try:
             writeitinstance = kwargs.pop("writeitinstance")
         except:
-            raise ValidationError(_('Instance not present'))        
+            raise ValidationError(_('Instance not present'))
         self.writeitinstance = writeitinstance
         persons = Person.objects.filter(writeit_instances=writeitinstance)
         super(MessageCreateForm, self).__init__(*args, **kwargs)
@@ -134,3 +135,16 @@ class NewAnswerNotificationTemplateForm(ModelForm):
             'template_html': Textarea(attrs={'class': 'form-control'}),
             'template_text': Textarea(attrs={'class': 'form-control'}),
         }
+
+class ConfirmationTemplateForm(ModelForm):
+    class Meta:
+        model = ConfirmationTemplate
+        fields = ['subject','content_html','content_text',]
+
+    def __init__(self, *args,**kwargs):
+        if "writeitinstance" not in kwargs:
+            raise ValidationError(_("WriteIt Instance not present"))
+        self.writeitinstance = kwargs.pop("writeitinstance")
+        super(ConfirmationTemplateForm, self).__init__(*args, **kwargs)
+
+

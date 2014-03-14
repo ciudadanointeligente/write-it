@@ -11,6 +11,7 @@ from django.contrib.sites.models import Site
 from django.utils.unittest import skip
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.forms import ValidationError
 from django.template import Context, Template
 
 class ConfirmationTemplateTestCase(TestCase):
@@ -86,3 +87,41 @@ class ConfirmationTemplateTestCase(TestCase):
         self.assertEquals(mail.outbox[0].body, expected_body)
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue(message.author_email in mail.outbox[0].to)
+
+from nuntium.forms import ConfirmationTemplateForm
+
+class ConfirmationTemplateFormTestCase(TestCase):
+    def setUp(self):
+        super(ConfirmationTemplateFormTestCase, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.all()[0]
+
+
+    def test_instanciate_form(self):
+        """Instanciate the form for changing the confirmation template"""
+        data = {
+            "content_text":"html",
+            "content_html":"text",
+            "subject" : "subject"
+        }
+        form = ConfirmationTemplateForm(data=data,
+                                        writeitinstance=self.writeitinstance,
+                                        instance=self.writeitinstance.confirmationtemplate)
+        self.assertTrue(form.is_valid())
+        template = form.save()
+
+        self.assertEquals(template.content_text, data["content_text"])
+        self.assertEquals(template.content_html, data["content_html"])
+        self.assertEquals(template.subject, data["subject"])
+
+    def test_instanciate_without_a_writeit_instance_throws_an_error(self):
+        """When trying to instanciate the form without a writeit instance it throws an error"""
+        data = {
+            "content_text":"html",
+            "content_html":"text",
+            "subject" : "subject"
+        }
+        with self.assertRaises(ValidationError) as error:
+            form = ConfirmationTemplateForm(data=data,
+                                            #writeitinstance=self.writeitinstance,
+                                            instance=self.writeitinstance.confirmationtemplate)
+
