@@ -38,10 +38,19 @@ class OutboundMessageTestCase(TestCase):
         self.assertEquals(outbound_message.__unicode__(), expected_unicode)
 
     def test_outbound_messsages_creation_on_message_save(self):
-        new_outbound_messages = OutboundMessage.objects.all()
-        #I need to fix the correct number is now 4 based on example_data.yaml
-        #wich makes not robust to changes in example_data.yaml
-        self.assertEquals(new_outbound_messages.count(), 4)
+        """Creates an outbound message when a message is created"""
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Fiera es una perra feroz', 
+            writeitinstance= self.message.writeitinstance,
+            persons = [self.contact1.person])
+
+
+        new_outbound_messages = OutboundMessage.objects.filter(message=message)
+
+        self.assertEquals(new_outbound_messages.count(), 1)
+
 
 
     def test_successful_send(self):
