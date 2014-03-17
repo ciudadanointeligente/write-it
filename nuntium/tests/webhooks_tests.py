@@ -18,7 +18,7 @@ class NewAnswerWebhooks(TestCase):
 
 
     def test_creation_of_a_new_answer_webhook(self):
-        
+
         webhook = AnswerWebHook.objects.create(
             writeitinstance=self.writeitinstance,
             url='http://someaddress.to.be.mocked'
@@ -49,7 +49,7 @@ class NewAnswerWebhooks(TestCase):
         pedro = self.writeitinstance.persons.all()[0]
         #this message is the message to which we are going to create a new answer
         message = Message.objects.filter(writeitinstance=self.writeitinstance)[0]
-        
+
         expected_payload = {
                 'message_id':'/api/v1/message/{0}/'.format(message.id),
                 'content':'holiwi',
@@ -63,6 +63,7 @@ class NewAnswerWebhooks(TestCase):
 
 
     def test_it_does_not_send_the_payload_twice(self):
+        """It doesn't send the payload twice"""
         webhook = AnswerWebHook.objects.create(
             writeitinstance=self.writeitinstance,
             url='http://someaddress.to.be.mocked'
@@ -70,7 +71,7 @@ class NewAnswerWebhooks(TestCase):
         pedro = self.writeitinstance.persons.all()[0]
         #this message is the message to which we are going to create a new answer
         message = Message.objects.filter(writeitinstance=self.writeitinstance)[0]
-        
+
         expected_payload = {
                 'message_id':'/api/v1/message/{0}/'.format(message.id),
                 'content':'holiwi',

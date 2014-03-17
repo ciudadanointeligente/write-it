@@ -5,7 +5,9 @@ local_settings.py
 *.DS_store
 *.mo
 *.db
+*.swp
 .coverage
+.ropeproject
 mailing_logger.txt
 celerybeat-schedule
 

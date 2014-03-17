@@ -13,7 +13,7 @@ from django.utils.timezone import utc
 from djangoplugins.models import Plugin
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template, get_template_from_string
-from django.template import Context
+from django.template import Context, Template
 from django.conf import settings
 from subdomains.utils import reverse
 from django.contrib.sites.models import Site
@@ -71,6 +71,9 @@ def new_write_it_instance(sender, instance, created, **kwargs):
         NewAnswerNotificationTemplate.objects.create(
             writeitinstance=instance
             )
+        ConfirmationTemplate.objects.create(
+            writeitinstance=instance
+        )
 
 post_save.connect(new_write_it_instance, sender=WriteItInstance)
 
@@ -243,7 +246,7 @@ class Message(models.Model):
             return
         for person in self.persons:
             self.create_outbound_messages_to_person(person)
-                
+
 
     def create_outbound_messages_to_person(self, person):
         if not person.contact_set.all():
@@ -436,7 +439,7 @@ class AbstractOutboundMessage(models.Model):
         ("needmodera", _("Needs moderation")),
         )
 
-    
+
     message = models.ForeignKey(Message)
     status = models.CharField(max_length="10", \
                 choices=STATUS_CHOICES, \
@@ -453,7 +456,7 @@ class NoContactOM(AbstractOutboundMessage):
 def create_new_outbound_messages_for_newly_created_contact(sender, instance, created, **kwargs):
     if kwargs['raw']:
         return
-    
+
     contact = instance
     if not created:
         return
@@ -470,7 +473,7 @@ def create_new_outbound_messages_for_newly_created_contact(sender, instance, cre
         om = OutboundMessage.objects.create(\
             contact=contact, \
             message=no_contact_om.message,
-            #here I should test that it also 
+            #here I should test that it also
             # copies the status
             status=no_contact_om.status
             )
@@ -578,6 +581,25 @@ class OutboundMessagePluginRecord(models.Model):
     try_again = models.BooleanField(default=True)
 
 
+default_confirmation_template_content = ''
+with open('nuntium/templates/nuntium/mails/confirmation/content_template.html', 'r') as f:
+    default_confirmation_template_content = f.read()
+
+
+default_confirmation_template_content_text = ''
+with open('nuntium/templates/nuntium/mails/confirmation/content_template.txt', 'r') as f:
+    default_confirmation_template_content_text = f.read()
+
+default_confirmation_template_subject = ''
+with open('nuntium/templates/nuntium/mails/confirmation/subject_template.txt', 'r') as f:
+    default_confirmation_template_subject = f.read()
+
+class ConfirmationTemplate(models.Model):
+    writeitinstance = models.OneToOneField(WriteItInstance)
+    content_html = models.TextField(default=default_confirmation_template_content)
+    content_text = models.TextField(default=default_confirmation_template_content_text)
+    subject = models.CharField(max_length=512, default=default_confirmation_template_subject)
+
 class Confirmation(models.Model):
     message = models.OneToOneField(Message)
     key = models.CharField(max_length=64, unique=True)
@@ -614,8 +636,10 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
         current_site = Site.objects.get_current()
         confirmation_full_url = url
         message_full_url = confirmation.message.get_absolute_url()
-        plaintext = get_template('nuntium/mails/confirm.txt')
-        htmly = get_template('nuntium/mails/confirm.html')
+        plaintext = Template(confirmation.message.writeitinstance.confirmationtemplate.content_text)
+        htmly = Template(confirmation.message.writeitinstance.confirmationtemplate.content_html)
+        subject = confirmation.message.writeitinstance.confirmationtemplate.subject
+        subject = subject.rstrip()
 
         d = Context({'confirmation': confirmation,
             'confirmation_full_url': confirmation_full_url,
@@ -628,7 +652,7 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
                         settings.DEFAULT_FROM_DOMAIN
 
         msg = EmailMultiAlternatives(
-            _('Confirmation email for a message in WriteIt'),
+            subject,
             text_content,#content
             from_email,#From
             [confirmation.message.author_email]#To
@@ -636,7 +660,7 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
         msg.attach_alternative(html_content, "text/html")
         try:
             msg.send()
-        except:
+        except Exception, e:
             pass
 
 
