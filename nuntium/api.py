@@ -108,7 +108,7 @@ class AnswerResource(ModelResource):
      full=True, \
      null=True)
     class Meta:
-        queryset =  Answer.objects.all()
+        queryset =  Answer.objects.all().order_by('-created')
         resource_name = 'answer'
 
     def get_list(self, request, **kwargs):

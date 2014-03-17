@@ -92,3 +92,22 @@ class AnswersResourceTestCase(ResourceTestCase):
         self.assertEquals(person["popit_url"], self.answer.person.popit_url)
         self.assertEquals(person["resource_uri"], self.answer.person.popit_url)
         self.assertEquals(person["summary"], self.answer.person.summary)
+
+
+    def test_answer_ordering(self):
+        """The answers are displayed from new to old"""
+        Answer.objects.all().delete()
+        answer2 = Answer.objects.create(message=self.answer.message, \
+            content="hello this is an answer", \
+            person=self.answer.person
+            )
+        answer1 = Answer.objects.create(message=self.answer.message, \
+            content="hello this is an answer", \
+            person=self.answer.person
+            )
+        answers_json = self.deserialize(AnswerResource().get_list(HttpRequest()))['objects']
+        for answer in answers_json:
+            print answer['id'], answer['created']
+        self.assertEquals(answers_json[0]['id'], answer1.id)
+        self.assertEquals(answers_json[1]['id'], answer2.id)
+

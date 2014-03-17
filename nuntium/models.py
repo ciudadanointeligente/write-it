@@ -331,7 +331,7 @@ class Answer(models.Model):
     person = models.ForeignKey(Person)
     message = models.ForeignKey(Message, \
         related_name='answers')
-    created = models.DateField(default=now())
+    created = models.DateTimeField(auto_now=True, null=True)
 
     def __init__(self, *args, **kwargs):
         super(Answer, self).__init__(*args, **kwargs)
