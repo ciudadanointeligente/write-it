@@ -207,6 +207,9 @@ class WriteItInstanceTemplateUpdateView(DetailView):
         context['mailit_template_form'] = MailitTemplateForm(writeitinstance=self.object, \
             instance=self.object.mailit_template
             )
+        context['confirmation_template_form'] = ConfirmationTemplateForm(writeitinstance=self.object, \
+            instance=self.object.confirmationtemplate
+            )
         return context
 
 class WriteItInstanceUpdateView(UpdateView):

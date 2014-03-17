@@ -140,6 +140,11 @@ class ConfirmationTemplateForm(ModelForm):
     class Meta:
         model = ConfirmationTemplate
         fields = ['subject','content_html','content_text',]
+        widgets = {
+            'subject': TextInput(attrs={'class': 'form-control'}),
+            'content_html': Textarea(attrs={'class': 'form-control'}),
+            'content_text': Textarea(attrs={'class': 'form-control'}),
+        }
 
     def __init__(self, *args,**kwargs):
         if "writeitinstance" not in kwargs:
