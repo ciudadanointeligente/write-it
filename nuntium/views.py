@@ -3,9 +3,9 @@ from django.views.generic.edit import UpdateView
 from subdomains.utils import reverse
 from django.core.urlresolvers import reverse as original_reverse
 from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation, Membership,\
-                            NewAnswerNotificationTemplate
+                            NewAnswerNotificationTemplate, ConfirmationTemplate
 from nuntium.forms import MessageCreateForm, WriteItInstanceBasicForm, NewAnswerNotificationTemplateForm,\
-                        MessageSearchForm, PerInstanceSearchForm
+                        MessageSearchForm, PerInstanceSearchForm, ConfirmationTemplateForm
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
 from django.http import Http404
@@ -45,7 +45,7 @@ class WriteItInstanceDetailView(CreateView):
                 self.object = self.model.objects.get(slug=subdomain)
             except WriteItInstance.DoesNotExist, e:
                 raise Http404
-            
+
         return self.object
 
 
@@ -65,7 +65,7 @@ class WriteItInstanceDetailView(CreateView):
     def get_form_kwargs(self):
         kwargs = super(WriteItInstanceDetailView, self).get_form_kwargs()
         self.object = self.get_object()
-        kwargs['writeitinstance'] = self.object        
+        kwargs['writeitinstance'] = self.object
         return kwargs
 
     def get_context_data(self, **kwargs):
@@ -110,7 +110,7 @@ class ConfirmView(DetailView):
         confirmation = super(ConfirmView, self).get_object(queryset)
 
         return confirmation
-    
+
 
     def get_context_data(self, **kwargs):
         context = super(ConfirmView, self).get_context_data(**kwargs)
@@ -130,7 +130,7 @@ class ModerationView(DetailView):
 
 class AcceptModerationView(ModerationView):
     template_name = "nuntium/moderation_accepted.html"
-    
+
 
     def get(self, *args, **kwargs):
         moderation = self.get_object()
@@ -141,7 +141,7 @@ class AcceptModerationView(ModerationView):
 class RejectModerationView(ModerationView):
     template_name = "nuntium/moderation_rejected.html"
 
-    def get(self, *args, **kwargs):        
+    def get(self, *args, **kwargs):
         get = super(RejectModerationView, self).get(*args,**kwargs)
         self.get_object().message.delete()
         return get
@@ -154,7 +154,7 @@ class RootRedirectView(RedirectView):
         return url
 
 class MessageSearchView(SearchView):
-    
+
 
     def __init__(self, *args, **kwargs):
         super(MessageSearchView, self).__init__(*args, **kwargs)
@@ -201,7 +201,7 @@ class WriteItInstanceTemplateUpdateView(DetailView):
 
     def get_context_data(self,**kwargs):
         context = super(WriteItInstanceTemplateUpdateView, self).get_context_data(**kwargs)
-        context['new_answer_template_form'] = NewAnswerNotificationTemplateForm(writeitinstance=self.object, 
+        context['new_answer_template_form'] = NewAnswerNotificationTemplateForm(writeitinstance=self.object,
             instance=self.object.new_answer_notification_template)
 
         context['mailit_template_form'] = MailitTemplateForm(writeitinstance=self.object, \
@@ -222,7 +222,7 @@ class WriteItInstanceUpdateView(UpdateView):
         return reverse('writeitinstance_basic_update', kwargs={'pk':self.object.pk})
 
     def form_valid(self, form):
-        # I've been using this 
+        # I've been using this
         # solution http://stackoverflow.com/questions/12224442/class-based-views-for-m2m-relationship-with-intermediate-model
         # but I think this logic can be moved to the form instead
         # and perhaps use the same form for creating and updating
@@ -237,7 +237,7 @@ class WriteItInstanceUpdateView(UpdateView):
 
         form.save_m2m()
         response = super(WriteItInstanceUpdateView, self).form_valid(form)
-        
+
         return response
 
 
@@ -267,29 +267,35 @@ class YourInstancesView(UserSectionListView):
     template_name = 'nuntium/profiles/your-instances.html'
 
 
-class NewAnswerNotificationTemplateUpdateView(UpdateView):
-    form_class = NewAnswerNotificationTemplateForm
-    model = NewAnswerNotificationTemplate
+class UpdateTemplateWithWriteitMixin(UpdateView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        return super(NewAnswerNotificationTemplateUpdateView, self).dispatch(*args, **kwargs)
+        return super(UpdateTemplateWithWriteitMixin, self).dispatch(*args, **kwargs)
 
     def get_object(self):
         self.writeitinstance = get_object_or_404(WriteItInstance, pk=self.kwargs['pk'])
         if not self.writeitinstance.owner.__eq__(self.request.user):
             raise Http404
-        self.object = NewAnswerNotificationTemplate.objects.get(writeitinstance=self.writeitinstance)
+
+        self.object = self.model.objects.get(writeitinstance=self.writeitinstance)
         return self.object
 
     def get_form_kwargs(self):
-        kwargs = super(NewAnswerNotificationTemplateUpdateView, self).get_form_kwargs()
-        kwargs['writeitinstance'] = self.writeitinstance        
+        kwargs = super(UpdateTemplateWithWriteitMixin, self).get_form_kwargs()
+        kwargs['writeitinstance'] = self.writeitinstance
         return kwargs
 
     def get_success_url(self):
         return reverse('writeitinstance_template_update', kwargs={'pk':self.writeitinstance.pk})
 
+class NewAnswerNotificationTemplateUpdateView(UpdateTemplateWithWriteitMixin):
+    form_class = NewAnswerNotificationTemplateForm
+    model = NewAnswerNotificationTemplate
+
+class ConfirmationTemplateUpdateView(UpdateTemplateWithWriteitMixin):
+    form_class = ConfirmationTemplateForm
+    model = ConfirmationTemplate
 
 class MessagesPerPersonView(ListView):
     model = Message

@@ -13,6 +13,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.forms import ValidationError
 from django.template import Context, Template
+from django.test.client import Client
 
 class ConfirmationTemplateTestCase(TestCase):
     def setUp(self):
@@ -124,4 +125,28 @@ class ConfirmationTemplateFormTestCase(TestCase):
             form = ConfirmationTemplateForm(data=data,
                                             #writeitinstance=self.writeitinstance,
                                             instance=self.writeitinstance.confirmationtemplate)
+
+    def test_update_url(self):
+        """Updating the template using the web"""
+        url = reverse('edit_confirmation_template', kwargs={'pk':self.writeitinstance.pk})
+        self.assertTrue(url)
+        c = Client()
+        c.login(username="admin", password="admin")
+        data = {
+            "content_text":"html",
+            "content_html":"text",
+            "subject" : "subject"
+        }
+        response = c.post(url, data=data)
+        your_instances_url = reverse('writeitinstance_template_update',\
+            kwargs={"pk":self.writeitinstance.id})
+        self.assertRedirects(response, your_instances_url)
+        #it was updated
+        template = self.writeitinstance.confirmationtemplate
+
+        self.assertEquals(template.content_html, data["content_html"])
+        self.assertEquals(template.content_text, data["content_text"])
+        self.assertEquals(template.subject, data["subject"])
+
+
 
