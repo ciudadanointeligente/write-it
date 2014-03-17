@@ -38,7 +38,7 @@ class OutboundMessageTestCase(TestCase):
         self.assertEquals(outbound_message.__unicode__(), expected_unicode)
 
     def test_outbound_messsages_creation_on_message_save(self):
-        """Creates an outbound message when a message is created"""
+        """Creates an outbound message when a message is created""" 
         message = Message.objects.create(content = 'Content 1', 
             author_name='Felipe', 
             author_email="falvarez@votainteligente.cl", 
@@ -50,6 +50,9 @@ class OutboundMessageTestCase(TestCase):
         new_outbound_messages = OutboundMessage.objects.filter(message=message)
 
         self.assertEquals(new_outbound_messages.count(), 1)
+        outbound_message = new_outbound_messages[0]
+        self.assertEquals(outbound_message.contact, self.contact1)
+        self.assertEquals(outbound_message.message, message)
 
 
 
