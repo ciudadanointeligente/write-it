@@ -70,7 +70,7 @@ class WriteItInstanceResource(ModelResource):
         basic_bundle = self.build_bundle(request=request)
         obj = self.cached_obj_get(bundle=basic_bundle, \
                         **self.remove_api_resource_names(kwargs))
-        return MessageResource().get_list(request, writeitinstance=obj)
+        return MessageResource().get_list(request)
 
     def handle_instance_answers(self, request, *args, **kwargs):
         basic_bundle = self.build_bundle(request=request)
