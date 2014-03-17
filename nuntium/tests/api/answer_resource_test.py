@@ -26,6 +26,7 @@ class AnswersResourceTestCase(ResourceTestCase):
 
 
     def test_resource_get_all_answers(self):
+        '''Get all answers through the API'''
         resource = AnswerResource()
         self.assertTrue(resource)
 
@@ -72,3 +73,22 @@ class AnswersResourceTestCase(ResourceTestCase):
         self.assertEquals(len(answers), len(answers_of_the_other_instance))
         self.assertEquals(answers[0]['id'], answer.id)
         self.assertEquals(answers[0]['content'], answer.content)
+
+    def test_get_the_person_that_answered(self):
+        '''The API tells who answered the current answer'''
+        resource = AnswerResource()
+
+        request = HttpRequest()
+        answers_json = self.deserialize(resource.get_list(request))['objects']
+        answer_json = answers_json[0]
+
+        self.assertIn('person', answer_json)
+        person = answer_json['person']
+
+        self.assertEquals(person["id"], self.answer.person.id)
+        self.assertEquals(person["image"], self.answer.person.image)
+        self.assertEquals(person["name"], self.answer.person.name)
+        self.assertEquals(person["popit_id"], self.answer.person.popit_id)
+        self.assertEquals(person["popit_url"], self.answer.person.popit_url)
+        self.assertEquals(person["resource_uri"], self.answer.person.popit_url)
+        self.assertEquals(person["summary"], self.answer.person.summary)

@@ -103,6 +103,10 @@ class WriteItInstanceResource(ModelResource):
         return bundle
 
 class AnswerResource(ModelResource):
+    person = fields.ToOneField(PersonResource,\
+     'person', \
+     full=True, \
+     null=True)
     class Meta:
         queryset =  Answer.objects.all()
         resource_name = 'answer'
