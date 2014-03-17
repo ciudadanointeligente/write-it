@@ -97,7 +97,7 @@ class Migration(SchemaMigration):
         u'nuntium.answer': {
             'Meta': {'object_name': 'Answer'},
             'content': ('django.db.models.fields.TextField', [], {}),
-            'created': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2014, 3, 14, 0, 0)'}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'message': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'answers'", 'to': u"orm['nuntium.Message']"}),
             'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['popit.Person']"})
@@ -111,7 +111,7 @@ class Migration(SchemaMigration):
         u'nuntium.confirmation': {
             'Meta': {'object_name': 'Confirmation'},
             'confirmated_at': ('django.db.models.fields.DateField', [], {'default': 'None', 'null': 'True'}),
-            'created': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2014, 3, 14, 0, 0)'}),
+            'created': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2014, 3, 17, 0, 0)'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'key': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '64'}),
             'message': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['nuntium.Message']", 'unique': 'True'})
@@ -148,7 +148,7 @@ class Migration(SchemaMigration):
         u'nuntium.messagerecord': {
             'Meta': {'object_name': 'MessageRecord'},
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
-            'datetime': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2014, 3, 14, 0, 0)'}),
+            'datetime': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2014, 3, 17, 0, 0)'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
             'status': ('django.db.models.fields.CharField', [], {'max_length': '255'})
