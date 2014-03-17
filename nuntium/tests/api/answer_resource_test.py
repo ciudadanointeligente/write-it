@@ -35,7 +35,7 @@ class AnswersResourceTestCase(ResourceTestCase):
         self.assertEquals(answers_json[0]["id"], self.answer.id)
 
     def test_get_the_list_of_answers_per_instance(self):
-        """Get the list of answers in an instance"""
+        """Get the list of answers in an writetinstance instance"""
         url = '/api/v1/instance/%(writeitinstance_id)i/answers/' % {
             'writeitinstance_id' : self.writeitinstance.id
         }
@@ -50,3 +50,25 @@ class AnswersResourceTestCase(ResourceTestCase):
         self.assertEquals(answers[0]['id'], self.answer.id)
 
 
+    def test_get_only_answers_of_the_instance(self):
+        """Show answers from the writeitinstance only"""
+        the_other_instance = WriteItInstance.objects.all()[1]
+        person = Person.objects.all()[0]
+        message = the_other_instance.message_set.all()[0]
+        answer = Answer.objects.create(message=message, \
+            content="hello this is an answer", \
+            person=person
+            )
+
+
+        url = '/api/v1/instance/%(writeitinstance_id)i/answers/' % {
+            'writeitinstance_id' : the_other_instance.id
+        }
+        response = self.api_client.get(url,data = self.data)
+        answers = self.deserialize(response)['objects']
+        answers_of_the_other_instance = Answer.objects.filter(
+            message__writeitinstance=the_other_instance
+            )
+        self.assertEquals(len(answers), len(answers_of_the_other_instance))
+        self.assertEquals(answers[0]['id'], answer.id)
+        self.assertEquals(answers[0]['content'], answer.content)

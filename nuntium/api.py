@@ -70,7 +70,7 @@ class WriteItInstanceResource(ModelResource):
         basic_bundle = self.build_bundle(request=request)
         obj = self.cached_obj_get(bundle=basic_bundle, \
                         **self.remove_api_resource_names(kwargs))
-        return MessageResource().get_list(request)
+        return MessageResource().get_list(request, writeitinstance=obj)
 
     def handle_instance_answers(self, request, *args, **kwargs):
         basic_bundle = self.build_bundle(request=request)
@@ -106,6 +106,18 @@ class AnswerResource(ModelResource):
     class Meta:
         queryset =  Answer.objects.all()
         resource_name = 'answer'
+
+    def get_list(self, request, **kwargs):
+        self.writeitinstance = None
+        if "writeitinstance" in kwargs:
+            self.writeitinstance = kwargs.pop("writeitinstance")
+        return super(AnswerResource, self).get_list(request, **kwargs)
+
+    def apply_filters(self, request, applicable_filters):
+        result = super(AnswerResource, self).apply_filters(request, applicable_filters)
+        if self.writeitinstance:
+            result = result.filter(message__writeitinstance=self.writeitinstance)
+        return result
 
 class MessageResource(ModelResource):
     writeitinstance = fields.ToOneField(WriteItInstanceResource, \
