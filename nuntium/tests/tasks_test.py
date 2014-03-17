@@ -23,7 +23,8 @@ class TasksTestCase(TestCase):
         result = send_mails_task()
 
         self.assertEquals(OutboundMessage.objects.filter(status="new").count(), 0)
-        self.assertEquals(OutboundMessage.objects.filter(status="sent").count(), 4)
+        self.assertEquals(OutboundMessage.objects.filter(status="sent").count(), \
+            OutboundMessage.objects.count())
 
 
     def test_it_logs_the_sending_of_emails(self):
