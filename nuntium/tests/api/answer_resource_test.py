@@ -19,6 +19,10 @@ class AnswersResourceTestCase(ResourceTestCase):
         super(AnswersResourceTestCase,self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
         self.answer = Answer.objects.all()[0]
+        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.user = User.objects.all()[0]
+        self.api_client = TestApiClient()
+        self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
 
 
     def test_resource_get_all_answers(self):
@@ -29,3 +33,20 @@ class AnswersResourceTestCase(ResourceTestCase):
         answers_json = self.deserialize(resource.get_list(request))['objects']
         self.assertEquals(len(answers_json), Answer.objects.count())
         self.assertEquals(answers_json[0]["id"], self.answer.id)
+
+    def test_get_the_list_of_answers_per_instance(self):
+        """Get the list of answers in an instance"""
+        url = '/api/v1/instance/%(writeitinstance_id)i/answers/' % {
+            'writeitinstance_id' : self.writeitinstance.id
+        }
+        response = self.api_client.get(url,data = self.data)
+        self.assertValidJSONResponse(response)
+        answers = self.deserialize(response)['objects']
+        answers_of_the_writeitinstance = Answer.objects.filter(
+            message__writeitinstance=self.writeitinstance
+            )
+        self.assertEquals(len(answers), len(answers_of_the_writeitinstance))
+        self.assertEquals(answers[0]['content'], self.answer.content)
+        self.assertEquals(answers[0]['id'], self.answer.id)
+
+
