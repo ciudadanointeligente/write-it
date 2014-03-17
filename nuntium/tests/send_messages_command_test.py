@@ -17,7 +17,13 @@ class SendMessagesTestCaseTestCase(TestCase):
 
         args = []
         opts = {}
+        #All messages that should turn into sent
+        all_new_outbound_messages = OutboundMessage.objects.all()
+
         call_command('send_mails', *args, **opts)
 
+        
+
         self.assertEquals(OutboundMessage.objects.filter(status="new").count(), 0)
-        self.assertEquals(OutboundMessage.objects.filter(status="sent").count(), 4)
+        self.assertEquals(OutboundMessage.objects.filter(status="sent").count(),\
+         all_new_outbound_messages.count())
