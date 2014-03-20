@@ -1,0 +1,3 @@
+- fields: {domain: '127.0.0.1.xip.io:8000', name: '127.0.0.1.xip.io:8000'}
+  model: sites.site
+  pk: 1
