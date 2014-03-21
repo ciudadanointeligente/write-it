@@ -10,7 +10,7 @@ from django.conf import settings
 from django.template.loader import get_template_from_string
 
 
-subject_template = '%(person)s has answered to your message %(message)s'
+subject_template = '{{person}} has answered to your message {{message}}'
 
 class SubscribersTestCase(TestCase):
     def setUp(self):
@@ -129,7 +129,8 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
 
         self.assertEquals(notification_template.template_html, new_answer_html)
         self.assertEquals(notification_template.template_text, new_answer_txt)
-        self.assertEquals(notification_template.subject_template, settings.NEW_ANSWER_DEFAULT_SUBJECT_TEMPLATE)
+        self.assertEquals(notification_template.subject_template, \
+            '{{person}} has answered to your message {{message}}')
 
 
     def test_when_I_create_a_new_writeitinstance_then_a_notification_template_is_created(self):
@@ -149,7 +150,7 @@ class NewAnswerNotificationToSubscribers(TestCase):
         self.subscriber = Subscriber.objects.create(message=self.message, email=self.message.author_email)
         self.pedro = Person.objects.all()[0]
         self.owner = User.objects.all()[0]
-        self.instance.new_answer_notification_template.subject_template = 'weeena pelao %(person)s %(message)s'
+        self.instance.new_answer_notification_template.subject_template = 'weeena pelao {{person}} {{message.subject}}'
         self.instance.new_answer_notification_template.save()
         self.template_str_html = get_template_from_string(self.instance.new_answer_notification_template.template_html)
         self.template_str_txt = get_template_from_string(self.instance.new_answer_notification_template.template_text)
@@ -180,10 +181,7 @@ class NewAnswerNotificationToSubscribers(TestCase):
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertEquals(mail.outbox[0].to[0], self.subscriber.email)
         self.assertEquals(mail.outbox[0].body, template_str_txt)
-        subject = self.instance.new_answer_notification_template.subject_template%{
-            'person':self.pedro.name,
-            'message':self.message.subject
-        }
+        subject = u'weeena pelao Pedro Subject 1'
         self.assertEquals(mail.outbox[0].subject, subject)
 
         self.assertEquals(mail.outbox[0].from_email, self.instance.slug+"@"+settings.DEFAULT_FROM_DOMAIN)
@@ -212,10 +210,7 @@ class NewAnswerNotificationToSubscribers(TestCase):
         self.assertEquals(len(mail.outbox[1].to), 1)
         self.assertEquals(mail.outbox[1].to[0], user.email)
         self.assertEquals(mail.outbox[1].body, template_str_txt)
-        subject = self.instance.new_answer_notification_template.subject_template%{
-            'person':self.pedro,
-            'message':self.message.subject
-        }
+        subject = 'weeena pelao Pedro Subject 1'
         self.assertEquals(mail.outbox[0].subject, subject)
         self.assertEquals(mail.outbox[0].from_email, self.instance.slug+"@"+settings.DEFAULT_FROM_DOMAIN)
 
@@ -229,4 +224,4 @@ class NewAnswerNotificationToSubscribers(TestCase):
         self.create_a_new_answer()
 
         self.assertEquals(len(mail.outbox),1)
-
+        self.assertEquals(mail.outbox[0].subject, u"%(person) respondi\xf3 tu pregunta %(message)")

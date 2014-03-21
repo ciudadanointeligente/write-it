@@ -370,7 +370,7 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
         texty = get_template_from_string(new_answer_template.template_text)
         from_email = answer.message.writeitinstance.slug+"@"+\
                             settings.DEFAULT_FROM_DOMAIN
-        subject_template = new_answer_template.subject_template
+        subject_template = get_template_from_string(new_answer_template.subject_template)
         for subscriber in answer.message.subscribers.all():
             d = Context({
                 'user': answer.message.author_name,
@@ -381,10 +381,7 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
             html_content = htmly.render(d)
             txt_content = texty.render(d)
             try:
-                subject = subject_template % {
-                'person':answer.person.name,
-                'message':answer.message.subject
-                }
+                subject = subject_template.render(d)
             except Exception, e:
                 subject = ""
             msg = EmailMultiAlternatives(subject, \
@@ -401,10 +398,7 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
             })
             html_content = htmly.render(d)
             txt_content = texty.render(d)
-            subject = subject_template % {
-            'person':answer.message.writeitinstance.owner.username,
-            'message':answer.message.subject
-            }
+            subject = subject_template.render(d)
             msg = EmailMultiAlternatives(subject, txt_content,\
                          from_email, \
                          [answer.message.writeitinstance.owner.email])
@@ -721,8 +715,8 @@ class NewAnswerNotificationTemplate(models.Model):
         , help_text=_('You can use {{ user }}, {{ person }}, \
             {{ message.subject }} and {{ answer.content }}'))
     subject_template = models.CharField(max_length=255, \
-        default=settings.NEW_ANSWER_DEFAULT_SUBJECT_TEMPLATE\
-        , help_text=_('You can use %(message)s and %(person)s'))
+        default='{{person}} has answered to your message {{message}}'\
+        , help_text=_('You can use {{message}} and {{person}}'))
 
     def __init__(self, *args, **kwargs):
         super(NewAnswerNotificationTemplate, self).__init__(*args, **kwargs)
