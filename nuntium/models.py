@@ -13,7 +13,7 @@ from django.utils.timezone import utc
 from djangoplugins.models import Plugin
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template, get_template_from_string
-from django.template import Context
+from django.template import Context, Template
 from django.conf import settings
 from subdomains.utils import reverse
 from django.contrib.sites.models import Site
@@ -25,6 +25,8 @@ import requests
 from autoslug import AutoSlugField
 from unidecode import unidecode
 from django.db.models.query import QuerySet
+from itertools import chain
+from django.utils.timezone import now
 
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people
@@ -69,6 +71,9 @@ def new_write_it_instance(sender, instance, created, **kwargs):
         NewAnswerNotificationTemplate.objects.create(
             writeitinstance=instance
             )
+        ConfirmationTemplate.objects.create(
+            writeitinstance=instance
+        )
 
 post_save.connect(new_write_it_instance, sender=WriteItInstance)
 
@@ -80,8 +85,7 @@ class Membership(models.Model):
 
 class MessageRecord(models.Model):
     status = models.CharField(max_length=255)
-    datetime = models.DateField(default=datetime.datetime.utcnow()\
-        .replace(tzinfo=utc))
+    datetime = models.DateField(default=now())
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
@@ -175,9 +179,10 @@ class Message(models.Model):
             moderation, created = Moderation.objects.get_or_create(message=self)
             self.send_moderation_mail()
             status = 'needmodera'
-        for outbound_message in self.outboundmessage_set.all():
+        for outbound_message in self.outbound_messages:
             outbound_message.status = status
             outbound_message.save()
+
         if self.author_email:
             Subscriber.objects.create(email=self.author_email, message=self)
         self.confirmated = True
@@ -185,9 +190,21 @@ class Message(models.Model):
 
     @property
     def people(self):
-        return Person.objects\
-                        .filter(contact__outboundmessage__message=self)\
-                        .distinct()
+        people = Person.objects\
+                        .filter(
+                            Q(contact__outboundmessage__message=self) | \
+                            Q(nocontactom__message=self)
+                         ).distinct()
+
+
+        return people
+
+    @property
+    def outbound_messages(self):
+        no_contact_oms = NoContactOM.objects.filter(message=self)
+        outbound_messages = OutboundMessage.objects.filter(message=self)
+
+        return list(chain(no_contact_oms, outbound_messages))
 
     def get_absolute_url(self):
         return reverse('message_detail', \
@@ -195,10 +212,10 @@ class Message(models.Model):
             kwargs={'slug': self.slug})
 
     def slugifyme(self):
-        if not slugify(unidecode(self.subject)):
+        if not slugify(unidecode(unicode(self.subject))):
             self.subject = '-'
 
-        self.slug = slugify(unidecode(self.subject))
+        self.slug = slugify(unidecode(unicode(self.subject)))
         #Previously created messages with the same slug
 
         regex = "^"+self.slug+"(-[0-9]*){0,1}$"
@@ -225,29 +242,33 @@ class Message(models.Model):
         Moderation.objects.create(message=self)
 
     def create_outbound_messages(self):
-        if self.persons:
-            for person in self.persons:
-                for contact in person.contact_set.\
-                filter(owner=self.writeitinstance.owner):
-                    if not contact.is_bounced:
-                        outbound_message = OutboundMessage.objects.\
-                        get_or_create(contact=contact, message=self)
+        if not self.persons:
+            return
+        for person in self.persons:
+            self.create_outbound_messages_to_person(person)
 
 
-
+    def create_outbound_messages_to_person(self, person):
+        if not person.contact_set.all():
+            NoContactOM.objects.get_or_create(message=self, person=person)
+            return
+        for contact in person.contact_set.filter(
+            owner=self.writeitinstance.owner):
+            if not contact.is_bounced:
+                outbound_message = OutboundMessage.objects.\
+                get_or_create(contact=contact, message=self)
 
     def save(self, *args, **kwargs):
         created = self.id is None
         if created and self.writeitinstance.moderation_needed_in_all_messages:
             self.moderated = False
         super(Message, self).save(*args, **kwargs)
-        if created:
-            if not self.public:
-                self.create_moderation()
+        if created and not self.public:
+            self.create_moderation()
         self.create_outbound_messages()
 
     def set_to_ready(self):
-        for outbound_message in self.outboundmessage_set.all():
+        for outbound_message in self.outbound_messages:
             outbound_message.status = 'ready'
             outbound_message.save()
 
@@ -313,8 +334,7 @@ class Answer(models.Model):
     person = models.ForeignKey(Person)
     message = models.ForeignKey(Message, \
         related_name='answers')
-    created = models.DateField(default=datetime.datetime.utcnow()\
-        .replace(tzinfo=utc))
+    created = models.DateTimeField(auto_now=True, null=True)
 
     def __init__(self, *args, **kwargs):
         super(Answer, self).__init__(*args, **kwargs)
@@ -403,19 +423,14 @@ post_save.connect(send_new_answer_payload, sender=Answer)
 
 
 
+
+
 class OutboundMessageManager(models.Manager):
     def to_send(self, *args, **kwargs):
         query = super(OutboundMessageManager, self).filter(*args, **kwargs)
         return query.filter(status="ready")
 
-
-
-class OutboundMessage(models.Model):
-    """docstring for OutboundMessage: This class is \
-    the message delivery unit. The OutboundMessage is \
-    the one that will be tracked in order \
-    to know the actual status of the message"""
-
+class AbstractOutboundMessage(models.Model):
     STATUS_CHOICES = (
         ("new", _("Newly created")),
         ("ready", _("Ready to send")),
@@ -424,11 +439,55 @@ class OutboundMessage(models.Model):
         ("needmodera", _("Needs moderation")),
         )
 
-    contact = models.ForeignKey(Contact)
+
     message = models.ForeignKey(Message)
     status = models.CharField(max_length="10", \
                 choices=STATUS_CHOICES, \
                 default="new")
+
+    class Meta:
+        abstract = True
+
+class NoContactOM(AbstractOutboundMessage):
+    person = models.ForeignKey(Person)
+
+# This will happen everytime a contact is created
+
+def create_new_outbound_messages_for_newly_created_contact(sender, instance, created, **kwargs):
+    if kwargs['raw']:
+        return
+
+    contact = instance
+    if not created:
+        return
+    writeitinstances = WriteItInstance.objects.filter(owner=contact.owner)
+    messages = Message.objects.filter(writeitinstance__in=writeitinstances)
+    no_contact_oms = NoContactOM.objects.filter(\
+        message__in=messages, \
+        person=contact.person)
+    # NOTE TO DEVELOPER:
+    # now it is automatic that everytime a contact is created
+    # the nocontact_om is deleted and we create outbound messages
+    # but what if we let the user choose if they want or not that behaviour
+    for no_contact_om in no_contact_oms:
+        om = OutboundMessage.objects.create(\
+            contact=contact, \
+            message=no_contact_om.message,
+            #here I should test that it also
+            # copies the status
+            status=no_contact_om.status
+            )
+
+    no_contact_oms.delete()
+post_save.connect(create_new_outbound_messages_for_newly_created_contact, sender=Contact)
+
+class OutboundMessage(AbstractOutboundMessage):
+    """docstring for OutboundMessage: This class is \
+    the message delivery unit. The OutboundMessage is \
+    the one that will be tracked in order \
+    to know the actual status of the message"""
+
+    contact = models.ForeignKey(Contact)
 
     objects = OutboundMessageManager()
 
@@ -522,11 +581,29 @@ class OutboundMessagePluginRecord(models.Model):
     try_again = models.BooleanField(default=True)
 
 
+default_confirmation_template_content = ''
+with open('nuntium/templates/nuntium/mails/confirmation/content_template.html', 'r') as f:
+    default_confirmation_template_content = f.read()
+
+
+default_confirmation_template_content_text = ''
+with open('nuntium/templates/nuntium/mails/confirmation/content_template.txt', 'r') as f:
+    default_confirmation_template_content_text = f.read()
+
+default_confirmation_template_subject = ''
+with open('nuntium/templates/nuntium/mails/confirmation/subject_template.txt', 'r') as f:
+    default_confirmation_template_subject = f.read()
+
+class ConfirmationTemplate(models.Model):
+    writeitinstance = models.OneToOneField(WriteItInstance)
+    content_html = models.TextField(default=default_confirmation_template_content)
+    content_text = models.TextField(default=default_confirmation_template_content_text)
+    subject = models.CharField(max_length=512, default=default_confirmation_template_subject)
+
 class Confirmation(models.Model):
     message = models.OneToOneField(Message)
     key = models.CharField(max_length=64, unique=True)
-    created = models.DateField(default=datetime.\
-                    datetime.utcnow().replace(tzinfo=utc))
+    created = models.DateField(default=now())
     confirmated_at = models.DateField(default=None, null=True)
 
     def save(self, *args, **kwargs):
@@ -559,8 +636,10 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
         current_site = Site.objects.get_current()
         confirmation_full_url = url
         message_full_url = confirmation.message.get_absolute_url()
-        plaintext = get_template('nuntium/mails/confirm.txt')
-        htmly = get_template('nuntium/mails/confirm.html')
+        plaintext = Template(confirmation.message.writeitinstance.confirmationtemplate.content_text)
+        htmly = Template(confirmation.message.writeitinstance.confirmationtemplate.content_html)
+        subject = confirmation.message.writeitinstance.confirmationtemplate.subject
+        subject = subject.rstrip()
 
         d = Context({'confirmation': confirmation,
             'confirmation_full_url': confirmation_full_url,
@@ -573,7 +652,7 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
                         settings.DEFAULT_FROM_DOMAIN
 
         msg = EmailMultiAlternatives(
-            _('Confirmation email for a message in WriteIt'),
+            subject,
             text_content,#content
             from_email,#From
             [confirmation.message.author_email]#To
@@ -581,7 +660,7 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
         msg.attach_alternative(html_content, "text/html")
         try:
             msg.send()
-        except:
+        except Exception, e:
             pass
 
 

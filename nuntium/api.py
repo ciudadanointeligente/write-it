@@ -59,6 +59,11 @@ class WriteItInstanceResource(ModelResource):
                  self._meta.resource_name,\
                  self.wrap_view('handle_instance_messages'),
                  name="api_handle_messages"),
+            url(
+                r"^(?P<resource_name>%s)/(?P<id>[-\d]+)/answers/$" %
+                 self._meta.resource_name,\
+                 self.wrap_view('handle_instance_answers'),
+                 name="api_handle_messages"),
         ]
 
     def handle_instance_messages(self,request, *args, **kwargs):
@@ -66,6 +71,12 @@ class WriteItInstanceResource(ModelResource):
         obj = self.cached_obj_get(bundle=basic_bundle, \
                         **self.remove_api_resource_names(kwargs))
         return MessageResource().get_list(request, writeitinstance=obj)
+
+    def handle_instance_answers(self, request, *args, **kwargs):
+        basic_bundle = self.build_bundle(request=request)
+        obj = self.cached_obj_get(bundle=basic_bundle, \
+                        **self.remove_api_resource_names(kwargs))
+        return AnswerResource().get_list(request, writeitinstance=obj)
 
 
     def dehydrate(self, bundle):
@@ -92,9 +103,25 @@ class WriteItInstanceResource(ModelResource):
         return bundle
 
 class AnswerResource(ModelResource):
+    person = fields.ToOneField(PersonResource,\
+     'person', \
+     full=True, \
+     null=True)
     class Meta:
-        queryset =  Answer.objects.all()
+        queryset =  Answer.objects.all().order_by('-created')
         resource_name = 'answer'
+
+    def get_list(self, request, **kwargs):
+        self.writeitinstance = None
+        if "writeitinstance" in kwargs:
+            self.writeitinstance = kwargs.pop("writeitinstance")
+        return super(AnswerResource, self).get_list(request, **kwargs)
+
+    def apply_filters(self, request, applicable_filters):
+        result = super(AnswerResource, self).apply_filters(request, applicable_filters)
+        if self.writeitinstance:
+            result = result.filter(message__writeitinstance=self.writeitinstance)
+        return result
 
 class MessageResource(ModelResource):
     writeitinstance = fields.ToOneField(WriteItInstanceResource, \

@@ -4,8 +4,9 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, OutboundMessagePluginRecord\
-, OutboundMessageIdentifier, Answer
+from nuntium.models import Message, WriteItInstance, OutboundMessage,\
+                             MessageRecord, OutboundMessagePluginRecord\
+                            , OutboundMessageIdentifier, Answer
 from popit.models import Person, ApiInstance
 from mock import patch
 from django.contrib.auth.models import User
@@ -37,10 +38,22 @@ class OutboundMessageTestCase(TestCase):
         self.assertEquals(outbound_message.__unicode__(), expected_unicode)
 
     def test_outbound_messsages_creation_on_message_save(self):
-        new_outbound_messages = OutboundMessage.objects.all()
-        #I need to fix the correct number is now 4 based on example_data.yaml
-        #wich makes not robust to changes in example_data.yaml
-        self.assertEquals(new_outbound_messages.count(), 4)
+        """Creates an outbound message when a message is created""" 
+        message = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl", 
+            subject='Fiera es una perra feroz', 
+            writeitinstance= self.message.writeitinstance,
+            persons = [self.contact1.person])
+
+
+        new_outbound_messages = OutboundMessage.objects.filter(message=message)
+
+        self.assertEquals(new_outbound_messages.count(), 1)
+        outbound_message = new_outbound_messages[0]
+        self.assertEquals(outbound_message.contact, self.contact1)
+        self.assertEquals(outbound_message.message, message)
+
 
 
     def test_successful_send(self):
@@ -224,10 +237,145 @@ class PluginMentalMessageTestCase(TestCase):
         self.assertTrue(fatal_error is None)
 
     def test_plugin_gets_contact_type(self):
+        """From a plugin I can get its contact type"""
         the_mental_channel = MentalMessage()
         contact_type = the_mental_channel.get_contact_type()
 
         self.assertEquals(contact_type.label_name, "The Mind")
         self.assertEquals(contact_type.name, "mind")
+
+
+from nuntium.models import AbstractOutboundMessage
+from django.db import models
+class AbstractOutboundMessageTestCase(TestCase):
+    def setUp(self):
+        super(AbstractOutboundMessageTestCase, self).setUp()
+        self.message = Message.objects.all()[0]
+
+
+    def test_create_an_abstract_class(self):
+        """ Create a subclass of abstract class that does not contain contact"""
+        class ImplementationThing(AbstractOutboundMessage):
+            pass
+
+        implementation = ImplementationThing(message=self.message)
+        #This means that there is a link between a contact and a message
+        self.assertTrue(implementation)
+        self.assertIsInstance(implementation, models.Model)
+        self.assertEquals(implementation.status, "new")
+        self.assertEquals(implementation.message, self.message)
+
+    def test_abstract_is_acctually_abstract(self):
+        """The class is actually abstract"""
+        self.assertTrue(AbstractOutboundMessage._meta.abstract)
+        #OK this is a total redunduncy but how else can I test this?
+
+from nuntium.models import NoContactOM
+
+class MessagesToPersonWithoutContactsTestCase(TestCase):
+    def setUp(self):
+        super(MessagesToPersonWithoutContactsTestCase, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.message = Message.objects.all()[0]
+        self.people = self.message.people
+        for person in self.people:
+            person.contact_set.all().delete()
+
+
+    def test_create_concrete_class(self):
+        """Creating a class that holds outbound messages for people without contact"""
+        pedro = self.people[0]
+
+        no_contact_outbound_message = NoContactOM.objects.create(message = self.message, \
+                                        person=pedro)
+        self.assertTrue(no_contact_outbound_message)
+        self.assertEquals(no_contact_outbound_message.message, self.message)
+        self.assertIsInstance(no_contact_outbound_message, AbstractOutboundMessage)
+        self.assertFalse(hasattr(no_contact_outbound_message, 'contact'))
+
+    def test_automatically_creates_no_contact_outbound_messages(self):
+        """ When sending a message to people without contacts it creates NoContactOM"""
+        message = Message.objects.create(content = 'Content 1', subject='RaiseFatalErrorPlz', 
+            writeitinstance= self.writeitinstance, persons = [person for person in self.people])
+
+        outbound_messages = OutboundMessage.objects.filter(message=message)
+        self.assertFalse(outbound_messages)
+        no_contact_om = NoContactOM.objects.filter(message=message)
+        self.assertEquals(no_contact_om.count(), self.people.count())
+        for person in self.people:
+            self.assertTrue(no_contact_om.get(person=person))
+
+
+    def test_people_is_included_in_people(self):
+        """It let's you do message.people with people without contacts"""
+        persons_in_message = [person for person in self.people]
+        message = Message.objects.create(content = 'Content 1', subject='RaiseFatalErrorPlz', 
+            writeitinstance= self.writeitinstance, persons = persons_in_message)
+
+        self.assertEquals(message.people.count(), len(persons_in_message))
+        for person in persons_in_message:
+            self.assertTrue(message.people.get(id=person.id))
+# When adding a new contact for a person without contacts
+# then it should send a message to them
+# and in technical terms it means that it should create outbound_messages
+# with the contact and in status "new"
+
+    def test_create_outbound_messages_on_new_contact(self):
+        '''Create new outbound_messages when a new contact is created'''
+        persons_in_message = [person for person in self.people]
+        peter = self.people[0]
+        message = Message.objects.create(content = 'Content 1', subject='RaiseFatalErrorPlz', 
+            writeitinstance= self.writeitinstance, persons = persons_in_message)
+
+        email = ContactType.objects.all()[0]
+        contact_for_peter = Contact.objects.create(person=peter, \
+            value="peter@votainteligente.cl", \
+            contact_type=email, \
+            owner=self.writeitinstance.owner)
+
+        outbound_messages = OutboundMessage.objects.filter(message=message)
+        no_contact_om = NoContactOM.objects.filter(message=message, person=peter)
+
+        self.assertFalse(no_contact_om)
+        self.assertTrue(outbound_messages)
+        self.assertEquals(len(outbound_messages), 1)
+        om = outbound_messages[0]
+        self.assertEquals(om.contact, contact_for_peter)
+        self.assertEquals(om.status, "new")
+
+
+    def test_it_copies_the_status_of_the_outbound_message(self):
+        """If there is already a NoContactOM it brings the status to the new outbound message"""
+        persons_in_message = [person for person in self.people]
+        peter = self.people[0]
+        message = Message.objects.create(content = 'Content 1', subject='aaa', 
+            writeitinstance= self.writeitinstance, persons = persons_in_message)
+
+        message.recently_confirmated()
+
+        outbound_message_to_peter = NoContactOM.objects.get(message=message, \
+            person=peter)
+
+        self.assertEquals(outbound_message_to_peter.status, 'ready')
+
+    def test_it_copies_the_status_to_the_new_outbound_message_when_creating_a_new_contact(self):
+        """When we create a new contact after changing the status it creates OM with that status"""
+        persons_in_message = [person for person in self.people]
+        peter = self.people[0]
+        message = Message.objects.create(content = 'Content 1', subject='aaa', 
+            writeitinstance= self.writeitinstance, persons = persons_in_message)
+
+        message.recently_confirmated()
+
+        email = ContactType.objects.all()[0]
+        contact_for_peter = Contact.objects.create(person=peter, \
+            value="peter@votainteligente.cl", \
+            contact_type=email, \
+            owner=self.writeitinstance.owner)
+
+        outbound_message = OutboundMessage.objects.get(message=message\
+            , contact=contact_for_peter)
+
+        self.assertEquals(outbound_message.status, "ready")
 
 

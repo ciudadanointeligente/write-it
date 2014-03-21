@@ -56,7 +56,7 @@ class MessageAdmin(DjangoObjectActions, admin.ModelAdmin):
 admin.site.register(Message, MessageAdmin)
 
 
-class NeedingModerationMessge(Message):
+class NeedingModerationMessage(Message):
     class Meta:
         proxy = True
 
@@ -64,8 +64,13 @@ class NonModeratedMessageAdmin(MessageAdmin):
     def get_queryset(self, request):
         qs = Message.moderation_required_objects.all()
         return qs
-
-admin.site.register(NeedingModerationMessge, NonModeratedMessageAdmin)
+    actions=['moderate']
+    def moderate(self, request, queryset):
+        for message in queryset:
+            message.moderate()
+    #moderate.short_description(_("Mark the selected messages as moderated"))
+    
+admin.site.register(NeedingModerationMessage, NonModeratedMessageAdmin)
 
 class AnswerWebHookAdmin(admin.ModelAdmin):
     pass

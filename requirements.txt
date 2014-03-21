@@ -13,6 +13,7 @@ django-subdomains
 django-haystack
 pyelasticsearch
 celery
+pyyaml
 django-celery
 django-autoslug
 pytz>=2013b

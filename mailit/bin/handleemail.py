@@ -28,7 +28,32 @@ class ApiKeyAuth(AuthBase):
         r.headers['Authorization'] = 'ApiKey %s:%s' % (self.username, self.api_key)
         return r
 
-class EmailAnswer(object):
+class EmailReportBounceMixin(object):
+
+    def report_bounce(self):
+        data = {
+        'key':self.outbound_message_identifier
+        }
+        headers = {'content-type': 'application/json'}
+        result = self.requests_session.post(config.WRITEIT_API_WHERE_TO_REPORT_A_BOUNCE, data=json.dumps(data), headers=headers)
+
+class EmailSaveMixin(object):
+    def save(self):
+        data = {
+        'key': self.outbound_message_identifier,
+        'content': self.content_text,
+        'format' :'json'
+        }
+        headers = {'content-type': 'application/json'}
+        result = self.requests_session.post(config.WRITEIT_API_ANSWER_CREATION, data=json.dumps(data), headers=headers)
+        log = "When sent to %(location)s the status code was %(status_code)d"
+        log = log % {
+            'location':config.WRITEIT_API_ANSWER_CREATION,
+            'status_code':result.status_code
+            }
+        logging.info(log)
+
+class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
     def __init__(self):
         self.subject = ''
         self._content_text = ''
@@ -57,35 +82,12 @@ class EmailAnswer(object):
 
     content_text = property(get_content_text, set_content_text)
 
-
-
-    def save(self):
-        data = {
-        'key': self.outbound_message_identifier,
-        'content': self.content_text,
-        'format' :'json'
-        }
-        headers = {'content-type': 'application/json'}
-        result = self.requests_session.post(config.WRITEIT_API_ANSWER_CREATION, data=json.dumps(data), headers=headers)
-        log = "When sent to %(location)s the status code was %(status_code)d"
-        log = log % {
-            'location':config.WRITEIT_API_ANSWER_CREATION,
-            'status_code':result.status_code
-            }
-        logging.info(log)
-
     def send_back(self):
         if self.is_bounced:
             self.report_bounce()
         else:
             self.save()
 
-    def report_bounce(self):
-        data = {
-        'key':self.outbound_message_identifier
-        }
-        headers = {'content-type': 'application/json'}
-        result = self.requests_session.post(config.WRITEIT_API_WHERE_TO_REPORT_A_BOUNCE, data=json.dumps(data), headers=headers)
 
 class EmailHandler():
     def __init__(self, answer_class=EmailAnswer):

@@ -14,7 +14,7 @@ from popit.models import Person
 from django.forms.models import model_to_dict
 from contactos.models import Contact
 from contactos.forms import ContactCreateForm
-from nuntium.forms import NewAnswerNotificationTemplateForm
+from nuntium.forms import NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
 from mailit.forms import MailitTemplateForm
 
 
@@ -31,7 +31,7 @@ class UserSectionTestCase(TestCase):
     def assertRedirectToLogin(self, response, next_url=None):
 
         self.assertEquals(response.status_code, 302)
-        #when redirecting it always returns the full url based on test server so 
+        #when redirecting it always returns the full url based on test server so
         #in order to compare it I'll remove the testserver from the url
         location_this_response_is_taking_us_to = response['Location'].replace("http://testserver","")
         #the login url comes with the localized url
@@ -80,7 +80,7 @@ class YourContactsViewTestCase(UserSectionTestCase):
         self.contact = Contact.objects.all()[0]
         self.contact.owner = self.user
         # The user fiera and the password is feroz
-        # but seriously I don't know how to make this more 
+        # but seriously I don't know how to make this more
         # explicit
         self.contact.save()
 
@@ -255,11 +255,14 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         self.assertTemplateUsed(response, 'nuntium/profiles/templates.html')
         self.assertIsInstance(response.context['new_answer_template_form'], NewAnswerNotificationTemplateForm)
         self.assertIsInstance(response.context['mailit_template_form'], MailitTemplateForm)
+        confirmation_template_form = response.context['confirmation_template_form']
+        self.assertIsInstance(confirmation_template_form, ConfirmationTemplateForm)
         mailit_template_form = response.context['mailit_template_form']
         self.assertEquals(mailit_template_form.instance, self.writeitinstance.mailit_template)
         form = response.context['new_answer_template_form']
         self.assertEquals(form.instance, self.writeitinstance.new_answer_notification_template)
-
+        self.assertEquals(confirmation_template_form.writeitinstance, self.writeitinstance)
+        self.assertEquals(confirmation_template_form.instance, self.writeitinstance.confirmationtemplate)
         non_user = Client()
 
         response2 = non_user.get(url)
@@ -293,8 +296,8 @@ class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
         'template_text':self.writeitinstance.new_answer_notification_template.template_text,
         'subject_template':'subject =)'
         }
-        form = NewAnswerNotificationTemplateForm(data, 
-            writeitinstance=self.writeitinstance, 
+        form = NewAnswerNotificationTemplateForm(data,
+            writeitinstance=self.writeitinstance,
             instance=self.writeitinstance.new_answer_notification_template)
         self.assertTrue(form.is_valid())
 
