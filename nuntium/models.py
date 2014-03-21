@@ -380,10 +380,13 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
             })
             html_content = htmly.render(d)
             txt_content = texty.render(d)
-            subject = subject_template % {
-            'person':answer.person.name,
-            'message':answer.message.subject
-            }
+            try:
+                subject = subject_template % {
+                'person':answer.person.name,
+                'message':answer.message.subject
+                }
+            except Exception, e:
+                subject = ""
             msg = EmailMultiAlternatives(subject, \
                         txt_content, from_email, [subscriber.email])
             msg.attach_alternative(html_content, "text/html")

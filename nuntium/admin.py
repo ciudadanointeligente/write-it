@@ -68,7 +68,10 @@ class NonModeratedMessageAdmin(MessageAdmin):
     def moderate(self, request, queryset):
         for message in queryset:
             message.moderate()
-    #moderate.short_description(_("Mark the selected messages as moderated"))
+    # The following line makes this thing break
+    # it throws an error that function object does not have short_description
+    # attribute
+    # moderate.short_description(_("Mark the selected messages as moderated"))
     
 admin.site.register(NeedingModerationMessage, NonModeratedMessageAdmin)
 

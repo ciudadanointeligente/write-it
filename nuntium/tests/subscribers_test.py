@@ -190,6 +190,7 @@ class NewAnswerNotificationToSubscribers(TestCase):
 
 
     def test_owner_of_the_instance_is_notified_when_a_new_answer_comes_in(self):
+        """The owner of the instance can get notified when a new answer comes in"""
         self.instance.notify_owner_when_new_answer = True
         self.instance.save()
         self.create_a_new_answer()
@@ -219,6 +220,13 @@ class NewAnswerNotificationToSubscribers(TestCase):
         self.assertEquals(mail.outbox[0].from_email, self.instance.slug+"@"+settings.DEFAULT_FROM_DOMAIN)
 
 
+    def test_changed_subject_template(self):
+        # This is a wrong template 
+        # but it should not break
+        self.instance.new_answer_notification_template.subject_template = u'%(person) respondi\xf3 tu pregunta %(message)'
+        self.instance.new_answer_notification_template.save()
 
+        self.create_a_new_answer()
 
+        self.assertEquals(len(mail.outbox),1)
 
