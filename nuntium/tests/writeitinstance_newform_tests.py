@@ -14,12 +14,14 @@ from django.utils.translation import activate
 from django.utils.translation import ugettext as _
 from django.conf import settings
 
+@skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class InstanceCreateFormTestCase(TestCase):
     def setUp(self):
         super(InstanceCreateFormTestCase, self).setUp()
         self.user = User.objects.first()
 
     def test_instanciate_the_form(self):
+        '''Instanciate the form for creating a writeit instance'''
         data = {
             'owner' : self.user.id ,
             'popit_url' : settings.TEST_POPIT_API_URL, 
@@ -30,8 +32,8 @@ class InstanceCreateFormTestCase(TestCase):
         self.assertTrue(form)
         self.assertTrue(form.is_valid())
 
-    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
     def test_creating_an_instance(self):
+        '''Create an instance of writeit using a form that contains a popit_url'''
         # We have a popit running locally using the 
         # start_local_popit_api.bash script
         popit_load_data()
@@ -45,3 +47,13 @@ class InstanceCreateFormTestCase(TestCase):
         form = WriteItInstanceCreateFormPopitUrl(data)
         instance = form.save()
         self.assertTrue(instance.persons.all())
+
+    def test_creating_an_instance_without_popit_url(self):
+        data = {
+            'owner' : self.user.id ,
+            'name' : "instance"
+        }
+        form = WriteItInstanceCreateFormPopitUrl(data)
+        instance = form.save()
+
+        self.assertFalse(instance.persons.all())        

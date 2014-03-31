@@ -156,7 +156,8 @@ class ConfirmationTemplateForm(ModelForm):
 
 class WriteItInstanceCreateFormPopitUrl(ModelForm):
     popit_url = URLField(label=_('Url of the popit instance api'), \
-        help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"))
+        help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"),
+        required=False)
 
     class Meta:
         model = WriteItInstance
@@ -166,7 +167,10 @@ class WriteItInstanceCreateFormPopitUrl(ModelForm):
         instance = super(WriteItInstanceCreateFormPopitUrl, self)\
             .save(commit=commit)
 
-        instance.load_persons_from_a_popit_api(self.cleaned_data['popit_url'])
+        if self.cleaned_data['popit_url']:
+            instance.load_persons_from_a_popit_api(
+                self.cleaned_data['popit_url']
+                )
 
         return instance
 
