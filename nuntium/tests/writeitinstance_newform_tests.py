@@ -2,7 +2,7 @@
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from subdomains.utils import reverse
 from nuntium.models import WriteItInstance, Message, Membership, Confirmation, Moderation
-from nuntium.forms import WriteItInstanceCreateFormPopitUrl
+from nuntium.forms import WriteItInstanceCreateFormPopitUrl, SimpleInstanceCreateFormPopitUrl
 from nuntium.views import MessageCreateForm, PerInstanceSearchForm
 from contactos.models import Contact, ContactType
 from popit.models import ApiInstance, Person
@@ -78,3 +78,27 @@ class InstanceCreateFormTestCase(TestCase):
         self.assertIn("rate_limiter", form.fields)
         self.assertIn("notify_owner_when_new_answer", form.fields)
         self.assertIn("autoconfirm_api_messages", form.fields)
+
+
+class BasicInstanceCreateFormTestCase(TestCase):
+    def setUp(self):
+        super(BasicInstanceCreateFormTestCase, self).setUp()
+
+    def test_the_form_is_a_subclass_of_the_more_complicated_version(self):
+        '''This form is a subclass of the more confirmation verions'''
+
+        form = SimpleInstanceCreateFormPopitUrl()
+        self.assertIsInstance(form, WriteItInstanceCreateFormPopitUrl)
+
+    def test_fields(self):
+        '''The simple form for creating writeit instances contains the correct fields'''
+        form = SimpleInstanceCreateFormPopitUrl()
+        self.assertIn("name", form.fields)
+        self.assertNotIn("slug", form.fields)
+        self.assertNotIn("persons", form.fields)
+        self.assertNotIn("moderation_needed_in_all_messages", form.fields)
+        self.assertIn("owner", form.fields)
+        self.assertNotIn("allow_messages_using_form", form.fields)
+        self.assertNotIn("rate_limiter", form.fields)
+        self.assertNotIn("notify_owner_when_new_answer", form.fields)
+        self.assertNotIn("autoconfirm_api_messages", form.fields)

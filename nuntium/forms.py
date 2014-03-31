@@ -179,4 +179,7 @@ class WriteItInstanceCreateFormPopitUrl(ModelForm):
 
         return instance
 
-
+class SimpleInstanceCreateFormPopitUrl(WriteItInstanceCreateFormPopitUrl):
+    class Meta:
+        model = WriteItInstance
+        fields = ('owner', 'name', 'popit_url')
