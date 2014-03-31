@@ -49,6 +49,7 @@ class AnswersResourceTestCase(ResourceTestCase):
         self.assertEquals(len(answers), len(answers_of_the_writeitinstance))
         self.assertEquals(answers[0]['content'], self.answer.content)
         self.assertEquals(answers[0]['id'], self.answer.id)
+        self.assertEquals(answers[0]['message_id'], self.answer.message.id)
 
 
     def test_get_only_answers_of_the_instance(self):

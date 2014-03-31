@@ -123,6 +123,10 @@ class AnswerResource(ModelResource):
             result = result.filter(message__writeitinstance=self.writeitinstance)
         return result
 
+    def dehydrate(self, bundle):
+        bundle.data['message_id'] = bundle.obj.message.id
+        return bundle
+
 class MessageResource(ModelResource):
     writeitinstance = fields.ToOneField(WriteItInstanceResource, \
         'writeitinstance')
