@@ -1,6 +1,7 @@
 # coding=utf-8
 from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, \
-                        CharField, EmailField, SelectMultiple, TextInput, Textarea
+                        CharField, EmailField, SelectMultiple, TextInput, Textarea, \
+                        URLField
 from nuntium.models import Message, WriteItInstance, OutboundMessage, \
     Confirmation, Membership, NewAnswerNotificationTemplate, \
     ConfirmationTemplate
@@ -152,4 +153,12 @@ class ConfirmationTemplateForm(ModelForm):
         self.writeitinstance = kwargs.pop("writeitinstance")
         super(ConfirmationTemplateForm, self).__init__(*args, **kwargs)
 
+
+class WriteItInstanceCreateFormPopitUrl(ModelForm):
+    popit_url = URLField(label=_('Url of the popit instance api'), \
+        help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"))
+    
+    class Meta:
+        model = WriteItInstance
+        fields = ('owner', 'name', )
 
