@@ -1,7 +1,7 @@
 # coding=utf-8
 from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, \
                         CharField, EmailField, SelectMultiple, TextInput, Textarea, \
-                        URLField, IntegerField
+                        URLField, IntegerField, CheckboxInput, NumberInput
 from nuntium.models import Message, WriteItInstance, OutboundMessage, \
     Confirmation, Membership, NewAnswerNotificationTemplate, \
     ConfirmationTemplate
@@ -122,6 +122,13 @@ class WriteItInstanceAdvancedUpdateForm(ModelForm):
         'notify_owner_when_new_answer', \
         'autoconfirm_api_messages'
         ]
+        widgets = {
+            'moderation_needed_in_all_messages': CheckboxInput(attrs={'class': 'form-control'}),
+            'allow_messages_using_form': CheckboxInput(attrs={'class': 'form-control'}),
+            'rate_limiter': NumberInput(attrs={'class': 'form-control'}),
+            'notify_owner_when_new_answer': CheckboxInput(attrs={'class': 'form-control'}),
+            'autoconfirm_api_messages': CheckboxInput(attrs={'class': 'form-control'}),
+        }
 
 class NewAnswerNotificationTemplateForm(ModelForm):
 

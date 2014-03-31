@@ -4,7 +4,7 @@ from nuntium.views import HomeTemplateView, MessageSearchView, UserAccountView, 
     WriteItInstanceDetailView, WriteItInstanceUpdateView, \
     YourContactsView, YourInstancesView, WriteItInstanceTemplateUpdateView,\
     NewAnswerNotificationTemplateUpdateView, WriteItInstanceListView, \
-    ConfirmationTemplateUpdateView
+    ConfirmationTemplateUpdateView, WriteItInstanceAdvancedUpdateView
 
 
 # Uncomment the next two lines to enable the admin:
@@ -21,6 +21,9 @@ urlpatterns = patterns('',
     url(r'^accounts/your_contacts/?$', YourContactsView.as_view(), name='your-contacts'),
     url(r'^accounts/your_instances/?$', YourInstancesView.as_view(), name='your-instances'),
     url(r'^writeitinstance/edit/(?P<pk>[-\d]+)/?$', WriteItInstanceUpdateView.as_view(), name = 'writeitinstance_basic_update'),
+    url(r'^writeitinstance/advanced_edit/(?P<pk>[-\d]+)/?$', \
+        WriteItInstanceAdvancedUpdateView.as_view(), \
+        name = 'writeitinstance_advanced_update'),
     url(r'^writeitinstance/edit/(?P<pk>[-\d]+)/templates/?$', \
         WriteItInstanceTemplateUpdateView.as_view(), \
         name = 'writeitinstance_template_update'),

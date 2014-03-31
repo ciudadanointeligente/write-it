@@ -5,7 +5,8 @@ from django.core.urlresolvers import reverse as original_reverse
 from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation, Membership,\
                             NewAnswerNotificationTemplate, ConfirmationTemplate
 from nuntium.forms import MessageCreateForm, WriteItInstanceBasicForm, NewAnswerNotificationTemplateForm,\
-                        MessageSearchForm, PerInstanceSearchForm, ConfirmationTemplateForm
+                        MessageSearchForm, PerInstanceSearchForm, ConfirmationTemplateForm, \
+                        WriteItInstanceAdvancedUpdateForm
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
 from django.http import Http404
@@ -243,6 +244,17 @@ class WriteItInstanceUpdateView(UpdateView):
 
         return response
 
+class WriteItInstanceAdvancedUpdateView(UpdateView):
+    form_class = WriteItInstanceAdvancedUpdateForm
+    template_name_suffix = '_advanced_update_form'
+    
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        self.queryset = WriteItInstance.objects.filter(owner=self.request.user)
+        return super(WriteItInstanceAdvancedUpdateView, self).dispatch(*args, **kwargs)
+
+    def get_success_url(self):
+        return reverse('writeitinstance_advanced_update', kwargs={'pk':self.object.pk})
 
 class UserSectionListView(ListView):
     @method_decorator(login_required)
