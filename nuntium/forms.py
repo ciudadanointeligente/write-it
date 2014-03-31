@@ -113,6 +113,15 @@ class WriteItInstanceBasicForm(ModelForm):
             'persons': SelectMultiple(attrs={'class': 'form-control chosen-person-select'}),
         }
 
+class WriteItInstanceAdvancedUpdateForm(ModelForm):
+    class Meta:
+        model = WriteItInstance
+        fields = ['moderation_needed_in_all_messages', \
+        'allow_messages_using_form', \
+        'rate_limiter', \
+        'notify_owner_when_new_answer', \
+        'autoconfirm_api_messages'
+        ]
 
 class NewAnswerNotificationTemplateForm(ModelForm):
 

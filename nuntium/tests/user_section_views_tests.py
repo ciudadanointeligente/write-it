@@ -9,7 +9,7 @@ from django.forms import ModelForm
 from django.contrib.sites.models import Site
 from django.conf import settings
 from django.utils.translation import activate
-from nuntium.forms import WriteItInstanceBasicForm
+from nuntium.forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm
 from popit.models import Person
 from django.forms.models import model_to_dict
 from contactos.models import Contact
@@ -141,6 +141,27 @@ class YourInstancesViewTestCase(UserSectionTestCase):
         response = client.get(url)
         self.assertRedirectToLogin(response, next_url=url)
 
+class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
+    def setUp(self):
+        super(WriteitInstanceAdvancedUpdateTestCase, self).setUp()
+        self.factory = RequestFactory()
+        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.owner = self.writeitinstance.owner
+        self.pedro = Person.objects.get(name="Pedro")
+        self.marcel = Person.objects.get(name="Marcel")
+
+    def test_writeitinstance_basic_form(self):
+        form = WriteItInstanceAdvancedUpdateForm()
+        self.assertEquals(form._meta.model, WriteItInstance)
+        self.assertNotIn("name", form.fields)
+        self.assertNotIn("slug", form.fields)
+        self.assertNotIn("persons", form.fields)
+        self.assertIn("moderation_needed_in_all_messages", form.fields)
+        self.assertNotIn("owner", form.fields)
+        self.assertIn("allow_messages_using_form", form.fields)
+        self.assertIn("rate_limiter", form.fields)
+        self.assertIn("notify_owner_when_new_answer", form.fields)
+        self.assertIn("autoconfirm_api_messages", form.fields)
 
 class WriteitInstanceUpdateTestCase(UserSectionTestCase):
     def setUp(self):
