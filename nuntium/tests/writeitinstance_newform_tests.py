@@ -25,7 +25,8 @@ class InstanceCreateFormTestCase(TestCase):
         data = {
             'owner' : self.user.id ,
             'popit_url' : settings.TEST_POPIT_API_URL, 
-            'name' : "instance"
+            'name' : "instance",
+            "rate_limiter": 0
             }
         form = WriteItInstanceCreateFormPopitUrl(data)
 
@@ -42,7 +43,8 @@ class InstanceCreateFormTestCase(TestCase):
         data = {
             'owner' : self.user.id ,
             'popit_url' : settings.TEST_POPIT_API_URL, 
-            'name' : "instance"
+            'name' : "instance",
+            "rate_limiter": 0
             }
         form = WriteItInstanceCreateFormPopitUrl(data)
         instance = form.save()
@@ -51,9 +53,28 @@ class InstanceCreateFormTestCase(TestCase):
     def test_creating_an_instance_without_popit_url(self):
         data = {
             'owner' : self.user.id ,
-            'name' : "instance"
+            'name' : "instance",
+            "rate_limiter": 0
         }
         form = WriteItInstanceCreateFormPopitUrl(data)
         instance = form.save()
 
         self.assertFalse(instance.persons.all())        
+
+    def test_it_has_all_the_fields(self):
+        """The form for creating a new writeit instance has all the fields"""
+        data = {
+            'owner' : self.user.id ,
+            'name' : "instance"
+        }
+        form = WriteItInstanceCreateFormPopitUrl()
+
+        self.assertIn("name", form.fields)
+        self.assertNotIn("slug", form.fields)
+        self.assertNotIn("persons", form.fields)
+        self.assertIn("moderation_needed_in_all_messages", form.fields)
+        self.assertIn("owner", form.fields)
+        self.assertIn("allow_messages_using_form", form.fields)
+        self.assertIn("rate_limiter", form.fields)
+        self.assertIn("notify_owner_when_new_answer", form.fields)
+        self.assertIn("autoconfirm_api_messages", form.fields)

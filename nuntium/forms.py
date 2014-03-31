@@ -1,7 +1,7 @@
 # coding=utf-8
 from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, \
                         CharField, EmailField, SelectMultiple, TextInput, Textarea, \
-                        URLField
+                        URLField, IntegerField
 from nuntium.models import Message, WriteItInstance, OutboundMessage, \
     Confirmation, Membership, NewAnswerNotificationTemplate, \
     ConfirmationTemplate
@@ -161,7 +161,12 @@ class WriteItInstanceCreateFormPopitUrl(ModelForm):
 
     class Meta:
         model = WriteItInstance
-        fields = ('owner', 'name', 'popit_url', )
+        fields = ('owner', 'name', 'popit_url', \
+            "moderation_needed_in_all_messages", \
+            "allow_messages_using_form", \
+            "rate_limiter", \
+            "notify_owner_when_new_answer", \
+            "autoconfirm_api_messages")
 
     def save(self, commit=True):
         instance = super(WriteItInstanceCreateFormPopitUrl, self)\
