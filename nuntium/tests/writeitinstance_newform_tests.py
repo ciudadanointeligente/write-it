@@ -15,18 +15,33 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 
 class InstanceCreateFormTestCase(TestCase):
-	def setUp(self):
-		super(InstanceCreateFormTestCase, self).setUp()
-		self.user = User.objects.first()
-		self.api_instance = ApiInstance.objects.first()
+    def setUp(self):
+        super(InstanceCreateFormTestCase, self).setUp()
+        self.user = User.objects.first()
 
-	def test_instanciate_the_form(self):
-		data = {
-			'owner' : self.user.id ,
-			'popit_url' : self.api_instance.url, 
-			'name' : "instance"
-			}
-		form = WriteItInstanceCreateFormPopitUrl(data)
+    def test_instanciate_the_form(self):
+        data = {
+            'owner' : self.user.id ,
+            'popit_url' : settings.TEST_POPIT_API_URL, 
+            'name' : "instance"
+            }
+        form = WriteItInstanceCreateFormPopitUrl(data)
 
-		self.assertTrue(form)
-		self.assertTrue(form.is_valid())
+        self.assertTrue(form)
+        self.assertTrue(form.is_valid())
+
+    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    def test_creating_an_instance(self):
+        # We have a popit running locally using the 
+        # start_local_popit_api.bash script
+        popit_load_data()
+        #loading data into the popit-api
+
+        data = {
+            'owner' : self.user.id ,
+            'popit_url' : settings.TEST_POPIT_API_URL, 
+            'name' : "instance"
+            }
+        form = WriteItInstanceCreateFormPopitUrl(data)
+        instance = form.save()
+        self.assertTrue(instance.persons.all())
