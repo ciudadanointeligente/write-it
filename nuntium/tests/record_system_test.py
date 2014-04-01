@@ -1,6 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
 from django.utils.unittest import skip
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord
+from ..models import Message, WriteItInstance, OutboundMessage, MessageRecord
 from django.contrib.contenttypes.models import ContentType
 from popit.models import Person, ApiInstance
 from contactos.models import Contact, ContactType

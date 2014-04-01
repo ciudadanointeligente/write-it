@@ -1,15 +1,15 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, SearchIndexTestCase
-from nuntium.search_indexes import MessageIndex
+from ..search_indexes import MessageIndex
 from django.core.management import call_command
-from nuntium.models import Message
-from nuntium.forms import  MessageSearchForm, PerInstanceSearchForm
+from ..models import Message
+from ..forms import  MessageSearchForm, PerInstanceSearchForm
 from haystack import indexes
 from haystack.fields import CharField
 from haystack.forms import SearchForm
 from subdomains.utils import reverse
-from nuntium.views import MessageSearchView, PerInstanceSearchView
-from nuntium.models import WriteItInstance, Confirmation, Answer
+from ..views import MessageSearchView, PerInstanceSearchView
+from ..models import WriteItInstance, Confirmation, Answer
 from django.views.generic.edit import FormView
 from django.utils.unittest import skip
 from haystack.views import SearchView

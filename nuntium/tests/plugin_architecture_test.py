@@ -1,5 +1,5 @@
 from global_test_case import GlobalTestCase as TestCase
-from nuntium.plugins import OutputPlugin
+from ..plugins import OutputPlugin
 
 from contactos.models import Contact, ContactType
 

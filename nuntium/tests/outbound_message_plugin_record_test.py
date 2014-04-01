@@ -1,6 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
 from django.utils.unittest import skip
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord, OutboundMessagePluginRecord
+from ..models import Message, WriteItInstance, OutboundMessage, MessageRecord, OutboundMessagePluginRecord
 from plugin_mock.mental_message_plugin import MentalMessage, FatalException, TryAgainException
 from contactos.models import Contact, ContactType
 from djangoplugins.models import Plugin

@@ -1,5 +1,5 @@
-from nuntium.plugins import OutputPlugin
-from nuntium.models import MessageRecord
+from ...plugins import OutputPlugin
+from ...models import MessageRecord
 from contactos.models import Contact, ContactType
 '''
 This is a mock and should not be used anywhere but as a joke to tell your friends,

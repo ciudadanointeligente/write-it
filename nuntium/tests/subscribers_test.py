@@ -1,5 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
-from nuntium.models import Subscriber, Message, WriteItInstance, Confirmation, Answer, NewAnswerNotificationTemplate
+from ..models import Subscriber, Message, WriteItInstance\
+            , Confirmation, Answer, NewAnswerNotificationTemplate
 from popit.models import Person
 from django.template.loader import get_template
 from django.template import Context

@@ -1,20 +1,20 @@
 from global_test_case import GlobalTestCase as TestCase
 from subdomains.utils import reverse, get_domain
 from django.core.urlresolvers import reverse as original_reverse
-from nuntium.models import WriteItInstance
+from ..models import WriteItInstance
 from django.contrib.auth.models import User
 from django.test.client import Client, RequestFactory
-from nuntium.user_section.views import WriteItInstanceUpdateView
+from ..user_section.views import WriteItInstanceUpdateView
 from django.forms import ModelForm
 from django.contrib.sites.models import Site
 from django.conf import settings
 from django.utils.translation import activate
-from nuntium.user_section.forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm
+from ..user_section.forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm
 from popit.models import Person
 from django.forms.models import model_to_dict
 from contactos.models import Contact
 from contactos.forms import ContactCreateForm
-from nuntium.user_section.forms import NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
+from ..user_section.forms import NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
 from mailit.forms import MailitTemplateForm
 
 

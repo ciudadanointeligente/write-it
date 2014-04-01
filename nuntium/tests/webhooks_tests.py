@@ -1,6 +1,6 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from nuntium.models import Message, WriteItInstance, AnswerWebHook, Answer
+from ..models import Message, WriteItInstance, AnswerWebHook, Answer
 from django.core.exceptions import ValidationError
 from tastypie.models import ApiKey
 from mock import patch

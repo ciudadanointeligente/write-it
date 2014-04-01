@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.management import call_command
-from nuntium.models import Message, WriteItInstance
+from ...models import Message, WriteItInstance
 from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
 from tastypie.models import ApiKey
@@ -10,9 +10,9 @@ from django.utils.unittest import skip
 from django.conf import settings
 import re
 from django.utils.encoding import force_text
-from nuntium.api import AnswerResource
+from ...api import AnswerResource
 from django.http import HttpRequest
-from nuntium.models import Answer
+from ...models import Answer
 
 class AnswersResourceTestCase(ResourceTestCase):
     def setUp(self):

@@ -2,9 +2,9 @@
 from global_test_case import GlobalTestCase as TestCase
 from popit.models import Person, ApiInstance
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, Confirmation, WriteItInstance, \
+from ..models import Message, Confirmation, WriteItInstance, \
                             OutboundMessage
-from nuntium.forms import MessageCreateForm, PersonMultipleChoiceField, \
+from ..forms import MessageCreateForm, PersonMultipleChoiceField, \
                             PersonSelectMultipleWidget
 from django.forms import ValidationError,SelectMultiple, ChoiceField
 from django.contrib.auth.models import User

@@ -1,6 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
-from nuntium.models import Confirmation, OutboundMessage
-from nuntium.models import Message, WriteItInstance, ConfirmationTemplate
+from ..models import Confirmation, OutboundMessage
+from ..models import Message, WriteItInstance, ConfirmationTemplate
 from popit.models import Person
 from contactos.models import Contact
 from datetime import datetime
@@ -89,7 +89,7 @@ class ConfirmationTemplateTestCase(TestCase):
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue(message.author_email in mail.outbox[0].to)
 
-from nuntium.user_section.forms import ConfirmationTemplateForm
+from ..user_section.forms import ConfirmationTemplateForm
 
 class ConfirmationTemplateFormTestCase(TestCase):
     def setUp(self):

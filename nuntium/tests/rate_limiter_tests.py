@@ -1,7 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
 from django.contrib.auth.models import User
-from nuntium.models import WriteItInstance, RateLimiter, Message
+from ..models import WriteItInstance, RateLimiter, Message
 from datetime import date
 from django.core.exceptions import ValidationError
 from popit.models import Person
