@@ -178,7 +178,7 @@ class PerInstanceSearchFormTestCase(SearchIndexTestCase, SubdomainTestMixin):
         self.assertIsInstance(form, SearchForm)
 
         ids_of_messages_returned_by_searchqueryset = []
-        content_type = ContentType.objects.get(model=Message)
+        content_type = ContentType.objects.get(model='message')
 
         for result in form.searchqueryset:
             if result.content_type() == content_type.app_label + ".message":
