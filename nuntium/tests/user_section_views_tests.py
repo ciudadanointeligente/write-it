@@ -426,7 +426,7 @@ class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
 
 from django.db.models import Q
 
-class CreateUserSectionInstanceTestCase(TestCase):
+class CreateUserSectionInstanceTestCase(UserSectionTestCase):
     def setUp(self):
         super(CreateUserSectionInstanceTestCase, self).setUp()
         self.user = User.objects.first()
@@ -463,3 +463,23 @@ class CreateUserSectionInstanceTestCase(TestCase):
         instance = WriteItInstance.objects.get(Q(name='instance'), Q(owner=self.user))
         self.assertTrue(instance.persons.all())
 
+    def test_create_an_instance_get_not_logged(self):
+        '''Create an instance get'''
+
+        url = reverse('create_writeit_instance')
+        c = Client()
+        response = c.get(url)
+        self.assertRedirectToLogin(response)
+
+
+    def test_it_redirects_to_your_instances(self):
+        '''When get to create an instance it redirects to your instances'''
+        url = reverse('create_writeit_instance')
+        c = Client()
+
+        response = c.get(url)
+        c.login(username=self.user.username, password='admin')
+
+        response = c.get(url)
+        your_instances_url = reverse('your-instances')
+        self.assertRedirects(response, your_instances_url)
