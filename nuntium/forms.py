@@ -101,3 +101,28 @@ class PerInstanceSearchForm(SearchForm):
         self.writeitinstance = kwargs.pop('writeitinstance', None)
         super(PerInstanceSearchForm, self).__init__(*args, **kwargs)
         self.searchqueryset = self.searchqueryset.filter(writeitinstance=self.writeitinstance.id)
+
+class WriteItInstanceCreateFormPopitUrl(ModelForm):
+    popit_url = URLField(label=_('Url of the popit instance api'), \
+        help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"),
+        required=False)
+
+    class Meta:
+        model = WriteItInstance
+        fields = ('owner', 'name', 'popit_url', \
+            "moderation_needed_in_all_messages", \
+            "allow_messages_using_form", \
+            "rate_limiter", \
+            "notify_owner_when_new_answer", \
+            "autoconfirm_api_messages")
+
+    def save(self, commit=True):
+        instance = super(WriteItInstanceCreateFormPopitUrl, self)\
+            .save(commit=commit)
+
+        if self.cleaned_data['popit_url']:
+            instance.load_persons_from_a_popit_api(
+                self.cleaned_data['popit_url']
+                )
+
+        return instance

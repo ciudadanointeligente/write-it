@@ -9,9 +9,11 @@ from django.core import mail
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.template.loader import get_template_from_string
+import os
 
 
 subject_template = '%(person)s has answered to your message %(message)s'
+script_dir = os.path.dirname(__file__)
 
 class SubscribersTestCase(TestCase):
     def setUp(self):
@@ -65,7 +67,7 @@ class SubscribersTestCase(TestCase):
 class NewAnswerToSubscribersMessageTemplate(TestCase):
     def setUp(self):
         self.new_answer_html = ''
-        with open('nuntium/templates/nuntium/mails/new_answer.html', 'r') as f:
+        with open(os.path.join(script_dir, '../templates/nuntium/mails/new_answer.html'), 'r') as f:
             self.new_answer_html += f.read()
         super(NewAnswerToSubscribersMessageTemplate, self).setUp()
         self.instance = WriteItInstance.objects.all()[0]
@@ -119,11 +121,11 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
 
     def test_a_new_one_is_always_created_with_some_default_values(self):
         new_answer_html = ''
-        with open('nuntium/templates/nuntium/mails/new_answer.html', 'r') as f:
+        with open(os.path.join(script_dir, '../templates/nuntium/mails/new_answer.html'), 'r') as f:
             new_answer_html += f.read()
 
         new_answer_txt = ''
-        with open('nuntium/templates/nuntium/mails/new_answer.txt', 'r') as f:
+        with open(os.path.join(script_dir, '../templates/nuntium/mails/new_answer.txt'), 'r') as f:
             new_answer_txt += f.read()
 
         notification_template = NewAnswerNotificationTemplate.objects.create(writeitinstance=self.instance)

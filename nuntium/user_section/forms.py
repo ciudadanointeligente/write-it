@@ -15,6 +15,7 @@ from django.forms.util import flatatt
 from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from itertools import chain
+from ..forms import WriteItInstanceCreateFormPopitUrl
 
 class WriteItInstanceBasicForm(ModelForm):
     class Meta:
@@ -81,32 +82,6 @@ class ConfirmationTemplateForm(ModelForm):
             raise ValidationError(_("WriteIt Instance not present"))
         self.writeitinstance = kwargs.pop("writeitinstance")
         super(ConfirmationTemplateForm, self).__init__(*args, **kwargs)
-
-
-class WriteItInstanceCreateFormPopitUrl(ModelForm):
-    popit_url = URLField(label=_('Url of the popit instance api'), \
-        help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"),
-        required=False)
-
-    class Meta:
-        model = WriteItInstance
-        fields = ('owner', 'name', 'popit_url', \
-            "moderation_needed_in_all_messages", \
-            "allow_messages_using_form", \
-            "rate_limiter", \
-            "notify_owner_when_new_answer", \
-            "autoconfirm_api_messages")
-
-    def save(self, commit=True):
-        instance = super(WriteItInstanceCreateFormPopitUrl, self)\
-            .save(commit=commit)
-
-        if self.cleaned_data['popit_url']:
-            instance.load_persons_from_a_popit_api(
-                self.cleaned_data['popit_url']
-                )
-
-        return instance
 
 class SimpleInstanceCreateFormPopitUrl(WriteItInstanceCreateFormPopitUrl):
     class Meta:
