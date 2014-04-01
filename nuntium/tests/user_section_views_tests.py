@@ -9,12 +9,12 @@ from django.forms import ModelForm
 from django.contrib.sites.models import Site
 from django.conf import settings
 from django.utils.translation import activate
-from nuntium.forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm
+from nuntium.user_section.forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm
 from popit.models import Person
 from django.forms.models import model_to_dict
 from contactos.models import Contact
 from contactos.forms import ContactCreateForm
-from nuntium.forms import NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
+from nuntium.user_section.forms import NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
 from mailit.forms import MailitTemplateForm
 
 

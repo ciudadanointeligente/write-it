@@ -89,7 +89,7 @@ class ConfirmationTemplateTestCase(TestCase):
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue(message.author_email in mail.outbox[0].to)
 
-from nuntium.forms import ConfirmationTemplateForm
+from nuntium.user_section.forms import ConfirmationTemplateForm
 
 class ConfirmationTemplateFormTestCase(TestCase):
     def setUp(self):

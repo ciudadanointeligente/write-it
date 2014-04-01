@@ -4,9 +4,9 @@ from subdomains.utils import reverse
 from django.core.urlresolvers import reverse as original_reverse
 from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation, Membership,\
                             NewAnswerNotificationTemplate, ConfirmationTemplate
-from nuntium.forms import MessageCreateForm, WriteItInstanceBasicForm, NewAnswerNotificationTemplateForm,\
-                        MessageSearchForm, PerInstanceSearchForm, ConfirmationTemplateForm, \
-                        WriteItInstanceAdvancedUpdateForm
+                        
+from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
+                    NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
 from django.http import Http404

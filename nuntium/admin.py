@@ -7,7 +7,7 @@ from django.forms.models import BaseInlineFormSet
 from mailit.models import MailItTemplate
 from django_object_actions import DjangoObjectActions
 from django.db.models import Q
-from nuntium.forms import WriteItInstanceCreateFormPopitUrl
+from nuntium.user_section.forms import WriteItInstanceCreateFormPopitUrl
 
 class PersonInline(admin.TabularInline):
     model=Person
