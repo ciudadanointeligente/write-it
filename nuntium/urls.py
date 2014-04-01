@@ -1,10 +1,8 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
-from nuntium.views import HomeTemplateView, MessageSearchView, UserAccountView, \
-    WriteItInstanceDetailView, WriteItInstanceUpdateView, \
-    YourContactsView, YourInstancesView, WriteItInstanceTemplateUpdateView,\
-    NewAnswerNotificationTemplateUpdateView, WriteItInstanceListView, \
-    ConfirmationTemplateUpdateView, WriteItInstanceAdvancedUpdateView
+from nuntium.views import HomeTemplateView, MessageSearchView,\
+    WriteItInstanceDetailView, \
+    WriteItInstanceListView
 
 
 # Uncomment the next two lines to enable the admin:
@@ -17,6 +15,14 @@ urlpatterns = patterns('',
     url(r'^instances/?$', WriteItInstanceListView.as_view(template_name='nuntium/template_list.html'), name='instance_list'),
 
     url(r'^search/?$', MessageSearchView(), name='search_messages'),
+    
+    
+)
+from .user_section.views import UserAccountView, WriteItInstanceUpdateView, \
+        YourContactsView, YourInstancesView, WriteItInstanceAdvancedUpdateView, \
+        WriteItInstanceTemplateUpdateView, NewAnswerNotificationTemplateUpdateView, \
+        ConfirmationTemplateUpdateView
+urlpatterns += patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
     url(r'^accounts/your_contacts/?$', YourContactsView.as_view(), name='your-contacts'),
     url(r'^accounts/your_instances/?$', YourInstancesView.as_view(), name='your-instances'),
@@ -33,4 +39,4 @@ urlpatterns = patterns('',
     url(r'^writeitinstance/edit/(?P<pk>[-\d]+)/templates/confirmation_template/?$',
         ConfirmationTemplateUpdateView.as_view(),
         name = 'edit_confirmation_template'),
-)
+    )

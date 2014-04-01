@@ -4,7 +4,6 @@ from subdomains.utils import reverse, get_domain
 from django.core.urlresolvers import reverse as original_reverse
 from nuntium.models import WriteItInstance, Message
 from django.test.client import Client, RequestFactory
-from nuntium.views import WriteItInstanceUpdateView
 from django.contrib.sites.models import Site
 from django.conf import settings
 from popit.models import Person
