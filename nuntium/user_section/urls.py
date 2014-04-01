@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from .views import UserAccountView, WriteItInstanceUpdateView, \
         YourContactsView, YourInstancesView, WriteItInstanceAdvancedUpdateView, \
         WriteItInstanceTemplateUpdateView, NewAnswerNotificationTemplateUpdateView, \
-        ConfirmationTemplateUpdateView
+        ConfirmationTemplateUpdateView, WriteItInstanceCreateView
         
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
@@ -21,4 +21,7 @@ urlpatterns = patterns('',
     url(r'^writeitinstance/edit/(?P<pk>[-\d]+)/templates/confirmation_template/?$',
         ConfirmationTemplateUpdateView.as_view(),
         name = 'edit_confirmation_template'),
+    url(r'^writeitinstance/create/?$',
+        WriteItInstanceCreateView.as_view(),
+        name = 'create_writeit_instance'),
     )

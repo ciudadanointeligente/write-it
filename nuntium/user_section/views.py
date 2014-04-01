@@ -6,7 +6,8 @@ from ..models import WriteItInstance, Confirmation, OutboundMessage, Message, Mo
                             NewAnswerNotificationTemplate, ConfirmationTemplate
                         
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
-                    NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
+                    NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
+                    WriteItInstanceCreateForm
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
 from django.http import Http404
@@ -112,10 +113,23 @@ class UserSectionListView(ListView):
 
 
 
+class WriteItInstanceCreateView(CreateView):
+    form_class = WriteItInstanceCreateForm
+    template_name = 'nuntium/profiles/your-instances.html'
+
+    def get_success_url(self):
+        return reverse('your-instances')
+
+    def get_form_kwargs(self):
+        kwargs = super(WriteItInstanceCreateView, self).get_form_kwargs()
+        kwargs['owner'] = self.request.user
+        return kwargs
+
+
+
 class YourContactsView(UserSectionListView):
     model = Contact
     template_name = 'nuntium/profiles/your-contacts.html'
-
 
     def get_context_data(self,**kwargs):
         context = super(YourContactsView, self).get_context_data(**kwargs)
