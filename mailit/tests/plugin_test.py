@@ -1,15 +1,15 @@
 from global_test_case import GlobalTestCase as TestCase
 from django.utils.unittest import skip
-from mailit import MailChannel
+from .. import MailChannel
 from contactos.models import Contact, ContactType
 from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord
 from popit.models import Person, ApiInstance
 from nuntium.plugins import OutputPlugin
-from mailit.models import MailItTemplate
+from ..models import MailItTemplate
 from django.core import mail
 from django.contrib.auth.models import User
 from django.conf import settings
-from mailit.forms import MailitTemplateForm
+from ..forms import MailitTemplateForm
 from nuntium.tests.user_section_views_tests import UserSectionTestCase
 from subdomains.utils import reverse
 from django.test.client import Client

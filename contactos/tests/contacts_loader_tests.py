@@ -1,6 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
 from popit.models import Person, ApiInstance
-from contactos.models import Contact, ContactType
+from ..models import Contact, ContactType
 from django.contrib.auth.models import User
 from django.core.management import call_command
 

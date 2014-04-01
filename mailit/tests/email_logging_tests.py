@@ -1,7 +1,7 @@
 # coding=utf8
 from global_test_case import GlobalTestCase as TestCase
 from django.core.management import call_command
-from mailit.management.commands.handleemail import AnswerForManageCommand
+from ..management.commands.handleemail import AnswerForManageCommand
 from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Answer
 from django.utils.unittest import skip
 from mock import patch, Mock

@@ -2,8 +2,8 @@
 from global_test_case import GlobalTestCase as TestCase
 from global_test_case import ResourceGlobalTestCase as ResourceTestCase
 import os
-from mailit.bin.handleemail import EmailHandler, EmailAnswer, ApiKeyAuth
-from mailit.models import BouncedMessageRecord
+from ..bin.handleemail import EmailHandler, EmailAnswer, ApiKeyAuth
+from ..models import BouncedMessageRecord
 from django.utils.unittest import skip
 from mock import patch
 from django.contrib.auth.models import User
@@ -11,10 +11,10 @@ import requests
 from requests.models import Request
 from tastypie.models import ApiKey
 import logging
-from mailit.bin import config
+from ..bin import config
 import json
 from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Message, OutboundMessagePluginRecord
-from mailit.management.commands.handleemail import AnswerForManageCommand
+from ..management.commands.handleemail import AnswerForManageCommand
 import types
 from contactos.models import Contact
 

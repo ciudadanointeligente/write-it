@@ -2,7 +2,7 @@
 from global_test_case import GlobalTestCase as TestCase
 from django.core.management import call_command
 from global_test_case import ResourceGlobalTestCase as ResourceTestCase
-from mailit.management.commands.handleemail import AnswerForManageCommand
+from ..management.commands.handleemail import AnswerForManageCommand
 from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Answer
 from django.utils.unittest import skip
 from mock import patch, Mock
