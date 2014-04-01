@@ -9,7 +9,8 @@ from django.forms import ModelForm
 from django.contrib.sites.models import Site
 from django.conf import settings
 from django.utils.translation import activate
-from ..user_section.forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm
+from ..user_section.forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
+                            WriteItInstanceCreateForm
 from popit.models import Person
 from django.forms.models import model_to_dict
 from contactos.models import Contact
@@ -422,3 +423,28 @@ class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
 
         response = c.post(url, data=data)
         self.assertRedirectToLogin(response)
+
+class CreateUserSectionInstanceTestCase(TestCase):
+    def setUp(self):
+        super(CreateUserSectionInstanceTestCase, self).setUp()
+        self.user = User.objects.first()
+        self.data = {
+            "name":'instance',
+            "popit_url":settings.TEST_POPIT_API_URL
+        }
+
+    def test_create_an_instance_form(self):
+        '''Create an instance with a very simple form in the user interface'''
+
+        
+        form = WriteItInstanceCreateForm(data=self.data, owner=self.user)
+        self.assertTrue(form)
+        self.assertTrue(form.is_valid())
+
+    def test_save_the_instance_with_the_form(self):
+        form = WriteItInstanceCreateForm(data=self.data, owner=self.user)
+        instance = form.save()
+        self.assertTrue(instance)
+        self.assertEquals(instance.name, "instance")
+        self.assertEquals(instance.owner, self.user)
+        self.assertTrue(instance.persons.all())

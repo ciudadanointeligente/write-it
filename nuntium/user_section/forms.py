@@ -87,3 +87,20 @@ class SimpleInstanceCreateFormPopitUrl(WriteItInstanceCreateFormPopitUrl):
     class Meta:
         model = WriteItInstance
         fields = ('owner', 'name', 'popit_url')
+
+
+class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
+    class Meta:
+        model = WriteItInstance
+        fields = ('name', 'popit_url')
+
+    def __init__(self, *args, **kwargs):
+        self.owner = kwargs.pop('owner')
+        super(WriteItInstanceCreateForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        instance = super(WriteItInstanceCreateForm, self).save(commit=False)
+        instance.owner = self.owner
+        instance.save()
+        self.relate_with_people()
+        return instance

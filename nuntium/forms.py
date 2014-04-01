@@ -116,13 +116,17 @@ class WriteItInstanceCreateFormPopitUrl(ModelForm):
             "notify_owner_when_new_answer", \
             "autoconfirm_api_messages")
 
+    def relate_with_people(self):
+        if self.cleaned_data['popit_url']:
+            self.instance.load_persons_from_a_popit_api(
+                self.cleaned_data['popit_url']
+                )
+
     def save(self, commit=True):
         instance = super(WriteItInstanceCreateFormPopitUrl, self)\
             .save(commit=commit)
 
-        if self.cleaned_data['popit_url']:
-            instance.load_persons_from_a_popit_api(
-                self.cleaned_data['popit_url']
-                )
+        if commit:
+            self.relate_with_people()
 
         return instance
