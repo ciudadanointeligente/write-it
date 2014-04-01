@@ -1,6 +1,7 @@
 # coding=utf-8
 from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, \
-                        CharField, EmailField, SelectMultiple, TextInput, Textarea
+                        CharField, EmailField, SelectMultiple, TextInput, Textarea, \
+                        URLField, IntegerField, CheckboxInput, NumberInput
 from nuntium.models import Message, WriteItInstance, OutboundMessage, \
     Confirmation, Membership, NewAnswerNotificationTemplate, \
     ConfirmationTemplate
@@ -112,6 +113,22 @@ class WriteItInstanceBasicForm(ModelForm):
             'persons': SelectMultiple(attrs={'class': 'form-control chosen-person-select'}),
         }
 
+class WriteItInstanceAdvancedUpdateForm(ModelForm):
+    class Meta:
+        model = WriteItInstance
+        fields = ['moderation_needed_in_all_messages', \
+        'allow_messages_using_form', \
+        'rate_limiter', \
+        'notify_owner_when_new_answer', \
+        'autoconfirm_api_messages'
+        ]
+        widgets = {
+            'moderation_needed_in_all_messages': CheckboxInput(attrs={'class': 'form-control'}),
+            'allow_messages_using_form': CheckboxInput(attrs={'class': 'form-control'}),
+            'rate_limiter': NumberInput(attrs={'class': 'form-control'}),
+            'notify_owner_when_new_answer': CheckboxInput(attrs={'class': 'form-control'}),
+            'autoconfirm_api_messages': CheckboxInput(attrs={'class': 'form-control'}),
+        }
 
 class NewAnswerNotificationTemplateForm(ModelForm):
 
@@ -153,3 +170,32 @@ class ConfirmationTemplateForm(ModelForm):
         super(ConfirmationTemplateForm, self).__init__(*args, **kwargs)
 
 
+class WriteItInstanceCreateFormPopitUrl(ModelForm):
+    popit_url = URLField(label=_('Url of the popit instance api'), \
+        help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"),
+        required=False)
+
+    class Meta:
+        model = WriteItInstance
+        fields = ('owner', 'name', 'popit_url', \
+            "moderation_needed_in_all_messages", \
+            "allow_messages_using_form", \
+            "rate_limiter", \
+            "notify_owner_when_new_answer", \
+            "autoconfirm_api_messages")
+
+    def save(self, commit=True):
+        instance = super(WriteItInstanceCreateFormPopitUrl, self)\
+            .save(commit=commit)
+
+        if self.cleaned_data['popit_url']:
+            instance.load_persons_from_a_popit_api(
+                self.cleaned_data['popit_url']
+                )
+
+        return instance
+
+class SimpleInstanceCreateFormPopitUrl(WriteItInstanceCreateFormPopitUrl):
+    class Meta:
+        model = WriteItInstance
+        fields = ('owner', 'name', 'popit_url')

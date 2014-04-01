@@ -9,7 +9,7 @@ from django.forms import ModelForm
 from django.contrib.sites.models import Site
 from django.conf import settings
 from django.utils.translation import activate
-from nuntium.forms import WriteItInstanceBasicForm
+from nuntium.forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm
 from popit.models import Person
 from django.forms.models import model_to_dict
 from contactos.models import Contact
@@ -140,6 +140,71 @@ class YourInstancesViewTestCase(UserSectionTestCase):
         client = Client()
         response = client.get(url)
         self.assertRedirectToLogin(response, next_url=url)
+
+class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
+    def setUp(self):
+        super(WriteitInstanceAdvancedUpdateTestCase, self).setUp()
+        self.factory = RequestFactory()
+        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.owner = self.writeitinstance.owner
+        self.pedro = Person.objects.get(name="Pedro")
+        self.marcel = Person.objects.get(name="Marcel")
+        self.data = {
+            'moderation_needed_in_all_messages': 1,
+            'allow_messages_using_form': 1,
+            'rate_limiter': 3,
+            'notify_owner_when_new_answer' : 1,
+            'autoconfirm_api_messages' : 1
+        }
+
+    def test_writeitinstance_basic_form(self):
+        form = WriteItInstanceAdvancedUpdateForm()
+        self.assertEquals(form._meta.model, WriteItInstance)
+        self.assertNotIn("name", form.fields)
+        self.assertNotIn("slug", form.fields)
+        self.assertNotIn("persons", form.fields)
+        self.assertIn("moderation_needed_in_all_messages", form.fields)
+        self.assertNotIn("owner", form.fields)
+        self.assertIn("allow_messages_using_form", form.fields)
+        self.assertIn("rate_limiter", form.fields)
+        self.assertIn("notify_owner_when_new_answer", form.fields)
+        self.assertIn("autoconfirm_api_messages", form.fields)
+
+    def test_writeitinstance_advanced_form_save(self):
+        url = reverse('writeitinstance_advanced_update', kwargs={'pk':self.writeitinstance.pk})
+        c = Client()
+        c.login(username=self.owner.username, password='admin')
+        response = c.post(url,data=self.data, follow=True)
+        self.assertRedirects(response, url)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertEquals(writeitinstance.moderation_needed_in_all_messages, True)
+        self.assertEquals(writeitinstance.allow_messages_using_form, 1)
+        self.assertEquals(writeitinstance.rate_limiter, 3)
+        self.assertEquals(writeitinstance.notify_owner_when_new_answer , 1)
+        self.assertEquals(writeitinstance.autoconfirm_api_messages , 1 )
+
+    def test_update_view_is_not_reachable_by_a_non_user(self):
+        url = reverse('writeitinstance_advanced_update', kwargs={'pk':self.writeitinstance.pk})
+        client = Client()
+        response = client.get(url)
+        self.assertRedirectToLogin(response, next_url=url)
+
+    def test_when_a_non_owner_saves_it_does_not_get_200_status_code(self):
+        # I think that this test is unnecesary but
+        # it could be of some use in the future
+        # I have no opinion on this =/
+        fiera = User.objects.create_user(username="fierita", \
+            email="fiera@votainteligente.cl", \
+            password="feroz")
+        url = reverse('writeitinstance_advanced_update', kwargs={'pk':self.writeitinstance.pk})
+        c = Client()
+        c.login(username=fiera.username, password='feroz')
+
+        response = c.post(url,data=self.data, follow=True)
+
+        self.assertEquals(response.status_code, 404)
+
+
 
 
 class WriteitInstanceUpdateTestCase(UserSectionTestCase):

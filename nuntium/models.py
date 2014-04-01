@@ -42,11 +42,11 @@ class WriteItInstance(models.Model):
     owner = models.ForeignKey(User, related_name="writeitinstances")
     allow_messages_using_form = models.BooleanField(
         help_text=_("Allow the creation of new messages \
-        using throu the web"), default=True)
+        using the web"), default=True)
     rate_limiter = models.IntegerField(default=0)
     notify_owner_when_new_answer = models.BooleanField(
         help_text=_("The owner of this instance \
-        should be automatically is going to be notified \
+        should be notified \
         when a new answer comes in"), default=False)
     autoconfirm_api_messages = models.BooleanField(
         help_text=_("Messages pushed to the api should \

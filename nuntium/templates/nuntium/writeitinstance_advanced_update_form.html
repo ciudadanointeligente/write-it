@@ -21,8 +21,8 @@ $(".chosen-person-select").chosen();
 </ul>
 
 <ul class="nav nav-tabs">
-  <li class="active"><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Basic Update" %}</a></li>
-  <li class=""><a href="{% url 'writeitinstance_advanced_update' pk=writeitinstance.pk %}">{% trans "Advanced Update" %}</a></li>
+  <li class=""><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Basic Update" %}</a></li>
+  <li class="active"><a href="{% url 'writeitinstance_advanced_update' pk=writeitinstance.pk %}">{% trans "Advanced Update" %}</a></li>
   <li class=""><a href="{% url 'writeitinstance_template_update' pk=writeitinstance.pk %}">{% trans "Templates" %}</a></li>
   <!-- <li><a href="#webhooks" data-toggle="tab">{% trans "Webhooks" %}</a></li>
   <li><a href="#advanced-update" data-toggle="tab">{% trans "Advanced Update" %}</a></li>
@@ -33,19 +33,31 @@ $(".chosen-person-select").chosen();
 
 {% block content %}
 <div class="tab-content">
-  <div class="tab-pane active" id="basic-update">
+  <div class="tab-pane active" id="advanced-update">
     <div class="page-header">
-        <h2>{% blocktrans with writeitinstance=writeitinstance %}Editing {{ writeitinstance }}{% endblocktrans %}</h2>
+        <h2>{% blocktrans with writeitinstance=writeitinstance %}Editing the advaced parts of {{ writeitinstance }}{% endblocktrans %}</h2>
     </div>
 
     <form role="form" action="" method="post">
       <div class="form-group">
-        {{form.name.label_tag}}
-        {{form.name}}
+        {{form.moderation_needed_in_all_messages.label_tag}}
+        {{form.moderation_needed_in_all_messages}}
       </div>
       <div class="form-group">
-        {{form.persons.label_tag}}
-        {{form.persons}}
+        {{form.allow_messages_using_form.label_tag}}
+        {{form.allow_messages_using_form}}
+      </div>
+      <div class="form-group">
+        {{form.rate_limiter.label_tag}}
+        {{form.rate_limiter}}
+      </div>
+      <div class="form-group">
+        {{form.notify_owner_when_new_answer.label_tag}}
+        {{form.notify_owner_when_new_answer}}
+      </div>
+      <div class="form-group">
+        {{form.autoconfirm_api_messages.label_tag}}
+        {{form.autoconfirm_api_messages}}
       </div>
       <div class="text-right">
         <input type="button" onclick="javascript:history.back();" class='btn btn-default' value="{% trans 'Cancel' %}" />
