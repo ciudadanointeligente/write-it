@@ -14,21 +14,25 @@ from django.contrib.auth.models import User
 from django.forms import ValidationError
 from django.template import Context, Template
 from django.test.client import Client
+import os
+script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
 
 class ConfirmationTemplateTestCase(TestCase):
     def setUp(self):
         super(ConfirmationTemplateTestCase,self).setUp()
+        script_dir = os.path.dirname(__file__)
+
         self.writeitinstance = WriteItInstance.objects.all()[0]
         self.default_template = ''
-        with open('nuntium/templates/nuntium/mails/confirmation/content_template.html', 'r') as f:
+        with open(os.path.join(script_dir, '../templates/nuntium/mails/confirmation/content_template.html'), 'r') as f:
            self.default_template = f.read()
 
         self.default_template_text = ''
-        with open('nuntium/templates/nuntium/mails/confirmation/content_template.txt', 'r') as f:
+        with open(os.path.join(script_dir, '../templates/nuntium/mails/confirmation/content_template.txt'), 'r') as f:
            self.default_template_text = f.read()
 
         self.default_subject = ''
-        with open('nuntium/templates/nuntium/mails/confirmation/subject_template.txt', 'r') as f:
+        with open(os.path.join(script_dir, '../templates/nuntium/mails/confirmation/subject_template.txt'), 'r') as f:
            self.default_subject = f.read()
 
         self.owner = User.objects.all()[0]
