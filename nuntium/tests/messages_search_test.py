@@ -166,7 +166,7 @@ class SearchMessageAccess(SearchIndexTestCase):
         self.assertGreaterEqual(len(results), 1)
         self.assertEquals(results[0].object.id, expected_answer.id)
 
-
+from django.contrib.contenttypes.models import ContentType
 class PerInstanceSearchFormTestCase(SearchIndexTestCase, SubdomainTestMixin):
     def setUp(self):
         super(PerInstanceSearchFormTestCase, self).setUp()
@@ -178,9 +178,10 @@ class PerInstanceSearchFormTestCase(SearchIndexTestCase, SubdomainTestMixin):
         self.assertIsInstance(form, SearchForm)
 
         ids_of_messages_returned_by_searchqueryset = []
+        content_type = ContentType.objects.get(model=Message)
 
         for result in form.searchqueryset:
-            if result.content_type() == "nuntium.message":
+            if result.content_type() == content_type.app_label + ".message":
                 ids_of_messages_returned_by_searchqueryset.append(result.object.id)
 
 
