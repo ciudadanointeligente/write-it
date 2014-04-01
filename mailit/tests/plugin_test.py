@@ -15,6 +15,7 @@ from subdomains.utils import reverse
 from django.test.client import Client
 from django.forms import ValidationError
 from django.test.utils import override_settings
+from django.utils.translation import activate
 
 class MailChannelTestCase(TestCase):
 
@@ -110,7 +111,7 @@ class MailSendingTestCase(TestCase):
 
     @override_settings(EMAIL_SUBJECT_PREFIX='[WriteIT]')
     def test_sending_email(self):
-        
+        activate('en')
         result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
 
         self.assertTrue(result_of_sending)
