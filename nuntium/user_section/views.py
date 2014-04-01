@@ -149,6 +149,11 @@ class YourInstancesView(UserSectionListView):
     model = WriteItInstance
     template_name = 'nuntium/profiles/your-instances.html'
 
+    def get_context_data(self, **kwargs):
+        kwargs = super(YourInstancesView, self).get_context_data(**kwargs)
+        kwargs['new_instance_form'] = WriteItInstanceCreateForm()
+        return kwargs
+
 
 class UpdateTemplateWithWriteitMixin(UpdateView):
 

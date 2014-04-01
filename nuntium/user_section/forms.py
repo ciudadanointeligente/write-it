@@ -95,7 +95,8 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
         fields = ('name', 'popit_url')
 
     def __init__(self, *args, **kwargs):
-        self.owner = kwargs.pop('owner')
+        if 'owner' in kwargs:
+            self.owner = kwargs.pop('owner')
         super(WriteItInstanceCreateForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):

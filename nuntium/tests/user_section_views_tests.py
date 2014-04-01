@@ -483,3 +483,16 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         response = c.get(url)
         your_instances_url = reverse('your-instances')
         self.assertRedirects(response, your_instances_url)
+
+
+    def test_your_instances_carries_a_create_form(self):
+        '''Your instances has a form for creating an instance'''
+        your_instances_url = reverse('your-instances')
+        c = Client()
+        c.login(username=self.user.username, password='admin')
+
+        response = c.get(your_instances_url)
+        self.assertIn('new_instance_form', response.context)
+        self.assertIsInstance(response.context['new_instance_form'], WriteItInstanceCreateForm)
+        
+
