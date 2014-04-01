@@ -1,6 +1,6 @@
 # coding=utf-8
 from haystack import indexes
-from nuntium.models import Message, Answer
+from .models import Message, Answer
 
 class MessageIndex(indexes.SearchIndex, indexes.Indexable):
 	text = indexes.CharField(document=True, use_template=True)

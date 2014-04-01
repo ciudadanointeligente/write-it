@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from popit.models import Person, ApiInstance
 from contactos.models import Contact
-from nuntium.plugins import OutputPlugin
+from .plugins import OutputPlugin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User

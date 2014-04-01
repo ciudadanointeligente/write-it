@@ -2,7 +2,7 @@
 from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, \
                         CharField, EmailField, SelectMultiple, TextInput, Textarea, \
                         URLField, IntegerField, CheckboxInput, NumberInput
-from nuntium.models import Message, WriteItInstance, OutboundMessage, \
+from ..models import Message, WriteItInstance, OutboundMessage, \
     Confirmation, Membership, NewAnswerNotificationTemplate, \
     ConfirmationTemplate
 from contactos.models import Contact

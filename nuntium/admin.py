@@ -1,5 +1,5 @@
 from django.contrib import admin
-from nuntium.models import  Message, WriteItInstance, OutboundMessage, MessageRecord, \
+from .models import  Message, WriteItInstance, OutboundMessage, MessageRecord, \
                             Answer, AnswerWebHook, NewAnswerNotificationTemplate, \
                             NewAnswerNotificationTemplate
 from popit.models import ApiInstance, Person
@@ -7,7 +7,7 @@ from django.forms.models import BaseInlineFormSet
 from mailit.models import MailItTemplate
 from django_object_actions import DjangoObjectActions
 from django.db.models import Q
-from nuntium.forms import WriteItInstanceCreateFormPopitUrl
+from .forms import WriteItInstanceCreateFormPopitUrl
 
 class PersonInline(admin.TabularInline):
     model=Person

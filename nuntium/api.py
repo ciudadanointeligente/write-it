@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from tastypie.resources import ModelResource, ALL_WITH_RELATIONS, Resource
-from nuntium.models import WriteItInstance, Message, Answer, \
+from .models import WriteItInstance, Message, Answer, \
                             OutboundMessageIdentifier, OutboundMessage, \
                             Confirmation
 from tastypie.authentication import ApiKeyAuthentication

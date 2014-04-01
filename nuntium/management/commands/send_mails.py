@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from nuntium.models import OutboundMessage
+from ...models import OutboundMessage
 import logging
 
 logging.basicConfig(filename='send_mails.log', level=logging.INFO)

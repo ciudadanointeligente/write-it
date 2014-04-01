@@ -2,7 +2,7 @@ from django.views.generic import TemplateView, CreateView, DetailView, RedirectV
 from django.views.generic.edit import UpdateView
 from subdomains.utils import reverse
 from django.core.urlresolvers import reverse as original_reverse
-from nuntium.models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation, Membership,\
+from ..models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation, Membership,\
                             NewAnswerNotificationTemplate, ConfirmationTemplate
                         
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \

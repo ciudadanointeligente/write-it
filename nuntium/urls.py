@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
-from nuntium.views import HomeTemplateView, MessageSearchView,\
+from .views import HomeTemplateView, MessageSearchView,\
     WriteItInstanceDetailView, \
     WriteItInstanceListView
 
