@@ -1,4 +1,19 @@
 # -*- coding: utf-8 -*-
+from tastypie.paginator import Paginator
+
+class PagePaginator(Paginator):
+    def get_offset(self):
+        if 'page' in self.request_data:
+            return self.get_offset_from_page()
+        return super(PagePaginator, self).get_offset()
+
+    def get_offset_from_page(self):
+        page = int(self.request_data.get('page'))
+        offset = (page - 1) * self.get_limit()
+        return offset
+
+from .person_resource import *
+
 from tastypie.resources import ModelResource, ALL_WITH_RELATIONS, Resource
 from nuntium.models import WriteItInstance, Message, Answer, \
                             OutboundMessageIdentifier, OutboundMessage, \
@@ -16,28 +31,6 @@ from tastypie.paginator import Paginator
 from django.http import Http404, HttpResponseBadRequest
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-
-class PagePaginator(Paginator):
-    def get_offset(self):
-        if 'page' in self.request_data:
-            return self.get_offset_from_page()
-        return super(PagePaginator, self).get_offset()
-
-    def get_offset_from_page(self):
-        page = int(self.request_data.get('page'))
-        offset = (page - 1) * self.get_limit()
-        return offset
-        
-
-class PersonResource(ModelResource):
-    class Meta:
-        queryset = Person.objects.all()
-        resource_name = 'person'
-        authentication = ApiKeyAuthentication()
-
-    def dehydrate(self, bundle):
-        bundle.data['resource_uri'] = bundle.obj.popit_url
-        return bundle
 
 class WriteItInstanceResource(ModelResource):
     # I should add persons but the thing is that
