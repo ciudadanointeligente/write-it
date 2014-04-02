@@ -27,6 +27,7 @@ from unidecode import unidecode
 from django.db.models.query import QuerySet
 from itertools import chain
 from django.utils.timezone import now
+import os
 
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people
@@ -580,18 +581,19 @@ class OutboundMessagePluginRecord(models.Model):
     number_of_attempts = models.PositiveIntegerField(default=0)
     try_again = models.BooleanField(default=True)
 
+script_dir = os.path.dirname(__file__)
 
 default_confirmation_template_content = ''
-with open('nuntium/templates/nuntium/mails/confirmation/content_template.html', 'r') as f:
+with open(os.path.join(script_dir, 'templates/nuntium/mails/confirmation/content_template.html'), 'r') as f:
     default_confirmation_template_content = f.read()
 
 
 default_confirmation_template_content_text = ''
-with open('nuntium/templates/nuntium/mails/confirmation/content_template.txt', 'r') as f:
+with open(os.path.join(script_dir, 'templates/nuntium/mails/confirmation/content_template.txt'), 'r') as f:
     default_confirmation_template_content_text = f.read()
 
 default_confirmation_template_subject = ''
-with open('nuntium/templates/nuntium/mails/confirmation/subject_template.txt', 'r') as f:
+with open(os.path.join(script_dir, 'templates/nuntium/mails/confirmation/subject_template.txt'), 'r') as f:
     default_confirmation_template_subject = f.read()
 
 class ConfirmationTemplate(models.Model):
