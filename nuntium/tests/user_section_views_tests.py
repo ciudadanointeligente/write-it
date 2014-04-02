@@ -442,6 +442,16 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         form = WriteItInstanceCreateForm(data=self.data, owner=self.user)
         self.assertTrue(form)
         self.assertTrue(form.is_valid())
+        # the following lines are probably a little too deep in the details
+        # but this isn't very simple to workout
+        attrs_for_name = form.fields['name'].widget.attrs
+        self.assertIn('class', attrs_for_name)
+        self.assertEquals(attrs_for_name['class'], 'form-control')
+        #everything ok until now
+        attrs_for_popit_url = form.fields['popit_url'].widget.attrs
+        self.assertIn('class', attrs_for_popit_url)
+        self.assertEquals(attrs_for_popit_url['class'], 'form-control')
+
 
     def test_save_the_instance_with_the_form(self):
         form = WriteItInstanceCreateForm(data=self.data, owner=self.user)

@@ -1,7 +1,7 @@
 # coding=utf-8
 from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, \
                         CharField, EmailField, SelectMultiple, TextInput, Textarea, \
-                        URLField, IntegerField, CheckboxInput, NumberInput
+                        URLField, IntegerField, CheckboxInput, NumberInput, URLInput
 from ..models import Message, WriteItInstance, OutboundMessage, \
     Confirmation, Membership, NewAnswerNotificationTemplate, \
     ConfirmationTemplate
@@ -88,16 +88,19 @@ class SimpleInstanceCreateFormPopitUrl(WriteItInstanceCreateFormPopitUrl):
         model = WriteItInstance
         fields = ('owner', 'name', 'popit_url')
 
-
 class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
     class Meta:
         model = WriteItInstance
         fields = ('name', 'popit_url')
+        widgets = {
+            'name': TextInput(attrs={'class': 'form-control'})
+        }
 
     def __init__(self, *args, **kwargs):
         if 'owner' in kwargs:
             self.owner = kwargs.pop('owner')
         super(WriteItInstanceCreateForm, self).__init__(*args, **kwargs)
+        self.fields['popit_url'].widget.attrs['class'] = 'form-control'
 
     def save(self, commit=True):
         instance = super(WriteItInstanceCreateForm, self).save(commit=False)
