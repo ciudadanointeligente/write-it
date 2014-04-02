@@ -1,7 +1,7 @@
 Django
 django-plugins
 South
-popit-django
+-e git://github.com/mysociety/popit-django.git#egg=popit-django
 python-mimeparse
 django-tastypie==0.11.0
 email_reply_parser
