@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, WriteItInstance, OutboundMessage,\
+from ..models import Message, WriteItInstance, OutboundMessage,\
                              MessageRecord, OutboundMessagePluginRecord\
                             , OutboundMessageIdentifier, Answer
 from popit.models import Person, ApiInstance
@@ -245,7 +245,7 @@ class PluginMentalMessageTestCase(TestCase):
         self.assertEquals(contact_type.name, "mind")
 
 
-from nuntium.models import AbstractOutboundMessage
+from ..models import AbstractOutboundMessage
 from django.db import models
 class AbstractOutboundMessageTestCase(TestCase):
     def setUp(self):
@@ -270,7 +270,7 @@ class AbstractOutboundMessageTestCase(TestCase):
         self.assertTrue(AbstractOutboundMessage._meta.abstract)
         #OK this is a total redunduncy but how else can I test this?
 
-from nuntium.models import NoContactOM
+from ..models import NoContactOM
 
 class MessagesToPersonWithoutContactsTestCase(TestCase):
     def setUp(self):

@@ -31,6 +31,6 @@ urlpatterns = patterns('',
 urlpatterns += i18n_patterns('',
     
     url(r'^', include('nuntium.urls')),
-    
+    url(r'^', include('nuntium.user_section.urls')),
     (r'accounts/', include('django.contrib.auth.urls')),
 )

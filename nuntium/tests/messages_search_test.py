@@ -1,15 +1,15 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, SearchIndexTestCase
-from nuntium.search_indexes import MessageIndex
+from ..search_indexes import MessageIndex
 from django.core.management import call_command
-from nuntium.models import Message
-from nuntium.forms import  MessageSearchForm, PerInstanceSearchForm
+from ..models import Message
+from ..forms import  MessageSearchForm, PerInstanceSearchForm
 from haystack import indexes
 from haystack.fields import CharField
 from haystack.forms import SearchForm
 from subdomains.utils import reverse
-from nuntium.views import MessageSearchView, PerInstanceSearchView
-from nuntium.models import WriteItInstance, Confirmation, Answer
+from ..views import MessageSearchView, PerInstanceSearchView
+from ..models import WriteItInstance, Confirmation, Answer
 from django.views.generic.edit import FormView
 from django.utils.unittest import skip
 from haystack.views import SearchView
@@ -166,7 +166,7 @@ class SearchMessageAccess(SearchIndexTestCase):
         self.assertGreaterEqual(len(results), 1)
         self.assertEquals(results[0].object.id, expected_answer.id)
 
-
+from django.contrib.contenttypes.models import ContentType
 class PerInstanceSearchFormTestCase(SearchIndexTestCase, SubdomainTestMixin):
     def setUp(self):
         super(PerInstanceSearchFormTestCase, self).setUp()
@@ -178,9 +178,10 @@ class PerInstanceSearchFormTestCase(SearchIndexTestCase, SubdomainTestMixin):
         self.assertIsInstance(form, SearchForm)
 
         ids_of_messages_returned_by_searchqueryset = []
+        content_type = ContentType.objects.get(model='message')
 
         for result in form.searchqueryset:
-            if result.content_type() == "nuntium.message":
+            if result.content_type() == content_type.app_label + ".message":
                 ids_of_messages_returned_by_searchqueryset.append(result.object.id)
 
 

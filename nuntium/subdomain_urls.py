@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.conf.urls.i18n import i18n_patterns
 from django.views.generic import TemplateView
-from nuntium.views import HomeTemplateView, WriteItInstanceDetailView, \
+from .views import HomeTemplateView, WriteItInstanceDetailView, \
 						MessageDetailView, PerInstanceSearchView, \
 						MessagesPerPersonView
 

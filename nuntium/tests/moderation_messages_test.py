@@ -1,7 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
 from subdomains.tests import SubdomainTestMixin
-from nuntium.models import Message, WriteItInstance, \
+from ..models import Message, WriteItInstance, \
                             Moderation, Confirmation, \
                             OutboundMessage
 from popit.models import Person

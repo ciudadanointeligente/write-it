@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, WriteItInstance, \
+from ..models import Message, WriteItInstance, \
                             OutboundMessage, MessageRecord, Confirmation, \
                             Moderation, NoContactOM
 from popit.models import Person, ApiInstance

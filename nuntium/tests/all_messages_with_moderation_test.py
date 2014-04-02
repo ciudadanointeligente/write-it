@@ -1,6 +1,6 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from nuntium.models import Message, WriteItInstance, \
+from ..models import Message, WriteItInstance, \
                             Moderation
 from popit.models import Person
 from django.core import mail

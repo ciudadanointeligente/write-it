@@ -1,6 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
 from django.utils.unittest import skip
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord
+from ..models import Message, WriteItInstance, OutboundMessage, MessageRecord
 from django.contrib.contenttypes.models import ContentType
 from popit.models import Person, ApiInstance
 from contactos.models import Contact, ContactType
@@ -12,7 +12,7 @@ from django.utils.timezone import utc
 class MessageRecordTestCase(TestCase):
     def setUp(self):
         super(MessageRecordTestCase,self).setUp()
-        self.outboundmessage_type = ContentType.objects.get(app_label="nuntium", model="outboundmessage")
+        self.outboundmessage_type = ContentType.objects.get(model="outboundmessage")
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
         self.outbound_message = OutboundMessage.objects.all()[0]
         self.person1 = Person.objects.all()[0]

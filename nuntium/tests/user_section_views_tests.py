@@ -1,20 +1,21 @@
 from global_test_case import GlobalTestCase as TestCase
 from subdomains.utils import reverse, get_domain
 from django.core.urlresolvers import reverse as original_reverse
-from nuntium.models import WriteItInstance
+from ..models import WriteItInstance
 from django.contrib.auth.models import User
 from django.test.client import Client, RequestFactory
-from nuntium.views import WriteItInstanceUpdateView
+from ..user_section.views import WriteItInstanceUpdateView
 from django.forms import ModelForm
 from django.contrib.sites.models import Site
 from django.conf import settings
 from django.utils.translation import activate
-from nuntium.forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm
+from ..user_section.forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
+                            WriteItInstanceCreateForm
 from popit.models import Person
 from django.forms.models import model_to_dict
 from contactos.models import Contact
 from contactos.forms import ContactCreateForm
-from nuntium.forms import NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
+from ..user_section.forms import NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
 from mailit.forms import MailitTemplateForm
 
 
@@ -422,3 +423,76 @@ class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
 
         response = c.post(url, data=data)
         self.assertRedirectToLogin(response)
+
+from django.db.models import Q
+
+class CreateUserSectionInstanceTestCase(UserSectionTestCase):
+    def setUp(self):
+        super(CreateUserSectionInstanceTestCase, self).setUp()
+        self.user = User.objects.first()
+        self.data = {
+            "name":'instance',
+            "popit_url":settings.TEST_POPIT_API_URL
+        }
+
+    def test_create_an_instance_form(self):
+        '''Create an instance with a very simple form in the user interface'''
+
+        
+        form = WriteItInstanceCreateForm(data=self.data, owner=self.user)
+        self.assertTrue(form)
+        self.assertTrue(form.is_valid())
+
+    def test_save_the_instance_with_the_form(self):
+        form = WriteItInstanceCreateForm(data=self.data, owner=self.user)
+        instance = form.save()
+        self.assertTrue(instance)
+        self.assertEquals(instance.name, "instance")
+        self.assertEquals(instance.owner, self.user)
+        self.assertTrue(instance.persons.all())
+
+    def test_post_to_create_an_instance(self):
+        your_instances_url = reverse('your-instances')
+        c = Client()
+        c.login(username=self.user.username, password='admin')
+        url = reverse('create_writeit_instance')
+        self.assertTrue(url)
+
+        response = c.post(url, data=self.data)
+        self.assertRedirects(response, your_instances_url)
+        instance = WriteItInstance.objects.get(Q(name='instance'), Q(owner=self.user))
+        self.assertTrue(instance.persons.all())
+
+    def test_create_an_instance_get_not_logged(self):
+        '''Create an instance get'''
+
+        url = reverse('create_writeit_instance')
+        c = Client()
+        response = c.get(url)
+        self.assertRedirectToLogin(response)
+
+
+    def test_it_redirects_to_your_instances(self):
+        '''When get to create an instance it redirects to your instances'''
+        url = reverse('create_writeit_instance')
+        c = Client()
+
+        response = c.get(url)
+        c.login(username=self.user.username, password='admin')
+
+        response = c.get(url)
+        your_instances_url = reverse('your-instances')
+        self.assertRedirects(response, your_instances_url)
+
+
+    def test_your_instances_carries_a_create_form(self):
+        '''Your instances has a form for creating an instance'''
+        your_instances_url = reverse('your-instances')
+        c = Client()
+        c.login(username=self.user.username, password='admin')
+
+        response = c.get(your_instances_url)
+        self.assertIn('new_instance_form', response.context)
+        self.assertIsInstance(response.context['new_instance_form'], WriteItInstanceCreateForm)
+        
+

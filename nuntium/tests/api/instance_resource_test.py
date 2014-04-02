@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.management import call_command
-from nuntium.models import Message, WriteItInstance, Confirmation
+from ...models import Message, WriteItInstance, Confirmation
 from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
 from tastypie.models import ApiKey

@@ -1,6 +1,6 @@
 from django.core.management import call_command
 from global_test_case import GlobalTestCase as TestCase
-from nuntium.models import Message, WriteItInstance, OutboundMessage, MessageRecord
+from ..models import Message, WriteItInstance, OutboundMessage, MessageRecord
 from popit.models import Person, ApiInstance
 from contactos.models import ContactType, Contact
 

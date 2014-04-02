@@ -2,7 +2,7 @@ from global_test_case import GlobalTestCase as TestCase
 from subdomains.utils import reverse
 from django.utils.translation import activate
 from popit.models import ApiInstance
-from nuntium.models import WriteItInstance
+from ..models import WriteItInstance
 from subdomains.tests import SubdomainTestMixin
 from django.test.client import Client
 

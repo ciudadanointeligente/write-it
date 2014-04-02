@@ -1,7 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from nuntium.models import OutboundMessage
-from nuntium.tasks import send_mails_task
+from ..models import OutboundMessage
+from ..tasks import send_mails_task
 from mock import patch
 
 

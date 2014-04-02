@@ -1,7 +1,7 @@
 from global_test_case import GlobalTestCase as TestCase
 from nuntium.tests.user_section_views_tests import UserSectionTestCase
 from django.utils.unittest import skip
-from contactos.models import ContactType, Contact
+from ..models import ContactType, Contact
 from popit.models import Person, ApiInstance
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
@@ -10,14 +10,14 @@ from django.conf import settings
 from nuntium.models import OutboundMessage, Message, OutboundMessageIdentifier
 from mailit.bin.handleemail import EmailHandler
 from mailit.management.commands.handleemail import AnswerForManageCommand
-from contactos.admin import ContactAdmin
-from contactos.forms import ContactUpdateForm, ContactCreateForm
+from ..admin import ContactAdmin
+from ..forms import ContactUpdateForm, ContactCreateForm
 from django.test.client import RequestFactory, Client
 from django.forms import ModelForm
 from subdomains.utils import reverse
 from django.core.urlresolvers import reverse as original_reverse
 from django.forms.widgets import Select
-from contactos.forms import SelectSinglePersonField
+from ..forms import SelectSinglePersonField
 import simplejson as json
 
 class ContactTestCase(TestCase):
