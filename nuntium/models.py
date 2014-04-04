@@ -29,6 +29,8 @@ from itertools import chain
 from django.utils.timezone import now
 import os
 
+script_dir = os.path.dirname(__file__)
+
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people
     for usability purposes. E.g. 'Candidates running for president'"""
@@ -581,7 +583,7 @@ class OutboundMessagePluginRecord(models.Model):
     number_of_attempts = models.PositiveIntegerField(default=0)
     try_again = models.BooleanField(default=True)
 
-script_dir = os.path.dirname(__file__)
+
 
 default_confirmation_template_content = ''
 with open(os.path.join(script_dir, 'templates/nuntium/mails/confirmation/content_template.html'), 'r') as f:
@@ -710,33 +712,33 @@ class Subscriber(models.Model):
     message = models.ForeignKey(Message, related_name='subscribers')
     email = models.EmailField()
 
+nant_html = ''
+file_location = 'templates/nuntium/mails/new_answer.html'
+with open(os.path.join(script_dir, file_location), 'r') as f:
+    nant_html += f.read()
+
+nant_txt = ''
+file_location = 'templates/nuntium/mails/new_answer.txt'
+with open(os.path.join(script_dir, file_location), 'r') as f:
+    nant_txt += f.read()
+
+nant_subject = ''
+file_location = 'templates/nuntium/mails/nant_subject.txt'
+with open(os.path.join(script_dir, file_location), 'r') as f:
+    nant_subject += f.read()
+
 class NewAnswerNotificationTemplate(models.Model):
     writeitinstance = models.OneToOneField(WriteItInstance, \
         related_name='new_answer_notification_template')
-    template_html = models.TextField(default=""\
+    template_html = models.TextField(default=nant_html\
         , help_text=_('You can use {{ user }}, {{ person }}, \
             {{ message.subject }} and {{ answer.content }}'))
-    template_text = models.TextField(default=""\
+    template_text = models.TextField(default=nant_txt\
         , help_text=_('You can use {{ user }}, {{ person }}, \
             {{ message.subject }} and {{ answer.content }}'))
     subject_template = models.CharField(max_length=255, \
-        default=settings.NEW_ANSWER_DEFAULT_SUBJECT_TEMPLATE\
+        default=nant_subject\
         , help_text=_('You can use %(message)s and %(person)s'))
-
-    def __init__(self, *args, **kwargs):
-        super(NewAnswerNotificationTemplate, self).__init__(*args, **kwargs)
-        if not self.id and not self.template_html:
-            new_answer_html = ''
-            file_location = 'nuntium/templates/nuntium/mails/new_answer.html'
-            with open(file_location, 'r') as f:
-                new_answer_html += f.read()
-            self.template_html = new_answer_html
-        if not self.id and not self.template_text:
-            new_answer_text = ''
-            file_location = 'nuntium/templates/nuntium/mails/new_answer.txt'
-            with open(file_location, 'r') as f:
-                new_answer_text += f.read()
-            self.template_text = new_answer_text
 
     def __unicode__(self):
         return _("Notification template for %s")%(self.writeitinstance.name)
