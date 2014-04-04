@@ -29,7 +29,16 @@ from itertools import chain
 from django.utils.timezone import now
 import os
 
-script_dir = os.path.dirname(__file__)
+
+
+def read_template_as_string(path, file_source_path=__file__):
+    script_dir = os.path.dirname(file_source_path)
+    result = ''
+    with open(os.path.join(script_dir, path), 'r') as f:
+       result = f.read()
+
+    return result
+
 
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people
@@ -339,8 +348,6 @@ class Answer(models.Model):
         related_name='answers')
     created = models.DateTimeField(auto_now=True, null=True)
 
-    def __init__(self, *args, **kwargs):
-        super(Answer, self).__init__(*args, **kwargs)
     def save(self, *args, **kwargs):
         memberships = self.message.writeitinstance.\
                             membership_set.filter(person=self.person)
@@ -585,18 +592,11 @@ class OutboundMessagePluginRecord(models.Model):
 
 
 
-default_confirmation_template_content = ''
-with open(os.path.join(script_dir, 'templates/nuntium/mails/confirmation/content_template.html'), 'r') as f:
-    default_confirmation_template_content = f.read()
+default_confirmation_template_content = read_template_as_string('templates/nuntium/mails/confirmation/content_template.html')
 
+default_confirmation_template_content_text = read_template_as_string('templates/nuntium/mails/confirmation/content_template.txt')
 
-default_confirmation_template_content_text = ''
-with open(os.path.join(script_dir, 'templates/nuntium/mails/confirmation/content_template.txt'), 'r') as f:
-    default_confirmation_template_content_text = f.read()
-
-default_confirmation_template_subject = ''
-with open(os.path.join(script_dir, 'templates/nuntium/mails/confirmation/subject_template.txt'), 'r') as f:
-    default_confirmation_template_subject = f.read()
+default_confirmation_template_subject = read_template_as_string('templates/nuntium/mails/confirmation/subject_template.txt')
 
 class ConfirmationTemplate(models.Model):
     writeitinstance = models.OneToOneField(WriteItInstance)
@@ -712,20 +712,11 @@ class Subscriber(models.Model):
     message = models.ForeignKey(Message, related_name='subscribers')
     email = models.EmailField()
 
-nant_html = ''
-file_location = 'templates/nuntium/mails/new_answer.html'
-with open(os.path.join(script_dir, file_location), 'r') as f:
-    nant_html += f.read()
+nant_html = read_template_as_string('templates/nuntium/mails/new_answer.html')
 
-nant_txt = ''
-file_location = 'templates/nuntium/mails/new_answer.txt'
-with open(os.path.join(script_dir, file_location), 'r') as f:
-    nant_txt += f.read()
+nant_txt = read_template_as_string('templates/nuntium/mails/new_answer.txt')
 
-nant_subject = ''
-file_location = 'templates/nuntium/mails/nant_subject.txt'
-with open(os.path.join(script_dir, file_location), 'r') as f:
-    nant_subject += f.read()
+nant_subject = read_template_as_string('templates/nuntium/mails/nant_subject.txt')
 
 class NewAnswerNotificationTemplate(models.Model):
     writeitinstance = models.OneToOneField(WriteItInstance, \
