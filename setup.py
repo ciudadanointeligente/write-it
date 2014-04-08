@@ -23,6 +23,7 @@ install_requires = ['Django',
 'django-celery',
 'django-autoslug',
 'pytz>=2013b',
+'popit-django',
 'django-admin-bootstrapped',
 'django-object-actions',
 'unidecode']
@@ -38,9 +39,6 @@ setup(name='write-it',
     packages=find_packages(exclude=["writeit", "manage", "test"]),
     include_package_data=True,
     install_requires=install_requires,
-    dependency_links=[
-      'git+https://github.com/mysociety/popit-django#egg=popit-django',
-    ],
     zip_safe=False,
     license='License',
 )
