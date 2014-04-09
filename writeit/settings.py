@@ -244,9 +244,6 @@ DEFAULT_FROM_EMAIL = 'mailer@example.com'
 DEFAULT_FROM_DOMAIN = 'mailit.ciudadanointeligente.org'
 
 
-
-#NEW ANSWER DEFAULT SUBJECT TEMPLATE
-NEW_ANSWER_DEFAULT_SUBJECT_TEMPLATE = '%(person)s has answered to your message %(message)s'
 #CELERY CONFIGURATION
 import djcelery
 from celery.schedules import crontab

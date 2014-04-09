@@ -132,7 +132,7 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
 
         self.assertEquals(notification_template.template_html, new_answer_html)
         self.assertEquals(notification_template.template_text, new_answer_txt)
-        self.assertEquals(notification_template.subject_template, settings.NEW_ANSWER_DEFAULT_SUBJECT_TEMPLATE)
+        self.assertEquals(notification_template.subject_template, '%(person)s has answered to your message %(message)s')
 
 
     def test_when_I_create_a_new_writeitinstance_then_a_notification_template_is_created(self):

@@ -1,0 +1,1 @@
+%(person)s has answered to your message %(message)s

@@ -1,0 +1,5 @@
+include README.md
+recursive-include nuntium/static *
+recursive-include nuntium/templates *
+recursive-include mailit/templates *
+recursive-include contactos/templates *

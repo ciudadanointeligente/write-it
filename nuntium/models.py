@@ -27,6 +27,18 @@ from unidecode import unidecode
 from django.db.models.query import QuerySet
 from itertools import chain
 from django.utils.timezone import now
+import os
+
+
+
+def read_template_as_string(path, file_source_path=__file__):
+    script_dir = os.path.dirname(file_source_path)
+    result = ''
+    with open(os.path.join(script_dir, path), 'r') as f:
+       result = f.read()
+
+    return result
+
 
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people
@@ -336,8 +348,6 @@ class Answer(models.Model):
         related_name='answers')
     created = models.DateTimeField(auto_now=True, null=True)
 
-    def __init__(self, *args, **kwargs):
-        super(Answer, self).__init__(*args, **kwargs)
     def save(self, *args, **kwargs):
         memberships = self.message.writeitinstance.\
                             membership_set.filter(person=self.person)
@@ -581,18 +591,12 @@ class OutboundMessagePluginRecord(models.Model):
     try_again = models.BooleanField(default=True)
 
 
-default_confirmation_template_content = ''
-with open('nuntium/templates/nuntium/mails/confirmation/content_template.html', 'r') as f:
-    default_confirmation_template_content = f.read()
 
+default_confirmation_template_content = read_template_as_string('templates/nuntium/mails/confirmation/content_template.html')
 
-default_confirmation_template_content_text = ''
-with open('nuntium/templates/nuntium/mails/confirmation/content_template.txt', 'r') as f:
-    default_confirmation_template_content_text = f.read()
+default_confirmation_template_content_text = read_template_as_string('templates/nuntium/mails/confirmation/content_template.txt')
 
-default_confirmation_template_subject = ''
-with open('nuntium/templates/nuntium/mails/confirmation/subject_template.txt', 'r') as f:
-    default_confirmation_template_subject = f.read()
+default_confirmation_template_subject = read_template_as_string('templates/nuntium/mails/confirmation/subject_template.txt')
 
 class ConfirmationTemplate(models.Model):
     writeitinstance = models.OneToOneField(WriteItInstance)
@@ -708,33 +712,24 @@ class Subscriber(models.Model):
     message = models.ForeignKey(Message, related_name='subscribers')
     email = models.EmailField()
 
+nant_html = read_template_as_string('templates/nuntium/mails/new_answer.html')
+
+nant_txt = read_template_as_string('templates/nuntium/mails/new_answer.txt')
+
+nant_subject = read_template_as_string('templates/nuntium/mails/nant_subject.txt')
+
 class NewAnswerNotificationTemplate(models.Model):
     writeitinstance = models.OneToOneField(WriteItInstance, \
         related_name='new_answer_notification_template')
-    template_html = models.TextField(default=""\
+    template_html = models.TextField(default=nant_html\
         , help_text=_('You can use {{ user }}, {{ person }}, \
             {{ message.subject }} and {{ answer.content }}'))
-    template_text = models.TextField(default=""\
+    template_text = models.TextField(default=nant_txt\
         , help_text=_('You can use {{ user }}, {{ person }}, \
             {{ message.subject }} and {{ answer.content }}'))
     subject_template = models.CharField(max_length=255, \
-        default=settings.NEW_ANSWER_DEFAULT_SUBJECT_TEMPLATE\
+        default=nant_subject\
         , help_text=_('You can use %(message)s and %(person)s'))
-
-    def __init__(self, *args, **kwargs):
-        super(NewAnswerNotificationTemplate, self).__init__(*args, **kwargs)
-        if not self.id and not self.template_html:
-            new_answer_html = ''
-            file_location = 'nuntium/templates/nuntium/mails/new_answer.html'
-            with open(file_location, 'r') as f:
-                new_answer_html += f.read()
-            self.template_html = new_answer_html
-        if not self.id and not self.template_text:
-            new_answer_text = ''
-            file_location = 'nuntium/templates/nuntium/mails/new_answer.txt'
-            with open(file_location, 'r') as f:
-                new_answer_text += f.read()
-            self.template_text = new_answer_text
 
     def __unicode__(self):
         return _("Notification template for %s")%(self.writeitinstance.name)
