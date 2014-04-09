@@ -30,6 +30,12 @@ class WriteItInstanceAdmin(admin.ModelAdmin):
         MailItTemplateInline
     ]
     exclude = ('persons',)
+
+    def save_model(self, request, obj, form, change):
+        super(WriteItInstanceAdmin, self).save_model(request, obj, form, change)
+        form.relate_with_people()
+
+
 admin.site.register(WriteItInstance, WriteItInstanceAdmin)
 
 
