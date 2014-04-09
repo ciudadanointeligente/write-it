@@ -17,6 +17,7 @@ from contactos.models import Contact
 from contactos.forms import ContactCreateForm
 from ..forms import NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
 from mailit.forms import MailitTemplateForm
+from django.utils.unittest import skipUnless
 
 
 urlconf = settings.SUBDOMAIN_URLCONFS.get(None, settings.ROOT_URLCONF)
@@ -452,7 +453,7 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         self.assertIn('class', attrs_for_popit_url)
         self.assertEquals(attrs_for_popit_url['class'], 'form-control')
 
-
+    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
     def test_save_the_instance_with_the_form(self):
         popit_load_data()
         form = WriteItInstanceCreateForm(data=self.data, owner=self.user)
@@ -462,6 +463,7 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         self.assertEquals(instance.owner, self.user)
         self.assertTrue(instance.persons.all())
 
+    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
     def test_post_to_create_an_instance(self):
         popit_load_data()
         your_instances_url = reverse('your-instances')
