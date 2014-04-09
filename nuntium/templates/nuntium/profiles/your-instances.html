@@ -36,6 +36,30 @@ $('.contact_value').editable({
 <div class="tab-content">
   <div class="page-header">
     <h3>{% trans 'Instances' %}</h3>
+    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createNew">
+      {% trans 'Create a new instance' %}
+    </button>
+    <div class="modal fade" id="createNew" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">{% trans 'Create a new instance' %}</h4>
+        </div>
+        <div class="modal-body">
+          <form action="{% url 'create_writeit_instance' %}" method="POST" role="form">
+            {% csrf_token %}
+            {{ new_instance_form.as_p }}
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+              <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
+            </div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
   </div>
   <div class="tab-pane active" id="instances">
     <table class="table table-striped">

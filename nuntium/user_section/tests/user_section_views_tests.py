@@ -1,22 +1,23 @@
-from global_test_case import GlobalTestCase as TestCase
+from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from subdomains.utils import reverse, get_domain
 from django.core.urlresolvers import reverse as original_reverse
-from ..models import WriteItInstance
+from ...models import WriteItInstance
 from django.contrib.auth.models import User
 from django.test.client import Client, RequestFactory
-from ..user_section.views import WriteItInstanceUpdateView
+from ..views import WriteItInstanceUpdateView
 from django.forms import ModelForm
 from django.contrib.sites.models import Site
 from django.conf import settings
 from django.utils.translation import activate
-from ..user_section.forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
+from ..forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
                             WriteItInstanceCreateForm
 from popit.models import Person
 from django.forms.models import model_to_dict
 from contactos.models import Contact
 from contactos.forms import ContactCreateForm
-from ..user_section.forms import NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
+from ..forms import NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
 from mailit.forms import MailitTemplateForm
+from django.utils.unittest import skipUnless
 
 
 urlconf = settings.SUBDOMAIN_URLCONFS.get(None, settings.ROOT_URLCONF)
@@ -442,8 +443,19 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         form = WriteItInstanceCreateForm(data=self.data, owner=self.user)
         self.assertTrue(form)
         self.assertTrue(form.is_valid())
+        # the following lines are probably a little too deep in the details
+        # but this isn't very simple to workout
+        attrs_for_name = form.fields['name'].widget.attrs
+        self.assertIn('class', attrs_for_name)
+        self.assertEquals(attrs_for_name['class'], 'form-control')
+        #everything ok until now
+        attrs_for_popit_url = form.fields['popit_url'].widget.attrs
+        self.assertIn('class', attrs_for_popit_url)
+        self.assertEquals(attrs_for_popit_url['class'], 'form-control')
 
+    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
     def test_save_the_instance_with_the_form(self):
+        popit_load_data()
         form = WriteItInstanceCreateForm(data=self.data, owner=self.user)
         instance = form.save()
         self.assertTrue(instance)
@@ -451,7 +463,9 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         self.assertEquals(instance.owner, self.user)
         self.assertTrue(instance.persons.all())
 
+    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
     def test_post_to_create_an_instance(self):
+        popit_load_data()
         your_instances_url = reverse('your-instances')
         c = Client()
         c.login(username=self.user.username, password='admin')

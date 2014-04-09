@@ -10,7 +10,7 @@ from django.core import mail
 from django.contrib.auth.models import User
 from django.conf import settings
 from ..forms import MailitTemplateForm
-from nuntium.tests.user_section_views_tests import UserSectionTestCase
+from nuntium.user_section.tests.user_section_views_tests import UserSectionTestCase
 from subdomains.utils import reverse
 from django.test.client import Client
 from django.forms import ValidationError
