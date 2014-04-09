@@ -1,4 +1,4 @@
-from global_test_case import GlobalTestCase as TestCase
+from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from subdomains.utils import reverse, get_domain
 from django.core.urlresolvers import reverse as original_reverse
 from ...models import WriteItInstance
@@ -454,6 +454,7 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
 
 
     def test_save_the_instance_with_the_form(self):
+        popit_load_data()
         form = WriteItInstanceCreateForm(data=self.data, owner=self.user)
         instance = form.save()
         self.assertTrue(instance)
@@ -462,6 +463,7 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         self.assertTrue(instance.persons.all())
 
     def test_post_to_create_an_instance(self):
+        popit_load_data()
         your_instances_url = reverse('your-instances')
         c = Client()
         c.login(username=self.user.username, password='admin')
