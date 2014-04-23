@@ -20,29 +20,21 @@ Write-it is built using Django. You should install Django and its dependencies i
 
 With virtualenvwrapper installed, clone this repo, `cd` into it, and create a virtualenv:
 
-```shell
-git clone git@github.com:…/write-it.git
-cd write-it
-mkvirtualenv writeit
-```
+    git clone git@github.com:…/write-it.git
+    cd write-it
+    mkvirtualenv writeit
 
 Install the requirements:
 
-```shell
-pip install -r requirements.txt
-```
+    pip install -r requirements.txt
 
 Set up the database, creating an admin user when prompted:
 
-```shell
-./manage.py syncdb && ./manage.py migrate
-```
+    ./manage.py syncdb && ./manage.py migrate
 
 Then run the server:
 
-```shell
-./manage.py runserver
-```
+    ./manage.py runserver
 
 
 Testing
