@@ -24,3 +24,11 @@ attachments/
 # Django settings files
 local_settings.py
 local_settings_*.py
+
+# mysociety specific
+conf/httpd.conf
+conf/httpd.conf.deployed
+conf/general.yml
+conf/general.yml.deployed
+conf/local_settings.py
+conf/local_settings.py.deployed

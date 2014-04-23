@@ -1,0 +1,15 @@
+# "general" config file.
+#
+# Configuration parameters, in YAML syntax.
+
+# Copyright (c) 2014 UK Citizens Online Democracy. All rights reserved.
+
+WRITEIT_DB_HOST: 'localhost'
+WRITEIT_DB_PORT: 5432
+WRITEIT_DB_NAME: ''
+WRITEIT_DB_USER: ''
+WRITEIT_DB_PASS: ''
+
+STAGING: 1
+
+TIME_ZONE: 'Europe/London'
