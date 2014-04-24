@@ -54,14 +54,27 @@ border-color: #2E353F;
 #footer {
   background-color: #2E353F;
 }
+
 .logo-image {
-max-width: 100%;
-height: auto;
+  width: auto;
+  height: 30px;
+  margin-top: 7px;
 }
+
 .navbar-brand {
   padding-top: 3px;
   padding-bottom: 0px;
 }
+
+.poplus-logo img {
+  vertical-align: -2px;
+  margin-right: 4px;
+}
+
+.navbar .nav a .glyphicon {
+  margin-right: 4px;
+}
+
 .contactBtn {
   background: none repeat scroll 0 0 #57D6AC;
     border-radius: 6px 6px 6px 6px;
