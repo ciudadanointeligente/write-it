@@ -90,9 +90,19 @@
   background-color: transparent;
 }
 
+.jumbotron-homepage {
+  margin: 0;
+}
+
+@media screen and (min-width: 768px) {
+  .jumbotron-homepage {
+    margin: 0 auto;
+    max-width: 800px;
+  }
+}
+
 .contactBtn {
-  background: none repeat scroll 0 0 #57D6AC;
-  border-radius: 6px 6px 6px 6px;
+  background: #57D6AC;
   color: #FFFFFF;
   font-size: 24px;
   line-height: 21.2px;
@@ -104,7 +114,17 @@
   text-align: center;
   text-decoration: none;
   width: 100%;
-  margin-top: 80px;
+  margin-top: 50px;
+}
+
+.contactBtn:hover {
+  color: #fff;
+  background-color: #47C49A;
+}
+
+.contactBtn .glyphicon {
+  margin-right: 10px;
+  vertical-align: -2px;
 }
 
 
@@ -127,4 +147,31 @@
   padding: 10px;
   border-radius: 5px;
   color: white;
+}
+
+.profile-page-nav {
+  margin-top: 20px;
+}
+
+.profile-page-tab-content {
+  margin-bottom: 50px;
+  background: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-top: 0;
+}
+
+@media screen and (min-width: 768px) {
+  .profile-page-tab-content {
+    padding: 40px;
+  }
+}
+
+.edit-profile-tab-content {
+  padding: 40px 80px 40px 0;
+}
+
+.profile-page-tab-content .page-header,
+.profile-page-tab-content .page-header h3 {
+  margin-top: 0;
 }

@@ -19,12 +19,7 @@ $('.contact_value').editable({
 
 
 {% block header %}
-<ul class="breadcrumb">
-  <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
-  <li class="active">{% trans "Your profile" %}</li>
-</ul>
-
-<ul class="nav nav-tabs">
+<ul class="nav nav-tabs profile-page-nav">
   <li><a href="{% url 'account' %}">{% trans "Your Profile" %}</a></li>
   <li class="active"><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
   <li><a href="{% url 'your-contacts' %}">{% trans "Your contacts" %}</a></li>
@@ -32,56 +27,65 @@ $('.contact_value').editable({
 {% endblock header %}
 
 {% block content %}
-<!-- Tab panes -->
-<div class="tab-content">
-  <div class="page-header">
-    <h3>{% trans 'Instances' %}</h3>
-    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createNew">
-      {% trans 'Create a new instance' %}
-    </button>
-    <div class="modal fade" id="createNew" >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">{% trans 'Create a new instance' %}</h4>
-        </div>
-        <div class="modal-body">
-          <form action="{% url 'create_writeit_instance' %}" method="POST" role="form">
-            {% csrf_token %}
-            {{ new_instance_form.as_p }}
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
-              <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
-            </div>
-          </form>
-        </div>
-        
+
+<!-- Modal -->
+<div class="modal fade" id="createNew" >
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">{% trans 'Create a new instance' %}</h4>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'create_writeit_instance' %}" method="POST" role="form">
+          {% csrf_token %}
+          {{ new_instance_form.as_p }}
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+            <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
-  </div>
-  <div class="tab-pane active" id="instances">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th width="60%">
-            {% trans 'Name' %}
-          </th>
-          <th>Instance API path</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for writeitinstance in object_list %}
-        <tr>
-          <td>{{ writeitinstance }}</td>
-          <td>{% url 'api_dispatch_detail' api_name='v1' resource_name='instance' pk=writeitinstance.id %}</td>
-          <td><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}"><i class="fa fa-pencil"></i> {% trans "Edit me!" %}</a></td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+</div>
+
+
+<!-- Tab panes -->
+<div class="tab-content profile-page-tab-content">
+  <div class="tab-pane active row" id="instances">
+
+    <div class="col-md-4">
+      <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createNew">
+        {% trans 'Create a new instance' %}
+      </button>
+    </div>
+
+    <div class="col-md-8">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th width="60%">
+              {% trans 'Name' %}
+            </th>
+            <th>Instance API path</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for writeitinstance in object_list %}
+          <tr>
+            <td>{{ writeitinstance }}</td>
+            <td>{% url 'api_dispatch_detail' api_name='v1' resource_name='instance' pk=writeitinstance.id %}</td>
+            <td><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}"><i class="fa fa-pencil"></i> {% trans "Edit me!" %}</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" class="text-center">You have no instances</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
   </div>
   <div class="tab-pane" id="nothing"><a href="http://github.com/ciudadanointeligente/write-it" data-toggle="tab">{% trans "please don't go any further" %}</a></div>
 </div>
