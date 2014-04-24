@@ -134,8 +134,16 @@
   padding: 60px 15px 0;
 }
 
-.message-form {
-  padding: 15px;
+.writing-panel {
+  margin-top: 20px;
+}
+
+.writing-panel .panel-body {
+  padding: 20px;
+}
+
+.writing-panel form {
+  padding: 0 15px; /* compensate for -15px horizontal margins on form-groups */
 }
 
 .answer-in-list {
@@ -162,7 +170,8 @@
 }
 
 @media screen and (min-width: 768px) {
-  .profile-page-tab-content {
+  .profile-page-tab-content,
+  .writing-panel .panel-body {
     padding: 40px;
   }
 }

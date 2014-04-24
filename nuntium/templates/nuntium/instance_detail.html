@@ -14,13 +14,17 @@ $(".chosen-person-select").chosen();
 
 {% block content %}
 {% load markdown_deux_tags %}
-<ul class="flash-messages">
-{% for message in messages %}
-<li>{{ message }}</li>
-{% endfor %}
-</ul>
+
+{% if messages %}
+  <ul class="flash-messages">
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
 {% if writeitinstance.allow_messages_using_form %}
-<div class="panel panel-default">
+<div class="panel panel-default writing-panel">
     <div class="panel-heading">
         <h2 class="panel-title">{% trans "You can now write your question" %}</h2>
     </div>
