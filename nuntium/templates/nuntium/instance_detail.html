@@ -67,15 +67,18 @@ $(".chosen-person-select").chosen();
                     {{ form.content.errors }}
                         <textarea cols="40" id="id_content" name="content" value="{% if form.content.value %}{{ form.content.value }}{% endif %}" placeholder="{% trans 'Tell me please about the new thing ...' %}" class="form-control" rows="10"></textarea/>
                 </div>
-                <div class="checkbox">
-                    {{ form.public.errors }}
-                    <label>
-                        <input id="id_public" {% if form.public.value %}checked="checked"{% endif %} name="public" type="checkbox" />
-                        {% trans "Is this message public?" %}
-                    </label>
+                <div class="form-group">
+                  <div class="checkbox">
+                      {{ form.public.errors }}
+                      <label>
+                          <input id="id_public" {% if form.public.value %}checked="checked"{% endif %} name="public" type="checkbox" />
+                          {% trans "Is this message public?" %}
+                      </label>
+                  </div>
                 </div>
-
-                <input type='submit' class='btn btn-primary' value= "{% trans 'Submit Message' %}"/>
+                <div class="form-group">
+                  <input type='submit' class='btn btn-primary' value= "{% trans 'Submit Message' %}"/>
+                </div>
             </div>
         </form>
     </div>
