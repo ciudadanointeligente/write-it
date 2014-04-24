@@ -69,7 +69,8 @@
   margin-right: 4px;
 }
 
-.navbar .nav a .glyphicon {
+.navbar .nav a .glyphicon,
+.navbar .nav a .fa {
   margin-right: 4px;
 }
 
