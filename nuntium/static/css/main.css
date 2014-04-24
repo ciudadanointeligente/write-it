@@ -23,11 +23,6 @@
   padding-bottom: 0px;
 }
 
-.poplus-logo img {
-  vertical-align: -2px;
-  margin-right: 4px;
-}
-
 .navbar .nav a .glyphicon,
 .navbar .nav a .fa {
   margin-right: 4px;
@@ -41,14 +36,51 @@
   min-height: 100%;
   height: auto;
   /* Negative indent footer by its height */
-  margin: 0 auto -60px;
+  margin: 0 auto -50px;
   /* Pad bottom by footer height */
-  padding: 0 0 60px;
+  padding: 0 0 50px;
 }
 
 #footer {
-  height: 60px;
+  height: 50px; /* same as navbar */
   background-color: #2E353F;
+  color: #666;
+}
+
+#footer ul {
+  list-style: none;
+  margin-bottom: 0;
+}
+
+#footer li {
+  float: left;
+  margin-right: 30px;
+}
+
+#footer li.fci {
+  float: right;
+  margin-right: 0;
+}
+
+#footer a {
+  color: #999; /* same as navbar */
+  display: inline-block;
+  line-height: 50px;
+  text-decoration: none;
+}
+
+#footer a:hover {
+  color: #fff; /* same as navbar */
+}
+
+#footer .fa {
+  font-size: 1.5em;
+}
+
+.poplus-logo img,
+#footer .fa {
+  vertical-align: -2px;
+  margin-right: 4px;
 }
 
 

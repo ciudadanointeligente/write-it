@@ -74,7 +74,6 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-              <li class="poplus-logo"><a href="http://poplus.org/"><img src="{% static 'img/icon-poplus.png' %}"> Poplus</a></li>
               {% if not user.is_authenticated %}
               <li><a href="#" data-toggle="modal" data-target="#ModalRegister">{% trans 'Register' %}</a></li>
               <li{% block menu-login-active %}{% endblock menu-login-active %}><a href="{% url 'django.contrib.auth.views.login' %}">Login</a></li>
@@ -123,23 +122,21 @@
     </div><!-- end wrap -->
 
     <div id="footer">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4">
-            <p>{% blocktrans %}Built by <a href="http://www.ciudadanointeligente.org">Fundación Ciudadano Inteligente</a>{% endblocktrans %}</p>
-          </div>
-          <div class="col-md-4"></div>
-          <div class="col-md-4">
-            <p>
-              <a href="http://www.github.com/ciudadanointeligente/write-it">
-              {% blocktrans %}Find the code at Github{% endblocktrans %} <i class="fa fa-github"></i>
-              </a>
-            </p>
-          </div>
-        </div>
-
-
-      </div>
+      <ul class="container">
+        <li class="fci">{% blocktrans %}Built by <a href="http://www.ciudadanointeligente.org">Fundación Ciudadano Inteligente</a>{% endblocktrans %}</li>
+        <li class="poplus-logo">
+          <a href="http://poplus.org/">
+            <img src="{% static 'img/icon-poplus.png' %}">
+            Poplus
+          </a>
+        </li>
+        <li class="github">
+          <a href="http://www.github.com/ciudadanointeligente/write-it">
+            <i class="fa fa-github"></i>
+            {% blocktrans %}Find the code at Github{% endblocktrans %}
+          </a>
+        </li>
+      </ul>
     </div>
 
     <!-- Bootstrap core JavaScript
