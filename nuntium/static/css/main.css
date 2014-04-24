@@ -1,32 +1,28 @@
-footer {
-}
-.getbacktotheinstance {
-	
-}
 .message-form {
-	padding: 15px;
+  padding: 15px;
 }
+
 .answer-in-list {
-	margin: 20px;
+  margin: 20px;
 }
 
 .template-update {
-    background-color: #2E353F;
-    padding: 10px;
-    border-radius: 5px;
-    color: white;
+  background-color: #2E353F;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
 }
 
 .navbar-inverse {
-background-image: -webkit-linear-gradient(top,#2E353F 0,#222 100%);
-background-image: linear-gradient(to bottom,#2E353F 0,#222 100%);
-background-repeat: repeat-x;
-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff3c3c3c',endColorstr='#ff222222',GradientType=0);
-filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+  background-image: -webkit-linear-gradient(top,#2E353F 0,#222 100%);
+  background-image: linear-gradient(to bottom,#2E353F 0,#222 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff3c3c3c',endColorstr='#ff222222',GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
 
 .navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
-border-color: #2E353F;
+  border-color: #2E353F;
 }
 
  /* Wrapper for page content to push down footer */
@@ -48,9 +44,11 @@ border-color: #2E353F;
 #wrap > .container {
   padding: 60px 15px 0;
 }
+
 .jumbotron {
   background-color: transparent;
 }
+
 #footer {
   background-color: #2E353F;
 }
@@ -77,17 +75,17 @@ border-color: #2E353F;
 
 .contactBtn {
   background: none repeat scroll 0 0 #57D6AC;
-    border-radius: 6px 6px 6px 6px;
-    color: #FFFFFF;
-    font-size: 24px;
-    line-height: 21.2px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    opacity: 0.9;
-    padding: 15px 10px;
-    position: relative;
-    text-align: center;
-    text-decoration: none;
-    width: 100%;
-    margin-top: 80px;
+  border-radius: 6px 6px 6px 6px;
+  color: #FFFFFF;
+  font-size: 24px;
+  line-height: 21.2px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  opacity: 0.9;
+  padding: 15px 10px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  width: 100%;
+  margin-top: 80px;
 }
