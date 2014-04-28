@@ -65,7 +65,7 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#"><img class="logo-image" src="{% static 'img/writeit.png' %}"></a>
+            <a class="navbar-brand" href="/"><img class="logo-image" src="{% static 'img/writeit.png' %}"></a>
           </div>
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
@@ -74,7 +74,6 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-              <li class="poplus-logo"><a href="http://poplus.org/"><img src="{% static 'img/icon-poplus.png' %}"> Poplus</a></li>
               {% if not user.is_authenticated %}
               <li><a href="#" data-toggle="modal" data-target="#ModalRegister">{% trans 'Register' %}</a></li>
               <li{% block menu-login-active %}{% endblock menu-login-active %}><a href="{% url 'django.contrib.auth.views.login' %}">Login</a></li>
@@ -105,7 +104,7 @@
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia, quia, odio, suscipit, doloribus laudantium quae nemo totam obcaecati sed repellat temporibus cumque reiciendis. Voluptatibus, aperiam ab quasi sunt ducimus officiis!
               </p>
             </div>
-            
+
           </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
       </div><!-- /.modal -->
@@ -123,29 +122,27 @@
     </div><!-- end wrap -->
 
     <div id="footer">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4">
-            <p>{% blocktrans %}Built by <a href="http://www.ciudadanointeligente.org">Fundación Ciudadano Inteligente</a>{% endblocktrans %}</p>
-          </div>
-          <div class="col-md-4"></div>
-          <div class="col-md-4">
-            <p>
-              <a href="http://www.github.com/ciudadanointeligente/write-it">
-              {% blocktrans %}Find the code at Github{% endblocktrans %} <i class="fa fa-github"></i>
-              </a>
-            </p>
-          </div>
-        </div>
-        
-        
-      </div>
+      <ul class="container">
+        <li class="fci">{% blocktrans %}Built by <a href="http://www.ciudadanointeligente.org">Fundación Ciudadano Inteligente</a>{% endblocktrans %}</li>
+        <li class="poplus-logo">
+          <a href="http://poplus.org/">
+            <img src="{% static 'img/icon-poplus.png' %}">
+            Poplus
+          </a>
+        </li>
+        <li class="github">
+          <a href="http://www.github.com/ciudadanointeligente/write-it">
+            <i class="fa fa-github"></i>
+            {% blocktrans %}Find the code at Github{% endblocktrans %}
+          </a>
+        </li>
+      </ul>
     </div>
-    
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    
+
     <script src="{% static 'js/jquery.cookie.js' %}"></script>
     <script src="{% static 'js/removeDiacritics.js' %}"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>

@@ -22,13 +22,7 @@ $(".chosen-person-select").chosen({width: "95%"});
 
 
 {% block header %}
-<ul class="breadcrumb">
-  <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
-  <li class="active">{% trans "Your profile" %}</li>
-</ul>
-
-
-<ul class="nav nav-tabs">
+<ul class="nav nav-tabs profile-page-nav">
   <li><a href="{% url 'account' %}">{% trans "Your Profile" %}</a></li>
   <li><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
   <li class="active"><a href="{% url 'your-contacts' %}">{% trans "Your contacts" %}</a></li>
@@ -36,11 +30,6 @@ $(".chosen-person-select").chosen({width: "95%"});
 {% endblock header %}
 
 {% block content %}
-
-<!-- Button trigger modal -->
-<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-  {% trans "Add a new contact" %}
-</button>
 
 <!-- Modal -->
 <form method="POST" action="{% url 'create-new-contact' %}">{% csrf_token %}
@@ -79,45 +68,44 @@ $(".chosen-person-select").chosen({width: "95%"});
 </form>
 
 
-
-
-
-
-
-
-
-
-
-
-
 <!-- Tab panes -->
-<div class="tab-content">
-  <h3 class="page-header">
-    Contacts
-  </h3>
-  <div class="tab-pane active" id="contacts">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Email</th>
-          <th>Name</th>
-          <th>Contact type</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for contact in object_list %}
-        <tr>
-          <td>
-            <span>
-              <a href="#" class="contact_value" data-pk="{{contact.id}}" data-type="text" data-name="value" data-url="{% url 'contact_value_update' pk=contact.id %}" data-title="{% trans 'Update contact' %}">{{ contact.value }}</a>
-            </span>
-          </td>
-          <td>{{ contact.person.name }}</td>
-          <td>{{ contact.contact_type }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+<div class="tab-content profile-page-tab-content">
+  <div class="tab-pane active row" id="contacts">
+
+    <div class="col-md-4">
+      <!-- Button trigger modal -->
+      <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+        {% trans "Add a new contact" %}
+      </button>
+    </div>
+
+    <div class="col-md-8">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Contact type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for contact in object_list %}
+          <tr>
+            <td>
+              <span>
+                <a href="#" class="contact_value" data-pk="{{contact.id}}" data-type="text" data-name="value" data-url="{% url 'contact_value_update' pk=contact.id %}" data-title="{% trans 'Update contact' %}">{{ contact.value }}</a>
+              </span>
+            </td>
+            <td>{{ contact.person.name }}</td>
+            <td>{{ contact.contact_type }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" class="text-center">You have no contacts</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
   </div>
 </div>
 

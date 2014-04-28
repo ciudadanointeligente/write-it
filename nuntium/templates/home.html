@@ -11,30 +11,13 @@
 {% endblock menu-home-active %}
 
 {% block content %}
-<div class="jumbotron">
+<div class="jumbotron jumbotron-homepage">
   <h2>{% trans "You writeit and we deliver it!" %}</h2>
 
   <p class="leading">{% blocktrans %}Public person messaging tool. Avoid the hassle of mail servers, creating special gmail accounts for your website, get blacklisted, etc. If you want your users to send messages, you're in the right place. {% endblocktrans %}</p>
-  
+
   <div class="text-center">
     <a class="btn btn-lg contactBtn" href="{% url 'instance_list' %}"><span class="glyphicon glyphicon-send"></span> {% trans 'Check out our instances' %}</a>
   </div>
 </div>
-
-<div class="row marketing">
-  <div class="col-md-6">
-    <h3><i class="fa fa-github-alt"></i> It should say something smart</h3>
-    <p> We are opensource and we ride bicycles and stuff like that.</p>
-  </div>
-  <div class="col-md-6">
-    <h3><i class="fa fa-beer"></i> Get in touch</h3>
-    <p> Send us an email!</p>
-  </div>
-</div>
-<!-- <p>{% trans "Current instances of write it" %}</p>
-<ul>
-{% for instance in writeitinstances %}
-<li><a href="{% url 'instance_detail' subdomain=instance.slug %}">{{ instance.name }}</a></li>
-{% endfor %}
-</ul> -->
 {% endblock content%}
