@@ -2,11 +2,12 @@ from django.conf.urls import patterns, include, url
 from .views import UserAccountView, WriteItInstanceUpdateView, \
         YourContactsView, YourInstancesView, WriteItInstanceAdvancedUpdateView, \
         WriteItInstanceTemplateUpdateView, NewAnswerNotificationTemplateUpdateView, \
-        ConfirmationTemplateUpdateView, WriteItInstanceCreateView
+        ConfirmationTemplateUpdateView, WriteItInstanceCreateView, YourPopitApiInstances
         
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
     url(r'^accounts/your_contacts/?$', YourContactsView.as_view(), name='your-contacts'),
+    url(r'^accounts/my_popit_instances/?$', YourPopitApiInstances.as_view(), name='my-popit-instances'),
     url(r'^accounts/your_instances/?$', YourInstancesView.as_view(), name='your-instances'),
     url(r'^writeitinstance/edit/(?P<pk>[-\d]+)/?$', WriteItInstanceUpdateView.as_view(), name = 'writeitinstance_basic_update'),
     url(r'^writeitinstance/advanced_edit/(?P<pk>[-\d]+)/?$', \
