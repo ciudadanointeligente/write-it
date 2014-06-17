@@ -22,7 +22,7 @@ from contactos.models import Contact
 from contactos.forms import ContactCreateForm
 from django.http import Http404
 from mailit.forms import MailitTemplateForm
-from popit.models import Person
+from popit.models import Person, ApiInstance
 from django.shortcuts import redirect
 
 class UserAccountView(TemplateView):
@@ -144,6 +144,22 @@ class YourContactsView(UserSectionListView):
         context = super(YourContactsView, self).get_context_data(**kwargs)
         context['form'] = ContactCreateForm(owner=self.request.user)
         return context
+
+class YourPopitApiInstances(ListView):
+    model = ApiInstance
+    template_name = 'nuntium/profiles/your-popit-apis.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(YourPopitApiInstances, self).dispatch(*args, **kwargs)
+        
+    def get_queryset(self):
+        queryset = super(YourPopitApiInstances, self).get_queryset()
+        my_writeit_instances = WriteItInstance.objects.filter(owner=self.request.user)
+        persons = Person.objects.filter(writeit_instances__in=my_writeit_instances)
+        queryset = queryset.filter(person__in=persons)
+        return queryset
+
 
 class YourInstancesView(UserSectionListView):
     model = WriteItInstance
