@@ -1,3 +1,49 @@
 {% extends "base_edit.html" %}
 {% load i18n %}
 {% load staticfiles %}
+
+{% block extrajs %}
+{% endblock extrajs %}
+
+{% block extrascripts %}
+{% endblock extrascripts %}
+
+{% block header %}
+<ul class="nav nav-tabs profile-page-nav">
+  <li><a href="{% url 'account' %}">{% trans "Your Profile" %}</a></li>
+  <li class=""><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
+  <li><a href="{% url 'your-contacts' %}">{% trans "Your contacts" %}</a></li>
+  <li class="active"><a href="{% url 'my-popit-instances' %}">{% trans "Your Popit Api Instances" %}</a></li>
+</ul>
+{% endblock header %}
+
+{% block content %}
+
+
+<!-- Tab panes -->
+<div class="tab-content profile-page-tab-content">
+  <div class="tab-pane active row" id="instances">
+  	<div class="col-md-8">
+  		<table class="table table-striped">
+        <thead>
+          <tr>
+            <th>
+              {% trans 'Api url' %}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for api_instance in object_list %}
+          <tr>
+            <td>{{ api_instance.url }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" class="text-center">{% trans 'You dont have any Popit Api Instances' %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  	</div>
+
+  </div>
+</div>
+{% endblock content%}
