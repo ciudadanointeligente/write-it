@@ -77,3 +77,11 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
 
         response = c.get(url)
         self.assertRedirectToLogin(response, next_url=url)
+
+
+    def test_there_is_a_url_where_you_can_update_a_popit_instance(self):
+        '''There is a url to update a popit instance'''
+        api_instance = ApiInstance.objects.first()
+        url = reverse('update-popit-instance', kwargs={'pk':api_instance.pk})
+        self.assertTrue(url)
+
