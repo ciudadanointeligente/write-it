@@ -71,8 +71,8 @@ class WriteItInstance(models.Model):
         for person in persons:
             Membership.objects.create(writeitinstance=self, person=person)
 
-        WriteitInstancePopitInstanceRecord\
-            .objects.create(\
+        record, created = WriteitInstancePopitInstanceRecord\
+            .objects.get_or_create(\
                 writeitinstance=self,
                 popitapiinstance=api_instance)
 

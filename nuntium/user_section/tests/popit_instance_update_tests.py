@@ -1,7 +1,8 @@
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from subdomains.utils import reverse, get_domain
 from django.core.urlresolvers import reverse as original_reverse
-from ...models import WriteItInstance, Membership
+from ...models import WriteItInstance, Membership, \
+                      WriteitInstancePopitInstanceRecord
 from django.contrib.auth.models import User
 from django.test.client import Client, RequestFactory
 from ..views import WriteItInstanceUpdateView
@@ -10,7 +11,7 @@ from django.contrib.sites.models import Site
 from django.conf import settings
 from django.utils.translation import activate
 from ..forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
-                            WriteItInstanceCreateForm
+                    WriteItInstanceCreateForm
 from popit.models import Person, ApiInstance
 from django.forms.models import model_to_dict
 from contactos.models import Contact
@@ -81,17 +82,38 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
 
     def test_there_is_a_url_where_you_can_update_a_popit_instance(self):
         '''There is a url to update a popit instance'''
-        api_instance = ApiInstance.objects.first()
-        url = reverse('update-popit-instance', kwargs={'pk':api_instance.pk})
+        api_instance = ApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
+        writeitinstance = WriteItInstance.objects.create(
+            name='instance 1', 
+            slug='instance-1',
+            owner=self.user)
+
+        record = WriteitInstancePopitInstanceRecord.objects.create(
+            writeitinstance=writeitinstance,
+            popitapiinstance=api_instance
+            )
+        url = reverse('rerelate-writeit-popit', kwargs={'pk':record.pk})
         self.assertTrue(url)
 
 
     @skip("I'm gonna relate a popit instance and a WriteItInstance in some way first")
     def test_I_can_update_a_popit_instance(self):
-        '''By posting I can update a popit instance'''
+        '''
+        By posting I can update a popit instance and relate
+        their persons with a WriteItInstance
+        '''
         api_instance = ApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
+        writeitinstance = WriteItInstance.objects.create(
+            name='instance 1', 
+            slug='instance-1',
+            owner=self.user)
 
-        url = reverse('update-popit-instance', kwargs={'pk':api_instance.pk})
+        record = WriteitInstancePopitInstanceRecord.objects.create(
+            writeitinstance=writeitinstance,
+            popitapiinstance=api_instance
+            )
+
+        url = reverse('rerelate-writeit-popit', kwargs={'pk':api_instance.pk})
         c = Client()
         c.login(username="fieraferoz", password="feroz")
         response = c.get(url)

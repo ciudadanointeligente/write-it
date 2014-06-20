@@ -174,6 +174,29 @@ class PopitWriteitRelationRecord(TestCase):
         self.assertTrue(record.updated)
         self.assertTrue(record.created)
         
+    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    def test_it_should_be_able_to_update_twice(self):
+        '''It should be able to update all data twice'''
+        popit_load_data()
+        #loading data into the popit-api
+        writeitinstance = WriteItInstance.objects.create(\
+            name='instance 1', \
+            slug='instance-1', \
+            owner=self.owner)
+
+        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+
+        popit_instance = ApiInstance.objects.get(url=settings.TEST_POPIT_API_URL)
+
+        
+        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+
+        record = WriteitInstancePopitInstanceRecord.objects.get(\
+            writeitinstance=writeitinstance,
+            popitapiinstance=popit_instance
+            )
+
+        self.assertNotEqual(record.created, record.updated)
 
 
 
