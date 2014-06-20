@@ -71,6 +71,12 @@ class WriteItInstance(models.Model):
         for person in persons:
             Membership.objects.create(writeitinstance=self, person=person)
 
+        WriteitInstancePopitInstanceRecord\
+            .objects.create(\
+                writeitinstance=self,
+                popitapiinstance=api_instance)
+
+
     def get_absolute_url(self):
         return reverse('instance_detail', subdomain=self.slug)
 
@@ -766,3 +772,10 @@ post_save.connect(rate_limiting, sender=Message)
 from tastypie.models import create_api_key
 
 models.signals.post_save.connect(create_api_key, sender=User)
+
+
+class WriteitInstancePopitInstanceRecord(models.Model):
+    writeitinstance = models.ForeignKey(WriteItInstance)
+    popitapiinstance = models.ForeignKey(ApiInstance)
+    updated = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now=True, editable=False)

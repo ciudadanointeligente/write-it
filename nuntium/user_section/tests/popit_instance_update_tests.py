@@ -17,13 +17,14 @@ from contactos.models import Contact
 from contactos.forms import ContactCreateForm
 from ..forms import NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
 from mailit.forms import MailitTemplateForm
-from django.utils.unittest import skipUnless
+from django.utils.unittest import skipUnless, skip
 from user_section_views_tests import UserSectionTestCase
 
 class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
 
     def setUp(self):
         super(UpdateMyPopitInstancesTestCase, self).setUp()
+        self.user = User.objects.create_user(username="fieraferoz", password="feroz")
 
 
     def test_a_url_is_reachable(self):
@@ -33,11 +34,10 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
 
     def test_it_brings_all_the_popit_apis(self):
         '''My popit apis admin page brings all my popit apis'''
-        user = User.objects.create_user(username="fieraferoz", password="feroz")
         writeitinstance = WriteItInstance.objects.create(
             name='instance 1', 
             slug='instance-1',
-            owner=user)
+            owner=self.user)
 
 
         instance1 = ApiInstance.objects.create(url="http://foo.com/api")
@@ -85,3 +85,17 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         url = reverse('update-popit-instance', kwargs={'pk':api_instance.pk})
         self.assertTrue(url)
 
+
+    @skip("I'm gonna relate a popit instance and a WriteItInstance in some way first")
+    def test_I_can_update_a_popit_instance(self):
+        '''By posting I can update a popit instance'''
+        api_instance = ApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
+
+        url = reverse('update-popit-instance', kwargs={'pk':api_instance.pk})
+        c = Client()
+        c.login(username="fieraferoz", password="feroz")
+        response = c.get(url)
+        #I'm going to delete all the persons so I catch them again
+        api_instance = ApiInstance.objects.get(url=settings.TEST_POPIT_API_URL)
+        self.assertTrue(api_instance.person_set.all())
+        

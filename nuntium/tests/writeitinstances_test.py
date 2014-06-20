@@ -122,6 +122,58 @@ class InstanceTestCase(TestCase, SubdomainTestMixin):
         self.assertIn(raton, [r for r in writeitinstance.persons.all()])
         self.assertIn(fiera, [r for r in writeitinstance.persons.all()])
 
+from ..models import WriteitInstancePopitInstanceRecord
+class PopitWriteitRelationRecord(TestCase):
+    '''
+    This set of tests are intended to solve the problem
+    of relating a writeit instance and a popit instance
+    in some for that does not force them to be 
+    1-1
+    '''
+
+    def setUp(self):
+        self.writeitinstance = WriteItInstance.objects.first()
+        self.api_instance =  ApiInstance.objects.first()
+        self.owner = User.objects.first()
+
+    def test_instanciate(self):
+        '''Instanciate a WriteitInstancePopitInstanceRelation'''
+        record = WriteitInstancePopitInstanceRecord\
+            .objects.create(
+                writeitinstance = self.writeitinstance,
+                popitapiinstance = self.api_instance
+            )
+
+        self.assertTrue(record)
+        self.assertEquals(record.writeitinstance, self.writeitinstance)
+        self.assertEquals(record.popitapiinstance, self.api_instance)
+        self.assertTrue(record.updated)
+        self.assertTrue(record.created)
+
+    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    def test_it_is_created_automatically_when_fetching_a_popit_instance(self):
+        '''create automatically a record when fetching a popit instance'''
+
+        popit_load_data()
+        #loading data into the popit-api
+        writeitinstance = WriteItInstance.objects.create(\
+            name='instance 1', \
+            slug='instance-1', \
+            owner=self.owner)
+
+        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+
+        popit_instance = ApiInstance.objects.get(url=settings.TEST_POPIT_API_URL)
+
+        record = WriteitInstancePopitInstanceRecord.objects.get(\
+            writeitinstance=writeitinstance,
+            popitapiinstance=popit_instance
+            )
+
+        self.assertTrue(record)
+        self.assertTrue(record.updated)
+        self.assertTrue(record.created)
+        
 
 
 

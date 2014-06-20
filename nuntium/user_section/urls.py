@@ -2,7 +2,8 @@ from django.conf.urls import patterns, include, url
 from .views import UserAccountView, WriteItInstanceUpdateView, \
         YourContactsView, YourInstancesView, WriteItInstanceAdvancedUpdateView, \
         WriteItInstanceTemplateUpdateView, NewAnswerNotificationTemplateUpdateView, \
-        ConfirmationTemplateUpdateView, WriteItInstanceCreateView, YourPopitApiInstances
+        ConfirmationTemplateUpdateView, WriteItInstanceCreateView, \
+        YourPopitApiInstances#, PopitApiInstanceUpdate
         
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
