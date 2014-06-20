@@ -96,7 +96,7 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         self.assertTrue(url)
 
 
-    @skip("I'm gonna relate a popit instance and a WriteItInstance in some way first")
+    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
     def test_I_can_update_a_popit_instance(self):
         '''
         By posting I can update a popit instance and relate
@@ -113,11 +113,12 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
             popitapiinstance=api_instance
             )
 
-        url = reverse('rerelate-writeit-popit', kwargs={'pk':api_instance.pk})
+        url = reverse('rerelate-writeit-popit', kwargs={'pk':record.pk})
         c = Client()
         c.login(username="fieraferoz", password="feroz")
-        response = c.get(url)
+        response = c.post(url)
         #I'm going to delete all the persons so I catch them again
         api_instance = ApiInstance.objects.get(url=settings.TEST_POPIT_API_URL)
         self.assertTrue(api_instance.person_set.all())
+        self.assertTrue(writeitinstance.persons.all())
         

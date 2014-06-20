@@ -63,13 +63,17 @@ class WriteItInstance(models.Model):
     autoconfirm_api_messages = models.BooleanField(
         help_text=_("Messages pushed to the api should \
             be confirmed automatically"), default=True)
+    
+    def relate_with_persons_from_popit_api_instance(self, popit_api_instance):
+        popit_api_instance.fetch_all_from_api()
+        persons = Person.objects.filter(api_instance=popit_api_instance)
+        for person in persons:
+            Membership.objects.create(writeitinstance=self, person=person)
+
 
     def load_persons_from_a_popit_api(self, popit_url):
         api_instance, created = ApiInstance.objects.get_or_create(url=popit_url)
-        api_instance.fetch_all_from_api()
-        persons = Person.objects.filter(api_instance=api_instance)
-        for person in persons:
-            Membership.objects.create(writeitinstance=self, person=person)
+        self.relate_with_persons_from_popit_api_instance(api_instance)
 
         record, created = WriteitInstancePopitInstanceRecord\
             .objects.get_or_create(\

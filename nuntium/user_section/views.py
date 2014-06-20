@@ -3,7 +3,8 @@ from django.views.generic.edit import UpdateView
 from subdomains.utils import reverse
 from django.core.urlresolvers import reverse as original_reverse
 from ..models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation, Membership,\
-                            NewAnswerNotificationTemplate, ConfirmationTemplate
+                            NewAnswerNotificationTemplate, ConfirmationTemplate, \
+                            WriteitInstancePopitInstanceRecord
                         
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
                     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
@@ -24,6 +25,7 @@ from django.http import Http404
 from mailit.forms import MailitTemplateForm
 from popit.models import Person, ApiInstance
 from django.shortcuts import redirect
+from django.views.generic import View
 
 class UserAccountView(TemplateView):
     template_name = 'nuntium/profiles/your-profile.html'
@@ -200,3 +202,12 @@ class NewAnswerNotificationTemplateUpdateView(UpdateTemplateWithWriteitMixin):
 class ConfirmationTemplateUpdateView(UpdateTemplateWithWriteitMixin):
     form_class = ConfirmationTemplateForm
     model = ConfirmationTemplate
+
+from django.http import HttpResponse
+
+class WriteItPopitUpdateView(View):
+    def post(self, request, *args, **kwargs):
+        record = WriteitInstancePopitInstanceRecord.objects.get(id=kwargs.get('pk'))
+        record.writeitinstance.\
+            relate_with_persons_from_popit_api_instance(record.popitapiinstance)
+        return HttpResponse('result')
