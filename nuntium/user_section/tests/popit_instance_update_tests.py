@@ -35,6 +35,13 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
 
     def test_it_brings_all_the_popit_apis(self):
         '''My popit apis admin page brings all my popit apis'''
+        benito = User.objects.create_user(username="benito", password="feroz")
+        benitos_instance = WriteItInstance.objects.create(
+            name='instance 1', 
+            slug='instance-1',
+            owner=benito)
+
+
         writeitinstance = WriteItInstance.objects.create(
             name='instance 1', 
             slug='instance-1',
@@ -52,6 +59,20 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         Membership.objects.create(writeitinstance=writeitinstance, person=fiera)
         Membership.objects.create(writeitinstance=writeitinstance, person=benito)
 
+
+        record1 = WriteitInstancePopitInstanceRecord.objects.create(
+            writeitinstance=writeitinstance,
+            popitapiinstance=instance1
+            )
+        record2 = WriteitInstancePopitInstanceRecord.objects.create(
+            writeitinstance=writeitinstance,
+            popitapiinstance=instance2
+            )
+        record3 = WriteitInstancePopitInstanceRecord.objects.create(
+            writeitinstance=benitos_instance,
+            popitapiinstance=instance3
+            )
+
         c = Client()
 
         c.login(username="fieraferoz", password="feroz")
@@ -59,9 +80,9 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         response = c.get(url)
         self.assertEquals(response.status_code, 200)
         self.assertIn('object_list', response.context)
-        self.assertIn(instance1,response.context['object_list'])
-        self.assertIn(instance2,response.context['object_list'])
-        self.assertNotIn(instance3,response.context['object_list'])
+        self.assertIn(record1,response.context['object_list'])
+        self.assertIn(record2,response.context['object_list'])
+        self.assertNotIn(record3,response.context['object_list'])
 
         self.assertTemplateUsed(response, 'nuntium/profiles/your-popit-apis.html')
         self.assertTemplateUsed(response, 'base_edit.html')
@@ -117,7 +138,8 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         c = Client()
         c.login(username="fieraferoz", password="feroz")
         response = c.post(url)
-        api_instance = ApiInstance.objects.get(url=settings.TEST_POPIT_API_URL)
+        self.assertEquals(response.status_code, 200)
+        api_instance = ApiInstance.objects.get(id=api_instance.id)
         self.assertTrue(api_instance.person_set.all())
         self.assertTrue(writeitinstance.persons.all())
 

@@ -148,7 +148,7 @@ class YourContactsView(UserSectionListView):
         return context
 
 class YourPopitApiInstances(ListView):
-    model = ApiInstance
+    model = WriteitInstancePopitInstanceRecord
     template_name = 'nuntium/profiles/your-popit-apis.html'
 
     @method_decorator(login_required)
@@ -157,9 +157,7 @@ class YourPopitApiInstances(ListView):
         
     def get_queryset(self):
         queryset = super(YourPopitApiInstances, self).get_queryset()
-        my_writeit_instances = WriteItInstance.objects.filter(owner=self.request.user)
-        persons = Person.objects.filter(writeit_instances__in=my_writeit_instances)
-        queryset = queryset.filter(person__in=persons)
+        queryset = queryset.filter(writeitinstance__owner=self.request.user)
         return queryset
 
 
