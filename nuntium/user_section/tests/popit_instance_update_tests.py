@@ -147,7 +147,7 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
 
 
 
-    def atest_I_can_only_access_it_if_I_am_the_owner_of_the_writeitinstance(self):
+    def test_I_can_only_access_it_if_I_am_the_owner_of_the_writeitinstance(self):
         '''
         I can update a writeitinstance and a popit instance only if I'm the owner
         of the writeit instance

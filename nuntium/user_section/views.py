@@ -203,15 +203,18 @@ class ConfirmationTemplateUpdateView(UpdateTemplateWithWriteitMixin):
     form_class = ConfirmationTemplateForm
     model = ConfirmationTemplate
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 
 class WriteItPopitUpdateView(View):
+
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(WriteItPopitUpdateView, self).dispatch(*args, **kwargs)
-        
+
     def post(self, request, *args, **kwargs):
         record = WriteitInstancePopitInstanceRecord.objects.get(id=kwargs.get('pk'))
+        if record.writeitinstance.owner != request.user:
+            return HttpResponseForbidden()
         record.writeitinstance.\
             relate_with_persons_from_popit_api_instance(record.popitapiinstance)
         return HttpResponse('result')
