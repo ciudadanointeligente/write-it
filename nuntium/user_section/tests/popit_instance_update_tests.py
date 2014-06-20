@@ -117,8 +117,59 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         c = Client()
         c.login(username="fieraferoz", password="feroz")
         response = c.post(url)
-        #I'm going to delete all the persons so I catch them again
         api_instance = ApiInstance.objects.get(url=settings.TEST_POPIT_API_URL)
         self.assertTrue(api_instance.person_set.all())
         self.assertTrue(writeitinstance.persons.all())
-        
+
+
+    def test_I_can_only_access_the_point_if_I_am_logged_in(self):
+        '''
+        Updating a writeitinstance and a popit instance can only be done
+        by someone who is logged in
+        '''
+        api_instance = ApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
+        writeitinstance = WriteItInstance.objects.create(
+            name='instance 1', 
+            slug='instance-1',
+            owner=self.user)
+
+        record = WriteitInstancePopitInstanceRecord.objects.create(
+            writeitinstance=writeitinstance,
+            popitapiinstance=api_instance
+            )
+
+        url = reverse('rerelate-writeit-popit', kwargs={'pk':record.pk})
+        c = Client()
+        # the following line is intentionally commented
+        # c.login(username="fieraferoz", password="feroz")
+        response = c.post(url)
+        self.assertRedirectToLogin(response, next_url=url)
+
+
+
+    def atest_I_can_only_access_it_if_I_am_the_owner_of_the_writeitinstance(self):
+        '''
+        I can update a writeitinstance and a popit instance only if I'm the owner
+        of the writeit instance
+        '''
+        benito = User.objects.create_user(username="benito", password="feroz")
+        api_instance = ApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
+        writeitinstance = WriteItInstance.objects.create(
+            name='instance 1', 
+            slug='instance-1',
+            owner=benito)
+
+        record = WriteitInstancePopitInstanceRecord.objects.create(
+            writeitinstance=writeitinstance,
+            popitapiinstance=api_instance
+            )
+        url = reverse('rerelate-writeit-popit', kwargs={'pk':record.pk})
+        c = Client()
+        #fiera is trying to update a 
+        c.login(username="fieraferoz", password="feroz")
+
+        response = c.post(url)
+        self.assertEquals(response.status_code, 403)
+        api_instance = ApiInstance.objects.get(url=settings.TEST_POPIT_API_URL)
+        self.assertFalse(api_instance.person_set.all())
+        self.assertFalse(writeitinstance.persons.all())

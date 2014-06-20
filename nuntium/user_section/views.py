@@ -206,6 +206,10 @@ class ConfirmationTemplateUpdateView(UpdateTemplateWithWriteitMixin):
 from django.http import HttpResponse
 
 class WriteItPopitUpdateView(View):
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(WriteItPopitUpdateView, self).dispatch(*args, **kwargs)
+        
     def post(self, request, *args, **kwargs):
         record = WriteitInstancePopitInstanceRecord.objects.get(id=kwargs.get('pk'))
         record.writeitinstance.\
