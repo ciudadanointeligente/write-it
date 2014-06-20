@@ -63,7 +63,7 @@ class WriteItInstance(models.Model):
     autoconfirm_api_messages = models.BooleanField(
         help_text=_("Messages pushed to the api should \
             be confirmed automatically"), default=True)
-    
+
     def relate_with_persons_from_popit_api_instance(self, popit_api_instance):
         popit_api_instance.fetch_all_from_api()
         persons = Person.objects.filter(api_instance=popit_api_instance)
@@ -783,3 +783,9 @@ class WriteitInstancePopitInstanceRecord(models.Model):
     popitapiinstance = models.ForeignKey(ApiInstance)
     updated = models.DateTimeField(auto_now_add=True)
     created = models.DateTimeField(auto_now=True, editable=False)
+
+    def __unicode__(self):
+        return "The people from {url} was loaded into {instance}".format(
+            url=self.popitapiinstance.url,\
+            instance=self.writeitinstance.__unicode__()
+            )
