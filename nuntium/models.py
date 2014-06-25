@@ -65,20 +65,27 @@ class WriteItInstance(models.Model):
             be confirmed automatically"), default=True)
 
     def relate_with_persons_from_popit_api_instance(self, popit_api_instance):
-        popit_api_instance.fetch_all_from_api()
+        try:
+            popit_api_instance.fetch_all_from_api()
+        except:
+            popit_api_instance.delete()
+            return False
         persons = Person.objects.filter(api_instance=popit_api_instance)
         for person in persons:
             Membership.objects.create(writeitinstance=self, person=person)
 
+        return True
+
 
     def load_persons_from_a_popit_api(self, popit_url):
         api_instance, created = ApiInstance.objects.get_or_create(url=popit_url)
-        self.relate_with_persons_from_popit_api_instance(api_instance)
+        success_relating_people = self.relate_with_persons_from_popit_api_instance(api_instance)
 
-        record, created = WriteitInstancePopitInstanceRecord\
-            .objects.get_or_create(\
-                writeitinstance=self,
-                popitapiinstance=api_instance)
+        if success_relating_people:
+            record, created = WriteitInstancePopitInstanceRecord\
+                .objects.get_or_create(\
+                    writeitinstance=self,
+                    popitapiinstance=api_instance)
 
 
     def get_absolute_url(self):

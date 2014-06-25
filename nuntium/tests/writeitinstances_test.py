@@ -185,6 +185,19 @@ class PopitWriteitRelationRecord(TestCase):
         self.assertTrue(record)
         self.assertTrue(record.updated)
         self.assertTrue(record.created)
+
+    def test_what_if_the_url_doesnt_exist(self):
+        '''It solves the problem when there is no popit api running'''
+        writeitinstance = WriteItInstance.objects.create(\
+            name='instance 1', \
+            slug='instance-1', \
+            owner=self.owner)
+
+        non_existing_url = "http://nonexisting.url"
+        writeitinstance.load_persons_from_a_popit_api("http://nonexisting.url")
+        popit_instance_count = ApiInstance.objects.filter(url="http://nonexisting.url").count()
+
+        self.assertFalse(popit_instance_count)
         
     @skipUnless(settings.LOCAL_POPIT, "No local popit running")
     def test_it_should_be_able_to_update_twice(self):
