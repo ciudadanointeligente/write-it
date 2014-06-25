@@ -28,14 +28,25 @@
         <thead>
           <tr>
             <th>
-              {% trans 'Api url' %}
+              {% trans 'Your popit apis and the writeit instances they are related to' %}
+            </th>
+            <th>
+              {% trans 'When they were created' %}
+            </th>
+            <th>
+              {% trans 'When they were last updated' %}
+            </th>
+            <th>
             </th>
           </tr>
         </thead>
         <tbody>
-          {% for api_instance in object_list %}
+          {% for record in object_list %}
           <tr>
-            <td>{{ api_instance.url }}</td>
+            <td>{{ record }}</td>
+            <td>{{ record.created }}</td>
+            <td>{{ record.updated }}</td>
+            <td><a href="{% url 'rerelate-writeit-popit' pk=record.pk %}" class="popit-writeit-relate">{% trans 'Update from popit and relate' %}</a></td>
           </tr>
           {% empty %}
           <tr><td colspan="3" class="text-center">{% trans 'You dont have any Popit Api Instances' %}</td></tr>
@@ -46,4 +57,15 @@
 
   </div>
 </div>
+<script type="text/javascript">
+$(function(){
+  $('.popit-writeit-relate').click(function(event){
+    event.preventDefault();
+    var href = $(this).attr('href');
+    $.post(href, function(data){
+      // do something with data
+    })
+  })
+});
+</script>
 {% endblock content%}

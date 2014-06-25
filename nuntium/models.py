@@ -64,12 +64,29 @@ class WriteItInstance(models.Model):
         help_text=_("Messages pushed to the api should \
             be confirmed automatically"), default=True)
 
-    def load_persons_from_a_popit_api(self, popit_url):
-        api_instance, created = ApiInstance.objects.get_or_create(url=popit_url)
-        api_instance.fetch_all_from_api()
-        persons = Person.objects.filter(api_instance=api_instance)
+    def relate_with_persons_from_popit_api_instance(self, popit_api_instance):
+        try:
+            popit_api_instance.fetch_all_from_api()
+        except:
+            popit_api_instance.delete()
+            return False
+        persons = Person.objects.filter(api_instance=popit_api_instance)
         for person in persons:
             Membership.objects.create(writeitinstance=self, person=person)
+
+        return True
+
+
+    def load_persons_from_a_popit_api(self, popit_url):
+        api_instance, created = ApiInstance.objects.get_or_create(url=popit_url)
+        success_relating_people = self.relate_with_persons_from_popit_api_instance(api_instance)
+
+        if success_relating_people:
+            record, created = WriteitInstancePopitInstanceRecord\
+                .objects.get_or_create(\
+                    writeitinstance=self,
+                    popitapiinstance=api_instance)
+
 
     def get_absolute_url(self):
         return reverse('instance_detail', subdomain=self.slug)
@@ -766,3 +783,16 @@ post_save.connect(rate_limiting, sender=Message)
 from tastypie.models import create_api_key
 
 models.signals.post_save.connect(create_api_key, sender=User)
+
+
+class WriteitInstancePopitInstanceRecord(models.Model):
+    writeitinstance = models.ForeignKey(WriteItInstance)
+    popitapiinstance = models.ForeignKey(ApiInstance)
+    updated = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now=True, editable=False)
+
+    def __unicode__(self):
+        return "The people from {url} was loaded into {instance}".format(
+            url=self.popitapiinstance.url,\
+            instance=self.writeitinstance.__unicode__()
+            )
