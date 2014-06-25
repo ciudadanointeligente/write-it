@@ -123,6 +123,7 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         By posting I can update a popit instance and relate
         their persons with a WriteItInstance
         '''
+        popit_load_data()
         api_instance = ApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(
             name='instance 1', 
