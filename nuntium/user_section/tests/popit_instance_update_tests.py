@@ -140,8 +140,8 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         response = c.post(url)
         self.assertEquals(response.status_code, 200)
         api_instance = ApiInstance.objects.get(id=api_instance.id)
-        self.assertTrue(api_instance.person_set.all())
         self.assertTrue(writeitinstance.persons.all())
+        self.assertTrue(api_instance.person_set.all())
 
 
     def test_I_can_only_access_the_point_if_I_am_logged_in(self):
