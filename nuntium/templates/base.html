@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 {% load staticfiles %}
 {% load i18n %}
-{% load subdomainurls %}
 {% get_current_language as LANGUAGE_CODE %}
 {% get_current_language_bidi as LANGUAGE_BIDI %}
 <html lang="{{ LANGUAGE_CODE }}"{% if LANGUAGE_BIDI %}dir="RTL"{% endif %} class="no-js">
@@ -15,12 +14,12 @@
 
     <title>Write-it</title>
 
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
     <!-- Optional theme -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
@@ -41,7 +40,9 @@
       /* The html and body elements cannot have any padding or margin. */
     }
     </style>
-
+    <link rel="stylesheet" href="{% static 'css/bootstrap-social.css' %}">
+    {% block extracss %}
+    {% endblock extracss %}
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 
@@ -101,7 +102,9 @@
             </div>
             <div class="modal-body">
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia, quia, odio, suscipit, doloribus laudantium quae nemo totam obcaecati sed repellat temporibus cumque reiciendis. Voluptatibus, aperiam ab quasi sunt ducimus officiis!
+                <a class="btn btn-block btn-social btn-google" href="{% url 'social:begin' 'google-oauth2' %}">
+                  <i class="fa fa-google"></i> Sign in with Google
+                </a>
               </p>
             </div>
 

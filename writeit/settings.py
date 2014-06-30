@@ -111,7 +111,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.media",
     "django.core.context_processors.static",
     "django.core.context_processors.tz",
-    "django.contrib.messages.context_processors.messages"
+    "django.contrib.messages.context_processors.messages",
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
     )
 
 MIDDLEWARE_CLASSES = (
@@ -146,6 +148,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social.apps.django_app.default',
     
     'nuntium',
     'djangoplugins',
@@ -270,10 +273,17 @@ SUBDOMAIN_URLCONFS = {
 }
 
 
+# SOCIAL AUTH DETAILS
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'Key'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'S3Cr3t'
+
+AUTHENTICATION_BACKENDS = (
+  'social.backends.google.GoogleOAuth2',
+  'django.contrib.auth.backends.ModelBackend',
+)
 
 if TESTING:
     from testing_settings import *
-    
     
 try:
     from local_settings import *
