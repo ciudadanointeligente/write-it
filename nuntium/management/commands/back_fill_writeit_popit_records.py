@@ -22,6 +22,14 @@ class Command(BaseCommand):
     help = 'Relates writeit instances and popit instances in records so you can update them'
 
     def handle(self, *args, **options):
-    	username = args[0]
-    	user = User.objects.get(username=username)
+    	try:
+    		username = args[0]
+    	except:
+    		print "No username given"
+    		return
+    	try:
+    		user = User.objects.get(username=username)
+    	except:
+    		print "User does not exist"
+    		return
     	WPBackfillRecords.back_fill_popit_records_per_user(user)
