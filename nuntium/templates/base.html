@@ -15,12 +15,12 @@
 
     <title>Write-it</title>
 
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
     <!-- Optional theme -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
@@ -41,7 +41,9 @@
       /* The html and body elements cannot have any padding or margin. */
     }
     </style>
-
+    <link rel="stylesheet" href="{% static 'css/bootstrap-social.css' %}">
+    {% block extracss %}
+    {% endblock extracss %}
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 
@@ -75,7 +77,6 @@
 
             <ul class="nav navbar-nav navbar-right">
               {% if not user.is_authenticated %}
-              <li><a href="#" data-toggle="modal" data-target="#ModalRegister">{% trans 'Register' %}</a></li>
               <li{% block menu-login-active %}{% endblock menu-login-active %}><a href="{% url 'django.contrib.auth.views.login' %}">Login</a></li>
               {% else %}
               <li class="dropdown">
@@ -90,26 +91,6 @@
           </div><!--/.nav-collapse -->
         </div>
       </div>
-      {% if not user.is_authenticated %}
-      <!-- register modal -->
-      <div class="modal fade" id="ModalRegister" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title" id="myModalLabel">{% trans 'Register' %}</h4>
-            </div>
-            <div class="modal-body">
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia, quia, odio, suscipit, doloribus laudantium quae nemo totam obcaecati sed repellat temporibus cumque reiciendis. Voluptatibus, aperiam ab quasi sunt ducimus officiis!
-              </p>
-            </div>
-
-          </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-      </div><!-- /.modal -->
-      <!-- end register modal -->
-      {% endif %}
 
       <div class="container">
         {% block header %}

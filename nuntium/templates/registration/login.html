@@ -1,6 +1,8 @@
 {% extends "base.html" %}
-{% load subdomainurls %}
+{% load staticfiles %}
 {% load i18n %}
+{% block extracss %}
+{% endblock extracss %}
 
 {% block extrajs %}
 {% endblock extrajs %}
@@ -34,6 +36,12 @@
               <input type="hidden" name="next" value="{{ next }}" />
               {% csrf_token %}
             </form>
+          </div>
+          <div class="panel-body">
+            {% trans 'Or you can also ...' %}
+            <a class="btn btn-block btn-social btn-google" href="{% url 'social:begin' 'google-oauth2' %}">
+              <i class="fa fa-google"></i> Sign in with Google
+            </a>
           </div>
         </div>
     </div>
