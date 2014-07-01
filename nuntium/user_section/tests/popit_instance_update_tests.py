@@ -197,14 +197,11 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         self.assertFalse(api_instance.person_set.all())
         self.assertFalse(writeitinstance.persons.all())
 
-from ..management.commands import WPBackfillRecords
+from ...management.commands.back_fill_writeit_popit_records import WPBackfillRecords
+from django.core.management import call_command
 class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
     def setUp(self):
         self.owner = User.objects.first()
-
-        # print WriteItInstance.objects.all()[1].persons.all()
-        # print ApiInstance.objects.all()
-        # print Person.objects.all()
 
     def test_update_creates_records_given_an_instance(self):
         '''Creates a record that relates a writeit instance and a popit instance backwards'''
@@ -235,4 +232,18 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
         w = self.owner.writeitinstances.first()
         records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
         self.assertEquals(records.count(), 1)
+
+
+    def test_call_command(self):
+        '''Call command backward writeit popit records'''
+
+        call_command('back_fill_writeit_popit_records'\
+            , self.owner.username\
+            , verbosity=0\
+            , interactive = False)
+
+        w = self.owner.writeitinstances.first()
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
+        self.assertEquals(records.count(), 1)
+
 
