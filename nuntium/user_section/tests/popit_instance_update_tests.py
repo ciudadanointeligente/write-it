@@ -210,6 +210,17 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
         records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
         self.assertEquals(records.count(), 1)
 
+    def test_creates_records_only_once(self):
+        '''It creates the records only once'''
+        w = WriteItInstance.objects.first()
+        a = ApiInstance.objects.first()
+        record = WriteitInstancePopitInstanceRecord.objects.create(
+            writeitinstance=w,\
+            popitapiinstance=a)
+        WPBackfillRecords.back_fill_popit_records(writeitinstance=w)
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
+        self.assertEquals(records.count(), 1)
+
     def test_update_creates_records_given_an_instance_2_persons(self):
         '''
         Creates only one record that relates a writeit instance and a popit instance backwards
@@ -246,4 +257,27 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
         records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
         self.assertEquals(records.count(), 1)
 
+    def test_if_there_is_no_user_given_it_throws_an_error(self):
+        '''If there is no username given doesn't throw an error'''
+
+
+        call_command('back_fill_writeit_popit_records'\
+                , verbosity=0\
+                , interactive = False)
+        
+        w = self.owner.writeitinstances.first()
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
+        self.assertEquals(records.count(), 0)
+
+    def test_if_the_user_does_not_exist(self):
+        '''If the given user does not exist it doesn't throw any errors'''
+
+        call_command('back_fill_writeit_popit_records'\
+                , "i_dont_exist"\
+                , verbosity=0\
+                , interactive = False)
+        
+        w = self.owner.writeitinstances.first()
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
+        self.assertEquals(records.count(), 0)
 
