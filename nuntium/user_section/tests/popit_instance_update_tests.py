@@ -196,3 +196,54 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         api_instance = ApiInstance.objects.get(url=settings.TEST_POPIT_API_URL)
         self.assertFalse(api_instance.person_set.all())
         self.assertFalse(writeitinstance.persons.all())
+
+from ...management.commands.back_fill_writeit_popit_records import WPBackfillRecords
+from django.core.management import call_command
+class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
+    def setUp(self):
+        self.owner = User.objects.first()
+
+    def test_update_creates_records_given_an_instance(self):
+        '''Creates a record that relates a writeit instance and a popit instance backwards'''
+        w = WriteItInstance.objects.first()
+        WPBackfillRecords.back_fill_popit_records(writeitinstance=w)
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
+        self.assertEquals(records.count(), 1)
+
+    def test_update_creates_records_given_an_instance_2_persons(self):
+        '''
+        Creates only one record that relates a writeit instance and a popit instance backwards
+        no matter if there are two persons related
+        '''
+        w = WriteItInstance.objects.first()
+        another_person = Person.objects.create(
+            api_instance=w.persons.first().api_instance, \
+            name="Another Person but with the same api Instance"
+            )
+        Membership.objects.create(writeitinstance=w, person=another_person)
+        WPBackfillRecords.back_fill_popit_records(writeitinstance=w)
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
+        self.assertEquals(records.count(), 1)
+
+
+    def test_update_per_user(self):
+        '''It can create backward records per user'''
+        WPBackfillRecords.back_fill_popit_records_per_user(user=self.owner)
+        w = self.owner.writeitinstances.first()
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
+        self.assertEquals(records.count(), 1)
+
+
+    def test_call_command(self):
+        '''Call command backward writeit popit records'''
+
+        call_command('back_fill_writeit_popit_records'\
+            , self.owner.username\
+            , verbosity=0\
+            , interactive = False)
+
+        w = self.owner.writeitinstances.first()
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
+        self.assertEquals(records.count(), 1)
+
+
