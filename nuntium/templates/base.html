@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load staticfiles %}
 {% load i18n %}
+{% load subdomainurls %}
 {% get_current_language as LANGUAGE_CODE %}
 {% get_current_language_bidi as LANGUAGE_BIDI %}
 <html lang="{{ LANGUAGE_CODE }}"{% if LANGUAGE_BIDI %}dir="RTL"{% endif %} class="no-js">
@@ -76,7 +77,6 @@
 
             <ul class="nav navbar-nav navbar-right">
               {% if not user.is_authenticated %}
-              <li><a href="#" data-toggle="modal" data-target="#ModalRegister">{% trans 'Register' %}</a></li>
               <li{% block menu-login-active %}{% endblock menu-login-active %}><a href="{% url 'django.contrib.auth.views.login' %}">Login</a></li>
               {% else %}
               <li class="dropdown">
@@ -91,28 +91,6 @@
           </div><!--/.nav-collapse -->
         </div>
       </div>
-      {% if not user.is_authenticated %}
-      <!-- register modal -->
-      <div class="modal fade" id="ModalRegister" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title" id="myModalLabel">{% trans 'Register' %}</h4>
-            </div>
-            <div class="modal-body">
-              <p>
-                <a class="btn btn-block btn-social btn-google" href="{% url 'social:begin' 'google-oauth2' %}">
-                  <i class="fa fa-google"></i> Sign in with Google
-                </a>
-              </p>
-            </div>
-
-          </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-      </div><!-- /.modal -->
-      <!-- end register modal -->
-      {% endif %}
 
       <div class="container">
         {% block header %}
