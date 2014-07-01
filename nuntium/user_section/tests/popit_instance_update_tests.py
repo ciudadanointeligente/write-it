@@ -229,3 +229,10 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
         self.assertEquals(records.count(), 1)
 
 
+    def test_update_per_user(self):
+        '''It can create backward records per user'''
+        WPBackfillRecords.back_fill_popit_records_per_user(user=self.owner)
+        w = self.owner.writeitinstances.first()
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
+        self.assertEquals(records.count(), 1)
+

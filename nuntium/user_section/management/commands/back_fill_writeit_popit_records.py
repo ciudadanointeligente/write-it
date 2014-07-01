@@ -9,3 +9,9 @@ class WPBackfillRecords(object):
 		for a in api_instances:
 			WriteitInstancePopitInstanceRecord.objects.create(writeitinstance=writeitinstance, \
 				popitapiinstance=a)
+
+	@classmethod
+	def back_fill_popit_records_per_user(cls, user):
+		for instance in user.writeitinstances.all():
+			cls.back_fill_popit_records(writeitinstance=instance)
+
