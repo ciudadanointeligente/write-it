@@ -2,6 +2,9 @@ from django.core.management.base import BaseCommand, CommandError
 from popit.models import ApiInstance
 from ...models import WriteitInstancePopitInstanceRecord
 from django.contrib.auth.models import User
+import logging
+
+logger = logging.getLogger('main')
 
 class WPBackfillRecords(object):
 	@classmethod
@@ -9,15 +12,18 @@ class WPBackfillRecords(object):
 		persons_in_instance = writeitinstance.persons.all()
 		api_instances = ApiInstance.objects.filter(person__in=persons_in_instance).distinct()
 		for a in api_instances:
-			WriteitInstancePopitInstanceRecord.objects.create(writeitinstance=writeitinstance, \
+
+			record = WriteitInstancePopitInstanceRecord.objects.create(writeitinstance=writeitinstance, \
 				popitapiinstance=a)
+			logger.info(u"Creating -> {record}\n".format(
+				record=record.__unicode__()))
 
 	@classmethod
 	def back_fill_popit_records_per_user(cls, user):
 		for instance in user.writeitinstances.all():
 			cls.back_fill_popit_records(writeitinstance=instance)
 
-class Command(BaseCommand):
+class Command(BaseCommand, WPBackfillRecords):
     args = 'username'
     help = 'Relates writeit instances and popit instances in records so you can update them'
 
@@ -25,11 +31,11 @@ class Command(BaseCommand):
     	try:
     		username = args[0]
     	except:
-    		print "No username given"
+    		logger.info("No username given\n")
     		return
     	try:
     		user = User.objects.get(username=username)
     	except:
-    		print "User does not exist"
+    		logger.info("User does not exist\n")
     		return
     	WPBackfillRecords.back_fill_popit_records_per_user(user)
