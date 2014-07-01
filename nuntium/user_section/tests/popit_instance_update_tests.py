@@ -196,3 +196,36 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         api_instance = ApiInstance.objects.get(url=settings.TEST_POPIT_API_URL)
         self.assertFalse(api_instance.person_set.all())
         self.assertFalse(writeitinstance.persons.all())
+
+from ..management.commands import WPBackfillRecords
+class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
+    def setUp(self):
+        self.owner = User.objects.first()
+
+        # print WriteItInstance.objects.all()[1].persons.all()
+        # print ApiInstance.objects.all()
+        # print Person.objects.all()
+
+    def test_update_creates_records_given_an_instance(self):
+        '''Creates a record that relates a writeit instance and a popit instance backwards'''
+        w = WriteItInstance.objects.first()
+        WPBackfillRecords.back_fill_popit_records(writeitinstance=w)
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
+        self.assertEquals(records.count(), 1)
+
+    def test_update_creates_records_given_an_instance_2_persons(self):
+        '''
+        Creates only one record that relates a writeit instance and a popit instance backwards
+        no matter if there are two persons related
+        '''
+        w = WriteItInstance.objects.first()
+        another_person = Person.objects.create(
+            api_instance=w.persons.first().api_instance, \
+            name="Another Person but with the same api Instance"
+            )
+        Membership.objects.create(writeitinstance=w, person=another_person)
+        WPBackfillRecords.back_fill_popit_records(writeitinstance=w)
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
+        self.assertEquals(records.count(), 1)
+
+
