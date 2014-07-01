@@ -12,8 +12,7 @@ class WPBackfillRecords(object):
 		persons_in_instance = writeitinstance.persons.all()
 		api_instances = ApiInstance.objects.filter(person__in=persons_in_instance).distinct()
 		for a in api_instances:
-
-			record = WriteitInstancePopitInstanceRecord.objects.create(writeitinstance=writeitinstance, \
+			record, created = WriteitInstancePopitInstanceRecord.objects.get_or_create(writeitinstance=writeitinstance, \
 				popitapiinstance=a)
 			logger.info(u"Creating -> {record}\n".format(
 				record=record.__unicode__()))

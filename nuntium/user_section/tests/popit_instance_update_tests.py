@@ -210,6 +210,17 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
         records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
         self.assertEquals(records.count(), 1)
 
+    def test_creates_records_only_once(self):
+        '''It creates the records only once'''
+        w = WriteItInstance.objects.first()
+        a = ApiInstance.objects.first()
+        record = WriteitInstancePopitInstanceRecord.objects.create(
+            writeitinstance=w,\
+            popitapiinstance=a)
+        WPBackfillRecords.back_fill_popit_records(writeitinstance=w)
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
+        self.assertEquals(records.count(), 1)
+
     def test_update_creates_records_given_an_instance_2_persons(self):
         '''
         Creates only one record that relates a writeit instance and a popit instance backwards
