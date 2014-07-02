@@ -6,5 +6,5 @@ class ManualChannel(OutputPlugin):
 		self.title = "Manual Contact"
 		self.name = "manual"
 
-	def send(self):
-		pass
+	def send(self, outboundmessage):
+		return True, None
