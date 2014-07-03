@@ -16,6 +16,7 @@ from django.test.client import Client
 from django.forms import ValidationError
 from django.test.utils import override_settings
 from django.utils.translation import activate
+from django.core.mail.message import EmailMultiAlternatives
 
 class MailChannelTestCase(TestCase):
 
@@ -128,11 +129,13 @@ class MailSendingTestCase(TestCase):
         self.assertTrue(result_of_sending)
         self.assertTrue(fatal_error is None)
         self.assertEquals(len(mail.outbox), 1) #it is sent to one person pointed in the contact
+        self.assertTrue(mail.outbox[0].alternatives)
+        self.assertEquals(mail.outbox[0].alternatives[0][1], 'text/html')
+        self.assertIsInstance(mail.outbox[0], EmailMultiAlternatives)
         self.assertEquals(mail.outbox[0].subject, '[WriteIT] Message: Subject 1')
         self.assertEquals(mail.outbox[0].body, u'Hello Pedro:\nYou have a new message:\nsubject: Subject 1 \ncontent: Content 1\n\n\nIf you want to see all the other messages please visit http://instance1.127.0.0.1.xip.io:8000/en/.\nSeeya\n--\nYou writeIt and we deliverit.')
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertIn("pdaire@ciudadanointeligente.org", mail.outbox[0].to)
-
 
 
     def test_sending_from_email_expected_from_email(self):
