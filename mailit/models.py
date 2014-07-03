@@ -6,10 +6,15 @@ from django.utils.translation import ugettext_lazy as _
 content_template = read_template_as_string('templates/mailit/mails/content_template.txt', \
     file_source_path = __file__
     )
+content_html_template = read_template_as_string('templates/mailit/mails/content_html_template.txt', \
+    file_source_path = __file__
+    )
 class MailItTemplate(models.Model):
     subject_template = models.CharField(max_length=255, default="[WriteIT] Message: %(subject)s"
         , help_text=_("You can use {{ subject }}, {{ content }}, {{ person }} and {{ author }}"))
     content_template = models.TextField(default=content_template, \
+        help_text=_("You can use {{ subject }}, {{ content }}, {{ person }} and {{ author }}"))
+    content_html_template = models.TextField(default=content_html_template, \
         help_text=_("You can use {{ subject }}, {{ content }}, {{ person }} and {{ author }}"))
     writeitinstance = models.OneToOneField(WriteItInstance, related_name='mailit_template')
 
