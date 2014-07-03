@@ -215,7 +215,7 @@ class SmtpErrorHandling(TestCase):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPServerDisconnected
 
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = SMTPServerDisconnected()
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
             self.assertFalse(result_of_sending)
@@ -224,7 +224,7 @@ class SmtpErrorHandling(TestCase):
     def test_smpt_error_code_500(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = SMTPResponseException(500,"")
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
             self.assertFalse(result_of_sending)
@@ -235,7 +235,7 @@ class SmtpErrorHandling(TestCase):
         #message again, but for example
 
     def test_any_other_exception(self):
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = Exception(401,"Something very bad")
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
             self.assertFalse(result_of_sending)
@@ -245,7 +245,7 @@ class SmtpErrorHandling(TestCase):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
 
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = SMTPResponseException(501,"")
 
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
@@ -257,7 +257,7 @@ class SmtpErrorHandling(TestCase):
     def test_smpt_error_code_502(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = SMTPResponseException(502,"")
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
             
@@ -269,7 +269,7 @@ class SmtpErrorHandling(TestCase):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
 
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
 
             send_mail.side_effect = SMTPResponseException(503,"")
 
@@ -282,7 +282,7 @@ class SmtpErrorHandling(TestCase):
     def test_smpt_error_code_504(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = SMTPResponseException(504,"")
 
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
@@ -294,7 +294,7 @@ class SmtpErrorHandling(TestCase):
     def test_smpt_error_code_550(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = SMTPResponseException(550,"")
 
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
@@ -306,7 +306,7 @@ class SmtpErrorHandling(TestCase):
     def test_smpt_error_code_551(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = SMTPResponseException(551,"")
 
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
@@ -318,7 +318,7 @@ class SmtpErrorHandling(TestCase):
     def test_smpt_error_code_552(self):
         #to handle this kind of error
         #http://docs.python.org/2.7/library/smtplib.html#smtplib.SMTPResponseException
-        with patch("django.core.mail.send_mail") as send_mail:
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = SMTPResponseException(552,"")
 
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
@@ -342,6 +342,7 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
         data = {
             'subject_template':'Hello there you have a new mail this is subject',
             'content_template':'hello there this is the content and you got this message',
+            'content_html_template':'<tag>hello there this is the content and you got this message</tag>',
         }
         form = MailitTemplateForm(data=data, 
             writeitinstance=self.writeitinstance,
@@ -352,11 +353,13 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
 
         self.assertEquals(template.subject_template, data['subject_template'])
         self.assertEquals(template.content_template, data['content_template'])
+        self.assertEquals(template.content_html_template, data['content_html_template'])
 
     def test_raises_error_when_no_instance_is_provided(self):
         data = {
             'subject_template':'Hello there you have a new mail this is subject',
             'content_template':'hello there this is the content and you got this message',
+            'content_html_template':'<tag>hello there this is the content and you got this message</tag>',
         }
         with self.assertRaises(ValidationError) as error:
             form = MailitTemplateForm(data=data, 
@@ -378,6 +381,7 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
         data = {
             'subject_template':'Hello there you have a new mail this is subject',
             'content_template':'hello there this is the content and you got this message',
+            'content_html_template':'<tag>hello there this is the content and you got this message</tag>',
         }
 
         response = c.post(url, data=data)
@@ -402,6 +406,7 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
         data = {
             'subject_template':'Hello there you have a new mail this is subject',
             'content_template':'hello there this is the content and you got this message',
+            'content_html_template':'<tag>hello there this is the content and you got this message</tag>',
         }
 
         response = c.post(url, data=data)
@@ -415,6 +420,7 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
         data = {
             'subject_template':'Hello there you have a new mail this is subject',
             'content_template':'hello there this is the content and you got this message',
+            'content_html_template':'<tag>hello there this is the content and you got this message</tag>',
         }
 
         response = c.post(url, data=data)
