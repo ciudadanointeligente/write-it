@@ -1,0 +1,10 @@
+Hello {{ person }}: <br />
+You have a new message: <br />
+<strong>subject:</strong> {{ subject }} <br />
+<strong>content:</strong> {{ content }} <br />
+
+
+If you want to see all the other messages please visit {{ writeit_url }}.<br />
+Seeya<br />
+--<br /><br />
+You writeIt and we deliverit.

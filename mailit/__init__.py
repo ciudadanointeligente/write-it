@@ -1,6 +1,5 @@
 
 from nuntium.plugins import OutputPlugin
-from django.core.mail import send_mail
 from contactos.models import ContactType
 from django.conf import settings
 
@@ -43,8 +42,9 @@ class MailChannel(OutputPlugin):
         }
         d = Context(format)
         mail_as_txt = get_template_from_string(template.content_template)
-
+        mail_as_html = get_template_from_string(template.content_html_template)
         text_content = mail_as_txt.render(d)
+        html_content = mail_as_html.render(d)
 
 
         subject = template.subject_template % format
@@ -55,9 +55,11 @@ class MailChannel(OutputPlugin):
 
         #here there should be a try and except looking
         #for errors and stuff
-        from django.core.mail import send_mail
+        from django.core.mail.message import EmailMultiAlternatives
         try:
-            send_mail(subject, content, from_email,[outbound_message.contact.value], fail_silently=False)
+            msg = EmailMultiAlternatives(subject, content, from_email, [outbound_message.contact.value])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send(fail_silently=False)
             log = "Mail sent from %(from)s to %(to)s"
 
             log = log % {
