@@ -52,9 +52,17 @@ class MailTemplateTestCase(TestCase):
         with open('mailit/templates/mailit/mails/content_template.txt', 'r') as f:
             self.content_template += f.read()
 
+        self.content_html_template = ''
+        with open('mailit/templates/mailit/mails/content_html_template.txt', 'r') as f:
+            self.content_html_template += f.read()
+
     def test_it_has_a_template(self):
         self.writeitinstance2.mailit_template.delete()
-        template = MailItTemplate.objects.create(writeitinstance=self.writeitinstance2,subject_template=u"hello somebody %(thing)s",content_template=u"content thing %(another)s asdas")
+        template = MailItTemplate.objects.create(\
+            writeitinstance=self.writeitinstance2,\
+            subject_template=u"hello somebody %(thing)s",\
+            content_template=u"content thing %(another)s asdas"
+            )
 
         self.assertTrue(template)
         self.assertEquals(self.writeitinstance2.mailit_template, template)
@@ -71,15 +79,18 @@ class MailTemplateTestCase(TestCase):
         self.assertEquals(template.content_template, self.content_template)
 
     def test_when_creating_a_new_instance_then_a_new_template_is_created_automatically(self):
+        '''
+        When creating a new writeit instance a new template for sending emails is automatically created
+        '''
         instance  = WriteItInstance.objects.create(name='instance 234', slug='instance-234', owner=self.owner)
 
         self.assertTrue(instance.mailit_template)
         self.assertEquals(instance.mailit_template.subject_template, "[WriteIT] Message: %(subject)s")
         self.assertEquals(instance.mailit_template.content_template, self.content_template)
+        self.assertEquals(instance.mailit_template.content_html_template, self.content_html_template)
 
     def test_it_only_creates_templates_when_creating_not_when_updating(self):
         instance  = WriteItInstance.objects.create(name='instance 234', slug='instance-234', owner=self.owner)
-
 
         instance.save()
 
