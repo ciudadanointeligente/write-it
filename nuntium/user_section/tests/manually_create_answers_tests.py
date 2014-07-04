@@ -26,7 +26,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
     def setUp(self):
         super(ManuallyCreateAnswersTestCase, self).setUp()
         self.writeitinstance = WriteItInstance.objects.all()[0]
-        self.message = self.writeitinstance.message_set.all()[0]
+        self.message = self.writeitinstance.message_set.all()[1]
 
     def test_there_is_messages_writeit_view(self):
         '''
@@ -49,6 +49,27 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         self.assertTemplateUsed(response, "base_edit.html")
         self.assertTemplateUsed(response, "nuntium/profiles/messages_per_instance.html")
 
+    def test_the_messages_url_is_not_reachable_by_non_user(self):
+        """
+        The messages url is not reachable by someone who is not logged in
+        """
+        url = reverse('messages_per_writeitinstance', kwargs={'pk':self.writeitinstance.pk})
+        c = Client()
+        response = c.get(url)
+        self.assertRedirectToLogin(response, next_url=url)
+
+    def test_get_messages_url_by_non_owner(self):
+        """
+        The url is not reachable if the the user is not the owner
+        """
+        not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
+        url = reverse('messages_per_writeitinstance', kwargs={'pk':self.writeitinstance.pk})
+        c = Client()
+        c.login(username=not_the_owner.username, password="secreto")
+        response = c.get(url)
+        self.assertEquals(response.status_code, 404)
+
+
     def test_there_is_a_url_to_see_all_answers(self):
         """
         There is a url for getting all answers per message
@@ -70,3 +91,27 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         self.assertEquals(response.context['message'], self.message)
         self.assertTemplateUsed(response, "base_edit.html")
         self.assertTemplateUsed(response, "nuntium/profiles/answers_per_message.html")
+
+
+    def test_get_answers_per_messages_is_not_reachable_by_non_user(self):
+        """
+        When a user is not logged in he cannot see the answers per message
+        """
+        url = reverse('answers_per_message', kwargs={'pk':self.message.pk})
+        c = Client()
+        response = c.get(url)
+        self.assertRedirectToLogin(response, next_url=url)
+
+
+    def test_get_answers_per_message_is_not_reachable_by_non_owner(self):
+        """
+        When the user not the owner tries to get the answers per message
+        he/she is shown a 404 html
+        """
+        not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
+
+        url = reverse('answers_per_message', kwargs={'pk':self.message.pk})
+        c = Client()
+        c.login(username=not_the_owner.username, password="secreto")
+        response = c.get(url)
+        self.assertEquals(response.status_code, 404)

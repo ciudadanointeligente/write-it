@@ -26,6 +26,7 @@ from mailit.forms import MailitTemplateForm
 from popit.models import Person, ApiInstance
 from django.shortcuts import redirect
 from django.views.generic import View
+from django.views.generic.detail import SingleObjectMixin
 
 class UserAccountView(TemplateView):
     template_name = 'nuntium/profiles/your-profile.html'
@@ -171,17 +172,31 @@ class YourInstancesView(UserSectionListView):
         return kwargs
 
 
-class UpdateTemplateWithWriteitMixin(UpdateView):
-
+class LoginRequiredMixin(View):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        return super(UpdateTemplateWithWriteitMixin, self).dispatch(*args, **kwargs)
+        return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
+
+
+class WriteitMixin(View):
+    def get_writeitinstance(self):
+        raise NotImplementedError
+
+class WriteItInstanceOwnerMixin(SingleObjectMixin):
+    def get_writeitinstance(self):
+        return get_object_or_404(WriteItInstance, pk=self.kwargs['pk'])
 
     def get_object(self):
-        self.writeitinstance = get_object_or_404(WriteItInstance, pk=self.kwargs['pk'])
+        self.writeitinstance = self.get_writeitinstance()
         if not self.writeitinstance.owner.__eq__(self.request.user):
             raise Http404
+        self.object = super(WriteItInstanceOwnerMixin, self).get_object()
+        return self.object
+        
 
+class UpdateTemplateWithWriteitMixin(UpdateView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
+    def get_object(self):
+        super(UpdateTemplateWithWriteitMixin, self).get_object()
         self.object = self.model.objects.get(writeitinstance=self.writeitinstance)
         return self.object
 
@@ -218,18 +233,20 @@ class WriteItPopitUpdateView(View):
         return HttpResponse('result')
 
 
-class MessagesPerWriteItInstance(DetailView):
+class MessagesPerWriteItInstance(DetailView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
     model = WriteItInstance
     template_name = 'nuntium/profiles/messages_per_instance.html'
 
 
-class AnswersPerMessage(DetailView):
+class AnswersPerMessage(DetailView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
     model = Message
     template_name = "nuntium/profiles/answers_per_message.html"
 
+    def get_writeitinstance(self):
+        message = get_object_or_404(Message, pk=self.kwargs['pk'])
+        return message.writeitinstance
 
     def get_context_data(self,**kwargs):
-
         context = super(AnswersPerMessage, self).get_context_data(**kwargs)
         context['writeitinstance'] = self.object.writeitinstance
         return context
