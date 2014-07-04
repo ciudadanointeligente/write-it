@@ -1,0 +1,30 @@
+{% extends "base_edit.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block extrajs %}
+{% endblock extrajs %}
+
+
+{% block extrascripts %}
+
+{% endblock extrascripts %}
+
+{% block header %}
+<ul class="breadcrumb">
+    <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+    <li><a href="{% url 'account' %}">{% trans "Your profile" %}</a></li>
+    <li><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
+    <li class="active">{{ writeitinstance }}</li>
+</ul>
+
+<ul class="nav nav-tabs">
+  <li class=""><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Basic Update" %}</a></li>
+  <li class=""><a href="{% url 'writeitinstance_advanced_update' pk=writeitinstance.pk %}">{% trans "Advanced Update" %}</a></li>
+  <li class=""><a href="{% url 'writeitinstance_template_update' pk=writeitinstance.pk %}">{% trans "Templates" %}</a></li>
+  <li class="active"><a href="{% url 'messages_per_writeitinstance' pk=writeitinstance.pk %}">{% trans "Messages" %}</a></li>
+</ul>
+{% endblock header %}
+
+{% block content %}
+{% endblock content %}
