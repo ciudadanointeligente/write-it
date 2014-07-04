@@ -218,11 +218,18 @@ class WriteItPopitUpdateView(View):
         return HttpResponse('result')
 
 
-class MessagesPerWriteItInstance(ListView):
-    model = Message
+class MessagesPerWriteItInstance(DetailView):
+    model = WriteItInstance
     template_name = 'nuntium/profiles/messages_per_instance.html'
 
-    def get_queryset(self):
-        self.writeitinstance = WriteItInstance.objects.get(id=self.kwargs['pk'])
-        queryset = super(MessagesPerWriteItInstance, self).get_queryset().filter(writeitinstance=self.writeitinstance)
-        return queryset
+
+class AnswersPerMessage(DetailView):
+    model = Message
+    template_name = "nuntium/profiles/answers_per_message.html"
+
+
+    def get_context_data(self,**kwargs):
+
+        context = super(AnswersPerMessage, self).get_context_data(**kwargs)
+        context['writeitinstance'] = self.object.writeitinstance
+        return context

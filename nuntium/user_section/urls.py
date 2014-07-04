@@ -3,7 +3,8 @@ from .views import UserAccountView, WriteItInstanceUpdateView, \
         YourContactsView, YourInstancesView, WriteItInstanceAdvancedUpdateView, \
         WriteItInstanceTemplateUpdateView, NewAnswerNotificationTemplateUpdateView, \
         ConfirmationTemplateUpdateView, WriteItInstanceCreateView, \
-        YourPopitApiInstances, WriteItPopitUpdateView, MessagesPerWriteItInstance
+        YourPopitApiInstances, WriteItPopitUpdateView, MessagesPerWriteItInstance, \
+        AnswersPerMessage
         
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
@@ -20,6 +21,9 @@ urlpatterns = patterns('',
     url(r'^writeitinstance/(?P<pk>[-\d]+)/messages/?$', \
         MessagesPerWriteItInstance.as_view(), \
         name = 'messages_per_writeitinstance'),
+    url(r'^message/(?P<pk>[-\d]+)/answers/?$', \
+        AnswersPerMessage.as_view(), \
+        name = 'answers_per_message'),
     url(r'^writeitinstance/edit/(?P<pk>[-\d]+)/templates/?$', \
         WriteItInstanceTemplateUpdateView.as_view(), \
         name = 'writeitinstance_template_update'),
