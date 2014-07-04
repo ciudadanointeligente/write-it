@@ -216,3 +216,13 @@ class WriteItPopitUpdateView(View):
         record.writeitinstance.\
             relate_with_persons_from_popit_api_instance(record.popitapiinstance)
         return HttpResponse('result')
+
+
+class MessagesPerWriteItInstance(ListView):
+    model = Message
+    template_name = 'nuntium/profiles/messages_per_instance.html'
+
+    def get_queryset(self):
+        self.writeitinstance = WriteItInstance.objects.get(id=self.kwargs['pk'])
+        queryset = super(MessagesPerWriteItInstance, self).get_queryset().filter(writeitinstance=self.writeitinstance)
+        return queryset
