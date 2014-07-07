@@ -11,7 +11,7 @@ from django.contrib.sites.models import Site
 from django.conf import settings
 from django.utils.translation import activate
 from ..forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
-                    WriteItInstanceCreateForm
+                    WriteItInstanceCreateForm, AnswerForm
 from popit.models import Person, ApiInstance
 from django.forms.models import model_to_dict
 from contactos.models import Contact
@@ -116,3 +116,16 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         c.login(username=not_the_owner.username, password="secreto")
         response = c.get(url)
         self.assertEquals(response.status_code, 404)
+
+
+    def test_there_is_a_form_to_create_an_answer(self):
+        '''There is a form to create an answer'''
+        # print self.message.people, self.message.writeitinstance.persons.all()
+        form = AnswerForm(message=self.message)
+
+        self.assertTrue(form)
+        self.assertIn("person", form.fields)
+        self.assertIn("content", form.fields)
+        self.assertEquals(form.message, self.message)
+        self.assertNotIn("message", form.fields)
+        self.assertNotIn("created", form.fields)

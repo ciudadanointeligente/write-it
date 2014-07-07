@@ -4,7 +4,7 @@ from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMult
                         URLField, IntegerField, CheckboxInput, NumberInput, URLInput
 from ..models import Message, WriteItInstance, OutboundMessage, \
     Confirmation, Membership, NewAnswerNotificationTemplate, \
-    ConfirmationTemplate
+    ConfirmationTemplate, Answer
 from contactos.models import Contact
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
@@ -108,3 +108,13 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
         instance.save()
         self.relate_with_people()
         return instance
+
+
+class AnswerForm(ModelForm):
+    class Meta:
+        model = Answer
+        fields = ('person', 'content')
+
+    def __init__(self, *args, **kwargs):
+        self.message = kwargs.pop('message')
+        super(AnswerForm, self).__init__(*args, **kwargs)
