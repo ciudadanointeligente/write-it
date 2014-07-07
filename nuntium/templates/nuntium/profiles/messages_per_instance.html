@@ -1,5 +1,6 @@
 {% extends "base_edit.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% load staticfiles %}
 
 {% block extrajs %}
@@ -45,13 +46,14 @@
 
             {% endif %}
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           {% for message in writeitinstance.message_set.all %}
           <tr>
             <td>{{ message.subject }}</td>
-            <td>{{ message.content }}</td>
+            <td>{{ message.content|truncatechars:50|linebreaksbr }}</td>
             <td><i class="fa {% if message.public %}fa-eye{% else %}fa-eye-slash{% endif %}"></i></td>
             <td><i class="fa {% if message.confirmated %}fa-check-circle-o{% else %}fa-times-circle-o{% endif %}"></i></td>
             {% if writeitinstance.moderation_needed_in_all_messages %}
@@ -59,6 +61,13 @@
 
             {% endif %}
             <td><a href="{% url 'message_detail' pk=message.pk %}"><i class="fa fa-cogs"></i> {% trans "Details" %}</a></td>
+            
+            <td>
+              {% if message.public %}
+              <a href="{% url 'message_detail' slug=message.slug subdomain=writeitinstance.slug %}"><i class="fa fa-link"></i> {% trans "See the public page" %}</a>
+              {% endif %}
+            </td>
+            
           </tr>
           {% empty %}
           <tr><td colspan="3" class="text-center">{% trans "You have no messages" %}</td></tr>

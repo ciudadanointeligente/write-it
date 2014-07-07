@@ -34,7 +34,8 @@
 	  <dt>{% trans "Confirmed" %}</dt>
 	  <dd><i class="fa {% if message.confirmated %}fa-check{% else %}fa-times{% endif %}"></i></dd>
 	  {% if writeitinstance.moderation_needed_in_all_messages %}
-        <td><i class="fa {% if message.moderated %}fa-check{% else %}fa-times{% endif %}"></i></td>
+	  	<dt>{% trans "Moderated" %}</dt>
+        <dd><i class="fa {% if message.moderated %}fa-check{% else %}fa-times{% endif %}"></i></dd>
       {% endif %}
 	  <dt>{% trans "Public" %}</dt>
 	  <dd><i class="fa {% if message.public %}fa-check{% else %}fa-times{% endif %}"></i></dd>
@@ -46,11 +47,13 @@
 	  <tr>
 	  	<th>{% trans "Person" %}</th>
 	  	<th>{% trans "Content" %}</th>
+	  	<th></th>
 	  </tr>
 	  {% for answer in message.answers.all %}
 		  <tr>
 		  	<td>{{answer.person}}</td>
 		  	<td>{{answer.content|truncatechars:50|linebreaksbr}}</td>
+		  	<td></td>
 		  </tr>
 	  {% endfor %}
 	</table>
