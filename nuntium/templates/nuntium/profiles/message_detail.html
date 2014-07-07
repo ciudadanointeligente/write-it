@@ -1,5 +1,6 @@
 {% extends "base_edit.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% load staticfiles %}
 
 {% block extrajs %}
@@ -24,6 +25,7 @@
 {% block content %}
 <div class="tab-content profile-page-tab-content">
   <div class="tab-pane active row">
+
   	<dl class="dl-horizontal">
 	  <dt>{% trans "Subject" %}</dt>
 	  <dd>{{ message.subject|linebreaksbr }}</dd>
@@ -34,10 +36,15 @@
 	  <dt>{% trans "Confirmed" %}</dt>
 	  <dd><i class="fa {% if message.confirmated %}fa-check{% else %}fa-times{% endif %}"></i></dd>
 	  {% if writeitinstance.moderation_needed_in_all_messages %}
-        <td><i class="fa {% if message.moderated %}fa-check{% else %}fa-times{% endif %}"></i></td>
+	  	<dt>{% trans "Moderated" %}</dt>
+        <dd><i class="fa {% if message.moderated %}fa-check{% else %}fa-times{% endif %}"></i></dd>
       {% endif %}
 	  <dt>{% trans "Public" %}</dt>
 	  <dd><i class="fa {% if message.public %}fa-check{% else %}fa-times{% endif %}"></i></dd>
+	  {% if message.public %}
+	  <dt>{% trans "Link" %}</dt>
+	  <dd><a href="{% url 'message_detail' slug=message.slug subdomain=message.writeitinstance.slug %}"><i class="fa fa-link"></i> {% trans "Public page" %}</a></dd>
+	  {% endif %}
 	  <dt>{% trans "Creation Date" %}</dt>
 	  <dd>{{ message.created|date }}</dd>
 	</dl>
@@ -46,11 +53,13 @@
 	  <tr>
 	  	<th>{% trans "Person" %}</th>
 	  	<th>{% trans "Content" %}</th>
+	  	<th></th>
 	  </tr>
 	  {% for answer in message.answers.all %}
 		  <tr>
 		  	<td>{{answer.person}}</td>
 		  	<td>{{answer.content|truncatechars:50|linebreaksbr}}</td>
+		  	<td></td>
 		  </tr>
 	  {% endfor %}
 	</table>
