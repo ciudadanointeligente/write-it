@@ -15,16 +15,47 @@
     <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
     <li><a href="{% url 'account' %}">{% trans "Your profile" %}</a></li>
     <li><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
-    <li class="active">{{ writeitinstance }}</li>
-</ul>
-
-<ul class="nav nav-tabs">
-  <li class=""><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Basic Update" %}</a></li>
-  <li class=""><a href="{% url 'writeitinstance_advanced_update' pk=writeitinstance.pk %}">{% trans "Advanced Update" %}</a></li>
-  <li class=""><a href="{% url 'writeitinstance_template_update' pk=writeitinstance.pk %}">{% trans "Templates" %}</a></li>
-  <li class="active"><a href="{% url 'messages_per_writeitinstance' pk=writeitinstance.pk %}">{% trans "Messages" %}</a></li>
+    <li><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{{ writeitinstance }}</a></li>
+    <li><a href="{% url 'messages_per_writeitinstance' pk=writeitinstance.pk %}">{% trans "Messages" %}</a></li>
+    <li class="active">{{ message }}</li>
 </ul>
 {% endblock header %}
 
 {% block content %}
+<div class="tab-content profile-page-tab-content">
+  <div class="tab-pane active row">
+  	<dl class="dl-horizontal">
+	  <dt>{% trans "Subject" %}</dt>
+	  <dd>{{ message.subject|linebreaksbr }}</dd>
+	  <dt>{% trans "Content" %}</dt>
+	  <dd>{{ message.content|truncatechars:50|linebreaksbr }}</dd>
+	  <dt>{% trans "Author" %}</dt>
+	  <dd>{{ message.author_name }}</dd>
+	  <dt>{% trans "Confirmed" %}</dt>
+	  <dd><i class="fa {% if message.confirmated %}fa-check{% else %}fa-times{% endif %}"></i></dd>
+	  {% if writeitinstance.moderation_needed_in_all_messages %}
+        <td><i class="fa {% if message.moderated %}fa-check{% else %}fa-times{% endif %}"></i></td>
+      {% endif %}
+	  <dt>{% trans "Public" %}</dt>
+	  <dd><i class="fa {% if message.public %}fa-check{% else %}fa-times{% endif %}"></i></dd>
+	  <dt>{% trans "Creation Date" %}</dt>
+	  <dd>{{ message.created|date }}</dd>
+	</dl>
+
+	<table class="table">
+	  <tr>
+	  	<th>{% trans "Person" %}</th>
+	  	<th>{% trans "Content" %}</th>
+	  </tr>
+	  {% for answer in message.answers.all %}
+		  <tr>
+		  	<td>{{answer.person}}</td>
+		  	<td>{{answer.content|truncatechars:50|linebreaksbr}}</td>
+		  </tr>
+	  {% endfor %}
+	</table>
+</div>
+</div>
+
+
 {% endblock content %}

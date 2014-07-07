@@ -58,7 +58,7 @@
             	<td><i class="fa {% if message.moderated %}fa-check-circle-o{% else %}fa-times-circle-o{% endif %}"></i></td>
 
             {% endif %}
-            <td></td>
+            <td><a href="{% url 'message_detail' pk=message.pk %}"><i class="fa fa-cogs"></i> {% trans "Details" %}</a></td>
           </tr>
           {% empty %}
           <tr><td colspan="3" class="text-center">{% trans "You have no messages" %}</td></tr>
