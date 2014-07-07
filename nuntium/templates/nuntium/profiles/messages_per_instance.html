@@ -1,0 +1,73 @@
+{% extends "base_edit.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block extrajs %}
+{% endblock extrajs %}
+
+
+{% block extrascripts %}
+
+{% endblock extrascripts %}
+
+{% block header %}
+<ul class="breadcrumb">
+    <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+    <li><a href="{% url 'account' %}">{% trans "Your profile" %}</a></li>
+    <li><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
+    <li class="active">{{ writeitinstance }}</li>
+</ul>
+
+<ul class="nav nav-tabs">
+  <li class=""><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Basic Update" %}</a></li>
+  <li class=""><a href="{% url 'writeitinstance_advanced_update' pk=writeitinstance.pk %}">{% trans "Advanced Update" %}</a></li>
+  <li class=""><a href="{% url 'writeitinstance_template_update' pk=writeitinstance.pk %}">{% trans "Templates" %}</a></li>
+  <li class="active"><a href="{% url 'messages_per_writeitinstance' pk=writeitinstance.pk %}">{% trans "Messages" %}</a></li>
+</ul>
+{% endblock header %}
+
+{% block content %}
+
+<!-- Tab panes -->
+<div class="tab-content profile-page-tab-content">
+  <div class="tab-pane active row">
+
+    <div class="col-md-12">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>{% trans "Subject" %}</th>
+            <th>{% trans "Content" %}</th>
+            <th>{% trans "Private" %}</th>
+            <th>{% trans "Confirmed" %}</th>
+            {% if writeitinstance.moderation_needed_in_all_messages %}
+            	<th>{% trans "Moderated" %}</th>
+
+            {% endif %}
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for message in writeitinstance.message_set.all %}
+          <tr>
+            <td>{{ message.subject }}</td>
+            <td>{{ message.content }}</td>
+            <td><i class="fa {% if message.public %}fa-eye{% else %}fa-eye-slash{% endif %}"></i></td>
+            <td><i class="fa {% if message.confirmated %}fa-check-circle-o{% else %}fa-times-circle-o{% endif %}"></i></td>
+            {% if writeitinstance.moderation_needed_in_all_messages %}
+            	<td><i class="fa {% if message.moderated %}fa-check-circle-o{% else %}fa-times-circle-o{% endif %}"></i></td>
+
+            {% endif %}
+            <td><a href="{% url 'message_detail' pk=message.pk %}"><i class="fa fa-cogs"></i> {% trans "Details" %}</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" class="text-center">{% trans "You have no messages" %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+{% endblock content %}

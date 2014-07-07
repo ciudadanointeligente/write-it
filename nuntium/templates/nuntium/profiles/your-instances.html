@@ -66,10 +66,11 @@ $('.contact_value').editable({
       <table class="table table-striped">
         <thead>
           <tr>
-            <th width="60%">
+            <th width="50%">
               {% trans 'Name' %}
             </th>
             <th>Instance API path</th>
+            <th>See all the messages</th>
             <th></th>
           </tr>
         </thead>
@@ -78,7 +79,9 @@ $('.contact_value').editable({
           <tr>
             <td>{{ writeitinstance }}</td>
             <td>{% url 'api_dispatch_detail' api_name='v1' resource_name='instance' pk=writeitinstance.id %}</td>
+            <td><a href="{% url 'messages_per_writeitinstance' pk=writeitinstance.pk %}"><i class="fa fa-envelope-o"></i> {% trans "Messages" %}</a></td>
             <td><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}"><i class="fa fa-pencil"></i> {% trans "Edit me!" %}</a></td>
+
           </tr>
           {% empty %}
           <tr><td colspan="3" class="text-center">You have no instances</td></tr>
