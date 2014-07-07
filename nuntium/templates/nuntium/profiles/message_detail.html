@@ -1,5 +1,6 @@
 {% extends "base_edit.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% load staticfiles %}
 
 {% block extrajs %}
@@ -24,6 +25,7 @@
 {% block content %}
 <div class="tab-content profile-page-tab-content">
   <div class="tab-pane active row">
+
   	<dl class="dl-horizontal">
 	  <dt>{% trans "Subject" %}</dt>
 	  <dd>{{ message.subject|linebreaksbr }}</dd>
@@ -39,6 +41,10 @@
       {% endif %}
 	  <dt>{% trans "Public" %}</dt>
 	  <dd><i class="fa {% if message.public %}fa-check{% else %}fa-times{% endif %}"></i></dd>
+	  {% if message.public %}
+	  <dt>{% trans "Link" %}</dt>
+	  <dd><a href="{% url 'message_detail' slug=message.slug subdomain=message.writeitinstance.slug %}"><i class="fa fa-link"></i> {% trans "Public page" %}</a></dd>
+	  {% endif %}
 	  <dt>{% trans "Creation Date" %}</dt>
 	  <dd>{{ message.created|date }}</dd>
 	</dl>
