@@ -74,14 +74,15 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         """
         There is a url for getting all answers per message
         """
-        url = reverse('answers_per_message', kwargs={'pk':self.writeitinstance.pk})
+        url = reverse('message_detail', kwargs={'pk':self.writeitinstance.pk})
         self.assertTrue(url)
 
     def test_get_all_answers_url(self):
         """
         Get the url for all answers per message brings them
+        Is the same as message detail
         """
-        url = reverse('answers_per_message', kwargs={'pk':self.message.pk})
+        url = reverse('message_detail', kwargs={'pk':self.message.pk})
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
         response = c.get(url)
@@ -90,14 +91,14 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         self.assertIn("message", response.context)
         self.assertEquals(response.context['message'], self.message)
         self.assertTemplateUsed(response, "base_edit.html")
-        self.assertTemplateUsed(response, "nuntium/profiles/answers_per_message.html")
+        self.assertTemplateUsed(response, "nuntium/profiles/message_detail.html")
 
 
     def test_get_answers_per_messages_is_not_reachable_by_non_user(self):
         """
         When a user is not logged in he cannot see the answers per message
         """
-        url = reverse('answers_per_message', kwargs={'pk':self.message.pk})
+        url = reverse('message_detail', kwargs={'pk':self.message.pk})
         c = Client()
         response = c.get(url)
         self.assertRedirectToLogin(response, next_url=url)
@@ -110,7 +111,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         """
         not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
 
-        url = reverse('answers_per_message', kwargs={'pk':self.message.pk})
+        url = reverse('message_detail', kwargs={'pk':self.message.pk})
         c = Client()
         c.login(username=not_the_owner.username, password="secreto")
         response = c.get(url)

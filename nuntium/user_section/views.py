@@ -238,15 +238,15 @@ class MessagesPerWriteItInstance(DetailView, LoginRequiredMixin, WriteItInstance
     template_name = 'nuntium/profiles/messages_per_instance.html'
 
 
-class AnswersPerMessage(DetailView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
+class MessageDetail(DetailView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
     model = Message
-    template_name = "nuntium/profiles/answers_per_message.html"
+    template_name = "nuntium/profiles/message_detail.html"
 
     def get_writeitinstance(self):
         message = get_object_or_404(Message, pk=self.kwargs['pk'])
         return message.writeitinstance
 
     def get_context_data(self,**kwargs):
-        context = super(AnswersPerMessage, self).get_context_data(**kwargs)
+        context = super(MessageDetail, self).get_context_data(**kwargs)
         context['writeitinstance'] = self.object.writeitinstance
         return context
