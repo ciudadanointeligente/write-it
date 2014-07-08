@@ -1,10 +1,14 @@
-{% extends "base_edit.html" %}
 {% load i18n %}
 {% load subdomainurls %}
 {% load staticfiles %}
-<div class="tab-content profile-page-tab-content">
-  <div class="tab-pane active row">
-  	<h1>{% trans "Do you confirm deleting this" %}</h1>
+<div class="modal-dialog modal-lg">
+    <div class="modal-content b-color">
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  <h4 class="modal-title" id="myModalLabel">{% blocktrans with message=message.subject|linebreaksbr %}Do you confirm deleting "{{ message }}"?{% endblocktrans %}</h4>
+</div>
+<div class="modal-body">
+  	<h1></h1>
 
   	<dl class="dl-horizontal">
 	  <dt>{% trans "Subject" %}</dt>
@@ -44,4 +48,17 @@
 	  {% endfor %}
 	</table>
 </div>
+<div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+        <button type="button" class="btn btn-warning" onClick='deleteMessage(this)' href="{% url 'message_delete' pk=message.pk %}">{% trans "Delete" %}</button>
+      </div>
 </div>
+</div>
+<script type="text/javascript">
+function deleteMessage(button){
+	$.post($(button).attr('href'), function(){
+		$('#confirmDelete').modal('hide')
+		window.location = "{% url 'messages_per_writeitinstance' pk=message.writeitinstance.pk %}"
+	})
+}
+</script>
