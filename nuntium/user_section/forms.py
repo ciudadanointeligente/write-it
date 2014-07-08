@@ -120,6 +120,5 @@ class AnswerForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self.message = kwargs.pop('message')
         super(AnswerForm, self).__init__(*args, **kwargs)
-        print self.message.people.__class__
 
         self.fields['person'].queryset = self.message.people
