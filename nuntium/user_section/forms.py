@@ -6,7 +6,7 @@ from ..models import Message, WriteItInstance, OutboundMessage, \
     Confirmation, Membership, NewAnswerNotificationTemplate, \
     ConfirmationTemplate, Answer
 from contactos.models import Contact
-from django.forms import ValidationError
+from django.forms import ValidationError, ModelChoiceField
 from django.utils.translation import ugettext as _
 from popit.models import Person
 from haystack.forms import SearchForm
@@ -16,6 +16,7 @@ from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from itertools import chain
 from ..forms import WriteItInstanceCreateFormPopitUrl
+
 
 class WriteItInstanceBasicForm(ModelForm):
     class Meta:
@@ -109,8 +110,9 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
         self.relate_with_people()
         return instance
 
-
 class AnswerForm(ModelForm):
+
+    person = ModelChoiceField(queryset=Person.objects.none())
     class Meta:
         model = Answer
         fields = ('person', 'content')
@@ -118,3 +120,6 @@ class AnswerForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self.message = kwargs.pop('message')
         super(AnswerForm, self).__init__(*args, **kwargs)
+        print self.message.people.__class__
+
+        self.fields['person'].queryset = self.message.people

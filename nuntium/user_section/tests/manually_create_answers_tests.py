@@ -129,3 +129,14 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         self.assertEquals(form.message, self.message)
         self.assertNotIn("message", form.fields)
         self.assertNotIn("created", form.fields)
+
+
+    def test_only_the_persons_related_to_message(self):
+        '''
+        Only persons related to the given message are shown in the list
+        '''
+        
+        form = AnswerForm(message=self.message)
+        self.assertEquals(len(self.message.people), form.fields['person'].queryset.count())
+        self.assertIn(self.message.people[0], form.fields['person'].queryset.all())
+
