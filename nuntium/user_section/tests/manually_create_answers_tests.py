@@ -11,7 +11,7 @@ from django.contrib.sites.models import Site
 from django.conf import settings
 from django.utils.translation import activate
 from ..forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
-                    WriteItInstanceCreateForm
+                    WriteItInstanceCreateForm, AnswerForm
 from popit.models import Person, ApiInstance
 from django.forms.models import model_to_dict
 from contactos.models import Contact
@@ -116,3 +116,88 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         c.login(username=not_the_owner.username, password="secreto")
         response = c.get(url)
         self.assertEquals(response.status_code, 404)
+
+
+    def test_there_is_a_form_to_create_an_answer(self):
+        '''There is a form to create an answer'''
+        # print self.message.people, self.message.writeitinstance.persons.all()
+        form = AnswerForm(message=self.message)
+
+        self.assertTrue(form)
+        self.assertIn("person", form.fields)
+        self.assertIn("content", form.fields)
+        self.assertEquals(form.message, self.message)
+        self.assertNotIn("message", form.fields)
+        self.assertNotIn("created", form.fields)
+
+
+    def test_only_the_persons_related_to_message(self):
+        '''
+        Only persons related to the given message are shown in the list
+        '''
+        
+        form = AnswerForm(message=self.message)
+        self.assertEquals(len(self.message.people), form.fields['person'].queryset.count())
+        self.assertIn(self.message.people[0], form.fields['person'].queryset.all())
+
+
+
+
+class DeleteMessageView(UserSectionTestCase):
+    def setUp(self):
+        super(DeleteMessageView, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.message = self.writeitinstance.message_set.all()[1]
+
+
+    def test_there_is_a_url_to_delete_messages(self):
+        '''There is a url that would help me to delete a message'''
+        url = reverse('message_delete', kwargs={'pk':self.message.pk})
+        self.assertTrue(url)
+
+    def test_posting_to_that_url_deletes_the_message(self):
+        '''When posting to delete a message it deletes it'''
+        url = reverse('message_delete', kwargs={'pk':self.message.pk})
+
+        c = Client()
+        c.login(username=self.writeitinstance.owner.username, password='admin')
+        response = c.post(url, follow=True)
+        self.assertEquals(response.status_code, 200)
+        self.assertFalse(Message.objects.filter(id=self.message.id))
+        '''It should redirect to the see all messages url'''
+        allmessages_url = reverse('messages_per_writeitinstance', kwargs={'pk':self.writeitinstance.pk})
+        self.assertRedirects(response, allmessages_url)
+
+
+    def test_a_get_gives_me_the_cornfirmation_url(self):
+        '''When I do a get it takes me to the confirm deleting url'''
+        url = reverse('message_delete', kwargs={'pk':self.message.pk})
+
+        c = Client()
+        c.login(username=self.writeitinstance.owner.username, password='admin')
+        response = c.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, "nuntium/profiles/message_delete_confirm.html")
+
+
+    def test_it_cannot_be_accessed_by_a_non_user(self):
+        '''A non user cannot delete a message'''
+
+        url = reverse('message_delete', kwargs={'pk':self.message.pk})
+
+        c = Client()
+        response = c.get(url)
+        self.assertRedirectToLogin(response, next_url=url)
+
+
+    def test_not_owner_deletes_message(self):
+        '''If the user is not the owner of the instance then he/she cannot delete a message'''
+        not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
+
+        url = reverse('message_delete', kwargs={'pk':self.message.pk})
+        c = Client()
+        c.login(username=not_the_owner.username, password="secreto")
+        response1 = c.get(url)
+        self.assertEquals(response1.status_code, 404)
+        response2 = c.post(url)
+        self.assertEquals(response2.status_code, 404)

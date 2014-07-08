@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, View, ListView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, DeleteView
 from subdomains.utils import reverse
 from django.core.urlresolvers import reverse as original_reverse
 from ..models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation, Membership,\
@@ -250,3 +250,16 @@ class MessageDetail(DetailView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
         context = super(MessageDetail, self).get_context_data(**kwargs)
         context['writeitinstance'] = self.object.writeitinstance
         return context
+
+
+class MessageDelete(DeleteView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
+    model = Message
+    template_name = "nuntium/profiles/message_delete_confirm.html"
+
+    def get_writeitinstance(self):
+        message = get_object_or_404(Message, pk=self.kwargs['pk'])
+        return message.writeitinstance
+
+    def get_success_url(self):
+        success_url = reverse('messages_per_writeitinstance', kwargs={'pk':self.object.writeitinstance.pk})
+        return success_url
