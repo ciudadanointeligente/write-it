@@ -1,7 +1,8 @@
 # coding=utf-8
 from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, \
                         CharField, EmailField, SelectMultiple, TextInput, Textarea, \
-                        URLField, IntegerField, CheckboxInput, NumberInput, URLInput
+                        URLField, IntegerField, CheckboxInput, NumberInput, URLInput, \
+                        Select
 from ..models import Message, WriteItInstance, OutboundMessage, \
     Confirmation, Membership, NewAnswerNotificationTemplate, \
     ConfirmationTemplate, Answer
@@ -116,9 +117,19 @@ class AnswerForm(ModelForm):
     class Meta:
         model = Answer
         fields = ('person', 'content')
+        widgets = {
+            'content': TextInput(attrs={'class': 'form-control'})
+        }
 
     def __init__(self, *args, **kwargs):
         self.message = kwargs.pop('message')
         super(AnswerForm, self).__init__(*args, **kwargs)
-
         self.fields['person'].queryset = self.message.people
+        self.fields['person'].widget.attrs['class'] = 'form-control'
+
+
+    def save(self, commit=True):
+        answer = super(AnswerForm, self).save(commit=False)
+        answer.message = self.message
+        answer.save()
+        return answer

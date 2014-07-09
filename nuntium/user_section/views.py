@@ -4,11 +4,11 @@ from subdomains.utils import reverse
 from django.core.urlresolvers import reverse as original_reverse
 from ..models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation, Membership,\
                             NewAnswerNotificationTemplate, ConfirmationTemplate, \
-                            WriteitInstancePopitInstanceRecord
+                            WriteitInstancePopitInstanceRecord, Answer
                         
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
                     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
-                    WriteItInstanceCreateForm
+                    WriteItInstanceCreateForm, AnswerForm
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
 from django.http import Http404
@@ -21,7 +21,6 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from contactos.models import Contact
 from contactos.forms import ContactCreateForm
-from django.http import Http404
 from mailit.forms import MailitTemplateForm
 from popit.models import Person, ApiInstance
 from django.shortcuts import redirect
@@ -262,4 +261,27 @@ class MessageDelete(DeleteView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
 
     def get_success_url(self):
         success_url = reverse('messages_per_writeitinstance', kwargs={'pk':self.object.writeitinstance.pk})
+        return success_url
+
+
+class AnswerCreateView(CreateView):
+    model = Answer
+    template_name = "nuntium/profiles/create_answer.html"
+    form_class = AnswerForm
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        self.message = Message.objects.get(id=self.kwargs['pk'])
+        if self.message.writeitinstance.owner != self.request.user:
+            raise Http404
+        return super(AnswerCreateView, self).dispatch(*args, **kwargs)
+
+
+    def get_form_kwargs(self):
+        kwargs = super(AnswerCreateView, self).get_form_kwargs()
+        kwargs['message'] = self.message
+        return kwargs
+
+    def get_success_url(self):
+        success_url = reverse('message_detail', kwargs={'pk':self.message.pk})
         return success_url

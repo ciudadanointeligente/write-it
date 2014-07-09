@@ -1,0 +1,30 @@
+{% load i18n %}
+{% load subdomainurls %}
+{% load staticfiles %}
+<div class="modal-dialog modal-lg">
+    <div class="modal-content b-color">
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  <h4 class="modal-title" id="myModalLabel">{% blocktrans with message=form.message.subject|linebreaksbr %}Create an answer for "{{ message }}"{% endblocktrans %}</h4>
+</div>
+<form action="{% url 'create_answer' pk=form.message.pk %}" method="POST">{% csrf_token %}
+	<div class="modal-body">
+		{{ form.non_field_errors }}
+        <div class="fieldWrapper">
+            {{ form.person.errors }}
+            <label for="id_subject">{{ form.person.label_tag }}</label>
+            {{ form.person }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.content.errors }}
+            <label for="id_subject">{{ form.content.label_tag }}</label>
+            {{ form.content }}
+        </div>
+	</div>
+		<div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+	        <button type="submit" class="btn btn-primary">{% trans "Create" %}</button>
+	    </div>
+	</div>
+</form>
+</div>
