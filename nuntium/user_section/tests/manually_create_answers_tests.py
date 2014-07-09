@@ -2,7 +2,7 @@ from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from subdomains.utils import reverse, get_domain
 from django.core.urlresolvers import reverse as original_reverse
 from ...models import WriteItInstance, Membership, \
-                      WriteitInstancePopitInstanceRecord, Message
+                      WriteitInstancePopitInstanceRecord, Message, Answer
 from django.contrib.auth.models import User
 from django.test.client import Client, RequestFactory
 from ..views import WriteItInstanceUpdateView
@@ -139,6 +139,58 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         form = AnswerForm(message=self.message)
         self.assertEquals(len(self.message.people), form.fields['person'].queryset.count())
         self.assertIn(self.message.people[0], form.fields['person'].queryset.all())
+
+
+    def test_save_an_answer(self):
+        '''
+        Save an answer with the form
+        '''
+        data = {
+        "person":self.message.people.all()[0].pk,
+        "content": "Hello this is an answer"
+        }
+        form = AnswerForm(data, message=self.message)
+        self.assertFalse(form.errors)
+        self.assertTrue(form.is_valid())
+        new_answer = form.save()
+        self.assertEquals(new_answer.message, self.message)
+
+
+    def test_there_is_a_create_view_for_an_answer(self):
+        '''
+        There is a view that I can access to create a message
+        '''
+        url = reverse('create_answer', kwargs={'pk':self.message.pk})
+        self.assertTrue(url)
+        c = Client()
+        c.login(username=self.writeitinstance.owner.username, password='admin')
+        response = c.get(url)
+        self.assertEquals(response.status_code, 200)
+
+        self.assertTemplateUsed(response, "nuntium/profiles/create_answer.html")
+        self.assertTemplateUsed(response, "base_edit.html")
+        self.assertIn('form', response.context)
+        self.assertIsInstance(response.context['form'], AnswerForm)
+        self.assertEquals(response.context['form'].message, self.message)
+
+    def atest_post_to_create_an_answer(self):
+        '''
+        When posting for the creation of an answer
+        '''
+        previous_count = Answer.objects.filter(message=self.message).count()
+        data = {
+        'person': self.message.people.all()[0],
+        'content': "hello this is an answer"
+        }
+        url = reverse('create_answer', kwargs={'pk':self.message.pk})
+        self.assertTrue(url)
+        c = Client()
+        c.login(username=self.writeitinstance.owner.username, password='admin')
+        response = c.post(url, data=data)
+        detail_message_url = reverse('message_detail', kwargs={'pk':self.message.pk})
+        self.assertEquals(response.status_code, 200)
+        new_count = Answer.objects.filter(message=self.message).count()
+        self.assertEquals(new_count, previous_count + 1)
 
 
 

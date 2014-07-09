@@ -122,3 +122,10 @@ class AnswerForm(ModelForm):
         super(AnswerForm, self).__init__(*args, **kwargs)
 
         self.fields['person'].queryset = self.message.people
+
+
+    def save(self, commit=True):
+        answer = super(AnswerForm, self).save(commit=False)
+        answer.message = self.message
+        answer.save()
+        return answer

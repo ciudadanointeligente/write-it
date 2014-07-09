@@ -7,9 +7,9 @@
 {% endblock extrajs %}
 
 
-{% block extrascripts %}
 
-{% endblock extrascripts %}
+
+
 
 {% block header %}
 <ul class="breadcrumb">
@@ -47,6 +47,7 @@
             {% endif %}
             <th></th>
             <th></th>
+            <th>{% trans "Delete"%}</th>
           </tr>
         </thead>
         <tbody>
@@ -67,6 +68,7 @@
               <a href="{% url 'message_detail' slug=message.slug subdomain=writeitinstance.slug %}"><i class="fa fa-link"></i> {% trans "See the public page" %}</a>
               {% endif %}
             </td>
+            <td><a data-toggle="modal" data-target="#confirmDelete" class="deleteMessage" href="{% url 'message_delete' pk=message.pk %}"><i class="fa fa-times"></i></a></td>
             
           </tr>
           {% empty %}
@@ -78,5 +80,10 @@
 
   </div>
 </div>
-
+<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content b-color">
+    </div>
+  </div>
+</div>
 {% endblock content %}
