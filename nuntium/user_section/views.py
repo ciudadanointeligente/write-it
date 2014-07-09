@@ -21,7 +21,6 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from contactos.models import Contact
 from contactos.forms import ContactCreateForm
-from django.http import Http404
 from mailit.forms import MailitTemplateForm
 from popit.models import Person, ApiInstance
 from django.shortcuts import redirect
@@ -265,17 +264,21 @@ class MessageDelete(DeleteView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
         return success_url
 
 
-class AnswerCreateView(CreateView, LoginRequiredMixin):
+class AnswerCreateView(CreateView):
     model = Answer
     template_name = "nuntium/profiles/create_answer.html"
     form_class = AnswerForm
 
-    # def __init__(self, *args, **kwargs):
-    #     super(AnswerCreateView, self).__init__(*args, **kwargs)
-    #     print self.kwargs
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        self.message = Message.objects.get(id=self.kwargs['pk'])
+        if self.message.writeitinstance.owner != self.request.user:
+            raise Http404
+        return super(AnswerCreateView, self).dispatch(*args, **kwargs)
+
 
     def get_form_kwargs(self):
-        self.message = Message.objects.get(id=self.kwargs['pk'])
+        
         kwargs = super(AnswerCreateView, self).get_form_kwargs()
         kwargs['message'] = self.message
 

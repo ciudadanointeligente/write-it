@@ -193,7 +193,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
 
     def test_create_answers_not_logged(self):
         '''
-        Only owner of a message can create an answer
+        Only logged in user can create an answer
         '''
         url = reverse('create_answer', kwargs={'pk':self.message.pk})
         c = Client()
@@ -201,6 +201,18 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         response = c.get(url)
         self.assertRedirectToLogin(response, url)
 
+
+    def test_create_an_answer_non_owner(self):
+        '''
+        Only owner of an instance can create an answer to one of its messages
+        '''
+        self.assertEquals(self.message.writeitinstance, self.writeitinstance)
+        not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
+        url = reverse('create_answer', kwargs={'pk':self.message.pk})
+        c = Client()
+        c.login(username=not_the_owner.username, password="secreto")
+        response = c.get(url)
+        self.assertEquals(response.status_code, 404)
 
 class DeleteMessageView(UserSectionTestCase):
     def setUp(self):
