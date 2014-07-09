@@ -265,7 +265,7 @@ class MessageDelete(DeleteView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
         return success_url
 
 
-class AnswerCreateView(CreateView):
+class AnswerCreateView(CreateView, LoginRequiredMixin):
     model = Answer
     template_name = "nuntium/profiles/create_answer.html"
     form_class = AnswerForm

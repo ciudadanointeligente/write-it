@@ -190,6 +190,18 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         new_count = Answer.objects.filter(message=self.message).count()
         self.assertEquals(new_count, previous_count + 1)
 
+
+    def test_create_answers_not_logged(self):
+        '''
+        Only owner of a message can create an answer
+        '''
+        url = reverse('create_answer', kwargs={'pk':self.message.pk})
+        c = Client()
+        # not logged
+        response = c.get(url)
+        self.assertRedirectToLogin(response, url)
+
+
 class DeleteMessageView(UserSectionTestCase):
     def setUp(self):
         super(DeleteMessageView, self).setUp()
