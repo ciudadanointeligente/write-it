@@ -278,10 +278,8 @@ class AnswerCreateView(CreateView):
 
 
     def get_form_kwargs(self):
-        
         kwargs = super(AnswerCreateView, self).get_form_kwargs()
         kwargs['message'] = self.message
-
         return kwargs
 
     def get_success_url(self):

@@ -48,23 +48,34 @@
 	  <dt>{% trans "Creation Date" %}</dt>
 	  <dd>{{ message.created|date }}</dd>
 	</dl>
-
-	<table class="table">
-	  <tr>
-	  	<th>{% trans "Person" %}</th>
-	  	<th>{% trans "Content" %}</th>
-	  	<th></th>
-	  </tr>
-	  {% for answer in message.answers.all %}
+	
+	<div class="col-md-4">
+		<button class="btn btn-primary"  data-toggle="modal" data-target="#createAnswer" class="createAnswer" href="{% url 'create_answer' pk=message.pk %}"><i class="fa fa-plus"></i> {% trans "Create an answer" %}</button>
+	</div>
+	<div class="col-md-8">
+		<table class="table">
 		  <tr>
-		  	<td>{{answer.person}}</td>
-		  	<td>{{answer.content|truncatechars:50|linebreaksbr}}</td>
-		  	<td></td>
+		  	<th>{% trans "Person" %}</th>
+		  	<th>{% trans "Content" %}</th>
+		  	<th></th>
 		  </tr>
-	  {% endfor %}
-	</table>
+		  {% for answer in message.answers.all %}
+			  <tr>
+			  	<td>{{answer.person}}</td>
+			  	<td>{{answer.content|truncatechars:50|linebreaksbr}}</td>
+			  	<td></td>
+			  </tr>
+		  {% endfor %}
+		</table>
+	</div>
 </div>
 </div>
 
+<div class="modal fade" id="createAnswer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content b-color">
+    </div>
+  </div>
+</div>
 
 {% endblock content %}

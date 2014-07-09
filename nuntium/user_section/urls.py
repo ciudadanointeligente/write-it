@@ -27,8 +27,6 @@ urlpatterns = patterns('',
     url(r'^message/(?P<pk>[-\d]+)/create_answers/?$', \
         AnswerCreateView.as_view(), \
         name = 'create_answer'), 
-
-
     url(r'^message/(?P<pk>[-\d]+)/delete/?$', \
         MessageDelete.as_view(), \
         name = 'message_delete'),

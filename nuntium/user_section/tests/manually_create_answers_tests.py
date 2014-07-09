@@ -166,7 +166,6 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         self.assertEquals(response.status_code, 200)
 
         self.assertTemplateUsed(response, "nuntium/profiles/create_answer.html")
-        self.assertTemplateUsed(response, "base_edit.html")
         self.assertIn('form', response.context)
         self.assertIsInstance(response.context['form'], AnswerForm)
         self.assertEquals(response.context['form'].message, self.message)
