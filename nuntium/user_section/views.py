@@ -275,8 +275,12 @@ class AnswerCreateView(CreateView):
     #     print self.kwargs
 
     def get_form_kwargs(self):
-        message = Message.objects.get(id=self.kwargs['pk'])
+        self.message = Message.objects.get(id=self.kwargs['pk'])
         kwargs = super(AnswerCreateView, self).get_form_kwargs()
-        kwargs['message'] = message
+        kwargs['message'] = self.message
 
         return kwargs
+
+    def get_success_url(self):
+        success_url = reverse('message_detail', kwargs={'pk':self.message.pk})
+        return success_url

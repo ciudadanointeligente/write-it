@@ -140,7 +140,6 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         self.assertEquals(len(self.message.people), form.fields['person'].queryset.count())
         self.assertIn(self.message.people[0], form.fields['person'].queryset.all())
 
-
     def test_save_an_answer(self):
         '''
         Save an answer with the form
@@ -154,7 +153,6 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         self.assertTrue(form.is_valid())
         new_answer = form.save()
         self.assertEquals(new_answer.message, self.message)
-
 
     def test_there_is_a_create_view_for_an_answer(self):
         '''
@@ -173,13 +171,13 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         self.assertIsInstance(response.context['form'], AnswerForm)
         self.assertEquals(response.context['form'].message, self.message)
 
-    def atest_post_to_create_an_answer(self):
+    def test_post_to_create_an_answer(self):
         '''
         When posting for the creation of an answer
         '''
         previous_count = Answer.objects.filter(message=self.message).count()
         data = {
-        'person': self.message.people.all()[0],
+        'person': self.message.people.all()[0].pk,
         'content': "hello this is an answer"
         }
         url = reverse('create_answer', kwargs={'pk':self.message.pk})
@@ -188,12 +186,9 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         c.login(username=self.writeitinstance.owner.username, password='admin')
         response = c.post(url, data=data)
         detail_message_url = reverse('message_detail', kwargs={'pk':self.message.pk})
-        self.assertEquals(response.status_code, 200)
+        self.assertRedirects(response, detail_message_url)
         new_count = Answer.objects.filter(message=self.message).count()
         self.assertEquals(new_count, previous_count + 1)
-
-
-
 
 class DeleteMessageView(UserSectionTestCase):
     def setUp(self):
