@@ -46,7 +46,8 @@
 
             {% endif %}
             <th>{% trans "Details" %}</th>
-            <th></th>
+            <th>{% trans "Public link" %}</th>
+            <th>{% trans "Answers"%}</th>
             <th>{% trans "Delete"%}</th>
           </tr>
         </thead>
@@ -58,17 +59,22 @@
             <td><i class="fa {% if message.public %}fa-eye{% else %}fa-eye-slash{% endif %}"></i></td>
             <td><i class="fa {% if message.confirmated %}fa-check-circle-o{% else %}fa-times-circle-o{% endif %}"></i></td>
             {% if writeitinstance.moderation_needed_in_all_messages %}
-            	<td><i class="fa {% if message.moderated %}fa-check-circle-o{% else %}fa-times-circle-o{% endif %}"></i></td>
-
+              {% if message.moderated %}
+              <td><i class="fa fa-check-circle-o"></i></td>
+              {% else %}
+              <td><i class="fa fa-times-circle-o"></i> <a class="moderate" href="{% url 'moderate_message' pk=message.pk %}">{% trans "Moderate"%}</a></td>
+              {% endif %}
+            	
             {% endif %}
             <td><a href="{% url 'message_detail' pk=message.pk %}"><i class="fa fa-cogs"></i></a></td>
             
             <td>
               {% if message.public %}
-              <a href="{% url 'message_detail' slug=message.slug subdomain=writeitinstance.slug %}"><i class="fa fa-link"></i> {% trans "See the public page" %}</a>
+              <a target="_blank" href="{% url 'message_detail' slug=message.slug subdomain=writeitinstance.slug %}"><i class="fa fa-link"></i></a>
               {% endif %}
             </td>
-            <td><a data-toggle="modal" data-target="#confirmDelete" class="deleteMessage" href="{% url 'message_delete' pk=message.pk %}"><i class="fa fa-times"></i></a></td>
+            <td>{% blocktrans with answer_count=message.answers.count %}{{ answer_count }} answers{% endblocktrans %} <a data-toggle="modal" data-target="#modal" href="{% url 'create_answer' pk=message.pk %}" alt="{% trans "Add"%}"><i class="fa fa-plus"></i></a></td>
+            <td><a data-toggle="modal" data-target="#modal" class="deleteMessage" href="{% url 'message_delete' pk=message.pk %}"><i class="fa fa-times"></i></a></td>
             
           </tr>
           {% empty %}
@@ -80,10 +86,23 @@
 
   </div>
 </div>
-<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content b-color">
     </div>
   </div>
 </div>
+<script type="text/javascript">
+$(function(){
+  $('.moderate').click(function(event){
+    event.preventDefault();
+    var url = $(event.target).attr('href');
+    $.post(url, function(data){
+      location.reload();
+    })
+
+  })  
+})
+
+</script>
 {% endblock content %}
