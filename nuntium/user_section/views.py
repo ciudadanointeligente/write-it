@@ -285,3 +285,19 @@ class AnswerCreateView(CreateView):
     def get_success_url(self):
         success_url = reverse('message_detail', kwargs={'pk':self.message.pk})
         return success_url
+
+
+class ModerationView(View):
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        self.message = get_object_or_404(Message, id=kwargs['pk'])
+        if self.message.writeitinstance.owner != self.request.user:
+            raise Http404
+        return super(ModerationView, self).dispatch(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        
+        self.message.moderate()
+
+        url = reverse('messages_per_writeitinstance', kwargs={'pk':self.message.writeitinstance.pk})
+        return redirect(url)

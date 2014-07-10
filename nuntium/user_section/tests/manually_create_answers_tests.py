@@ -271,3 +271,75 @@ class DeleteMessageView(UserSectionTestCase):
         self.assertEquals(response1.status_code, 404)
         response2 = c.post(url)
         self.assertEquals(response2.status_code, 404)
+
+
+
+class ModerateURL(UserSectionTestCase):
+    def setUp(self):
+        super(ModerateURL, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.message = self.writeitinstance.message_set.all()[1]
+        self.person1 = Person.objects.all()[0]
+
+
+    def test_moderate_url(self):
+        '''
+        There is a url to moderate a message
+        '''
+        message = Message.objects.create(content = 'Content 1', 
+                author_name='Felipe', 
+                author_email="falvarez@votainteligente.cl", 
+                subject='Fiera es una perra feroz', 
+                public=False,
+                writeitinstance= self.writeitinstance, 
+                persons = [self.person1])
+        message.recently_confirmated()
+        url = reverse('moderate_message', kwargs={'pk':message.pk})
+        c = Client()
+        c.login(username=self.writeitinstance.owner.username, password='admin')
+        response = c.post(url)
+        
+        message_again = Message.objects.get(id=message.id)
+        self.assertTrue(message_again.moderated)
+
+        '''Redirecting'''
+        allmessages_url = reverse('messages_per_writeitinstance', kwargs={'pk':self.writeitinstance.pk})
+        self.assertRedirects(response, allmessages_url)
+
+
+    def test_logged_user(self):
+        '''
+        Only a logged in user can moderate a message
+        '''
+        message = Message.objects.create(content = 'Content 1', 
+                author_name='Felipe', 
+                author_email="falvarez@votainteligente.cl", 
+                subject='Fiera es una perra feroz', 
+                public=False,
+                writeitinstance= self.writeitinstance, 
+                persons = [self.person1])
+        message.recently_confirmated()
+        url = reverse('moderate_message', kwargs={'pk':message.pk})
+        c = Client()
+        response = c.post(url)
+        self.assertRedirectToLogin(response)
+
+
+    def test_not_owner(self):
+        '''
+        A user that does not own a message cannot moderate it
+        '''
+        not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
+        message = Message.objects.create(content = 'Content 1', 
+                author_name='Felipe', 
+                author_email="falvarez@votainteligente.cl", 
+                subject='Fiera es una perra feroz', 
+                public=False,
+                writeitinstance= self.writeitinstance, 
+                persons = [self.person1])
+        message.recently_confirmated()
+        url = reverse('moderate_message', kwargs={'pk':message.pk})
+        c = Client()
+        c.login(username=not_the_owner.username, password="secreto")
+        response = c.post(url)
+        self.assertEquals(response.status_code, 404)
