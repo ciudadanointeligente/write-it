@@ -59,7 +59,12 @@
             <td><i class="fa {% if message.public %}fa-eye{% else %}fa-eye-slash{% endif %}"></i></td>
             <td><i class="fa {% if message.confirmated %}fa-check-circle-o{% else %}fa-times-circle-o{% endif %}"></i></td>
             {% if writeitinstance.moderation_needed_in_all_messages %}
-            	<td><i class="fa {% if message.moderated %}fa-check-circle-o{% else %}fa-times-circle-o{% endif %}"></i></td>
+              {% if message.moderated %}
+              <td><i class="fa fa-check-circle-o"></i></td>
+              {% else %}
+              <td><i class="fa fa-times-circle-o"></i> <a class="moderate" href="{% url 'moderate_message' pk=message.pk %}">{% trans "Moderate"%}</a></td>
+              {% endif %}
+            	
             {% endif %}
             <td><a href="{% url 'message_detail' pk=message.pk %}"><i class="fa fa-cogs"></i></a></td>
             
@@ -87,4 +92,17 @@
     </div>
   </div>
 </div>
+<script type="text/javascript">
+$(function(){
+  $('.moderate').click(function(event){
+    event.preventDefault();
+    var url = $(event.target).attr('href');
+    $.post(url, function(data){
+      location.reload();
+    })
+
+  })  
+})
+
+</script>
 {% endblock content %}
