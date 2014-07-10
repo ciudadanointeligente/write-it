@@ -177,6 +177,9 @@ class Message(models.Model):
     public_objects = PublicMessagesManager()
     moderation_required_objects = NonModeratedMessagesManager()
 
+    class Meta:
+        ordering = ["-created"]
+
     def __init__(self, *args, **kwargs):
         self.persons = None
         if 'persons' in kwargs:

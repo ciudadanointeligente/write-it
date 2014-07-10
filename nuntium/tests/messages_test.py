@@ -389,6 +389,30 @@ class TestMessages(TestCase):
         self.assertIn(no_contact_om, message.outbound_messages)
         self.assertIn(outbound_message, message.outbound_messages)
 
+
+    def test_message_ordering(self):
+        '''Messages come ordered according to their creation date(last to first)'''
+        message1 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='test1',
+            slug='test',
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+        message2 = Message.objects.create(content = 'Content 1', 
+            author_name='Felipe', 
+            author_email="falvarez@votainteligente.cl",
+            confirmated = True,
+            subject='test2', 
+            writeitinstance= self.writeitinstance1,
+            persons = [self.person1])
+
+
+        messages = Message.objects.filter(id__in=[message1.id, message2.id])
+        self.assertEquals(messages[0], message2)
+        self.assertEquals(messages[1], message1)
+
 class MysqlTesting(UsingDbMixin, OriginalTestCase):
     using_db = 'mysql'
 
