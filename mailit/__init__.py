@@ -75,12 +75,14 @@ class MailChannel(OutputPlugin):
             return False, True
 
         except Exception, e:
-            log = "Error with outbound id %(outbound_id)i, contact '%(contact)s' and message '%(message)s'"
+            log = "Error with outbound id %(outbound_id)i, contact '%(contact)s' and message '%(message)s' and the error was '%(error)s'"
             log = log % {
                 'outbound_id':outbound_message.id,
                 'contact':outbound_message.contact.value,
-                'message':outbound_message.message
+                'message':outbound_message.message,
+                'error': e.__unicode__()
                 }
+            logging.info(log)
             return False, True
             
         return (True,None)
