@@ -326,7 +326,17 @@ class SmtpErrorHandling(TestCase):
 
             self.assertFalse(result_of_sending)
             self.assertFalse(fatal_error)
-        
+    
+    def test_extra_logging(self):
+        with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
+            send_mail.side_effect = Exception("Hey this is an exception")
+            with patch('logging.info') as info:
+                expected_log = u"Error with outbound id 1, contact 'pdaire@ciudadanointeligente.org' and message 'Subject 1 at instance 1' and the error was 'Hey this is an exception'"
+                self.channel.send(self.outbound_message1)
+
+                info.assert_called_with(expected_log)
+
+
 
 
 class MailitTemplateUpdateTestCase(UserSectionTestCase):
