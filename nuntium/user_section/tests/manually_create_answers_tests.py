@@ -268,7 +268,14 @@ class ManuallyEditAnswer(UserSectionTestCase):
 
         self.assertEquals(response.status_code, 404)
 
-
+    def test_get_the_edit_form(self):
+        '''Getting the update form'''
+        url = reverse('update_answer', kwargs={'pk':self.answer.pk})
+        c = Client()
+        c.login(username=self.writeitinstance.owner.username, password='admin')
+        response = c.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'nuntium/profiles/update_answer.html')
 
 class DeleteMessageView(UserSectionTestCase):
     def setUp(self):
