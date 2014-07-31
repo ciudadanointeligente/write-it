@@ -263,28 +263,45 @@ class MessageDelete(DeleteView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
         success_url = reverse('messages_per_writeitinstance', kwargs={'pk':self.object.writeitinstance.pk})
         return success_url
 
+class AnswerEditMixin(View):
+    def get_message(self):
+        raise NotImplementedError
 
-class AnswerCreateView(CreateView):
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        self.message = self.get_message()
+        if self.message.writeitinstance.owner != self.request.user:
+            raise Http404
+        return super(AnswerEditMixin, self).dispatch(*args, **kwargs)
+
+    def get_success_url(self):
+        success_url = reverse('message_detail', kwargs={'pk':self.message.pk})
+        return success_url
+
+class AnswerCreateView(AnswerEditMixin, CreateView):
     model = Answer
     template_name = "nuntium/profiles/create_answer.html"
     form_class = AnswerForm
 
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        self.message = Message.objects.get(id=self.kwargs['pk'])
-        if self.message.writeitinstance.owner != self.request.user:
-            raise Http404
-        return super(AnswerCreateView, self).dispatch(*args, **kwargs)
-
+    def get_message(self):
+        message = Message.objects.get(id=self.kwargs['pk'])
+        return message
 
     def get_form_kwargs(self):
         kwargs = super(AnswerCreateView, self).get_form_kwargs()
         kwargs['message'] = self.message
         return kwargs
 
-    def get_success_url(self):
-        success_url = reverse('message_detail', kwargs={'pk':self.message.pk})
-        return success_url
+    
+
+
+class AnswerUpdateView(AnswerEditMixin, UpdateView):
+    model = Answer
+    template_name = "nuntium/profiles/update_answer.html"
+    fields = ['content']
+
+    def get_message(self):
+        return self.model.objects.get(id=self.kwargs['pk']).message
 
 
 class ModerationView(View):

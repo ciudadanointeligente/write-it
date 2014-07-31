@@ -213,6 +213,63 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         response = c.get(url)
         self.assertEquals(response.status_code, 404)
 
+class ManuallyEditAnswer(UserSectionTestCase):
+    def setUp(self):
+        super(ManuallyEditAnswer, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.message = self.writeitinstance.message_set.all()[1]
+        self.person = self.message.people[0]
+        self.answer = Answer.objects.create(message=self.message, person=self.person, content="the answer to that is ...")
+
+
+    def test_there_is_an_endpoint(self):
+        '''There is an endpoint to which posting updates an answer'''
+        url = reverse('update_answer', kwargs={'pk':self.answer.pk})
+        self.assertTrue(url)
+        
+        
+
+    def test_post_updated_answer(self):
+        '''Posting updated answer'''
+        url = reverse('update_answer', kwargs={'pk':self.answer.pk})
+        c = Client()
+        c.login(username=self.writeitinstance.owner.username, password='admin')
+        data = {
+        'content':"this is the new content"
+        }
+        response = c.post(url, data=data)
+        detail_message_url = reverse('message_detail', kwargs={'pk':self.message.pk})
+        self.assertRedirects(response, detail_message_url)
+        answer = Answer.objects.get(id=self.answer.id)
+        self.assertTrue(answer.content, data['content'])
+
+    def test_posting_non_user(self):
+        '''Posting an updated answer as a non user redirects to login'''
+        url = reverse('update_answer', kwargs={'pk':self.answer.pk})
+        
+        c = Client()
+        data = {
+        'content':"this is the new content"
+        }
+        response = c.post(url, data=data)
+        self.assertRedirectToLogin(response)
+
+    def test_posting_as_non_the_owner(self):
+        '''Posting as a user that is not the owner'''
+        not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
+
+        url = reverse('update_answer', kwargs={'pk':self.answer.pk})
+        c = Client()
+        c.login(username=not_the_owner.username, password="secreto")
+        data = {
+        'content':"this is the new content"
+        }
+        response = c.post(url, data=data)
+
+        self.assertEquals(response.status_code, 404)
+
+
+
 class DeleteMessageView(UserSectionTestCase):
     def setUp(self):
         super(DeleteMessageView, self).setUp()
