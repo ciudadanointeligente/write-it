@@ -50,28 +50,41 @@
 	</dl>
 	
 	<div class="col-md-4">
-		<button class="btn btn-primary"  data-toggle="modal" data-target="#createAnswer" class="createAnswer" href="{% url 'create_answer' pk=message.pk %}"><i class="fa fa-plus"></i> {% trans "Create an answer" %}</button>
+		<button class="btn btn-primary"  data-toggle="modal" data-target="#editAnswer" class="editAnswer" href="{% url 'create_answer' pk=message.pk %}"><i class="fa fa-plus"></i> {% trans "Create an answer" %}</button>
 	</div>
 	<div class="col-md-8">
 		<table class="table">
 		  <tr>
 		  	<th>{% trans "Person" %}</th>
 		  	<th>{% trans "Content" %}</th>
-		  	<th></th>
+		  	<th>{% trans "Actions" %}</th>
 		  </tr>
 		  {% for answer in message.answers.all %}
 			  <tr>
 			  	<td>{{answer.person}}</td>
 			  	<td>{{answer.content|truncatechars:50|linebreaksbr}}</td>
-			  	<td></td>
+			  	<td><a data-toggle="modal" data-target="#updateAnswer-{{answer.id}}"  href="{% url 'update_answer' pk=answer.pk %}" alt="{% trans 'Edit Answer' %}"><i class="fa fa-pencil"></i> </a></td>
 			  </tr>
+
+			  	<div class="modal fade" id="updateAnswer-{{answer.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog modal-lg">
+				    <div class="modal-content b-color">
+				    </div>
+				  </div>
+				</div>
 		  {% endfor %}
 		</table>
 	</div>
 </div>
 </div>
 
-<div class="modal fade" id="createAnswer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="editAnswer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content b-color">
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="updateAnswer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content b-color">
     </div>

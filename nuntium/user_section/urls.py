@@ -4,7 +4,7 @@ from .views import UserAccountView, WriteItInstanceUpdateView, \
         WriteItInstanceTemplateUpdateView, NewAnswerNotificationTemplateUpdateView, \
         ConfirmationTemplateUpdateView, WriteItInstanceCreateView, \
         YourPopitApiInstances, WriteItPopitUpdateView, MessagesPerWriteItInstance, \
-        MessageDetail, MessageDelete, AnswerCreateView, ModerationView
+        MessageDetail, MessageDelete, AnswerCreateView, ModerationView, AnswerUpdateView
         
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
@@ -27,6 +27,9 @@ urlpatterns = patterns('',
     url(r'^message/(?P<pk>[-\d]+)/create_answers/?$', \
         AnswerCreateView.as_view(), \
         name = 'create_answer'), 
+    url(r'^message/answers/update_answers/(?P<pk>[-\d]+)/?$', \
+        AnswerUpdateView.as_view(), \
+        name = 'update_answer'), 
     url(r'^message/(?P<pk>[-\d]+)/delete/?$', \
         MessageDelete.as_view(), \
         name = 'message_delete'),
