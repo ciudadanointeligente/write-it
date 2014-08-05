@@ -44,3 +44,12 @@ For testing you could run ./test.sh
 Coverage Analysis
 -----------------
 For coverage analysis run ./coverage.sh
+
+
+API clients
+-----------
+
+Write-it has been used mostly through it's REST API for which there are a number of API clients.
+The github repos and the status of the development are listed below:
+- [writeit-rails](https://github.com/ciudadanointeligente/writeit-rails) ALPHA
+- [writeit-django](https://github.com/ciudadanointeligente/writeit-django) ALPHA
