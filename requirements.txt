@@ -11,7 +11,7 @@ requests
 django-extensions
 django-subdomains
 django-haystack
-pyelasticsearch
+elasticsearch
 celery
 pyyaml
 django-celery
@@ -21,3 +21,4 @@ django-admin-bootstrapped
 django-object-actions
 unidecode
 python-social-auth
+django-nose
