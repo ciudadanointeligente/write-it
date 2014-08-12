@@ -16,11 +16,20 @@ Future uses are in [votainteligente](http://www.votainteligente.cl) to replace t
 Installation
 ------------
 
+System Requirements
+-------------------
+
+ * [Elastisearc](http://www.elasticsearch.org/)
+
+ Sometimes it's required
+
+ * [Urllib3](http://urllib3.readthedocs.org/en/latest/)
+
 Write-it is built using Django. You should install Django and its dependencies inside a virtualenv. We suggest you use [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/) to create and manage virtualenvs, so if you don’t already have it, [go install it](http://virtualenvwrapper.readthedocs.org/en/latest/install.html#basic-installation), remembering in particular to add the required lines to your shell startup file.
 
 With virtualenvwrapper installed, clone this repo, `cd` into it, and create a virtualenv:
 
-    git clone git@github.com:…/write-it.git
+    git clone git@github.com:ciudadanointeligente/write-it.git
     cd write-it
     mkvirtualenv writeit
 

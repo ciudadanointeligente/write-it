@@ -22,3 +22,4 @@ django-object-actions
 unidecode
 python-social-auth
 django-nose
+python-dateutil
