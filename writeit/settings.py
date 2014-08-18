@@ -298,3 +298,8 @@ try:
     INSTALLED_APPS += EXTRA_APPS
 except ImportError:
     pass
+
+try:
+    from heroku_settings import *
+except ImportError:
+    pass
