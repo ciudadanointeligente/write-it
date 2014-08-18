@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% load subdomainurls %}
 {% load staticfiles %}
 
 {% block extrascripts %}
@@ -29,7 +28,7 @@ $(".chosen-person-select").chosen();
         <h2 class="panel-title">{% trans "You can now write your question" %}</h2>
     </div>
     <div class="panel-body">
-        <form method='post' class='form-horizontal message-form' action="{% url 'instance_detail' subdomain=writeitinstance.slug %}" role="form">{% csrf_token %}
+        <form method='post' class='form-horizontal message-form' action="{% url 'instance_detail' slug=writeitinstance.slug %}" role="form">{% csrf_token %}
             <div ng-controller="message-form">
                 {{ form.non_field_errors }}
             	<div class="form-group{% if form.author_name.errors %} has-error{% endif %}">
@@ -105,7 +104,7 @@ $(".chosen-person-select").chosen();
 {% endblock content%}
 
 {% block search_form %}
-<form action="{% url 'instance_search' subdomain=writeitinstance.slug %}" class="navbar-form navbar-right" method="get"  role="form">
+<form action="{% url 'instance_search' slug=writeitinstance.slug %}" class="navbar-form navbar-right" method="get"  role="form">
     <div class="form-group">
         <label class="sr-only" for="exampleInputEmail2">Search within messages</label>
         <input type="text" class="form-control" name="q" id="id_q" placeholder="{% trans 'Search within messages' %}">

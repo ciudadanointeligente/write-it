@@ -2,7 +2,7 @@
 from global_test_case import GlobalTestCase as TestCase, SearchIndexTestCase
 from ..search_indexes import AnswerIndex
 from django.core.management import call_command
-from subdomains.utils import reverse
+from django.core.urlresolvers  import reverse
 from ..models import Answer, Message
 from haystack import indexes
 from haystack.fields import CharField

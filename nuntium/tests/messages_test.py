@@ -11,7 +11,7 @@ from ..models import Message, WriteItInstance, \
                             OutboundMessage, MessageRecord, Confirmation, \
                             Moderation, NoContactOM
 from popit.models import Person, ApiInstance
-from subdomains.utils import reverse
+from django.core.urlresolvers  import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
@@ -22,7 +22,6 @@ from django.contrib.sites.models import Site
 import datetime
 from django.utils import timezone
 from django.utils.translation import activate
-from subdomains.tests import SubdomainTestMixin
 from django.core.management import call_command
 from django.db.models.query import QuerySet
 
@@ -182,7 +181,7 @@ class TestMessages(TestCase):
 
     def test_message_has_a_permalink(self):
         message1 = Message.objects.all()[0]
-        expected_url = reverse('message_detail',subdomain=message1.writeitinstance.slug, kwargs={'slug':message1.slug})
+        expected_url = reverse('message_detail', kwargs={'slug':message1.slug, 'instance_slug':message1.writeitinstance.slug})
 
         self.assertEquals(expected_url, message1.get_absolute_url())
 

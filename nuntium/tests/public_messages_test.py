@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.management import call_command
 from global_test_case import GlobalTestCase as TestCase
-from subdomains.tests import SubdomainTestMixin
 from ..models import WriteItInstance, Message, \
                             Confirmation
 from popit.models import Person
@@ -34,7 +33,7 @@ class NonModeratedMessagesManagerTestCase(TestCase):
         self.assertIn(message, Message.moderation_required_objects.all())
         
 
-class PublicMessagesManager(TestCase, SubdomainTestMixin):
+class PublicMessagesManager(TestCase):
     def setUp(self):
         super(PublicMessagesManager, self).setUp()
         self.moderation_not_needed_instance = WriteItInstance.objects.all()[0]

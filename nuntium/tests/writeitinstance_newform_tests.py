@@ -1,6 +1,6 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
-from subdomains.utils import reverse
+from django.core.urlresolvers  import reverse
 from ..models import WriteItInstance, Message, Membership, Confirmation, Moderation
 from ..user_section.forms import WriteItInstanceCreateFormPopitUrl, SimpleInstanceCreateFormPopitUrl
 from ..views import MessageCreateForm, PerInstanceSearchForm
@@ -9,7 +9,6 @@ from popit.models import ApiInstance, Person
 from django.utils.unittest import skipUnless
 from datetime import datetime
 from django.contrib.auth.models import User
-from subdomains.tests import SubdomainTestMixin
 from django.utils.translation import activate
 from django.utils.translation import ugettext as _
 from django.conf import settings

@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     url(r'^contactos/', include('contactos.urls')),
     url(r'^mailit/', include('mailit.urls')),
     url(r'^social_auth/', include('social.apps.django_app.urls', namespace='social'))
+    
 
 
 )
@@ -32,6 +33,8 @@ urlpatterns = patterns('',
 urlpatterns += i18n_patterns('',
     
     url(r'^', include('nuntium.urls')),
+
     url(r'^', include('nuntium.user_section.urls')),
+    url(r'^writeit_instances/', include('nuntium.subdomain_urls')),
     (r'accounts/', include('django.contrib.auth.urls')),
 )

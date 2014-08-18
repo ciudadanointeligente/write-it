@@ -1,37 +1,40 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from subdomains.utils import reverse, get_domain
+from django.core.urlresolvers  import reverse
 from django.core.urlresolvers import reverse as original_reverse
 from ..models import WriteItInstance, Message
 from django.test.client import Client, RequestFactory
 from django.contrib.sites.models import Site
 from django.conf import settings
 from popit.models import Person
-from subdomains.tests import SubdomainTestMixin
 
 
-class MessagesPerPersonViewTestCase(TestCase, SubdomainTestMixin):
+class MessagesPerPersonViewTestCase(TestCase):
 	def setUp(self):
 		super(MessagesPerPersonViewTestCase, self).setUp()
 		self.writeitinstance = WriteItInstance.objects.get(id=1)
 		self.pedro = Person.objects.get(name="Pedro")
 		self.marcel = Person.objects.get(name="Marcel")
 		self.client = Client()
-		self.host = self.get_host_for_subdomain(self.writeitinstance.slug)
 
 	def test_has_an_url(self):
 		url = reverse('messages_per_person'
-			, kwargs={'pk':self.pedro.id}
-            , subdomain=self.writeitinstance.slug)
+			, kwargs={
+				'pk':self.pedro.id,
+				'slug':self.writeitinstance.slug
+
+				})
 
 		self.assertTrue(url)
 
 
 	def test_it_is_reachable(self):
 		url = reverse('messages_per_person'
-			, kwargs={'pk':self.pedro.id}
-            , subdomain=self.writeitinstance.slug)
-		response = self.client.get(url, HTTP_HOST=self.host)
+			, kwargs={
+			'pk':self.pedro.id,
+			'slug':self.writeitinstance.slug
+			})
+		response = self.client.get(url)
 
 		expected_messages = Message.objects.filter(
 			person=self.pedro,
@@ -63,10 +66,12 @@ class MessagesPerPersonViewTestCase(TestCase, SubdomainTestMixin):
 		#this private message should not be shown
 
 		url = reverse('messages_per_person'
-			, kwargs={'pk':self.pedro.id}
-            , subdomain=self.writeitinstance.slug)
+			, kwargs={
+				'pk':self.pedro.id,
+				'slug':self.writeitinstance.slug
+				})
 
-		response = self.client.get(url, HTTP_HOST=self.host)
+		response = self.client.get(url)
 
 		self.assertNotIn(private_message, response.context['message_list'])
 
@@ -84,10 +89,12 @@ class MessagesPerPersonViewTestCase(TestCase, SubdomainTestMixin):
             persons = [self.pedro])
 
 		url = reverse('messages_per_person'
-			, kwargs={'pk':self.pedro.id}
-            , subdomain=self.writeitinstance.slug)
+			, kwargs={
+				'pk':self.pedro.id,
+				'slug':self.writeitinstance.slug
+				})
 
-		response = self.client.get(url, HTTP_HOST=self.host)
+		response = self.client.get(url)
 
 		#should not be here cause it belongs to other writeit instance
 		self.assertNotIn(message, response.context['message_list'])

@@ -1,19 +1,18 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from subdomains.tests import SubdomainTestMixin
 from ..models import Message, WriteItInstance, \
                             Moderation, Confirmation, \
                             OutboundMessage
 from popit.models import Person
 from django.core import mail
 from django.contrib.sites.models import Site
-from subdomains.utils import reverse
+from django.core.urlresolvers  import reverse
 import datetime
 from mock import patch
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 
-class ModerationMessagesTestCase(TestCase, SubdomainTestMixin):
+class ModerationMessagesTestCase(TestCase):
     def setUp(self):
         super(ModerationMessagesTestCase,self).setUp()
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
@@ -26,7 +25,6 @@ class ModerationMessagesTestCase(TestCase, SubdomainTestMixin):
             writeitinstance= self.writeitinstance1, 
             persons = [self.person1])
         self.confirmation = Confirmation.objects.create(message=self.private_message)
-        self.host = self.get_host_for_subdomain(self.writeitinstance1.slug)
 
     def test_private_messages_confirmation_created_move_from_new_to_needs_moderation(self):
         moderation, created = Moderation.objects.get_or_create(message=self.private_message)
@@ -41,9 +39,8 @@ class ModerationMessagesTestCase(TestCase, SubdomainTestMixin):
         self.confirmation.save()
         self.private_message.confirmated = True
         self.private_message.save()
-        host = self.get_host_for_subdomain(self.private_message.writeitinstance.slug)
         url = self.private_message.get_absolute_url()
-        response = self.client.get(url,HTTP_HOST=host)
+        response = self.client.get(url)
 
         self.assertEquals(response.status_code, 404)
 
@@ -269,7 +266,7 @@ class ModerationMessagesTestCase(TestCase, SubdomainTestMixin):
             'persons': [self.person1.id]
         }
         url = self.writeitinstance1.get_absolute_url()
-        response = self.client.post(url, data, follow=True, HTTP_HOST=self.host)
+        response = self.client.post(url, data, follow=True)
         message = Message.objects.get(
             author_name="feli", 
             author_email="falvarez@votainteligente.cl",

@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, View, ListView
 from django.views.generic.edit import UpdateView, DeleteView
-from subdomains.utils import reverse
+from django.core.urlresolvers  import reverse
 from django.core.urlresolvers import reverse as original_reverse
 from ..models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation, Membership,\
                             NewAnswerNotificationTemplate, ConfirmationTemplate, \

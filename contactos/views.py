@@ -5,7 +5,7 @@ from django.http import HttpResponse
 import simplejson as json
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from subdomains.utils import reverse
+from django.core.urlresolvers  import reverse
 
 class ContactoUpdateView(UpdateView):
     model = Contact

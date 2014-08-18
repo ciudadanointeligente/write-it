@@ -1,5 +1,5 @@
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
-from subdomains.utils import reverse, get_domain
+from django.core.urlresolvers  import reverse
 from django.core.urlresolvers import reverse as original_reverse
 from ...models import WriteItInstance, Membership, \
                       WriteitInstancePopitInstanceRecord

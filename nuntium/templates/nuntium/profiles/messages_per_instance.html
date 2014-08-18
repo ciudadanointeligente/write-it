@@ -1,6 +1,5 @@
 {% extends "base_edit.html" %}
 {% load i18n %}
-{% load subdomainurls %}
 {% load staticfiles %}
 
 {% block extrajs %}
@@ -70,7 +69,7 @@
             
             <td>
               {% if message.public %}
-              <a target="_blank" href="{% url 'message_detail' slug=message.slug subdomain=writeitinstance.slug %}"><i class="fa fa-link"></i></a>
+              <a target="_blank" href="{% url 'message_detail' slug=message.slug instance_slug=writeitinstance.slug %}"><i class="fa fa-link"></i></a>
               {% endif %}
             </td>
             <td>{% blocktrans with answer_count=message.answers.count %}{{ answer_count }} answers{% endblocktrans %} <a data-toggle="modal" data-target="#modal" href="{% url 'create_answer' pk=message.pk %}" alt="{% trans "Add"%}"><i class="fa fa-plus"></i></a></td>

@@ -1,6 +1,6 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
-from subdomains.utils import reverse
+from django.core.urlresolvers  import reverse
 from ..models import WriteItInstance, Message, Membership, Confirmation, Moderation
 from ..views import MessageCreateForm, PerInstanceSearchForm
 from contactos.models import Contact, ContactType
@@ -8,12 +8,11 @@ from popit.models import ApiInstance, Person
 from django.utils.unittest import skipUnless
 from datetime import datetime
 from django.contrib.auth.models import User
-from subdomains.tests import SubdomainTestMixin
 from django.utils.translation import activate
 from django.utils.translation import ugettext as _
 from django.conf import settings
 
-class InstanceTestCase(TestCase, SubdomainTestMixin):
+class InstanceTestCase(TestCase):
 
     def setUp(self):
         super(InstanceTestCase,self).setUp()
@@ -75,7 +74,7 @@ class InstanceTestCase(TestCase, SubdomainTestMixin):
     def test_get_absolute_url(self):
         writeitinstance1 = WriteItInstance.objects.all()[0]
         expected_url = reverse('instance_detail',
-            subdomain=writeitinstance1.slug)
+            kwargs={'slug':writeitinstance1.slug})
 
         self.assertEquals(expected_url, writeitinstance1.get_absolute_url())
 
@@ -83,18 +82,16 @@ class InstanceTestCase(TestCase, SubdomainTestMixin):
     def test_get_absolute_url_i18n(self):
         activate("es")
         writeitinstance1 = WriteItInstance.objects.all()[0]
-        self.assertTrue(writeitinstance1.get_absolute_url().endswith('/es/'))
-        host = self.get_host_for_subdomain(writeitinstance1.slug)
-        response = self.client.get(writeitinstance1.get_absolute_url(), HTTP_HOST=host)
+        self.assertTrue(writeitinstance1.get_absolute_url().startswith('/es/'))
+        response = self.client.get(writeitinstance1.get_absolute_url())
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'nuntium/instance_detail.html')
 
 
     def test_get_non_existing_instance(self):
         url = reverse('instance_detail',
-            subdomain="non-existing-slug")
-        host = self.get_host_for_subdomain("non-existing-slug")
-        response = self.client.get(url, HTTP_HOST=host)
+            kwargs={'slug':"non-existing-slug"})
+        response = self.client.get(url)
         self.assertEquals(response.status_code, 404)
 
     def test_membership(self):
@@ -225,7 +222,7 @@ class PopitWriteitRelationRecord(TestCase):
 
 
 
-class InstanceDetailView(TestCase, SubdomainTestMixin):
+class InstanceDetailView(TestCase):
     def setUp(self):
         super(InstanceDetailView, self).setUp()
         self.api_instance1 = ApiInstance.objects.all()[0]
@@ -233,13 +230,12 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
         self.person1 = Person.objects.all()[0]
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
         self.url = self.writeitinstance1.get_absolute_url()
-        self.host = self.get_host_for_subdomain(self.writeitinstance1.slug)
 
     
     def test_detail_instance_view(self):
         #I'm removing this because it has been already tested
         #self.assertTrue(url)
-        response = self.client.get(self.url, HTTP_HOST=self.host)
+        response = self.client.get(self.url)
         self.assertTemplateUsed(response, 'nuntium/instance_detail.html')
         self.assertEquals(response.context['writeitinstance'], self.writeitinstance1)
         self.assertTrue(response.context['form'])
@@ -247,7 +243,7 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
         self.assertEquals(response.status_code, 200)
 
     def test_instance_view_has_a_search_form(self):
-        response = self.client.get(self.url, HTTP_HOST=self.host)
+        response = self.client.get(self.url)
 
         self.assertIn('search_form', response.context)
 
@@ -258,7 +254,7 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
 
     def test_list_only_public_messages(self):
         private_message = Message.objects.create(content='Content 1', subject='a private message', writeitinstance = self.writeitinstance1, persons=[self.person1], public=False)
-        response = self.client.get(self.url, HTTP_HOST=self.host)
+        response = self.client.get(self.url)
 
         self.assertTrue('public_messages' in response.context)
         self.assertTrue(private_message not in response.context['public_messages'])
@@ -283,7 +279,7 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
 
         url = self.writeitinstance1.get_absolute_url()
 
-        response = self.client.get(self.url, HTTP_HOST=self.host)
+        response = self.client.get(self.url)
 
         self.assertNotIn(message, response.context['public_messages'])
 
@@ -325,7 +321,7 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
 
         url = self.writeitinstance1.get_absolute_url()
         
-        response = self.client.get(self.url, HTTP_HOST=self.host)
+        response = self.client.get(self.url)
         
         
         #message1 is not confirmed so it should not be in the list
@@ -349,7 +345,7 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
         'content':u'¿Dónde está Fiera Feroz? en la playa?',
         'persons': [self.person1.id]
         }
-        response = self.client.post(self.url, data, follow=True, HTTP_HOST=self.host)
+        response = self.client.post(self.url, data, follow=True)
         self.assertEquals(response.status_code, 200)
         new_messages = Message.objects.filter(subject='Fiera no está')
         self.assertTrue(new_messages.count()>0)
@@ -366,7 +362,7 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
         'persons': [self.person1.id]
         }
 
-        response = self.client.post(self.url, data, follow=True, HTTP_HOST=self.host)
+        response = self.client.post(self.url, data, follow=True)
         self.assertEquals(response.status_code, 200)
         expected_acknoledgments = _("Thanks for submitting your message, please check your email and click on the confirmation link")
 
@@ -386,7 +382,7 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
         'persons': [self.person1.id]
         }
         url = self.writeitinstance1.get_absolute_url()
-        response = self.client.post(self.url, data, HTTP_HOST=self.host)
+        response = self.client.post(self.url, data)
 
         self.assertRedirects(response, url)
 
@@ -402,7 +398,7 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
         }
 
         url = self.writeitinstance1.get_absolute_url()
-        response = self.client.post(self.url, data, follow=True, HTTP_HOST=self.host)
+        response = self.client.post(self.url, data, follow=True)
 
         expected_acknoledgments = _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation")
 
@@ -422,7 +418,7 @@ class InstanceDetailView(TestCase, SubdomainTestMixin):
         }
 
         url = self.writeitinstance1.get_absolute_url()
-        response = self.client.post(self.url, data, follow=True, HTTP_HOST=self.host)
+        response = self.client.post(self.url, data, follow=True)
 
         expected_acknoledgments = _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation")
 

@@ -1,7 +1,6 @@
 {% load staticfiles %}
 {% load i18n %}
 {% load markdown_deux_tags %}
-{% load subdomainurls %}
 
 <dl class="dl-horizontal">
 <div class="panel panel-default">
@@ -31,7 +30,7 @@
 	<p>{% markdown %}{{ message.content }}{% endmarkdown %}</p>
 	<i class="glyphicon glyphicon-user"></i>
 	{% for person in message.people %}
-		<span class="label label-default person_name" data-container="body" data-toggle="popover" data-content="<a href='{% url 'messages_per_person' subdomain=message.writeitinstance.slug pk=person.id %}'>{% blocktrans with person_name=person.name %}See all messages sent to {{ person_name }}{% endblocktrans %}</a>">{{ person.name }}</span>
+		<span class="label label-default person_name" data-container="body" data-toggle="popover" data-content="<a href='{% url 'messages_per_person' slug=message.writeitinstance.slug pk=person.id %}'>{% blocktrans with person_name=person.name %}See all messages sent to {{ person_name }}{% endblocktrans %}</a>">{{ person.name }}</span>
 	{% endfor %}
 
 	<br />

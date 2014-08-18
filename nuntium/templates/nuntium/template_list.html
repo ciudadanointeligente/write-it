@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load subdomainurls %}
 {% load i18n %}
 
 {% block extrajs %}
@@ -16,7 +15,7 @@
   <h2>{% trans "Current instances of write it" %}</h2>
   <ul>
   {% for instance in object_list %}
-  <li><a href="{% url 'instance_detail' subdomain=instance.slug %}">{{ instance.name }}</a></li>
+  <li><a href="{% url 'instance_detail' slug=instance.slug %}">{{ instance.name }}</a></li>
   {% endfor %}
   </ul>
 </div>

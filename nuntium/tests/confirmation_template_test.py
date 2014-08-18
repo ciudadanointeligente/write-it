@@ -6,7 +6,7 @@ from contactos.models import Contact
 from datetime import datetime
 from django.core import mail
 from plugin_mock.mental_message_plugin import MentalMessage
-from subdomains.utils import reverse
+from django.core.urlresolvers  import reverse
 from django.contrib.sites.models import Site
 from django.utils.unittest import skip
 from django.conf import settings

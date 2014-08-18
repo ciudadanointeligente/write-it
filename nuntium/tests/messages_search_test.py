@@ -7,7 +7,7 @@ from ..forms import  MessageSearchForm, PerInstanceSearchForm
 from haystack import indexes
 from haystack.fields import CharField
 from haystack.forms import SearchForm
-from subdomains.utils import reverse
+from django.core.urlresolvers  import reverse
 from ..views import MessageSearchView, PerInstanceSearchView
 from ..models import WriteItInstance, Confirmation, Answer
 from django.views.generic.edit import FormView
@@ -15,7 +15,7 @@ from django.utils.unittest import skip
 from haystack.views import SearchView
 from django.utils.unittest import skip
 from popit.models import Person
-from subdomains.tests import SubdomainTestMixin
+
 
 class MessagesSearchTestCase(TestCase):
     def setUp(self):
@@ -167,11 +167,10 @@ class SearchMessageAccess(SearchIndexTestCase):
         self.assertEquals(results[0].object.id, expected_answer.id)
 
 from django.contrib.contenttypes.models import ContentType
-class PerInstanceSearchFormTestCase(SearchIndexTestCase, SubdomainTestMixin):
+class PerInstanceSearchFormTestCase(SearchIndexTestCase):
     def setUp(self):
         super(PerInstanceSearchFormTestCase, self).setUp()
         self.writeitinstance = WriteItInstance.objects.all()[0]
-        self.host = self.get_host_for_subdomain(self.writeitinstance.slug)
 
     def test_per_instance_search_form(self):
         form = PerInstanceSearchForm(writeitinstance=self.writeitinstance)
@@ -198,9 +197,9 @@ class PerInstanceSearchFormTestCase(SearchIndexTestCase, SubdomainTestMixin):
         self.assertEquals(view.template, 'nuntium/instance_search.html')
 
     def test_per_instance_search_url(self):
-        url = reverse('instance_search', subdomain=self.writeitinstance.slug)
+        url = reverse('instance_search', kwargs={'slug':self.writeitinstance.slug})
 
-        response = self.client.get(url, HTTP_HOST=self.host)
+        response = self.client.get(url)
 
         self.assertEquals(response.status_code, 200)
 
