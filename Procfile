@@ -1,1 +1,1 @@
-web: gunicorn writeit.wsgi --log-file -
+web: gunicorn writeit.wsgi --log-file 
