@@ -341,10 +341,10 @@ if 'EMAIL_HOST_USER' in os.environ:
     EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
 if 'EMAIL_HOST_PASSWORD' in os.environ:
     EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
-if 'EMAIL_USE_TLS' in os.environ:
-    EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
-if 'EMAIL_USE_SSL' in os.environ:
-    EMAIL_USE_SSL = os.environ['EMAIL_USE_SSL']
+if 'EMAIL_USE_TLS' in os.environ and os.environ['EMAIL_USE_TLS']=='True':
+    EMAIL_USE_TLS = True
+if 'EMAIL_USE_SSL' in os.environ and os.environ['EMAIL_USE_SSL']=='True':
+    EMAIL_USE_SSL = True
     # Haystack things elasticsearch
     # HAYSTACK_CONNECTIONS = {
     #     'default': {
@@ -353,3 +353,5 @@ if 'EMAIL_USE_SSL' in os.environ:
     #         'INDEX_NAME': 'haystack',
     #     },
     # }
+
+EMAIL_HOST=<EMAIL_HOST> EMAIL_PORT=<EMAIL_PORT> EMAIL_HOST_USER=<EMAIL_HOST_USER> EMAIL_HOST_PASSWORD=<EMAIL_HOST_PASSWORD> EMAIL_USE_TLS=<EMAIL_USE_TLS> EMAIL_USE_SSL=<EMAIL_USE_SSL>
