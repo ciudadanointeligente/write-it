@@ -300,6 +300,7 @@ except ImportError:
     pass
 
 if 'DATABASE_URL' in os.environ :
+    # I thought that in this way I could define that we were in an heroku environment
     import dj_database_url
     DATABASES['default'] =  dj_database_url.config()
 
@@ -318,3 +319,11 @@ if 'DATABASE_URL' in os.environ :
     STATICFILES_DIRS = (
         os.path.join(BASE_DIR, 'static'),
     )
+    # Haystack things elasticsearch
+    HAYSTACK_CONNECTIONS = {
+        'default': {
+            'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+            'URL': os.environ['BONSAI_URL'],
+            'INDEX_NAME': 'haystack',
+        },
+    }
