@@ -186,7 +186,7 @@ else:
     HAYSTACK_CONNECTIONS = {
         'default': {
             'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-            'URL': 'http://127.0.0.1:9200/',
+            'URL': 'https://vpqt6uo2:v1f8olhpp1lu30ng@holly-171237.us-east-1.bonsai.io',
             'INDEX_NAME': 'haystack',
         },
     }
@@ -320,10 +320,10 @@ if 'DATABASE_URL' in os.environ :
         os.path.join(BASE_DIR, 'static'),
     )
     # Haystack things elasticsearch
-    HAYSTACK_CONNECTIONS = {
-        'default': {
-            'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-            'URL': os.environ['BONSAI_URL'],
-            'INDEX_NAME': 'haystack',
-        },
-    }
+    # HAYSTACK_CONNECTIONS = {
+    #     'default': {
+    #         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+    #         'URL': os.environ['BONSAI_URL'],
+    #         'INDEX_NAME': 'haystack',
+    #     },
+    # }
