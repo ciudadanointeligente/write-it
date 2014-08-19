@@ -324,9 +324,27 @@ if 'DATABASE_URL' in os.environ :
     )
 if 'SOCIAL_AUTH_GOOGLE_OAUTH2_KEY' in os.environ :
     SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
-    
+
 if 'SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET' in os.environ:
     SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
+
+#Email settings
+if 'DEFAULT_FROM_EMAIL' in os.environ:
+    DEFAULT_FROM_EMAIL = os.environ['DEFAULT_FROM_EMAIL']
+if 'DEFAULT_FROM_DOMAIN' in os.environ:
+    DEFAULT_FROM_DOMAIN = os.environ['DEFAULT_FROM_DOMAIN']
+if 'EMAIL_HOST' in os.environ:
+    EMAIL_HOST = os.environ['EMAIL_HOST']
+if 'EMAIL_PORT' in os.environ:
+    EMAIL_PORT = os.environ['EMAIL_PORT']
+if 'EMAIL_HOST_USER' in os.environ:
+    EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+if 'EMAIL_HOST_PASSWORD' in os.environ:
+    EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+if 'EMAIL_USE_TLS' in os.environ:
+    EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
+if 'EMAIL_USE_SSL' in os.environ:
+    EMAIL_USE_SSL = os.environ['EMAIL_USE_SSL']
     # Haystack things elasticsearch
     # HAYSTACK_CONNECTIONS = {
     #     'default': {
