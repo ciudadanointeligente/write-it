@@ -299,6 +299,9 @@ try:
 except ImportError:
     pass
 
+
+### HEROKU CONFIGURATION
+
 if 'DATABASE_URL' in os.environ :
     # I thought that in this way I could define that we were in an heroku environment
     import dj_database_url
@@ -319,6 +322,11 @@ if 'DATABASE_URL' in os.environ :
     STATICFILES_DIRS = (
         os.path.join(BASE_DIR, 'static'),
     )
+if 'SOCIAL_AUTH_GOOGLE_OAUTH2_KEY' in os.environ :
+    SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
+    
+if 'SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET' in os.environ:
+    SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
     # Haystack things elasticsearch
     # HAYSTACK_CONNECTIONS = {
     #     'default': {
