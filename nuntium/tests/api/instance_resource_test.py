@@ -16,7 +16,7 @@ class InstanceResourceTestCase(ResourceTestCase):
         super(InstanceResourceTestCase,self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
         self.user = User.objects.all()[0]
-        self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
+        self.writeitinstance = WriteItInstance.objects.create(name=u"a test", slug=u"a-test", owner=self.user)
         self.api_client = TestApiClient()
         self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
 
@@ -130,8 +130,8 @@ class InstanceResourceTestCase(ResourceTestCase):
         instance = WriteItInstance.objects.get(id=match_id.group('id'))
         self.assertEquals(instance.persons.count(), 2)
         #this should not break
-        raton = Person.objects.get(name='Ratón Inteligente')
-        fiera = Person.objects.get(name="Fiera Feroz")
+        raton = Person.objects.get(name=u'Ratón Inteligente')
+        fiera = Person.objects.get(name=u"Fiera Feroz")
 
         self.assertIn(raton, [r for r in instance.persons.all()])
         self.assertIn(fiera, [r for r in instance.persons.all()])
@@ -142,7 +142,7 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
         super(MessagesPerInstanceTestCase,self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
         self.user = User.objects.all()[0]
-        self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
+        self.writeitinstance = WriteItInstance.objects.create(name=u"a test", slug=u"a-test", owner=self.user)
         self.api_client = TestApiClient()
         self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
 
