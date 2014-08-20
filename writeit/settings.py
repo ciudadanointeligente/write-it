@@ -186,7 +186,7 @@ else:
     HAYSTACK_CONNECTIONS = {
         'default': {
             'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-            'URL': 'https://vpqt6uo2:v1f8olhpp1lu30ng@holly-171237.us-east-1.bonsai.io',
+            'URL': 'http://127.0.0.1:9200/',
             'INDEX_NAME': 'haystack',
         },
     }
