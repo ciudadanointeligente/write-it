@@ -16,7 +16,7 @@ class PersonResourceTestCase(ResourceTestCase):
         super(PersonResourceTestCase, self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
         self.user = User.objects.all()[0]
-        self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
+        self.writeitinstance = WriteItInstance.objects.create(name=u"a test", slug=u"a-test", owner=self.user)
         self.api_client = TestApiClient()
 
         self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
