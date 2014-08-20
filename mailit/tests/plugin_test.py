@@ -83,7 +83,7 @@ class MailTemplateTestCase(TestCase):
         '''
         When creating a new writeit instance a new template for sending emails is automatically created
         '''
-        instance  = WriteItInstance.objects.create(name='instance 234', slug='instance-234', owner=self.owner)
+        instance  = WriteItInstance.objects.create(name=u'instance 234', slug=u'instance-234', owner=self.owner)
 
         self.assertTrue(instance.mailit_template)
         self.assertEquals(instance.mailit_template.subject_template, "[WriteIT] Message: %(subject)s")
@@ -91,7 +91,7 @@ class MailTemplateTestCase(TestCase):
         self.assertEquals(instance.mailit_template.content_html_template, self.content_html_template)
 
     def test_it_only_creates_templates_when_creating_not_when_updating(self):
-        instance  = WriteItInstance.objects.create(name='instance 234', slug='instance-234', owner=self.owner)
+        instance  = WriteItInstance.objects.create(name=u'instance 234', slug=u'instance-234', owner=self.owner)
 
         instance.save()
 
@@ -143,6 +143,14 @@ class MailSendingTestCase(TestCase):
         author_name = self.outbound_message1.message.author_name
         expected_from_email = author_name+" <"+self.outbound_message1.message.writeitinstance.slug+"+"+self.outbound_message1.outboundmessageidentifier.key\
                                 +'@'+settings.DEFAULT_FROM_DOMAIN+">"
+        self.assertEquals(mail.outbox[0].from_email, expected_from_email)
+
+    @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
+    def test_sending_email_from_default_email(self):
+        '''Send email from default_from_email when specified'''
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+        author_name = self.outbound_message1.message.author_name
+        expected_from_email = author_name+" <"+settings.DEFAULT_FROM_EMAIL+">"
         self.assertEquals(mail.outbox[0].from_email, expected_from_email)
 
     def test_send_email_logs(self):
