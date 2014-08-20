@@ -32,4 +32,8 @@
 - It seems that there is a bug when creating a message for someone without contacts =/
 - Define default site.
 - Define a reply-to when sending a message to a person.
+
+## NOTICE
+
+This is instructions are not ready yet and therefore are very prone to errors please let us know of any.
  
