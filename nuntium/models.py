@@ -329,7 +329,11 @@ class Message(models.Model):
 
         text_content = plaintext.render(d)
         html_content = htmly.render(d)
-        from_email = self.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
+        
+        if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
+            from_email = settings.DEFAULT_FROM_EMAIL
+        else:
+            from_email = self.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
 
 
         msg = EmailMultiAlternatives(_('Moderation required for\

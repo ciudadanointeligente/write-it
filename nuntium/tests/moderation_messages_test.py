@@ -11,6 +11,8 @@ import datetime
 from mock import patch
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
+from django.conf import settings
+from django.test.utils import override_settings
 
 class ModerationMessagesTestCase(TestCase):
     def setUp(self):
@@ -63,6 +65,19 @@ class ModerationMessagesTestCase(TestCase):
         self.assertEquals(len(mail.outbox),2)
         moderation_mail = mail.outbox[1]
         self.assertModerationMailSent(self.private_message, moderation_mail)
+        expected_from_email = self.private_message.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
+        self.assertEquals(moderation_mail.from_email, expected_from_email)
+
+    @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
+    def test_moderation_sent_from_default_from_email(self):
+        '''Moderation is sent from default from email if specified'''
+        moderation, created = Moderation.objects.get_or_create(message=self.private_message)
+        self.private_message.send_moderation_mail()
+        moderation_mail = mail.outbox[1]
+        expected_from_email = settings.DEFAULT_FROM_EMAIL
+        self.assertEquals(moderation_mail.from_email, expected_from_email)
+
+
         
     def test_create_a_moderation(self):
         #I make sure that uuid.uuid1 is called and I get a sort of random key
