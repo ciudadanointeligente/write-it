@@ -153,6 +153,23 @@ class MailSendingTestCase(TestCase):
         expected_from_email = author_name+" <"+settings.DEFAULT_FROM_EMAIL+">"
         self.assertEquals(mail.outbox[0].from_email, expected_from_email)
 
+    @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
+    def test_loggin_email_sending_from_default_from_email(self):
+        '''
+        When sending an email and default from email is the default sender
+        then it is logged as that
+        '''
+        author_name = self.outbound_message1.message.author_name
+        from_email = author_name+" <"+settings.DEFAULT_FROM_EMAIL+">"
+        with patch('logging.info') as info:
+            expected_log = "Mail sent from %(from)s to %(to)s" % {
+            'from' : from_email,
+            'to' : "pdaire@ciudadanointeligente.org"
+            }
+            self.channel.send(self.outbound_message1)
+
+            info.assert_called_with(expected_log)
+
     def test_send_email_logs(self):
         author_name = self.outbound_message1.message.author_name
         from_email = author_name+" <"+self.outbound_message1.message.writeitinstance.slug+"+"+self.outbound_message1.outboundmessageidentifier.key\
