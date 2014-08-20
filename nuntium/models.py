@@ -401,7 +401,10 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
                                 new_answer_notification_template
         htmly = get_template_from_string(new_answer_template.template_html)
         texty = get_template_from_string(new_answer_template.template_text)
-        from_email = answer.message.writeitinstance.slug+"@"+\
+        if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
+            from_email = settings.DEFAULT_FROM_EMAIL
+        else:
+            from_email = answer.message.writeitinstance.slug+"@"+\
                             settings.DEFAULT_FROM_DOMAIN
         subject_template = new_answer_template.subject_template
         for subscriber in answer.message.subscribers.all():

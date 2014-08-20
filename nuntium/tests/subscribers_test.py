@@ -10,6 +10,7 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.template.loader import get_template_from_string
 import os
+from django.test.utils import override_settings
 
 
 subject_template = '%(person)s has answered to your message %(message)s'
@@ -97,8 +98,8 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
         #     content_template += f.read()
         # print content_template
         notification_template = NewAnswerNotificationTemplate.objects.create(
-            template_html = "asdasd",
-            template_text = "asdasd",
+            template_html = u"asdasd",
+            template_text = u"asdasd",
             writeitinstance=self.instance,
             subject_template=subject_template
             )
@@ -111,8 +112,8 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
 
     def test_notification_template_unicode(self):
         notification_template = NewAnswerNotificationTemplate.objects.create(
-            template_html = "asdasd",
-            template_text = "asdasd",
+            template_html = u"asdasd",
+            template_text = u"asdasd",
             writeitinstance=self.instance,
             subject_template=subject_template
             )
@@ -136,7 +137,7 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
 
 
     def test_when_I_create_a_new_writeitinstance_then_a_notification_template_is_created(self):
-        instance  = WriteItInstance.objects.create(name='instance 234', slug='instance-234', owner=self.owner)
+        instance  = WriteItInstance.objects.create(name=u'instance 234', slug=u'instance-234', owner=self.owner)
 
         notification_template = instance.new_answer_notification_template
         self.assertTrue(notification_template)
@@ -191,6 +192,11 @@ class NewAnswerNotificationToSubscribers(TestCase):
 
         self.assertEquals(mail.outbox[0].from_email, self.instance.slug+"@"+settings.DEFAULT_FROM_DOMAIN)
 
+    @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
+    def test_send_subscribers_notice_from_a_single_unified_email(self):
+        '''Send emails from default from email'''
+        self.create_a_new_answer()
+        self.assertEquals(mail.outbox[0].from_email, settings.DEFAULT_FROM_EMAIL)
 
     def test_owner_of_the_instance_is_notified_when_a_new_answer_comes_in(self):
         self.instance.notify_owner_when_new_answer = True
