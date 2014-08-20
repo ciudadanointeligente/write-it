@@ -258,6 +258,10 @@ DEFAULT_FROM_EMAIL = 'mailer@example.com'
 #DEFAULT_FROM_DOMAIN
 DEFAULT_FROM_DOMAIN = 'mailit.ciudadanointeligente.org'
 
+#In some cases it is needed that all emails come from one single
+# email address, such is the case when you have just verified a single sender
+SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=False
+
 
 #CELERY CONFIGURATION
 import djcelery
@@ -345,6 +349,10 @@ if 'EMAIL_USE_TLS' in os.environ and os.environ['EMAIL_USE_TLS']=='True':
     EMAIL_USE_TLS = True
 if 'EMAIL_USE_SSL' in os.environ and os.environ['EMAIL_USE_SSL']=='True':
     EMAIL_USE_SSL = True
+
+if 'SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL' in os.environ \
+    and os.environ['SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL']=='True':
+    SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL = True
     # Haystack things elasticsearch
     # HAYSTACK_CONNECTIONS = {
     #     'default': {

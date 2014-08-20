@@ -11,6 +11,7 @@ from django.contrib.sites.models import Site
 from django.utils.unittest import skip
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.test.utils import override_settings
 
 
 class ConfirmationTestCase(TestCase):
@@ -78,6 +79,16 @@ class ConfirmationTestCase(TestCase):
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue(self.message.author_email in mail.outbox[0].to)
         expected_from_email = self.message.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
+        self.assertEquals(mail.outbox[0].from_email, expected_from_email)
+
+    @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
+    def test_send_confirmation_from_a_single_email_address(self):
+        '''
+        In some cases it is needed that the email is sent from a single
+        email, that email should be the default_from_email
+        '''
+        confirmation = Confirmation.objects.create(message=self.message)
+        expected_from_email = settings.DEFAULT_FROM_EMAIL
         self.assertEquals(mail.outbox[0].from_email, expected_from_email)
 
     def test_confirmation_get_absolute_url(self):
