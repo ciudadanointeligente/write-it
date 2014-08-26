@@ -117,7 +117,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     )
 
 MIDDLEWARE_CLASSES = (
-    'subdomains.middleware.SubdomainURLRoutingMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -128,8 +127,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-# ROOT_URLCONF = 'nuntium.subdomain_urls'
-ROOT_URLCONF = 'nuntium.subdomain_urls'
+ROOT_URLCONF = 'writeit.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'writeit.wsgi.application'
@@ -159,7 +157,6 @@ INSTALLED_APPS = (
     'tastypie',
     'markdown_deux',
     'django_extensions',
-    'subdomains',
     # Searching.
     'haystack',
     'djcelery',
@@ -261,6 +258,10 @@ DEFAULT_FROM_EMAIL = 'mailer@example.com'
 #DEFAULT_FROM_DOMAIN
 DEFAULT_FROM_DOMAIN = 'mailit.ciudadanointeligente.org'
 
+#In some cases it is needed that all emails come from one single
+# email address, such is the case when you have just verified a single sender
+SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=False
+
 
 #CELERY CONFIGURATION
 import djcelery
@@ -283,10 +284,6 @@ INCOMING_EMAIL_LOGGING = 'None'
 EXTRA_APPS = ()
 
 
-SUBDOMAIN_URLCONFS = {
-    None: 'writeit.urls',
-}
-
 
 # SOCIAL AUTH DETAILS
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'Key'
@@ -305,3 +302,62 @@ try:
     INSTALLED_APPS += EXTRA_APPS
 except ImportError:
     pass
+
+
+### HEROKU CONFIGURATION
+
+if 'DATABASE_URL' in os.environ :
+    # I thought that in this way I could define that we were in an heroku environment
+    import dj_database_url
+    DATABASES['default'] =  dj_database_url.config()
+
+    # Honor the 'X-Forwarded-Proto' header for request.is_secure()
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+    # Allow all host headers
+    ALLOWED_HOSTS = ['*']
+
+    # Static asset configuration
+    import os
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    STATIC_ROOT = 'staticfiles'
+    STATIC_URL = '/static/'
+
+    STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, 'static'),
+    )
+if 'SOCIAL_AUTH_GOOGLE_OAUTH2_KEY' in os.environ :
+    SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
+
+if 'SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET' in os.environ:
+    SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
+
+#Email settings
+if 'DEFAULT_FROM_EMAIL' in os.environ:
+    DEFAULT_FROM_EMAIL = os.environ['DEFAULT_FROM_EMAIL']
+if 'DEFAULT_FROM_DOMAIN' in os.environ:
+    DEFAULT_FROM_DOMAIN = os.environ['DEFAULT_FROM_DOMAIN']
+if 'EMAIL_HOST' in os.environ:
+    EMAIL_HOST = os.environ['EMAIL_HOST']
+if 'EMAIL_PORT' in os.environ:
+    EMAIL_PORT = os.environ['EMAIL_PORT']
+if 'EMAIL_HOST_USER' in os.environ:
+    EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+if 'EMAIL_HOST_PASSWORD' in os.environ:
+    EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+if 'EMAIL_USE_TLS' in os.environ and os.environ['EMAIL_USE_TLS']=='True':
+    EMAIL_USE_TLS = True
+if 'EMAIL_USE_SSL' in os.environ and os.environ['EMAIL_USE_SSL']=='True':
+    EMAIL_USE_SSL = True
+
+if 'SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL' in os.environ \
+    and os.environ['SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL']=='True':
+    SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL = True
+    # Haystack things elasticsearch
+    # HAYSTACK_CONNECTIONS = {
+    #     'default': {
+    #         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+    #         'URL': os.environ['BONSAI_URL'],
+    #         'INDEX_NAME': 'haystack',
+    #     },
+    # }

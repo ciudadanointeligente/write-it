@@ -7,6 +7,7 @@ import logging
 from django.template import Context
 from django.template.loader import get_template_from_string
 from smtplib import SMTPServerDisconnected, SMTPRecipientsRefused, SMTPResponseException
+from django.contrib.sites.models import get_current_site
 
 logging.basicConfig(filename="send_mails.log", level=logging.INFO)
 
@@ -33,12 +34,13 @@ class MailChannel(OutputPlugin):
         except:
             return False, False
 
+        full_url = ''.join(['http://', get_current_site(None).domain, outbound_message.message.writeitinstance.get_absolute_url()])
         format = {
             'subject':outbound_message.message.subject,
             'content':outbound_message.message.content,
             'person':outbound_message.contact.person.name,
             'author':outbound_message.message.author_name,
-            'writeit_url': outbound_message.message.writeitinstance.get_absolute_url()
+            'writeit_url': full_url
         }
         d = Context(format)
         mail_as_txt = get_template_from_string(template.content_template)
@@ -50,8 +52,13 @@ class MailChannel(OutputPlugin):
         subject = template.subject_template % format
         content = text_content
         author_name = outbound_message.message.author_name
-        from_email = author_name + " <" + outbound_message.message.writeitinstance.slug+"+"+outbound_message.outboundmessageidentifier.key\
+        
+        if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
+            from_email = author_name + " <" + settings.DEFAULT_FROM_EMAIL + ">"
+        else:
+            from_email = author_name + " <" + outbound_message.message.writeitinstance.slug+"+"+outbound_message.outboundmessageidentifier.key\
                                 +'@'+settings.DEFAULT_FROM_DOMAIN + ">"
+
 
         #here there should be a try and except looking
         #for errors and stuff

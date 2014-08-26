@@ -15,7 +15,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template, get_template_from_string
 from django.template import Context, Template
 from django.conf import settings
-from subdomains.utils import reverse
+from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
 import uuid
 from django.template.defaultfilters import slugify
@@ -89,7 +89,8 @@ class WriteItInstance(models.Model):
 
 
     def get_absolute_url(self):
-        return reverse('instance_detail', subdomain=self.slug)
+        return reverse('instance_detail', kwargs={
+            'slug': self.slug})
 
     def __unicode__(self):
         return self.name
@@ -240,8 +241,10 @@ class Message(models.Model):
 
     def get_absolute_url(self):
         return reverse('message_detail', \
-            subdomain=self.writeitinstance.slug, \
-            kwargs={'slug': self.slug})
+            kwargs={
+            'slug': self.slug,
+            'instance_slug':self.writeitinstance.slug,
+            })
 
     def slugifyme(self):
         if not slugify(unidecode(unicode(self.subject))):
@@ -326,7 +329,11 @@ class Message(models.Model):
 
         text_content = plaintext.render(d)
         html_content = htmly.render(d)
-        from_email = self.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
+        
+        if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
+            from_email = settings.DEFAULT_FROM_EMAIL
+        else:
+            from_email = self.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
 
 
         msg = EmailMultiAlternatives(_('Moderation required for\
@@ -398,7 +405,10 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
                                 new_answer_notification_template
         htmly = get_template_from_string(new_answer_template.template_html)
         texty = get_template_from_string(new_answer_template.template_text)
-        from_email = answer.message.writeitinstance.slug+"@"+\
+        if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
+            from_email = settings.DEFAULT_FROM_EMAIL
+        else:
+            from_email = answer.message.writeitinstance.slug+"@"+\
                             settings.DEFAULT_FROM_DOMAIN
         subject_template = new_answer_template.subject_template
         for subscriber in answer.message.subscribers.all():
@@ -672,7 +682,10 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
 
         text_content = plaintext.render(d)
         html_content = htmly.render(d)
-        from_email = confirmation.message.writeitinstance.slug+"@"+\
+        if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
+            from_email = settings.DEFAULT_FROM_EMAIL
+        else:
+            from_email = confirmation.message.writeitinstance.slug+"@"+\
                         settings.DEFAULT_FROM_DOMAIN
 
         msg = EmailMultiAlternatives(

@@ -9,7 +9,6 @@ flufl.bounce
 django-markdown-deux
 requests
 django-extensions
-django-subdomains
 django-haystack
 elasticsearch
 celery
@@ -22,4 +21,12 @@ django-object-actions
 unidecode
 python-social-auth
 django-nose
+mock
 python-dateutil
+#things required in heroku
+gunicorn
+dj-database-url==0.2.2
+dj-static==0.0.5
+psycopg2==2.5.1
+static==0.4
+wsgiref==0.1.2

@@ -14,7 +14,7 @@ from ..admin import ContactAdmin
 from ..forms import ContactUpdateForm, ContactCreateForm
 from django.test.client import RequestFactory, Client
 from django.forms import ModelForm
-from subdomains.utils import reverse
+from django.core.urlresolvers import reverse
 from django.core.urlresolvers import reverse as original_reverse
 from django.forms.widgets import Select
 from ..forms import SelectSinglePersonField
@@ -244,7 +244,7 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
         response = c.post(url, data=data)
         self.assertEquals(response.status_code, 302)
         url_for_list_of_contacts = reverse('your-contacts')
-        self.assertEquals(response["Location"], url_for_list_of_contacts)
+        self.assertRedirects(response, url_for_list_of_contacts)
 
         contact = Contact.objects.get(owner=self.user)
         self.assertEquals(contact.value,data['value'])

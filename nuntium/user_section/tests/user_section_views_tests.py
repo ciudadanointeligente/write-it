@@ -1,5 +1,5 @@
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
-from subdomains.utils import reverse, get_domain
+from django.core.urlresolvers  import reverse
 from django.core.urlresolvers import reverse as original_reverse
 from ...models import WriteItInstance
 from django.contrib.auth.models import User
@@ -20,7 +20,6 @@ from mailit.forms import MailitTemplateForm
 from django.utils.unittest import skipUnless
 
 
-urlconf = settings.SUBDOMAIN_URLCONFS.get(None, settings.ROOT_URLCONF)
 
 class UserSectionTestCase(TestCase):
     def setUp(self):
@@ -39,7 +38,7 @@ class UserSectionTestCase(TestCase):
         #the login url comes with the localized url
         #So I'll set it to english and then remove it from the url
         activate('en')
-        login_url = original_reverse('django.contrib.auth.views.login', urlconf=urlconf).replace('/en','')
+        login_url = original_reverse('django.contrib.auth.views.login').replace('/en','')
         self.assertTrue(location_this_response_is_taking_us_to.startswith(login_url))
         if next_url:
             current_domain = "http://" + Site.objects.get_current().domain

@@ -17,7 +17,7 @@ class MessageResourceTestCase(ResourceTestCase):
         super(MessageResourceTestCase,self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
         self.user = User.objects.all()[0]
-        self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
+        self.writeitinstance = WriteItInstance.objects.create(name=u"a test", slug=u"a-test", owner=self.user)
         self.api_client = TestApiClient()
         self.data = {'format': 'json', 'username': self.user.username, 'api_key':self.user.api_key.key}
 
@@ -42,19 +42,19 @@ class MessageResourceTestCase(ResourceTestCase):
         Message.objects.all().delete()
         person1 = Person.objects.all()[0]
         #cleaning up the database before 
-        message1 = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl", 
-            subject='Fiera es una perra feroz 1', 
+        message1 = Message.objects.create(content = u'Content 1', 
+            author_name=u'Felipe', 
+            author_email=u"falvarez@votainteligente.cl", 
+            subject=u'Fiera es una perra feroz 1', 
             writeitinstance= self.writeitinstance,
             persons = [person1])
         Confirmation.objects.create(message=message1)
         message1.recently_confirmated()
 
-        message2 = Message.objects.create(content = 'Content 2', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl", 
-            subject='Fiera es una perra feroz 2', 
+        message2 = Message.objects.create(content = u'Content 2', 
+            author_name=u'Felipe', 
+            author_email=u"falvarez@votainteligente.cl", 
+            subject=u'Fiera es una perra feroz 2', 
             writeitinstance= self.writeitinstance,
             persons = [person1])
         Confirmation.objects.create(message=message2)
@@ -181,7 +181,7 @@ class MessageResourceTestCase(ResourceTestCase):
         url = '/api/v1/message/'
         response = self.api_client.post(url, data = message_data, format='json', authentication=self.get_credentials())
         
-        the_message = Message.objects.get(author_name='Felipipoo')
+        the_message = Message.objects.get(author_name=u'Felipipoo')
 
         self.assertEquals(len(the_message.people), writeitinstance.persons.count())
         self.assertQuerysetEqual(the_message.people.all(), \

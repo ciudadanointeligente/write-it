@@ -1,21 +1,20 @@
 from global_test_case import GlobalTestCase as TestCase
-from subdomains.utils import reverse
+from django.core.urlresolvers  import reverse
 from django.utils.translation import activate
 from popit.models import ApiInstance
 from ..models import WriteItInstance
-from subdomains.tests import SubdomainTestMixin
+
 from django.test.client import Client
 
-class HomeViewTestCase(TestCase, SubdomainTestMixin):
+class HomeViewTestCase(TestCase):
     def setUp(self):
         super(HomeViewTestCase,self).setUp()
-        self.host = self.get_host_for_subdomain(None)
 
         
     def test_it_is_reachable(self):
         url = reverse("home")
         
-        response = self.client.get(url, HTTP_HOST=self.host)
+        response = self.client.get(url)
         self.assertTemplateUsed(response, "home.html")
         self.assertEquals(response.status_code,200)
 
@@ -28,11 +27,11 @@ class HomeViewTestCase(TestCase, SubdomainTestMixin):
     def test_it_redirects_correctly(self):
         activate('es')
         url = "/"
-        response = self.client.get(url, HTTP_HOST=self.host)
-
+        response = self.client.get(url)
         self.assertEquals(response.status_code, 301)
+
         expected_redirection = reverse("home")
-        self.assertEqual(response['Location'], expected_redirection)
+        self.assertTrue(response['Location'], expected_redirection)
 
 
     def test_list_instances(self):
@@ -40,7 +39,7 @@ class HomeViewTestCase(TestCase, SubdomainTestMixin):
         api_instance1 = ApiInstance.objects.all()[0]
         instance1 = WriteItInstance.objects.all()[0]
         url = reverse("home")
-        response = self.client.get(url, HTTP_HOST=self.host)
+        response = self.client.get(url)
         self.assertEquals(response.status_code,200)
         self.assertTrue(response.context['writeitinstances'])
         self.assertEquals(response.context['writeitinstances'].count(),2)

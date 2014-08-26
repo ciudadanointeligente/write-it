@@ -1,13 +1,12 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from subdomains.tests import SubdomainTestMixin
 from ..models import Message, WriteItInstance, \
                             Moderation, Confirmation, \
                             OutboundMessage
 from popit.models import Person
 import datetime
 
-class MessageDetailView(TestCase, SubdomainTestMixin):
+class MessageDetailView(TestCase):
     def setUp(self):
         super(MessageDetailView,self).setUp()
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
@@ -23,11 +22,10 @@ class MessageDetailView(TestCase, SubdomainTestMixin):
     def test_get_message_detail_page(self):
         #I'm kind of feeling like I need 
         #something like rspec or cucumber
-        host = self.get_host_for_subdomain(self.message.writeitinstance.slug)
         url = self.message.get_absolute_url()
         self.assertTrue(url)
 
-        response = self.client.get(url,HTTP_HOST=host)
+        response = self.client.get(url)
 
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.context['message'], self.message)
@@ -45,8 +43,7 @@ class MessageDetailView(TestCase, SubdomainTestMixin):
         #this message is confirmated but has no confirmation object
         #this occurs when creating a message throu the API
         url = message.get_absolute_url()
-        host = self.get_host_for_subdomain(self.message.writeitinstance.slug)
-        response = self.client.get(url,HTTP_HOST=host)
+        response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
     def test_get_messages_without_confirmation_and_not_confirmed(self):
@@ -61,7 +58,6 @@ class MessageDetailView(TestCase, SubdomainTestMixin):
 
         #this message is confirmated but has no confirmation object
         #this occurs when creating a message throu the API
-        host = self.get_host_for_subdomain(message.writeitinstance.slug)
         url = message.get_absolute_url()
-        response = self.client.get(url,HTTP_HOST=host)
+        response = self.client.get(url)
         self.assertEquals(response.status_code, 404)

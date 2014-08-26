@@ -6,11 +6,12 @@ from contactos.models import Contact
 from datetime import datetime
 from django.core import mail
 from plugin_mock.mental_message_plugin import MentalMessage
-from subdomains.utils import reverse
+from django.core.urlresolvers  import reverse
 from django.contrib.sites.models import Site
 from django.utils.unittest import skip
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.test.utils import override_settings
 
 
 class ConfirmationTestCase(TestCase):
@@ -80,6 +81,16 @@ class ConfirmationTestCase(TestCase):
         expected_from_email = self.message.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
         self.assertEquals(mail.outbox[0].from_email, expected_from_email)
 
+    @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
+    def test_send_confirmation_from_a_single_email_address(self):
+        '''
+        In some cases it is needed that the email is sent from a single
+        email, that email should be the default_from_email
+        '''
+        confirmation = Confirmation.objects.create(message=self.message)
+        expected_from_email = settings.DEFAULT_FROM_EMAIL
+        self.assertEquals(mail.outbox[0].from_email, expected_from_email)
+
     def test_confirmation_get_absolute_url(self):
         confirmation = Confirmation.objects.create(message=self.message)
         expected_url = reverse('confirm', kwargs={
@@ -135,7 +146,7 @@ class ConfirmationTestCase(TestCase):
 
     def test_i_cannot_access_a_non_confirmed_message(self):
         confirmation = Confirmation.objects.create(message=self.message)
-        url = reverse('message_detail', subdomain=self.message.writeitinstance.slug, kwargs={'slug':self.message.slug})
+        url = reverse('message_detail', kwargs={'slug':self.message.slug, 'instance_slug':self.message.writeitinstance.slug})
         response = self.client.get(url)
 
         self.assertEquals(response.status_code, 404)

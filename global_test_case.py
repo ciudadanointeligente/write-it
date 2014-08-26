@@ -101,8 +101,7 @@ class WriteItTestCaseMixin(object):
         self.assertTrue(message.subject in moderation_mail.body)
         self.assertTrue(message.author_name in moderation_mail.body)
         self.assertTrue(message.author_email in moderation_mail.body)
-        expected_from_email = message.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
-        self.assertEquals(moderation_mail.from_email, expected_from_email)
+        
         for person in message.people:
             self.assertTrue(person.name in moderation_mail.body)
 

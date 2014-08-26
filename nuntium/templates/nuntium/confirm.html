@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load subdomainurls %}
 {% load i18n %}
 
 {% block content %}
@@ -7,7 +6,7 @@
 	<div class="container">
 		<h1>{% trans "Confirmed!" %}</h1>
 		<p>{% trans "Thanks for using Write-it, your message will be sent very soon." %}</p>
-		<p><a href="{% url 'instance_detail' subdomain=confirmation.message.writeitinstance.slug %}" class="btn btn-primary btn-lg">{% blocktrans with confirmation.message.writeitinstance.name as name %}More messages at {{name}} <i class="icon-double-angle-right"></i>{% endblocktrans %}</a></p>
+		<p><a href="{% url 'instance_detail' slug=confirmation.message.writeitinstance.slug %}" class="btn btn-primary btn-lg">{% blocktrans with confirmation.message.writeitinstance.name as name %}More messages at {{name}} <i class="icon-double-angle-right"></i>{% endblocktrans %}</a></p>
 	</div>
 </div>
 {% endblock content %}

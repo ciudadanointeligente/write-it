@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load subdomainurls %}
 {% load i18n %}
 {% block content %}
 {% load markdown_deux_tags %}
@@ -42,5 +41,5 @@
 {% endfor %}
 
 
-<div class="getbacktotheinstance"> <a href="{% url 'instance_detail' subdomain=message.writeitinstance.slug %}"><i class="icon-chevron-left"></i> {% blocktrans %} Get back to the messages.{% endblocktrans %} </a></div>
+<div class="getbacktotheinstance"> <a href="{% url 'instance_detail' slug=message.writeitinstance.slug %}"><i class="icon-chevron-left"></i> {% blocktrans %} Get back to the messages.{% endblocktrans %} </a></div>
 {% endblock %}

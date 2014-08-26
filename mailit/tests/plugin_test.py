@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from ..forms import MailitTemplateForm
 from nuntium.user_section.tests.user_section_views_tests import UserSectionTestCase
-from subdomains.utils import reverse
+from django.core.urlresolvers  import reverse
 from django.test.client import Client
 from django.forms import ValidationError
 from django.test.utils import override_settings
@@ -83,7 +83,7 @@ class MailTemplateTestCase(TestCase):
         '''
         When creating a new writeit instance a new template for sending emails is automatically created
         '''
-        instance  = WriteItInstance.objects.create(name='instance 234', slug='instance-234', owner=self.owner)
+        instance  = WriteItInstance.objects.create(name=u'instance 234', slug=u'instance-234', owner=self.owner)
 
         self.assertTrue(instance.mailit_template)
         self.assertEquals(instance.mailit_template.subject_template, "[WriteIT] Message: %(subject)s")
@@ -91,7 +91,7 @@ class MailTemplateTestCase(TestCase):
         self.assertEquals(instance.mailit_template.content_html_template, self.content_html_template)
 
     def test_it_only_creates_templates_when_creating_not_when_updating(self):
-        instance  = WriteItInstance.objects.create(name='instance 234', slug='instance-234', owner=self.owner)
+        instance  = WriteItInstance.objects.create(name=u'instance 234', slug=u'instance-234', owner=self.owner)
 
         instance.save()
 
@@ -133,7 +133,7 @@ class MailSendingTestCase(TestCase):
         self.assertEquals(mail.outbox[0].alternatives[0][1], 'text/html')
         self.assertIsInstance(mail.outbox[0], EmailMultiAlternatives)
         self.assertEquals(mail.outbox[0].subject, '[WriteIT] Message: Subject 1')
-        self.assertEquals(mail.outbox[0].body, u'Hello Pedro:\nYou have a new message:\nsubject: Subject 1 \ncontent: Content 1\n\n\nIf you want to see all the other messages please visit http://instance1.127.0.0.1.xip.io:8000/en/.\nSeeya\n--\nYou writeIt and we deliverit.')
+        self.assertEquals(mail.outbox[0].body, u'Hello Pedro:\nYou have a new message:\nsubject: Subject 1 \ncontent: Content 1\n\n\nIf you want to see all the other messages please visit http://127.0.0.1.xip.io:8000/en/writeit_instances/instance1.\nSeeya\n--\nYou writeIt and we deliverit.')
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertIn("pdaire@ciudadanointeligente.org", mail.outbox[0].to)
 
@@ -144,6 +144,31 @@ class MailSendingTestCase(TestCase):
         expected_from_email = author_name+" <"+self.outbound_message1.message.writeitinstance.slug+"+"+self.outbound_message1.outboundmessageidentifier.key\
                                 +'@'+settings.DEFAULT_FROM_DOMAIN+">"
         self.assertEquals(mail.outbox[0].from_email, expected_from_email)
+
+    @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
+    def test_sending_email_from_default_email(self):
+        '''Send email from default_from_email when specified'''
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+        author_name = self.outbound_message1.message.author_name
+        expected_from_email = author_name+" <"+settings.DEFAULT_FROM_EMAIL+">"
+        self.assertEquals(mail.outbox[0].from_email, expected_from_email)
+
+    @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
+    def test_loggin_email_sending_from_default_from_email(self):
+        '''
+        When sending an email and default from email is the default sender
+        then it is logged as that
+        '''
+        author_name = self.outbound_message1.message.author_name
+        from_email = author_name+" <"+settings.DEFAULT_FROM_EMAIL+">"
+        with patch('logging.info') as info:
+            expected_log = "Mail sent from %(from)s to %(to)s" % {
+            'from' : from_email,
+            'to' : "pdaire@ciudadanointeligente.org"
+            }
+            self.channel.send(self.outbound_message1)
+
+            info.assert_called_with(expected_log)
 
     def test_send_email_logs(self):
         author_name = self.outbound_message1.message.author_name

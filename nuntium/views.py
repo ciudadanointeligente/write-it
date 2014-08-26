@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, View, ListView
 from django.views.generic.edit import UpdateView
-from subdomains.utils import reverse
+from django.core.urlresolvers  import reverse
 from django.core.urlresolvers import reverse as original_reverse
 from .models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation, Membership,\
                             NewAnswerNotificationTemplate, ConfirmationTemplate
@@ -39,7 +39,7 @@ class WriteItInstanceDetailView(CreateView):
     template_name='nuntium/instance_detail.html'
 
     def get_object(self):
-        subdomain = self.request.subdomain
+        subdomain = self.kwargs['slug']
         if not self.object:
             try:
                 self.object = self.model.objects.get(slug=subdomain)
@@ -92,6 +92,9 @@ class MessageDetailView(DetailView):
             is_confirmed = the_message.confirmated
         else:
             is_confirmed = the_message.confirmation.is_confirmed
+
+        if not is_confirmed:
+            raise Http404
 
         return the_message
 
@@ -167,9 +170,13 @@ class PerInstanceSearchView(SearchView):
         self.form_class = PerInstanceSearchForm
         self.template = 'nuntium/instance_search.html'
 
+    def __call__(self, *args, **kwargs):
+        self.slug = kwargs.pop('slug')
+        return super(PerInstanceSearchView, self).__call__(*args, **kwargs)
+
 
     def build_form(self, form_kwargs=None):
-        self.writeitinstance = WriteItInstance.objects.get(slug=self.request.subdomain)
+        self.writeitinstance = WriteItInstance.objects.get(slug=self.slug)
         if form_kwargs is None:
             form_kwargs = {}
         form_kwargs['writeitinstance']=self.writeitinstance
@@ -182,7 +189,7 @@ class MessagesPerPersonView(ListView):
 
     def dispatch(self, *args, **kwargs):
         self.person = Person.objects.get(id=self.kwargs['pk'])
-        self.subdomain = self.request.subdomain
+        self.subdomain = self.kwargs['slug']
         self.writeitinstance = WriteItInstance.objects.get(slug=self.subdomain)
         return super(MessagesPerPersonView, self).dispatch(*args, **kwargs)
 

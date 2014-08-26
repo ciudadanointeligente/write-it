@@ -1,5 +1,5 @@
-from django.conf.urls import url
-from django.conf.urls.i18n import i18n_patterns
+from django.conf.urls import patterns, url
+# from django.conf.urls.i18n import i18n_patterns
 from django.views.generic import TemplateView
 from .views import HomeTemplateView, WriteItInstanceDetailView, \
 						MessageDetailView, PerInstanceSearchView, \
@@ -10,11 +10,11 @@ from .views import HomeTemplateView, WriteItInstanceDetailView, \
 # from django.contrib import admin
 # admin.autodiscover()
 
-urlpatterns = i18n_patterns('',
+urlpatterns = patterns('',
     # Examples:
-    url(r'^$', WriteItInstanceDetailView.as_view(), name = 'instance_detail'),
-    url(r'^messages/(?P<slug>[-\w]+)/?$', MessageDetailView.as_view(), name = 'message_detail'),
-    url(r'^search/?$', PerInstanceSearchView(), name='instance_search'),
-    url(r'^per_person/(?P<pk>[-\d]+)/?$', MessagesPerPersonView.as_view(),
+    url(r'^(?P<slug>[-\w]+)/?$', WriteItInstanceDetailView.as_view(), name = 'instance_detail'),
+    url(r'^(?P<instance_slug>[-\w]+)/messages/(?P<slug>[-\w]+)/?$', MessageDetailView.as_view(), name = 'message_detail'),
+    url(r'^(?P<slug>[-\w]+)/search/?$', PerInstanceSearchView(), name='instance_search'),
+    url(r'^(?P<slug>[-\w]+)/per_person/(?P<pk>[-\d]+)/?$', MessagesPerPersonView.as_view(),
     				 name='messages_per_person'),
 )
