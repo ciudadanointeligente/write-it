@@ -19,7 +19,7 @@ Installation
 System Requirements
 -------------------
 
- * [Elastisearc](http://www.elasticsearch.org/)
+ * [Elasticsearch](http://www.elasticsearch.org/)
 
  Sometimes it's required
 
