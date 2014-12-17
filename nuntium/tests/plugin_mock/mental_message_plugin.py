@@ -1,15 +1,15 @@
 from ...plugins import OutputPlugin
 from ...models import MessageRecord
-from contactos.models import Contact, ContactType
+from contactos.models import ContactType
 '''
 This is a mock and should not be used anywhere but as a joke to tell your friends,
-One day this kind of messages are going to be normal 
+One day this kind of messages are going to be normal
 '''
+
 
 class MentalMessage(OutputPlugin):
     name = 'mental-message'
     title = 'Mental Message'
-
 
     def get_contact_type(self):
         contact_type, created = ContactType.objects.get_or_create(label_name="The Mind", name="mind")
@@ -23,28 +23,30 @@ class MentalMessage(OutputPlugin):
 
         returns (successfully_sent, fatal_error)
         '''
-    	try:
-    		self.send_mental_message(outbound_message.message.subject)
-    	except FatalException:
-    		return (False,True)
-    	except TryAgainException:
-    		return (False, False)
+        try:
+            self.send_mental_message(outbound_message.message.subject)
+        except FatalException:
+            return (False, True)
+        except TryAgainException:
+            return (False, False)
 
-        record = MessageRecord.objects.create(content_object= outbound_message, status="sent using mental messages")
+        MessageRecord.objects.create(
+            content_object=outbound_message,
+            status="sent using mental messages",
+            )
         return (True, None)
 
     def send_mental_message(self, subject):
-    	if subject == "RaiseFatalErrorPlz":
-    		raise FatalException
+        if subject == "RaiseFatalErrorPlz":
+            raise FatalException
 
-    	if subject == "RaiseTryAgainErrorPlz":
-    		raise TryAgainException
-
-    	return
+        if subject == "RaiseTryAgainErrorPlz":
+            raise TryAgainException
 
 
 class FatalException(Exception):
-	pass
+    pass
+
 
 class TryAgainException(Exception):
-	pass
+    pass

@@ -1,21 +1,18 @@
 import email
 import re
 import requests
-import os
 from requests.auth import AuthBase
-from email.utils import getaddresses
 import logging
 import sys
 import config
 import json
 from email_reply_parser import EmailReplyParser
-import quopri
-import HTMLParser
 from flufl.bounce import all_failures, scan_message
 from mailit.models import RawIncomingEmail
 from nuntium.models import Answer
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
+
 
 class ApiKeyAuth(AuthBase):
     """
@@ -30,37 +27,41 @@ class ApiKeyAuth(AuthBase):
         r.headers['Authorization'] = 'ApiKey %s:%s' % (self.username, self.api_key)
         return r
 
-class EmailReportBounceMixin(object):
 
+class EmailReportBounceMixin(object):
     def report_bounce(self):
-        data = {
-        'key':self.outbound_message_identifier
-        }
+        data = {'key': self.outbound_message_identifier}
         headers = {'content-type': 'application/json'}
-        result = self.requests_session.post(config.WRITEIT_API_WHERE_TO_REPORT_A_BOUNCE, data=json.dumps(data), headers=headers)
+        self.requests_session.post(
+            config.WRITEIT_API_WHERE_TO_REPORT_A_BOUNCE,
+            data=json.dumps(data),
+            headers=headers,
+            )
+
 
 class EmailSaveMixin(object):
     def save(self):
         data = {
-        'key': self.outbound_message_identifier,
-        'content': self.content_text,
-        'format' :'json'
-        }
+            'key': self.outbound_message_identifier,
+            'content': self.content_text,
+            'format': 'json',
+            }
         headers = {'content-type': 'application/json'}
         result = self.requests_session.post(config.WRITEIT_API_ANSWER_CREATION, data=json.dumps(data), headers=headers)
         log = "When sent to %(location)s the status code was %(status_code)d"
         log = log % {
-            'location':config.WRITEIT_API_ANSWER_CREATION,
-            'status_code':result.status_code
+            'location': config.WRITEIT_API_ANSWER_CREATION,
+            'status_code': result.status_code,
             }
         logging.info(log)
         answer = None
         try:
             answer_id = json.loads(result.content)['id']
             answer = Answer.objects.get(id=answer_id)
-        except Exception, e:
+        except Exception:
             pass
         return answer
+
 
 class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
     def __init__(self):
@@ -69,7 +70,7 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
         self.outbound_message_identifier = ''
         self.email_from = ''
         self.when = ''
-        self.message_id = None # http://en.wikipedia.org/wiki/Message-ID
+        self.message_id = None  # http://en.wikipedia.org/wiki/Message-ID
         self.requests_session = requests.Session()
         username = config.WRITEIT_USERNAME
         apikey = config.WRITEIT_API_KEY
@@ -78,11 +79,10 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
 
     def get_content_text(self):
         cleaned_content = self._content_text
-        pattern = '[\w\.-]+@[\w\.-]+'
-        expression = re.compile(pattern)
+        # pattern = '[\w\.-]+@[\w\.-]+'
+        # expression = re.compile(pattern)
         # cleaned_content = re.sub(expression, '', cleaned_content)
-        cleaned_content = re.sub(r'[\w\.-\.+]+@[\w\.-]+','', cleaned_content)
-
+        cleaned_content = re.sub(r'[\w\.-\.+]+@[\w\.-]+', '', cleaned_content)
 
         cleaned_content = cleaned_content.replace(self.outbound_message_identifier, '')
         return cleaned_content
@@ -96,8 +96,6 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
         if self.is_bounced:
             self.report_bounce()
         else:
-
-            
             answer = self.save()
             raw_answers = RawIncomingEmail.objects.filter(message_id=self.message_id)
             if answer is not None and raw_answers:
@@ -105,7 +103,6 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
                 raw_email = RawIncomingEmail.objects.get(message_id=self.message_id)
                 raw_email.answer = answer
                 raw_email.save()
-
 
 
 class EmailHandler():
@@ -123,14 +120,12 @@ class EmailHandler():
 
         msg = email.message_from_string(msgtxt)
         temporary, permanent = all_failures(msg)
-        
-        
+
         if temporary or permanent:
             answer.is_bounced = True
             answer.email_from = scan_message(msg).pop()
         else:
             answer.email_from = msg["From"]
-
 
         the_recipient = msg["To"]
         answer.subject = msg["Subject"]
@@ -145,7 +140,7 @@ class EmailHandler():
         charset = msg.get_charset()
         logging.info("Reading the parts")
         for part in msg.walk():
-            logging.info("Part of type "+part.get_content_type())
+            logging.info("Part of type " + part.get_content_type())
             if part.get_content_type() == 'text/plain':
                 charset = part.get_content_charset()
                 if not charset:
@@ -155,13 +150,13 @@ class EmailHandler():
                 text.strip()
                 answer.content_text = text
         #logging stuff
-        
+
         log = 'New incoming email from %(from)s sent on %(date)s with subject %(subject)s and content %(content)s'
         log = log % {
-            'from':answer.email_from,
-            'date':answer.when,
-            'subject':answer.subject,
-            'content':answer.content_text
+            'from': answer.email_from,
+            'date': answer.when,
+            'subject': answer.subject,
+            'content': answer.content_text,
             }
         logging.info(log)
         return answer
@@ -177,7 +172,8 @@ class EmailHandler():
 
         return email_answer
 
-if __name__ == '__main__': # pragma: no cover
+
+if __name__ == '__main__':  # pragma: no cover
     lines = sys.stdin.readlines()
     handler = EmailHandler()
     answer = handler.handle(lines)

@@ -1,22 +1,24 @@
 from django.contrib import admin
-from .models import  Message, WriteItInstance, OutboundMessage, MessageRecord, \
-                            Answer, AnswerWebHook, NewAnswerNotificationTemplate, \
-                            NewAnswerNotificationTemplate
+from .models import Message, WriteItInstance, OutboundMessage, MessageRecord, \
+    Answer, AnswerWebHook, NewAnswerNotificationTemplate
+
 from popit.models import ApiInstance, Person
-from django.forms.models import BaseInlineFormSet
 from mailit.models import MailItTemplate
 from django_object_actions import DjangoObjectActions
-from django.db.models import Q
 from .forms import WriteItInstanceCreateFormPopitUrl
 
+
 class PersonInline(admin.TabularInline):
-    model=Person
+    model = Person
+
 
 class MembershipInline(admin.TabularInline):
     model = WriteItInstance.persons.through
 
+
 class NewAnswerNotificationTemplateAdmin(admin.TabularInline):
     model = NewAnswerNotificationTemplate
+
 
 class MailItTemplateInline(admin.TabularInline):
     model = MailItTemplate
@@ -48,12 +50,14 @@ admin.site.register(Answer, AnswerAdmin)
 class AnswerInline(admin.TabularInline):
     model = Answer
 
+
 class MessageAdmin(DjangoObjectActions, admin.ModelAdmin):
     change_form_template = "admin/nuntium/message/change_form.html"
     exclude = ('slug', 'moderated', 'confirmated')
     inlines = [
         AnswerInline
     ]
+
     def moderate_this(self, request, obj):
         obj.moderate()
     moderate_this.label = "Moderate"  # optional
@@ -68,39 +72,46 @@ class NeedingModerationMessage(Message):
     class Meta:
         proxy = True
 
+
 class NonModeratedMessageAdmin(MessageAdmin):
     def get_queryset(self, request):
         qs = Message.moderation_required_objects.all()
         return qs
-    actions=['moderate']
+    actions = ['moderate']
+
     def moderate(self, request, queryset):
         for message in queryset:
             message.moderate()
     #moderate.short_description(_("Mark the selected messages as moderated"))
-    
+
 admin.site.register(NeedingModerationMessage, NonModeratedMessageAdmin)
+
 
 class AnswerWebHookAdmin(admin.ModelAdmin):
     pass
 admin.site.register(AnswerWebHook, AnswerWebHookAdmin)
 
+
 class OutboundMessageAdmin(admin.ModelAdmin):
     pass
 admin.site.register(OutboundMessage, OutboundMessageAdmin)
+
 
 class MessageRecordAdmin(admin.ModelAdmin):
     pass
 admin.site.register(MessageRecord, MessageRecordAdmin)
 
+
 class ApiInstanceAdmin(admin.ModelAdmin):
     pass
 admin.site.register(ApiInstance, ApiInstanceAdmin)
+
 
 class PersonAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Person, PersonAdmin)
 
+
 class NewAnswerNotificationTemplateAdmin(admin.ModelAdmin):
     pass
 admin.site.register(NewAnswerNotificationTemplate, NewAnswerNotificationTemplateAdmin)
-

@@ -1,17 +1,10 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
-from django.core.urlresolvers  import reverse
-from ..models import WriteItInstance, Message, Membership, Confirmation, Moderation
 from ..user_section.forms import WriteItInstanceCreateFormPopitUrl, SimpleInstanceCreateFormPopitUrl
-from ..views import MessageCreateForm, PerInstanceSearchForm
-from contactos.models import Contact, ContactType
-from popit.models import ApiInstance, Person
 from django.utils.unittest import skipUnless
-from datetime import datetime
 from django.contrib.auth.models import User
-from django.utils.translation import activate
-from django.utils.translation import ugettext as _
 from django.conf import settings
+
 
 @skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class InstanceCreateFormTestCase(TestCase):
@@ -22,10 +15,10 @@ class InstanceCreateFormTestCase(TestCase):
     def test_instanciate_the_form(self):
         '''Instanciate the form for creating a writeit instance'''
         data = {
-            'owner' : self.user.id ,
-            'popit_url' : settings.TEST_POPIT_API_URL, 
-            'name' : "instance",
-            "rate_limiter": 0
+            'owner': self.user.id,
+            'popit_url': settings.TEST_POPIT_API_URL,
+            'name': "instance",
+            "rate_limiter": 0,
             }
         form = WriteItInstanceCreateFormPopitUrl(data)
 
@@ -34,16 +27,16 @@ class InstanceCreateFormTestCase(TestCase):
 
     def test_creating_an_instance(self):
         '''Create an instance of writeit using a form that contains a popit_url'''
-        # We have a popit running locally using the 
+        # We have a popit running locally using the
         # start_local_popit_api.bash script
         popit_load_data()
-        #loading data into the popit-api
+        # loading data into the popit-api
 
         data = {
-            'owner' : self.user.id ,
-            'popit_url' : settings.TEST_POPIT_API_URL, 
-            'name' : "instance",
-            "rate_limiter": 0
+            'owner': self.user.id,
+            'popit_url': settings.TEST_POPIT_API_URL,
+            'name': "instance",
+            "rate_limiter": 0,
             }
         form = WriteItInstanceCreateFormPopitUrl(data)
         instance = form.save()
@@ -51,21 +44,17 @@ class InstanceCreateFormTestCase(TestCase):
 
     def test_creating_an_instance_without_popit_url(self):
         data = {
-            'owner' : self.user.id ,
-            'name' : "instance",
-            "rate_limiter": 0
-        }
+            'owner': self.user.id,
+            'name': "instance",
+            "rate_limiter": 0,
+            }
         form = WriteItInstanceCreateFormPopitUrl(data)
         instance = form.save()
 
-        self.assertFalse(instance.persons.all())        
+        self.assertFalse(instance.persons.all())
 
     def test_it_has_all_the_fields(self):
         """The form for creating a new writeit instance has all the fields"""
-        data = {
-            'owner' : self.user.id ,
-            'name' : "instance"
-        }
         form = WriteItInstanceCreateFormPopitUrl()
 
         self.assertIn("name", form.fields)

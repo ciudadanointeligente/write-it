@@ -14,8 +14,8 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'writeit.db',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'writeit.db',                    # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',
@@ -91,7 +91,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -101,8 +101,8 @@ SECRET_KEY = '^1rqg8ctiq=#11c*=1mz5pyyry%)t%z^%nrhmh=q%g@r@bej1_'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+    # 'django.template.loaders.eggs.Loader',
+    )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
@@ -147,7 +147,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social.apps.django_app.default',
-    
+
     'nuntium',
     'djangoplugins',
     'popit',
@@ -172,7 +172,7 @@ if TESTING:
     INSTALLED_APPS += (
         'django_nose',
         )
-    
+
 #SEARCH INDEX WITH SOLR
 if TESTING:
     HAYSTACK_CONNECTIONS = {
@@ -218,7 +218,7 @@ LOGGING = {
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         },
-        'console':{
+        'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
@@ -239,31 +239,33 @@ LOGGING = {
 }
 
 # POPIT TESTING RELATED
-TEST_POPIT_API_HOST_IP   = '127.0.0.1'
-TEST_POPIT_API_PORT      = '3000'
+TEST_POPIT_API_HOST_IP = '127.0.0.1'
+TEST_POPIT_API_PORT = '3000'
 TEST_POPIT_API_SUBDOMAIN = 'popit-django-test'
 
-# We have our local popit instance for testing porpouses running using 
+# We have our local popit instance for testing porpouses running using
 # the bash file start_local_popit_api.bash
 # create the url to use for testing the database.
 # See http://xip.io/ for details on the domain used.
-TEST_POPIT_API_URL = "http://%s.%s.xip.io:%s/api" % ( TEST_POPIT_API_SUBDOMAIN,
-                                                      TEST_POPIT_API_HOST_IP,
-                                                      TEST_POPIT_API_PORT )
+TEST_POPIT_API_URL = "http://%s.%s.xip.io:%s/api" % (
+    TEST_POPIT_API_SUBDOMAIN,
+    TEST_POPIT_API_HOST_IP,
+    TEST_POPIT_API_PORT,
+    )
 
 
-#Email settings
+# Email settings
 DEFAULT_FROM_EMAIL = 'mailer@example.com'
 
-#DEFAULT_FROM_DOMAIN
+# DEFAULT_FROM_DOMAIN
 DEFAULT_FROM_DOMAIN = 'mailit.ciudadanointeligente.org'
 
-#In some cases it is needed that all emails come from one single
+# In some cases it is needed that all emails come from one single
 # email address, such is the case when you have just verified a single sender
-SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=False
+SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL = False
 
 
-#CELERY CONFIGURATION
+# CELERY CONFIGURATION
 import djcelery
 from celery.schedules import crontab
 djcelery.setup_loader()
@@ -274,15 +276,13 @@ CELERYBEAT_SCHEDULE = {
         'task': 'nuntium.tasks.send_mails_task',
         'schedule': crontab(minute='*/2'),
     },
-}  
-#Logs every incoming email??
+}
+# Logs every incoming email??
 INCOMING_EMAIL_LOGGING = 'None'
 
-#setting to avoid db changes during test
-
+# setting to avoid db changes during test
 
 EXTRA_APPS = ()
-
 
 
 # SOCIAL AUTH DETAILS
@@ -290,15 +290,15 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'Key'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'S3Cr3t'
 
 AUTHENTICATION_BACKENDS = (
-  'social.backends.google.GoogleOAuth2',
-  'django.contrib.auth.backends.ModelBackend',
-)
+    'social.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+    )
 
 if TESTING:
-    from testing_settings import *
-    
+    from testing_settings import *  # noqa
+
 try:
-    from local_settings import *
+    from local_settings import *  # noqa
     INSTALLED_APPS += EXTRA_APPS
 except ImportError:
     pass
@@ -306,10 +306,10 @@ except ImportError:
 
 ### HEROKU CONFIGURATION
 
-if 'DATABASE_URL' in os.environ :
+if 'DATABASE_URL' in os.environ:
     # I thought that in this way I could define that we were in an heroku environment
     import dj_database_url
-    DATABASES['default'] =  dj_database_url.config()
+    DATABASES['default'] = dj_database_url.config()
 
     # Honor the 'X-Forwarded-Proto' header for request.is_secure()
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -326,7 +326,7 @@ if 'DATABASE_URL' in os.environ :
     STATICFILES_DIRS = (
         os.path.join(BASE_DIR, 'static'),
     )
-if 'SOCIAL_AUTH_GOOGLE_OAUTH2_KEY' in os.environ :
+if 'SOCIAL_AUTH_GOOGLE_OAUTH2_KEY' in os.environ:
     SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY']
 
 if 'SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET' in os.environ:
@@ -345,13 +345,13 @@ if 'EMAIL_HOST_USER' in os.environ:
     EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
 if 'EMAIL_HOST_PASSWORD' in os.environ:
     EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
-if 'EMAIL_USE_TLS' in os.environ and os.environ['EMAIL_USE_TLS']=='True':
+if 'EMAIL_USE_TLS' in os.environ and os.environ['EMAIL_USE_TLS'] == 'True':
     EMAIL_USE_TLS = True
-if 'EMAIL_USE_SSL' in os.environ and os.environ['EMAIL_USE_SSL']=='True':
+if 'EMAIL_USE_SSL' in os.environ and os.environ['EMAIL_USE_SSL'] == 'True':
     EMAIL_USE_SSL = True
 
 if 'SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL' in os.environ \
-    and os.environ['SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL']=='True':
+        and os.environ['SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL'] == 'True':
     SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL = True
     # Haystack things elasticsearch
     # HAYSTACK_CONNECTIONS = {

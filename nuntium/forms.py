@@ -1,20 +1,16 @@
 # coding=utf-8
-from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, \
-                        CharField, EmailField, SelectMultiple, TextInput, Textarea, \
-                        URLField, IntegerField, CheckboxInput, NumberInput
-from .models import Message, WriteItInstance, OutboundMessage, \
-    Confirmation, Membership, NewAnswerNotificationTemplate, \
-    ConfirmationTemplate
+from django.forms import ModelForm, ModelMultipleChoiceField, SelectMultiple, URLField
+from .models import Message, WriteItInstance, Confirmation
+
 from contactos.models import Contact
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
 from popit.models import Person
 from haystack.forms import SearchForm
 from django.utils.html import format_html
-from django.forms.util import flatatt
 from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
-from itertools import chain
+
 
 class PersonSelectMultipleWidget(SelectMultiple):
     def render_option(self, selected_choices, option_value, option_label):
@@ -38,6 +34,7 @@ class PersonSelectMultipleWidget(SelectMultiple):
                            selected_html,
                            force_text(option_label))
 
+
 class PersonMultipleChoiceField(ModelMultipleChoiceField):
     widget = PersonSelectMultipleWidget(attrs={'class': 'chosen-person-select form-control'})
 
@@ -46,12 +43,7 @@ class PersonMultipleChoiceField(ModelMultipleChoiceField):
 
 
 class MessageCreateForm(ModelForm):
-    ''' docstring for MessageCreateForm'''
-
-
     persons = PersonMultipleChoiceField(queryset=Person.objects.none())
-
-
 
     def __init__(self, *args, **kwargs):
         try:
@@ -70,13 +62,11 @@ class MessageCreateForm(ModelForm):
             persons = self.cleaned_data['persons']
             message.persons = persons
             message.save()
-        #I know I have to move the previous code
-
+        # I know I have to move the previous code
 
         ## It creates a confirmation, a confirmation is sent automatically
         ## when created
         Confirmation.objects.create(message=message)
-
 
         return message
 
@@ -102,18 +92,21 @@ class PerInstanceSearchForm(SearchForm):
         super(PerInstanceSearchForm, self).__init__(*args, **kwargs)
         self.searchqueryset = self.searchqueryset.filter(writeitinstance=self.writeitinstance.id)
 
+
 class WriteItInstanceCreateFormPopitUrl(ModelForm):
-    popit_url = URLField(label=_('Url of the popit instance api'), \
+    popit_url = URLField(
+        label=_('Url of the popit instance api'),
         help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"),
-        required=False)
+        required=False,
+        )
 
     class Meta:
         model = WriteItInstance
-        fields = ('owner', 'name', 'popit_url', \
-            "moderation_needed_in_all_messages", \
-            "allow_messages_using_form", \
-            "rate_limiter", \
-            "notify_owner_when_new_answer", \
+        fields = ('owner', 'name', 'popit_url',
+            "moderation_needed_in_all_messages",
+            "allow_messages_using_form",
+            "rate_limiter",
+            "notify_owner_when_new_answer",
             "autoconfirm_api_messages")
 
     def relate_with_people(self):

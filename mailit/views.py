@@ -1,19 +1,20 @@
 from django.views.generic.edit import UpdateView
 from .models import MailItTemplate
 from .forms import MailitTemplateForm
-from django.core.urlresolvers  import reverse
+from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 from nuntium.models import WriteItInstance
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
+
 class MailitTemplateUpdateView(UpdateView):
     model = MailItTemplate
     form_class = MailitTemplateForm
 
     @method_decorator(login_required)
-    def dispatch(self,*args, **kwargs):
+    def dispatch(self, *args, **kwargs):
         return super(MailitTemplateUpdateView, self).dispatch(*args, **kwargs)
 
     def get_object(self):
@@ -30,4 +31,4 @@ class MailitTemplateUpdateView(UpdateView):
         return kwargs
 
     def get_success_url(self):
-        return reverse('writeitinstance_template_update', kwargs={'pk':self.writeitinstance.pk})
+        return reverse('writeitinstance_template_update', kwargs={'pk': self.writeitinstance.pk})

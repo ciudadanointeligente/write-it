@@ -1,9 +1,8 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
 from ..models import Message, WriteItInstance, AnswerWebHook, Answer
-from django.core.exceptions import ValidationError
-from tastypie.models import ApiKey
 from mock import patch
+
 
 class PostMock():
     def __init__(self):
@@ -16,12 +15,10 @@ class NewAnswerWebhooks(TestCase):
         self.writeitinstance = WriteItInstance.objects.all()[0]
         self.api_key = self.writeitinstance.owner.api_key
 
-
     def test_creation_of_a_new_answer_webhook(self):
-
         webhook = AnswerWebHook.objects.create(
             writeitinstance=self.writeitinstance,
-            url='http://someaddress.to.be.mocked'
+            url='http://someaddress.to.be.mocked',
             )
 
         self.assertTrue(webhook)
@@ -32,35 +29,33 @@ class NewAnswerWebhooks(TestCase):
     def test_unicode(self):
         webhook = AnswerWebHook.objects.create(
             writeitinstance=self.writeitinstance,
-            url='http://someaddress.to.be.mocked'
+            url='http://someaddress.to.be.mocked',
             )
-        expected_unicode = '%(url)s at %(instance)s'%{
-        'url':webhook.url,
-        'instance':webhook.writeitinstance.name
+        expected_unicode = '%(url)s at %(instance)s' % {
+            'url': webhook.url,
+            'instance': webhook.writeitinstance.name,
         }
         self.assertEquals(webhook.__unicode__(), expected_unicode)
-
 
     def test_when_a_new_answer_is_created_then_it_post_to_the_url(self):
         webhook = AnswerWebHook.objects.create(
             writeitinstance=self.writeitinstance,
-            url='http://someaddress.to.be.mocked'
+            url='http://someaddress.to.be.mocked',
             )
         pedro = self.writeitinstance.persons.all()[0]
-        #this message is the message to which we are going to create a new answer
+        # this message is the message to which we are going to create a new answer
         message = Message.objects.filter(writeitinstance=self.writeitinstance)[0]
 
         expected_payload = {
-                'message_id':'/api/v1/message/{0}/'.format(message.id),
-                'content':'holiwi',
-                'person':pedro.name,
-                'person_id':pedro.popit_url
-        }
+            'message_id': '/api/v1/message/{0}/'.format(message.id),
+            'content': 'holiwi',
+            'person': pedro.name,
+            'person_id': pedro.popit_url,
+            }
         with patch('requests.post') as post:
             post.return_value = PostMock()
-            answer = Answer.objects.create(content='holiwi', message=message, person=pedro)
+            Answer.objects.create(content='holiwi', message=message, person=pedro)
             post.assert_called_with(webhook.url, data=expected_payload)
-
 
     def test_it_does_not_send_the_payload_twice(self):
         """It doesn't send the payload twice"""
@@ -73,11 +68,11 @@ class NewAnswerWebhooks(TestCase):
         message = Message.objects.filter(writeitinstance=self.writeitinstance)[0]
 
         expected_payload = {
-                'message_id':'/api/v1/message/{0}/'.format(message.id),
-                'content':'holiwi',
-                'person':pedro.name,
-                'person_id':pedro.popit_url
-        }
+            'message_id': '/api/v1/message/{0}/'.format(message.id),
+            'content': 'holiwi',
+            'person': pedro.name,
+            'person_id': pedro.popit_url,
+            }
         with patch('requests.post') as post:
             post.return_value = PostMock()
             answer = Answer.objects.create(content='holiwi', message=message, person=pedro)
