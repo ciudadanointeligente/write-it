@@ -54,12 +54,35 @@ $(".chosen-person-select").chosen();
       {% csrf_token %}
     </form>
   </div>
-  <!-- <div class="tab-pane" id="webhooks">I'm not implemented</div>
-  <div class="tab-pane" id="advanced-update">I'm not implemented</div>
-  <div class="tab-pane" id="templates">I'm not implemented</div>
-  <div class="tab-pane" id="nothing"><a href="https://s3-sa-east-1.amazonaws.com/candideitstatic/fiera_trabajando.jpg">Really nothing, don't click!</a></div> -->
 </div>
 
+<div class="tab-content">
+  <div class="tab-pane active" id="basic-update">
+    <div class="page-header">
+      {% if not writeitinstance.persons.all %}
+      <p>{% trans "Apparently you do not have any people related to this instance. You can add some in the form above." %}</p>
+      {% endif %}
+      <h2>{% trans "Creating a message using the API" %}</h2>
+      <p>{% trans "If you want to create a message using the WriteIt Api for this instance you need to POST to the following url:" %}</p>
+      <h3>{% trans "URL" %}</h3>
+      <code>http://writeit.ciudadanointeligente.org/api/v1/message/?format=json&username={{ user.username }}&api_key={{ user.api_key.key }}</code>
+      <h3>{% trans "Example Payload" %}</h3>
+      <code>
+        {<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;'content': '{% trans "The Content of your Message" %}', <br />
+        &nbsp;&nbsp;&nbsp;&nbsp;'writeitinstance': '/api/v1/instance/{{ writeitinstance.id }}/', <br />
+        &nbsp;&nbsp;&nbsp;&nbsp;'persons': [<br />
+        {% for person in writeitinstance.persons.all %}
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'{{person.popit_url}}'{% if not forloop.last %},{% endif%}</code> ## For {{person}}<br /><code>
+        {% endfor %}
+        &nbsp;&nbsp;&nbsp;&nbsp;], <br />
+        &nbsp;&nbsp;&nbsp;&nbsp;'author_name': '{% trans "Your Name" %}', <br />
+        &nbsp;&nbsp;&nbsp;&nbsp;'subject': '{% trans "The subject for your message" %}'<br />
+      }
+      </code>
+    </div>
+  </div>
+</div>
 
 
 

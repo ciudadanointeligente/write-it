@@ -1,0 +1,33 @@
+{% extends "base_edit.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block extrajs %}
+{% endblock extrajs %}
+
+{% block extrascripts %}
+{% endblock extrascripts %}
+
+{% block header %}
+{% include 'nuntium/profiles/top_menu.html' with section='docs' %}
+{% endblock header %}
+
+{% block content %}
+<div class="tab-content profile-page-tab-content">
+  <div class="tab-pane active row" id="contacts">
+  	<h3>Creating a WriteIt Instance</h3>
+  	<p>In order to use WriteIt you need to create an instance and provide a Popit Instance Api, for instance:</p>
+  	<p>At Ciudadano Inteligente we have a Popit Instance of Chilean Parlamientarians which can be found at <a href="https://pmocl.popit.mysociety.org/">https://pmocl.popit.mysociety.org/</a> it's API is something similar <a href="https://pmocl.popit.mysociety.org/api/v0.1">https://pmocl.popit.mysociety.org/api/v0.1</a></p>
+  	<h3>Creating contacts for the people in your WriteIt Instance</h3>
+  	<p>Once you created an instance people should be related to it. Now you need to tell WriteIt how to reach that people, for that you need to create contacts for them. That can be done in <a href="{% url 'your-contacts' %}">here</a>. You have to create a contact for each person.</p>
+  	<h3>Accessing the API and using WriteIt through the API</h3>
+  	WriteIt has several endpoints and some of the most interesting ones are:
+	<ul>
+		<li>Messages <a href="https://gist.github.com/lfalvarez/b9506f54037e9ceaa823">Specification</a></li>
+		<li>Instances</li>
+		<li>Answer Creation</li>
+		<li>Person Listing</li>
+	</ul>
+  </div>
+</div>
+{% endblock content %}

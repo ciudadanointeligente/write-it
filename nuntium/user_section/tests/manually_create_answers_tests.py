@@ -1,6 +1,5 @@
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from django.core.urlresolvers  import reverse
-from django.core.urlresolvers import reverse as original_reverse
 from ...models import WriteItInstance, Membership, \
                       WriteitInstancePopitInstanceRecord, Message, Answer
 from django.contrib.auth.models import User
@@ -135,7 +134,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         '''
         Only persons related to the given message are shown in the list
         '''
-        
+
         form = AnswerForm(message=self.message)
         self.assertEquals(len(self.message.people), form.fields['person'].queryset.count())
         self.assertIn(self.message.people[0], form.fields['person'].queryset.all())
@@ -226,8 +225,8 @@ class ManuallyEditAnswer(UserSectionTestCase):
         '''There is an endpoint to which posting updates an answer'''
         url = reverse('update_answer', kwargs={'pk':self.answer.pk})
         self.assertTrue(url)
-        
-        
+
+
 
     def test_post_updated_answer(self):
         '''Posting updated answer'''
@@ -246,7 +245,7 @@ class ManuallyEditAnswer(UserSectionTestCase):
     def test_posting_non_user(self):
         '''Posting an updated answer as a non user redirects to login'''
         url = reverse('update_answer', kwargs={'pk':self.answer.pk})
-        
+
         c = Client()
         data = {
         'content':"this is the new content"
@@ -350,19 +349,19 @@ class ModerateURL(UserSectionTestCase):
         '''
         There is a url to moderate a message
         '''
-        message = Message.objects.create(content = 'Content 1', 
-                author_name='Felipe', 
-                author_email="falvarez@votainteligente.cl", 
-                subject='Fiera es una perra feroz', 
+        message = Message.objects.create(content = 'Content 1',
+                author_name='Felipe',
+                author_email="falvarez@votainteligente.cl",
+                subject='Fiera es una perra feroz',
                 public=False,
-                writeitinstance= self.writeitinstance, 
+                writeitinstance= self.writeitinstance,
                 persons = [self.person1])
         message.recently_confirmated()
         url = reverse('moderate_message', kwargs={'pk':message.pk})
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
         response = c.post(url)
-        
+
         message_again = Message.objects.get(id=message.id)
         self.assertTrue(message_again.moderated)
 
@@ -375,12 +374,12 @@ class ModerateURL(UserSectionTestCase):
         '''
         Only a logged in user can moderate a message
         '''
-        message = Message.objects.create(content = 'Content 1', 
-                author_name='Felipe', 
-                author_email="falvarez@votainteligente.cl", 
-                subject='Fiera es una perra feroz', 
+        message = Message.objects.create(content = 'Content 1',
+                author_name='Felipe',
+                author_email="falvarez@votainteligente.cl",
+                subject='Fiera es una perra feroz',
                 public=False,
-                writeitinstance= self.writeitinstance, 
+                writeitinstance= self.writeitinstance,
                 persons = [self.person1])
         message.recently_confirmated()
         url = reverse('moderate_message', kwargs={'pk':message.pk})
@@ -394,12 +393,12 @@ class ModerateURL(UserSectionTestCase):
         A user that does not own a message cannot moderate it
         '''
         not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
-        message = Message.objects.create(content = 'Content 1', 
-                author_name='Felipe', 
-                author_email="falvarez@votainteligente.cl", 
-                subject='Fiera es una perra feroz', 
+        message = Message.objects.create(content = 'Content 1',
+                author_name='Felipe',
+                author_email="falvarez@votainteligente.cl",
+                subject='Fiera es una perra feroz',
                 public=False,
-                writeitinstance= self.writeitinstance, 
+                writeitinstance= self.writeitinstance,
                 persons = [self.person1])
         message.recently_confirmated()
         url = reverse('moderate_message', kwargs={'pk':message.pk})
