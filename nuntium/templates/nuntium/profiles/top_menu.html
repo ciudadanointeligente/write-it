@@ -1,0 +1,8 @@
+{% load i18n %}
+<ul class="nav nav-tabs profile-page-nav">
+  <li{% if section == 'account' %} class="active"{% endif %}><a href="{% url 'account' %}">{% trans "Your Profile" %}</a></li>
+  <li{% if section == 'your-instances' %} class="active"{% endif %}><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
+  <li{% if section == 'your-contacts' %} class="active"{% endif %}><a href="{% url 'your-contacts' %}">{% trans "Your contacts" %}</a></li>
+  <li{% if section == 'my-popit-instances' %} class="active"{% endif %}><a href="{% url 'my-popit-instances' %}">{% trans "Your Popit Api Instances" %}</a></li>
+  <li{% if section == 'docs' %} class="active"{% endif %}><a href="{% url 'user_section_documentation' %}">{% trans "Documentation" %}</a></li>
+</ul>

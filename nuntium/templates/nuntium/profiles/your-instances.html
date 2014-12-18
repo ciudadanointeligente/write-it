@@ -19,12 +19,7 @@ $('.contact_value').editable({
 
 
 {% block header %}
-<ul class="nav nav-tabs profile-page-nav">
-  <li><a href="{% url 'account' %}">{% trans "Your Profile" %}</a></li>
-  <li class="active"><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
-  <li><a href="{% url 'your-contacts' %}">{% trans "Your contacts" %}</a></li>
-  <li><a href="{% url 'my-popit-instances' %}">{% trans "Your Popit Api Instances" %}</a></li>
-</ul>
+{% include 'nuntium/profiles/top_menu.html' with section='your-instances' %}
 {% endblock header %}
 
 {% block content %}
