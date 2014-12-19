@@ -284,7 +284,7 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
 from nuntium.user_section.forms import RelatePopitInstanceWithWriteItInstance
 class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
     def setUp(self):
-        self.owner = User.objects.first()
+        self.owner = User.objects.create_user(username="fieraferoz", password="feroz")
         self.writeitinstance = WriteItInstance.objects.create(
             name='instance 1', 
             slug='instance-1',
@@ -304,3 +304,31 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
         self.assertIn('popit_url', form.fields)
         self.assertIsInstance(form.fields['popit_url'], URLField)
+        self.assertTrue(form.is_valid())
+
+    def test_form_relate(self):
+        form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
+        form.is_valid()
+        form.relate()
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=self.writeitinstance)
+        self.assertEquals(records.count(), 1)
+        self.assertTrue(self.writeitinstance.persons.all())
+
+    def test_url_for_posting_the_url(self):
+        url = reverse('relate-writeit-popit', kwargs={'pk':self.writeitinstance.pk})
+        self.assertTrue(url)
+
+    def test_post_to_the_url(self):
+        '''It should reject the get to that url'''
+        self.client.login(username="fieraferoz", password="feroz")
+        url = reverse('relate-writeit-popit', kwargs={'pk':self.writeitinstance.pk})
+        response = self.client.post(url, data=self.data)
+        self.assertEquals(response.status_code, 302)
+        basic_update_url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
+
+        self.assertRedirects(response, basic_update_url)
+
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=self.writeitinstance)
+        self.assertEquals(records.count(), 1)
+        #this means that it has persons related to it
+        self.assertTrue(self.writeitinstance.persons.all())

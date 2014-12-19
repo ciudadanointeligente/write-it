@@ -136,7 +136,14 @@ class AnswerForm(ModelForm):
 
 
 class RelatePopitInstanceWithWriteItInstance(Form):
-    popit_url = URLField()
+    popit_url = URLField(label=_('Url of the popit instance api'), \
+        help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"))
+
     def __init__(self, *args, **kwargs):
         self.writeitinstance = kwargs.pop('writeitinstance')
         super(RelatePopitInstanceWithWriteItInstance, self).__init__(*args, **kwargs)
+
+    def relate(self):
+        self.writeitinstance.load_persons_from_a_popit_api(
+            self.cleaned_data['popit_url']
+            )
