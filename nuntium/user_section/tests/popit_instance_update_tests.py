@@ -332,3 +332,10 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         self.assertEquals(records.count(), 1)
         #this means that it has persons related to it
         self.assertTrue(self.writeitinstance.persons.all())
+
+    def test_get_the_url(self):
+        self.client.login(username="fieraferoz", password="feroz")
+        url = reverse('relate-writeit-popit', kwargs={'pk':self.writeitinstance.pk})
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'nuntium/profiles/writeitinstance_and_popit_relations.html')

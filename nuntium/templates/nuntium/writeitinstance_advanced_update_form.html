@@ -19,19 +19,14 @@ $(".chosen-person-select").chosen();
     <li class="active">{{ writeitinstance }}</li>
 </ul>
 
-<ul class="nav nav-tabs">
-  <li class=""><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Basic Update" %}</a></li>
-  <li class="active"><a href="{% url 'writeitinstance_advanced_update' pk=writeitinstance.pk %}">{% trans "Advanced Update" %}</a></li>
-  <li class=""><a href="{% url 'writeitinstance_template_update' pk=writeitinstance.pk %}">{% trans "Templates" %}</a></li>
-  <li class=""><a href="{% url 'messages_per_writeitinstance' pk=writeitinstance.pk %}">{% trans "Messages" %}</a></li>
-  <!-- <li><a href="#webhooks" data-toggle="tab">{% trans "Webhooks" %}</a></li>
-  <li><a href="#advanced-update" data-toggle="tab">{% trans "Advanced Update" %}</a></li>
-  <li><a href="#templates" data-toggle="tab">{% trans "Templates" %}</a></li>
-  <li><a href="#nothing" data-toggle="tab">{% trans "Nothing" %}</a></li> -->
-</ul>
+{% include 'nuntium/profiles/per_instance_top_menu.html' with section='writeitinstance_advanced_update' %}
+
 {% endblock header %}
 
 {% block content %}
+
+<div class="tab-content profile-page-tab-content">
+  <div class="tab-pane active row" id="instances">
 <div class="tab-content">
   <div class="tab-pane active" id="advanced-update">
     <div class="page-header">
@@ -71,7 +66,8 @@ $(".chosen-person-select").chosen();
   <div class="tab-pane" id="templates">I'm not implemented</div>
   <div class="tab-pane" id="nothing"><a href="https://s3-sa-east-1.amazonaws.com/candideitstatic/fiera_trabajando.jpg">Really nothing, don't click!</a></div> -->
 </div>
-
+</div>
+</div>
 
 
 

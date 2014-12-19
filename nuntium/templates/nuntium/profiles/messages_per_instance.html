@@ -18,12 +18,8 @@
     <li class="active">{{ writeitinstance }}</li>
 </ul>
 
-<ul class="nav nav-tabs">
-  <li class=""><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Basic Update" %}</a></li>
-  <li class=""><a href="{% url 'writeitinstance_advanced_update' pk=writeitinstance.pk %}">{% trans "Advanced Update" %}</a></li>
-  <li class=""><a href="{% url 'writeitinstance_template_update' pk=writeitinstance.pk %}">{% trans "Templates" %}</a></li>
-  <li class="active"><a href="{% url 'messages_per_writeitinstance' pk=writeitinstance.pk %}">{% trans "Messages" %}</a></li>
-</ul>
+{% include 'nuntium/profiles/per_instance_top_menu.html' with section='messages_per_writeitinstance' %}
+
 {% endblock header %}
 
 {% block content %}

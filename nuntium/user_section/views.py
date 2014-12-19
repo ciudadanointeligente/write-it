@@ -322,9 +322,13 @@ class ModerationView(View):
         return redirect(url)
 
 
-class WriteitPopitRelatingView(FormView, WriteItInstanceOwnerMixin):
+class WriteitPopitRelatingView(WriteItInstanceOwnerMixin, FormView):
     form_class = RelatePopitInstanceWithWriteItInstance
+    template_name = 'nuntium/profiles/writeitinstance_and_popit_relations.html'
 
+    def dispatch(self, *args, **kwargs):
+        self.object = self.get_writeitinstance()
+        return super(WriteitPopitRelatingView, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(WriteitPopitRelatingView, self).get_form_kwargs()
