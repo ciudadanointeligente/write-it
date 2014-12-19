@@ -6,7 +6,7 @@ from ...models import WriteItInstance, Membership, \
 from django.contrib.auth.models import User
 from django.test.client import Client, RequestFactory
 from ..views import WriteItInstanceUpdateView
-from django.forms import ModelForm
+from django.forms import ModelForm, Form, URLField
 from django.contrib.sites.models import Site
 from django.conf import settings
 from django.utils.translation import activate
@@ -281,3 +281,26 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
         records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
         self.assertEquals(records.count(), 0)
 
+from nuntium.user_section.forms import RelatePopitInstanceWithWriteItInstance
+class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
+    def setUp(self):
+        self.owner = User.objects.first()
+        self.writeitinstance = WriteItInstance.objects.create(
+            name='instance 1', 
+            slug='instance-1',
+            owner=self.owner)
+        self.data = {
+            "popit_url":settings.TEST_POPIT_API_URL
+        }
+
+
+    def test_create_form(self):
+        form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
+
+        self.assertTrue(form)
+        self.assertIsInstance(form, Form)
+
+    def test_form_fields(self):
+        form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
+        self.assertIn('popit_url', form.fields)
+        self.assertIsInstance(form.fields['popit_url'], URLField)
