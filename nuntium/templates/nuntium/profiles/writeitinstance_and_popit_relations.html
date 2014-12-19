@@ -57,7 +57,36 @@ $(".chosen-person-select").chosen();
         {% trans 'Relate a new popit api to this Instance' %}
       </button>
     </div>
+    <div class="col-md-8">
+      <table>
+        <thead>
+          <tr>
+            <th>
+              {% trans 'Your popit apis and the writeit instances they are related to' %}
+            </th>
+            <th>
+              {% trans 'When they were created' %}
+            </th>
+            <th>
+              {% trans 'When they were last updated' %}
+            </th>
+            <th>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in writeitinstance.writeitinstancepopitinstancerecord_set.all %}
+            <tr>
+              <td>{{ record }}</td>
+              <td>{{ record.created }}</td>
+              <td>{{ record.updated }}</td>
+            </tr>
+          {% endfor %}
+        </table>
+      </tbody>
+    </div>
   </div>
+
 </div>
 
 
