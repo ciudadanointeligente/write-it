@@ -292,7 +292,7 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         self.data = {
             "popit_url":settings.TEST_POPIT_API_URL
         }
-
+        popit_load_data()
 
     def test_create_form(self):
         form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
