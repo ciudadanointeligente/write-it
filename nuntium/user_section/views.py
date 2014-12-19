@@ -8,7 +8,8 @@ from ..models import WriteItInstance, Confirmation, OutboundMessage, Message, Mo
                         
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
                     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
-                    WriteItInstanceCreateForm, AnswerForm
+                    WriteItInstanceCreateForm, AnswerForm, \
+                    RelatePopitInstanceWithWriteItInstance
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
 from django.http import Http404
@@ -26,6 +27,7 @@ from popit.models import Person, ApiInstance
 from django.shortcuts import redirect
 from django.views.generic import View
 from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.edit import FormView
 
 class UserAccountView(TemplateView):
     template_name = 'nuntium/profiles/your-profile.html'
@@ -318,3 +320,27 @@ class ModerationView(View):
 
         url = reverse('messages_per_writeitinstance', kwargs={'pk':self.message.writeitinstance.pk})
         return redirect(url)
+
+
+class WriteitPopitRelatingView(WriteItInstanceOwnerMixin, FormView):
+    form_class = RelatePopitInstanceWithWriteItInstance
+    template_name = 'nuntium/profiles/writeitinstance_and_popit_relations.html'
+
+    def dispatch(self, *args, **kwargs):
+        self.object = self.get_writeitinstance()
+        return super(WriteitPopitRelatingView, self).dispatch(*args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super(WriteitPopitRelatingView, self).get_form_kwargs()
+        kwargs['writeitinstance'] = self.get_writeitinstance()
+        return kwargs
+
+    def get_success_url(self):
+        writeitinstance = self.get_writeitinstance()
+        url = reverse('writeitinstance_basic_update', kwargs={'pk': writeitinstance.pk})
+        return url
+
+    def form_valid(self, form):
+        form.relate()
+        response = super(WriteitPopitRelatingView, self).form_valid(form)
+        return response

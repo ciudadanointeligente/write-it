@@ -5,7 +5,8 @@ from .views import UserAccountView, WriteItInstanceUpdateView, \
         WriteItInstanceTemplateUpdateView, NewAnswerNotificationTemplateUpdateView, \
         ConfirmationTemplateUpdateView, WriteItInstanceCreateView, \
         YourPopitApiInstances, WriteItPopitUpdateView, MessagesPerWriteItInstance, \
-        MessageDetail, MessageDelete, AnswerCreateView, ModerationView, AnswerUpdateView
+        MessageDetail, MessageDelete, AnswerCreateView, ModerationView, AnswerUpdateView, \
+        WriteitPopitRelatingView
         
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
@@ -55,4 +56,7 @@ urlpatterns = patterns('',
     url(r'^docs/?$',
         TemplateView.as_view(template_name="nuntium/profiles/docs.html"),
         name = 'user_section_documentation'),
+    url(r'^writeitinstance/edit/(?P<pk>[-\d]+)/relate-with-popit/?$',
+        WriteitPopitRelatingView.as_view(),
+        name = 'relate-writeit-popit'),
     )

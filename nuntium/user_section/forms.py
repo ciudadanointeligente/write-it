@@ -7,7 +7,7 @@ from ..models import Message, WriteItInstance, OutboundMessage, \
     Confirmation, Membership, NewAnswerNotificationTemplate, \
     ConfirmationTemplate, Answer
 from contactos.models import Contact
-from django.forms import ValidationError, ModelChoiceField
+from django.forms import ValidationError, ModelChoiceField, Form, URLField
 from django.utils.translation import ugettext as _
 from popit.models import Person
 from haystack.forms import SearchForm
@@ -133,3 +133,17 @@ class AnswerForm(ModelForm):
         answer.message = self.message
         answer.save()
         return answer
+
+
+class RelatePopitInstanceWithWriteItInstance(Form):
+    popit_url = URLField(label=_('Url of the popit instance api'), \
+        help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"))
+
+    def __init__(self, *args, **kwargs):
+        self.writeitinstance = kwargs.pop('writeitinstance')
+        super(RelatePopitInstanceWithWriteItInstance, self).__init__(*args, **kwargs)
+
+    def relate(self):
+        self.writeitinstance.load_persons_from_a_popit_api(
+            self.cleaned_data['popit_url']
+            )

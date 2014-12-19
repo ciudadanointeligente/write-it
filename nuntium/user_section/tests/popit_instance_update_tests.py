@@ -6,7 +6,7 @@ from ...models import WriteItInstance, Membership, \
 from django.contrib.auth.models import User
 from django.test.client import Client, RequestFactory
 from ..views import WriteItInstanceUpdateView
-from django.forms import ModelForm
+from django.forms import ModelForm, Form, URLField
 from django.contrib.sites.models import Site
 from django.conf import settings
 from django.utils.translation import activate
@@ -281,3 +281,61 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
         records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
         self.assertEquals(records.count(), 0)
 
+from nuntium.user_section.forms import RelatePopitInstanceWithWriteItInstance
+class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
+    def setUp(self):
+        self.owner = User.objects.create_user(username="fieraferoz", password="feroz")
+        self.writeitinstance = WriteItInstance.objects.create(
+            name='instance 1', 
+            slug='instance-1',
+            owner=self.owner)
+        self.data = {
+            "popit_url":settings.TEST_POPIT_API_URL
+        }
+        popit_load_data()
+
+    def test_create_form(self):
+        form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
+
+        self.assertTrue(form)
+        self.assertIsInstance(form, Form)
+
+    def test_form_fields(self):
+        form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
+        self.assertIn('popit_url', form.fields)
+        self.assertIsInstance(form.fields['popit_url'], URLField)
+        self.assertTrue(form.is_valid())
+
+    def test_form_relate(self):
+        form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
+        form.is_valid()
+        form.relate()
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=self.writeitinstance)
+        self.assertEquals(records.count(), 1)
+        self.assertTrue(self.writeitinstance.persons.all())
+
+    def test_url_for_posting_the_url(self):
+        url = reverse('relate-writeit-popit', kwargs={'pk':self.writeitinstance.pk})
+        self.assertTrue(url)
+
+    def test_post_to_the_url(self):
+        '''It should reject the get to that url'''
+        self.client.login(username="fieraferoz", password="feroz")
+        url = reverse('relate-writeit-popit', kwargs={'pk':self.writeitinstance.pk})
+        response = self.client.post(url, data=self.data)
+        self.assertEquals(response.status_code, 302)
+        basic_update_url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
+
+        self.assertRedirects(response, basic_update_url)
+
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=self.writeitinstance)
+        self.assertEquals(records.count(), 1)
+        #this means that it has persons related to it
+        self.assertTrue(self.writeitinstance.persons.all())
+
+    def test_get_the_url(self):
+        self.client.login(username="fieraferoz", password="feroz")
+        url = reverse('relate-writeit-popit', kwargs={'pk':self.writeitinstance.pk})
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'nuntium/profiles/writeitinstance_and_popit_relations.html')
