@@ -344,3 +344,11 @@ class WriteitPopitRelatingView(WriteItInstanceOwnerMixin, FormView):
         form.relate()
         response = super(WriteitPopitRelatingView, self).form_valid(form)
         return response
+
+
+class WriteItDeleteView(WriteItInstanceOwnerMixin, DeleteView):
+    model = WriteItInstance
+
+    def get_success_url(self):
+        url = reverse('your-instances')
+        return url
