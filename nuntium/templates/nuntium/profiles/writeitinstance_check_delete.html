@@ -1,0 +1,36 @@
+{% extends "base_edit.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block extrajs %}
+{% endblock extrajs %}
+
+
+
+
+
+
+{% block header %}
+<ul class="breadcrumb">
+    <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+    <li><a href="{% url 'account' %}">{% trans "Your profile" %}</a></li>
+    <li><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
+    <li class="active">{{ writeitinstance }}</li>
+</ul>
+
+
+{% endblock header %}
+
+{% block content %}
+<div class="tab-content profile-page-tab-content edit-profile-tab-content">
+ 	<div class="tab-pane active" id="profile">
+
+		<form action="" method="post">{% csrf_token %}
+		    <h1>
+			{% blocktrans with writeitinstance.name as name %}Are you sure you want to delete {{ name }}?{% endblocktrans %}
+			</h1>
+		    <input type="submit" value="{% trans "Yes" %}" />
+		</form>
+	</div>
+</div>
+{% endblock content %}
