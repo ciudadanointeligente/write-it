@@ -28,7 +28,7 @@ class ContactoUpdateView(UpdateView):
 
     def render_to_response(self, context, **response_kwargs):
         data = json.dumps(context)
-        return HttpResponse(data, mimetype=self.content_type)
+        return HttpResponse(data, content_type=self.content_type)
 
 
 class ContactCreateView(CreateView):
