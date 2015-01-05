@@ -51,13 +51,13 @@
           <tr>
             <td>{{ message.subject }}</td>
             <td>{{ message.content|truncatechars:50|linebreaksbr }}</td>
-            <td><i class="fa {% if message.public %}fa-eye{% else %}fa-eye-slash{% endif %}"></i></td>
-            <td><i class="fa {% if message.confirmated %}fa-check-circle-o{% else %}fa-times-circle-o{% endif %}"></i></td>
+            <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% if message.public %}{% trans 'This message can be seen by everyone' %}{% else %}{% trans 'This message can not be seen by everyone' %}{% endif %}"><i class="fa {% if message.public %}fa-eye{% else %}fa-eye-slash{% endif %}"></i></div></td>
+            <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% if message.confirmated %}{% trans 'The author of this email has confirmed that this was sent from her/his email' %}{% else %}{% trans 'The author of this email has not  confirmed that this was sent from her/his email' %}{% endif %}"><i class="fa {% if message.confirmated %}fa-check-circle-o{% else %}fa-times-circle-o{% endif %}"></i></div></td>
             {% if writeitinstance.moderation_needed_in_all_messages %}
               {% if message.moderated %}
-              <td><i class="fa fa-check-circle-o"></i></td>
+              <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has been moderated' %}"><i class="fa fa-check-circle-o"></i></div></td>
               {% else %}
-              <td><i class="fa fa-times-circle-o"></i> <a class="moderate" href="{% url 'moderate_message' pk=message.pk %}">{% trans "Moderate"%}</a></td>
+              <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated and you can moderate it by clicking here' %}"><i class="fa fa-times-circle-o"></i> <a class="moderate" href="{% url 'moderate_message' pk=message.pk %}">{% trans "Moderate"%}</a></div></td>
               {% endif %}
             	
             {% endif %}
@@ -88,6 +88,7 @@
   </div>
 </div>
 <script type="text/javascript">
+$('.explanation').tooltip({})
 $(function(){
   $('.moderate').click(function(event){
     event.preventDefault();
