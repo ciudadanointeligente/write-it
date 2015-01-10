@@ -313,11 +313,11 @@ class Message(models.Model):
         htmly = get_template('nuntium/mails/moderation_mail.html')
         current_site = Site.objects.get_current()
         current_domain = 'http://'+current_site.domain
-        url_rejected = reverse('moderation_rejected', kwargs={
+        url_rejected = current_domain + reverse('moderation_rejected', kwargs={
             'slug': self.moderation.key
             })
 
-        url_accept = reverse('moderation_accept', kwargs={
+        url_accept = current_domain + reverse('moderation_accept', kwargs={
             'slug': self.moderation.key
             })
 

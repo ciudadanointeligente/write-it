@@ -217,20 +217,17 @@ class ModerationMessagesTestCase(TestCase):
         self.assertTrue(self.private_message.author_email in moderation_mail.body)
         current_site = Site.objects.get_current()
         current_domain = 'http://'+current_site.domain
-        url_rejected = reverse('moderation_rejected', kwargs={
+        url_rejected = current_domain + reverse('moderation_rejected', kwargs={
             'slug': self.private_message.moderation.key
             })
-
-        url_accept = reverse('moderation_accept', kwargs={
+        url_accept =current_domain + reverse('moderation_accept', kwargs={
             'slug': self.private_message.moderation.key
             })
 
 
         self.assertFalse(current_domain+url_rejected in moderation_mail.body)
-        self.assertTrue(url_rejected in moderation_mail.body)
-        self.assertFalse(current_domain+url_accept in moderation_mail.body)
-        self.assertTrue(url_accept in moderation_mail.body)
-
+        self.assertIn(url_rejected, moderation_mail.body)
+        self.assertIn(url_accept, moderation_mail.body)
 
 
     def test_creates_automatically_a_moderation_when_a_private_message_is_created(self):
