@@ -669,7 +669,7 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
             })
         current_site = Site.objects.get_current()
         confirmation_full_url = "http://"+current_site.domain+url
-        message_full_url = confirmation.message.get_absolute_url()
+        message_full_url = "http://"+current_site.domain+confirmation.message.get_absolute_url()
         plaintext = Template(confirmation.message.writeitinstance.confirmationtemplate.content_text)
         htmly = Template(confirmation.message.writeitinstance.confirmationtemplate.content_html)
         subject = confirmation.message.writeitinstance.confirmationtemplate.subject
