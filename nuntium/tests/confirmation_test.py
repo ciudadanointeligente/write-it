@@ -74,7 +74,7 @@ class ConfirmationTestCase(TestCase):
         self.assertIn(confirmation_full_url, mail.outbox[0].body)
         self.assertTrue(url in mail.outbox[0].body)
         self.assertTrue(self.message.get_absolute_url() in mail.outbox[0].body)
-        self.assertFalse(message_full_url in mail.outbox[0].body)
+        self.assertIn(message_full_url, mail.outbox[0].body)
 
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue(self.message.author_email in mail.outbox[0].to)
