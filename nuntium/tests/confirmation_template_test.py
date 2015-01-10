@@ -77,7 +77,7 @@ class ConfirmationTemplateTestCase(TestCase):
             'slug':confirmation.key
             })
         current_site = Site.objects.get_current()
-        confirmation_full_url = url
+        confirmation_full_url = "http://"+current_site.domain+url
 
         message_full_url = message.get_absolute_url()
         content_template_template = Template(content_template)

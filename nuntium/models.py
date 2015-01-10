@@ -313,11 +313,11 @@ class Message(models.Model):
         htmly = get_template('nuntium/mails/moderation_mail.html')
         current_site = Site.objects.get_current()
         current_domain = 'http://'+current_site.domain
-        url_rejected = reverse('moderation_rejected', kwargs={
+        url_rejected = current_domain + reverse('moderation_rejected', kwargs={
             'slug': self.moderation.key
             })
 
-        url_accept = reverse('moderation_accept', kwargs={
+        url_accept = current_domain + reverse('moderation_accept', kwargs={
             'slug': self.moderation.key
             })
 
@@ -668,7 +668,7 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
             'slug':confirmation.key
             })
         current_site = Site.objects.get_current()
-        confirmation_full_url = url
+        confirmation_full_url = "http://"+current_site.domain+url
         message_full_url = confirmation.message.get_absolute_url()
         plaintext = Template(confirmation.message.writeitinstance.confirmationtemplate.content_text)
         htmly = Template(confirmation.message.writeitinstance.confirmationtemplate.content_html)
