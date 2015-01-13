@@ -346,6 +346,8 @@ class WriteitPopitRelatingView(WriteItInstanceOwnerMixin, FormView):
         result = form.relate()
         if not result[0]:
             view_messages.add_message(self.request, view_messages.INFO, result[1].message)
+        else:
+            view_messages.add_message(self.request, view_messages.SUCCESS, _("Everything went ok"))
         response = super(WriteitPopitRelatingView, self).form_valid(form)
         return response
 
