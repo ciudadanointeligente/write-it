@@ -218,6 +218,7 @@ class ConfirmationTemplateUpdateView(UpdateTemplateWithWriteitMixin):
     model = ConfirmationTemplate
 
 from django.http import HttpResponse, HttpResponseForbidden
+from nuntium.popit_api_instance import PopitApiInstance
 
 class WriteItPopitUpdateView(View):
 
@@ -229,8 +230,9 @@ class WriteItPopitUpdateView(View):
         record = WriteitInstancePopitInstanceRecord.objects.get(id=kwargs.get('pk'))
         if record.writeitinstance.owner != request.user:
             return HttpResponseForbidden()
+        popit_api_instance = PopitApiInstance.objects.get(id=record.popitapiinstance.id)
         record.writeitinstance.\
-            relate_with_persons_from_popit_api_instance(record.popitapiinstance)
+            relate_with_persons_from_popit_api_instance(popit_api_instance)
         return HttpResponse('result')
 
 

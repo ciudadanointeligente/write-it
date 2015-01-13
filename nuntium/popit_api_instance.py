@@ -3,7 +3,11 @@ from contactos.models import Contact, ContactType
 from mailit import MailChannel
 from django.contrib.auth.models import User
 
+
 class PopitPerson(Person):
+    class Meta:
+        proxy = True
+
 
     @classmethod
     def fetch_all_from_api(cls, instance, owner):
@@ -37,6 +41,8 @@ class PopitPerson(Person):
 
 
 class PopitApiInstance(ApiInstance):
+    class Meta:
+        proxy = True
 
     def fetch_all_from_api(self, owner):
         """
