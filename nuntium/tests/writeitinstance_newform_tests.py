@@ -101,3 +101,33 @@ class BasicInstanceCreateFormTestCase(TestCase):
         self.assertNotIn("rate_limiter", form.fields)
         self.assertNotIn("notify_owner_when_new_answer", form.fields)
         self.assertNotIn("autoconfirm_api_messages", form.fields)
+
+
+class EmailCreationWhenPullingFromPopit(TestCase):
+    def setUp(self):
+        super(EmailCreationWhenPullingFromPopit, self).setUp()
+        self.instance = WriteItInstance.objects.all()[0]
+
+    def test_it_pulls_and_creates_contacts(self):
+        '''When pulling from popit it also creates emails'''
+
+        popit_load_data(fixture_name='persons_with_emails')
+
+        self.instance.load_persons_from_a_popit_api(
+                settings.TEST_POPIT_API_URL
+                )
+        other_user = User.objects.create_user(username="perro", password="gato")
+        fiera = self.instance.persons.filter(name="Fiera Feroz")
+
+
+        #fiera should have at least one contact commig from popit
+        contacts = Contact.objects.filter(person=fiera)
+        self.assertTrue(contacts)
+        contact = contacts[0]
+        contact_type = ContactType.objects.get(name="e-mail")
+        self.assertEquals(contact.contact_type, contact_type)
+        self.assertEquals(contact.value, "fiera@ciudadanointeligente.org")
+
+
+        self.assertEquals(contact.owner, self.instance.owner)
+

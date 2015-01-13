@@ -28,7 +28,7 @@ from django.db.models.query import QuerySet
 from itertools import chain
 from django.utils.timezone import now
 import os
-
+from popit_api_instance import PopitApiInstance
 
 
 def read_template_as_string(path, file_source_path=__file__):
@@ -66,8 +66,8 @@ class WriteItInstance(models.Model):
 
     def relate_with_persons_from_popit_api_instance(self, popit_api_instance):
         try:
-            popit_api_instance.fetch_all_from_api()
-        except:
+            popit_api_instance.fetch_all_from_api(owner=self.owner)
+        except Exception, e:
             popit_api_instance.delete()
             return False
         persons = Person.objects.filter(api_instance=popit_api_instance)
@@ -78,7 +78,7 @@ class WriteItInstance(models.Model):
 
 
     def load_persons_from_a_popit_api(self, popit_url):
-        api_instance, created = ApiInstance.objects.get_or_create(url=popit_url)
+        api_instance, created = PopitApiInstance.objects.get_or_create(url=popit_url)
         success_relating_people = self.relate_with_persons_from_popit_api_instance(api_instance)
 
         if success_relating_people:
