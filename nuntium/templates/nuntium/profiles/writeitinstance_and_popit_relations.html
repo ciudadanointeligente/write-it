@@ -48,6 +48,14 @@ $(".chosen-person-select").chosen();
   </div>
 </div>
 
+{% if messages %}
+  <div class="alert alert-info" role="alert">
+    {% for message in messages %}
+    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
+
 
 <div class="tab-content profile-page-tab-content">
   <div class="tab-pane active row" id="instances">
