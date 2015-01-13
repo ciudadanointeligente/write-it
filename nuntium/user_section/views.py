@@ -28,6 +28,9 @@ from django.shortcuts import redirect
 from django.views.generic import View
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import FormView
+from django.http import HttpResponse, HttpResponseForbidden
+from nuntium.popit_api_instance import PopitApiInstance, PopitPullingStatus
+from django.contrib import messages as view_messages
 
 class UserAccountView(TemplateView):
     template_name = 'nuntium/profiles/your-profile.html'
@@ -217,9 +220,6 @@ class ConfirmationTemplateUpdateView(UpdateTemplateWithWriteitMixin):
     form_class = ConfirmationTemplateForm
     model = ConfirmationTemplate
 
-from django.http import HttpResponse, HttpResponseForbidden
-from nuntium.popit_api_instance import PopitApiInstance
-
 class WriteItPopitUpdateView(View):
 
     @method_decorator(login_required)
@@ -343,7 +343,9 @@ class WriteitPopitRelatingView(WriteItInstanceOwnerMixin, FormView):
         return url
 
     def form_valid(self, form):
-        form.relate()
+        result = form.relate()
+        if not result[0]:
+            view_messages.add_message(self.request, view_messages.INFO, result[1].message)
         response = super(WriteitPopitRelatingView, self).form_valid(form)
         return response
 

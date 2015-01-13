@@ -52,3 +52,6 @@ class PopitApiInstance(ApiInstance):
         models = [PopitPerson]
         for model in models:
             model.fetch_all_from_api(instance=self, owner=owner)
+
+class PopitPullingStatus(object):
+    pass

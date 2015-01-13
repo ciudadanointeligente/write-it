@@ -119,6 +119,56 @@ class InstanceTestCase(TestCase):
         self.assertIn(raton, [r for r in writeitinstance.persons.all()])
         self.assertIn(fiera, [r for r in writeitinstance.persons.all()])
 
+from nuntium.popit_api_instance import PopitApiInstance
+from requests.exceptions import ConnectionError
+
+class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
+    def setUp(self):
+        super(WriteItInstanceLoadingPeopleFromAPopitApiTestCase, self).setUp()
+        self.api_instance1 = ApiInstance.objects.all()[0]
+        self.api_instance2 = ApiInstance.objects.all()[1]
+        self.person1 = Person.objects.all()[0]
+
+        self.owner = User.objects.all()[0]
+
+    def test_load_persons_from_a_popit_api(self):
+        '''Loading persons from a popit api'''
+        popit_load_data()
+        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url =settings.TEST_POPIT_API_URL)
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+        writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+
+        self.assertEquals(writeitinstance.persons.all().count(), 2)
+
+        raton = Person.objects.get(name='Ratón Inteligente')
+        fiera = Person.objects.get(name="Fiera Feroz")
+
+        self.assertIn(raton, [r for r in writeitinstance.persons.all()])
+        self.assertIn(fiera, [r for r in writeitinstance.persons.all()])
+
+    def test_it_returns_a_tuple(self):
+        '''Returns a tuple'''
+        popit_load_data()
+        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url =settings.TEST_POPIT_API_URL)
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+        result= writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        self.assertIsInstance(result, tuple)
+        self.assertTrue(result[0])
+        self.assertIsNone(result[1])
+
+    def test_it_returns_false_when_theres_a_problem(self):
+        '''When there's a problem it returns false and the problem in the tuple'''
+        non_existing_url = "http://nonexisting.url"
+        popit_api_instance = PopitApiInstance.objects.create(url=non_existing_url)
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+        result= writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        self.assertIsInstance(result, tuple)
+        self.assertFalse(result[0])
+        self.assertIsInstance(result[1], ConnectionError)
+
+
+
+
 from ..models import WriteitInstancePopitInstanceRecord
 class PopitWriteitRelationRecord(TestCase):
     '''

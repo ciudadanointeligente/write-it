@@ -20,6 +20,7 @@ from ..forms import NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
 from mailit.forms import MailitTemplateForm
 from django.utils.unittest import skipUnless, skip
 from user_section_views_tests import UserSectionTestCase
+from django.utils.translation import ugettext as _
 
 class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
 
@@ -282,6 +283,7 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
         self.assertEquals(records.count(), 0)
 
 from nuntium.user_section.forms import RelatePopitInstanceWithWriteItInstance
+from nuntium.popit_api_instance import PopitPullingStatus
 class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
     def setUp(self):
         self.owner = User.objects.create_user(username="fieraferoz", password="feroz")
@@ -332,6 +334,19 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         self.assertEquals(records.count(), 1)
         #this means that it has persons related to it
         self.assertTrue(self.writeitinstance.persons.all())
+
+    def test_post_to_the_url_shows_includes_something_about_the_result(self):
+        '''Posting to relate the popit and writetiinstances returns something abotu the result'''
+        self.client.login(username="fieraferoz", password="feroz")
+        url = reverse('relate-writeit-popit', kwargs={'pk':self.writeitinstance.pk})
+        data = self.data
+        data['popit_url'] = 'http://nonexistingurl.org'
+        response = self.client.post(url, data=data, follow=True)
+        messages = list(response.context['messages'])
+        self.assertTrue(messages)
+        self.assertEquals(messages[0].message, _('We could not connect with the URL'))
+        # self.assertIn('process_result', response.context)
+        # self.assertIsInstance(response.context['process_result'], PopitPullingStatus)
 
     def test_get_the_url(self):
         self.client.login(username="fieraferoz", password="feroz")
