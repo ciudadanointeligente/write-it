@@ -91,6 +91,14 @@ class IncomingEmailAutomaticallySavesRawMessage(TestCase, IncomingRawEmailMixin)
         self.assertTrue(raw_emails)
         self.assertTrue(raw_emails.filter(content=self.email_content))
     
+    def test_it_sets_the_message_id(self):
+        '''It automatically saves the answer when an incoming email arrives'''
+        handler = EmailHandler()
+        answer = handler.handle(self.email_content)
+        raw_emails = RawIncomingEmail.objects.filter(message_id='<CAA5PczfGfdhf29wgK=8t6j7hm8HYsBy8Qg87iTU2pF42Ez3VcQ@mail.gmail.com>')
+
+        self.assertTrue(raw_emails)
+
     @skip('Need to find a way to find what answer was created based on this email')
     def test_it_relates_it_to_an_answer(self):
         '''After handling email the answer should be related'''
