@@ -107,3 +107,17 @@ class IncomingEmailAutomaticallySavesRawMessage(TestCase, IncomingRawEmailMixin)
         self.assertEquals(raw_email.answer, answer)
 
 
+    def test_if_answer_is_none_then_it_does_not_store_it(self):
+        '''If answer is none when saving then it keeps on being none'''
+        class NotGoingToReturnAnyAnswer(EmailAnswer):
+            def save(self):
+                #Im returning None
+                return None
+
+        handler = EmailHandler(answer_class = NotGoingToReturnAnyAnswer)
+        email_answer = handler.handle(self.email_content)
+        email_answer.send_back()
+        raw_email = RawIncomingEmail.objects.get(message_id=email_answer.message_id)
+        self.assertIsNone(raw_email.answer)
+
+

@@ -90,8 +90,9 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
         else:
             raw_email = RawIncomingEmail.objects.get(message_id=self.message_id)
             answer = self.save()
-            raw_email.answer = answer
-            raw_email.save()
+            if answer is not None:
+                raw_email.answer = answer
+                raw_email.save()
 
 
 
