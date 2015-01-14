@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from mailit.bin.handleemail import EmailAnswer
 from django.utils.unittest import skip
 from mailit.management.commands.handleemail import AnswerForManageCommand
+from mock import patch
 
 
 class IncomingRawEmailMixin():
@@ -119,12 +120,32 @@ class IncomingEmailAutomaticallySavesRawMessage(TestCase, IncomingRawEmailMixin)
         raw_email = RawIncomingEmail.objects.get(message_id=email_answer.message_id)
         self.assertIsNone(raw_email.answer)
 
-    @skip('gotta check API first, because it is not returning the answer')
+    # @skip('gotta check API first, because it is not returning the answer')
+
+    def mock_request_to_api(self):
+        person = self.outbound_message.message.people[0]
+
+        answer = Answer.objects.create(
+            message = self.outbound_message.message,
+            person = person
+            )
+        class PostMock():
+            def __init__(self):
+                self.status_code = 201
+                self.content = '{"content": "Fiera tiene una pulga", "id": %(id)s, "key": "47bc10f49c3811e4a1f30026b6e903f7", "resource_uri": "/api/v1/create_answer/%(id)s/"}' % {'id':answer.id}
+
+        return PostMock
+
+
     def test_it_relates_to_an_answer_using_web_answer_creation(self):
         '''When creating an answer using the API then it also relates the answer to the raw email'''
         handler = EmailHandler()
         email_answer = handler.handle(self.email_content)
-        email_answer.send_back()
+        post_mock = self.mock_request_to_api()
+        with patch('requests.Session.post') as post:
+
+            post.return_value = post_mock()
+            email_answer.send_back()
         raw_emails = RawIncomingEmail.objects.filter(message_id=email_answer.message_id)
         self.assertTrue(raw_emails)
         raw_email = raw_emails[0]
