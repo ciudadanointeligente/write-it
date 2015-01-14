@@ -35,3 +35,4 @@ class RawIncomingEmail(models.Model):
     writeitinstance = models.ForeignKey(WriteItInstance, related_name='raw_emails', null=True)
     answer = models.OneToOneField(Answer, related_name='raw_email', null=True)
     problem = models.BooleanField(default=False)
+    message_id = models.CharField(max_length=2048, default="")
