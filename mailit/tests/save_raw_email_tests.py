@@ -17,8 +17,10 @@ class IncomingRawEmailTestCase(TestCase):
     def test_create_one(self):
         '''Instanciate an incoming raw email'''
         raw_email = RawIncomingEmail(content=self.email_content)
+
         self.assertTrue(raw_email)
         self.assertEquals(raw_email.content, self.email_content)
+        self.assertFalse(raw_email.problem)
         
     def test_it_automatically_saves(self):
         '''It automatically saves the answer when an incoming email arrives'''
