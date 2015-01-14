@@ -111,7 +111,6 @@ class IncomingEmailAutomaticallySavesRawMessage(TestCase, IncomingRawEmailMixin)
         '''If answer is none when saving then it keeps on being none'''
         class NotGoingToReturnAnyAnswer(EmailAnswer):
             def save(self):
-                #Im returning None
                 return None
 
         handler = EmailHandler(answer_class = NotGoingToReturnAnyAnswer)
@@ -120,4 +119,16 @@ class IncomingEmailAutomaticallySavesRawMessage(TestCase, IncomingRawEmailMixin)
         raw_email = RawIncomingEmail.objects.get(message_id=email_answer.message_id)
         self.assertIsNone(raw_email.answer)
 
-
+    @skip('gotta check API first, because it is not returning the answer')
+    def test_it_relates_to_an_answer_using_web_answer_creation(self):
+        '''When creating an answer using the API then it also relates the answer to the raw email'''
+        handler = EmailHandler()
+        email_answer = handler.handle(self.email_content)
+        email_answer.send_back()
+        raw_emails = RawIncomingEmail.objects.filter(message_id=email_answer.message_id)
+        self.assertTrue(raw_emails)
+        raw_email = raw_emails[0]
+        # now making sure that it created an answer
+        answer = Answer.objects.get(message=self.outbound_message.message)
+        self.assertIsNotNone(raw_email.answer)
+        self.assertEquals(raw_email.answer, answer)
