@@ -361,3 +361,20 @@ if 'SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL' in os.environ \
     #         'INDEX_NAME': 'haystack',
     #     },
     # }
+
+RABBIT_USERNAME = 'writeit'
+RABBIT_PASSWORD = 'writeit'
+RABBIT_HOST = 'localhost' #or some server dns/ip
+RABBIT_VHOST = 'writeitvhost'
+BROKER_URL = 'amqp://%s:%s@%s:5672/%s' % (RABBIT_USERNAME,RABBIT_PASSWORD,RABBIT_HOST,RABBIT_VHOST)
+
+# CELERY_ACCEPT_CONTENT = ['json']
+# CELERY_ACCEPT_CONTENT = ['application/json']
+# CELERY_TASKS_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER = 'json'
+# from kombu import serialization
+# serialization.registry._decoders.pop("application/x-python-serialize")
+
+CELERY_TIMEZONE = 'UTC+3'
+CELERY_ENABLE_UTC = True
+CELERY_CREATE_MISSING_QUEUES = True
