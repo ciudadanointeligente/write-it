@@ -12,6 +12,7 @@ from email_reply_parser import EmailReplyParser
 import quopri
 import HTMLParser
 from flufl.bounce import all_failures, scan_message
+from mailit.models import RawIncomingEmail
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
@@ -94,7 +95,11 @@ class EmailHandler():
         self.message = None
         self.answer_class = answer_class
 
+    def save_raw_email(self, lines):
+        raw_email = RawIncomingEmail.objects.create(content=lines)
+
     def handle(self, lines):
+        self.save_raw_email(lines)
         answer = self.answer_class()
         msgtxt = ''.join(lines)
 
