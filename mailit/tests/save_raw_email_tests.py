@@ -16,4 +16,5 @@ class IncomingRawEmailTestCase(TestCase):
         f.close()
         raw_email = RawIncomingEmail(content=email_content)
         self.assertTrue(raw_email)
+        self.assertEquals(raw_email.content, email_content)
         
