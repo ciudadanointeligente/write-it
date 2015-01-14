@@ -88,7 +88,11 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
         if self.is_bounced:
             self.report_bounce()
         else:
-            self.save()
+            raw_email = RawIncomingEmail.objects.get(message_id=self.message_id)
+            answer = self.save()
+            raw_email.answer = answer
+            raw_email.save()
+
 
 
 class EmailHandler():

@@ -10,14 +10,7 @@ from ..bin import config
 from django.contrib.auth.models import User
 from mailit.bin.handleemail import EmailAnswer
 from django.utils.unittest import skip
-
-
-class AnswerForThisTestCase(EmailAnswer):
-    def save(self):
-        OutboundMessageIdentifier.create_answer(self.outbound_message_identifier, self.content_text)
-
-    def report_bounce(self):
-        pass
+from mailit.management.commands.handleemail import AnswerForManageCommand
 
 
 class IncomingRawEmailMixin():
@@ -99,19 +92,18 @@ class IncomingEmailAutomaticallySavesRawMessage(TestCase, IncomingRawEmailMixin)
 
         self.assertTrue(raw_emails)
 
-    @skip('Need to find a way to find what answer was created based on this email')
     def test_it_relates_it_to_an_answer(self):
         '''After handling email the answer should be related'''
 
-        handler = EmailHandler(answer_class = AnswerForThisTestCase)
+        handler = EmailHandler(answer_class = AnswerForManageCommand)
         email_answer = handler.handle(self.email_content)
         email_answer.send_back()
-        answer = Answer.objects.get(message=self.outbound_message.message)
-
-        raw_emails = RawIncomingEmail.objects.filter(answer=answer)
+        raw_emails = RawIncomingEmail.objects.filter(message_id=email_answer.message_id)
         self.assertTrue(raw_emails)
-        self.assertEquals(raw_emails.count(), 1)
         raw_email = raw_emails[0]
-        self.assertEquals(raw_email.content, self.email_content)
+        # now making sure that it created an answer
+        answer = Answer.objects.get(message=self.outbound_message.message)
+        self.assertIsNotNone(raw_email.answer)
+        self.assertEquals(raw_email.answer, answer)
 
 
