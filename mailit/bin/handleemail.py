@@ -61,6 +61,7 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
         self.outbound_message_identifier = ''
         self.email_from = ''
         self.when = ''
+        self.message_id = None # http://en.wikipedia.org/wiki/Message-ID
         self.requests_session = requests.Session()
         username = config.WRITEIT_USERNAME
         apikey = config.WRITEIT_API_KEY
@@ -98,8 +99,7 @@ class EmailHandler():
     def save_raw_email(self, lines):
         raw_email = RawIncomingEmail.objects.create(content=lines)
 
-    def handle(self, lines):
-        self.save_raw_email(lines)
+    def instanciate_answer(self, lines):
         answer = self.answer_class()
         msgtxt = ''.join(lines)
 
@@ -117,6 +117,7 @@ class EmailHandler():
         the_recipient = msg["To"]
         answer.subject = msg["Subject"]
         answer.when = msg["Date"]
+        answer.message_id = msg["Message-ID"]
 
         the_recipient = re.sub(r"\n", "", the_recipient)
 
@@ -147,13 +148,11 @@ class EmailHandler():
         logging.info(log)
         return answer
 
+    def handle(self, lines):
+        self.save_raw_email(lines)
+        email_answer = self.instanciate_answer(lines)
 
-
-
-
-
-
-
+        return email_answer
 
 if __name__ == '__main__': # pragma: no cover
     lines = sys.stdin.readlines()
