@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
-from nuntium.models import WriteItInstance, OutboundMessage, read_template_as_string
+from nuntium.models import WriteItInstance, OutboundMessage, read_template_as_string,\
+        Answer
 from django.utils.translation import ugettext_lazy as _
 
 content_template = read_template_as_string('templates/mailit/mails/content_template.txt', \
@@ -29,3 +30,9 @@ class BouncedMessageRecord(models.Model):
     bounce_text = models.TextField()
     date = models.DateTimeField(auto_now=True)
 
+class RawIncomingEmail(models.Model):
+    content = models.TextField()
+    writeitinstance = models.ForeignKey(WriteItInstance, related_name='raw_emails', null=True)
+    answer = models.OneToOneField(Answer, related_name='raw_email', null=True)
+    problem = models.BooleanField(default=False)
+    message_id = models.CharField(max_length=2048, default="")
