@@ -20,7 +20,7 @@ class IncomingRawEmailTestCase(TestCase):
         self.assertEquals(raw_email.content, email_content)
         
     def test_it_automatically_saves(self):
-        '''It automatically saves the answer when an incoming email arives'''
+        '''It automatically saves the answer when an incoming email arrives'''
         f = open('mailit/tests/fixture/mail.txt')
         email_content = f.readlines()
         f.close()
