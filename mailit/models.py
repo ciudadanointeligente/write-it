@@ -31,3 +31,4 @@ class BouncedMessageRecord(models.Model):
 
 class RawIncomingEmail(models.Model):
     content = models.TextField()
+    writeitinstance = models.ForeignKey(WriteItInstance, related_name='raw_emails', null=True)
