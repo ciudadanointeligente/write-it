@@ -5,7 +5,7 @@ import os
 import logging
 from mailit.models import RawIncomingEmail
 from ..bin.handleemail import EmailHandler
-from nuntium.models import WriteItInstance
+from nuntium.models import WriteItInstance, Answer
 
 class IncomingRawEmailTestCase(TestCase):
     def setUp(self):
@@ -35,8 +35,21 @@ class IncomingRawEmailTestCase(TestCase):
         raw_email.writeitinstance = instance
         raw_email.save()
 
+        instance = WriteItInstance.objects.get(id=instance.id)
         raw_emails = instance.raw_emails.all()
 
         self.assertTrue(raw_emails)
         self.assertIn(raw_email, raw_emails)
 
+    def test_can_be_related_to_an_answe(self):
+        '''A raw mail can be related to an answer'''
+        answer = Answer.objects.all()[0]
+        with self.assertRaises(RawIncomingEmail.DoesNotExist) as error:
+            answer.raw_email
+        raw_email = RawIncomingEmail(content=self.email_content)
+        raw_email.answer = answer
+        raw_email.save()
+
+        answer = Answer.objects.get(id=answer.id)
+        self.assertTrue(answer.raw_email)
+        self.assertEquals(answer.raw_email, raw_email)
