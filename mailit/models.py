@@ -29,3 +29,5 @@ class BouncedMessageRecord(models.Model):
     bounce_text = models.TextField()
     date = models.DateTimeField(auto_now=True)
 
+class RawIncomingEmail(models.Model):
+    content = models.TextField()
