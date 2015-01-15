@@ -16,6 +16,7 @@ from tastypie.paginator import Paginator
 from django.http import Http404, HttpResponseBadRequest
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from tastypie.bundle import Bundle
 
 class PagePaginator(Paginator):
     def get_offset(self):
@@ -220,6 +221,7 @@ class AnswerCreationResource(Resource):
         object_class = Answer
         authentication = ApiKeyAuthentication()
         allowed_methods = ['post', ]
+        always_return_data = True
 
 
     def obj_create(self, bundle, **kwargs):
@@ -231,7 +233,18 @@ class AnswerCreationResource(Resource):
             raise ImmediateHttpResponse(response=http.HttpUnauthorized())
 
         answer_content = bundle.data['content']
-        OutboundMessageIdentifier.create_answer(identifier_key, answer_content)
+        answer = OutboundMessageIdentifier.create_answer(identifier_key, answer_content)
+        bundle.obj = answer
+        bundle.data['id'] = bundle.obj.id
+        return bundle
+
+    def detail_uri_kwargs(self, bundle_or_obj=None):
+        kwargs = {}
+        if isinstance(bundle_or_obj, Bundle):
+            kwargs[self._meta.detail_uri_name] = getattr(bundle_or_obj.obj, self._meta.detail_uri_name)
+        else:
+            kwargs[self._meta.detail_uri_name] = getattr(bundle_or_obj, self._meta.detail_uri_name)
+        return kwargs
 
 
 class HandleBouncesResource(Resource):

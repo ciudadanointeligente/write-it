@@ -13,6 +13,7 @@ import quopri
 import HTMLParser
 from flufl.bounce import all_failures, scan_message
 from mailit.models import RawIncomingEmail
+from nuntium.models import Answer
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
@@ -53,6 +54,13 @@ class EmailSaveMixin(object):
             'status_code':result.status_code
             }
         logging.info(log)
+        answer = None
+        try:
+            answer_id = json.loads(result.content)['id']
+            answer = Answer.objects.get(id=answer_id)
+        except Exception, e:
+            pass
+        return answer
 
 class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
     def __init__(self):

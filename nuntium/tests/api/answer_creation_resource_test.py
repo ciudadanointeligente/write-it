@@ -44,6 +44,9 @@ class AnswerCreationResource(ResourceTestCase):
         answers_count = Answer.objects.count()
 
         self.assertEquals(answers_count, previous_answers + 1)
+        answer_json = self.deserialize(response)
+        self.assertEquals(answer_json['content'], content)
+        self.assertIn('id', answer_json.keys())
 
 
     def test_authorization_using_api_key(self):
