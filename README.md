@@ -21,7 +21,7 @@ System Requirements
 
  * [Elasticsearch](http://www.elasticsearch.org/)
 
- Sometimes it's required
+ It's required if you want to play around seaching messages and answers, this part is optional.
 
  * [Urllib3](http://urllib3.readthedocs.org/en/latest/)
 
@@ -41,13 +41,31 @@ Set up the database, creating an admin user when prompted:
 
     ./manage.py syncdb && ./manage.py migrate
 
+Troubleshooting database migration
+----------------------------------
+There's a problem migrating and the problem looks like 
+
+	django.db.utils.OperationalError: no such table: tastypie_apikey
+
+It can be fixed by running it twice.
+
 Then run the server:
 
     ./manage.py runserver
 
 
-Testing
--------
+
+
+Testing and Development
+-----------------------
+For testing porpuses we're using a separate popit-api from which to pull people. For that you need to have MongoDB running, here is the [download page and installation instructions](http://www.mongodb.org/downloads).
+
+After you have mongodb running you can do in a separate terminal:
+
+	./start_local_popit_api.bash
+
+
+
 For testing you could run ./test.sh
 
 Coverage Analysis
