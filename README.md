@@ -25,6 +25,16 @@ System Requirements
 
  * [Urllib3](http://urllib3.readthedocs.org/en/latest/)
 
+ * [libffi](https://sourceware.org/libffi/)
+
+ In ubuntu you can do ```sudo apt-get install libffi-dev```
+
+ * Libssl
+
+ In ubuntu you can do ```sudo apt-get install libssl-dev```
+
+
+
 Write-it is built using Django. You should install Django and its dependencies inside a virtualenv. We suggest you use [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/) to create and manage virtualenvs, so if you don’t already have it, [go install it](http://virtualenvwrapper.readthedocs.org/en/latest/install.html#basic-installation), remembering in particular to add the required lines to your shell startup file.
 
 With virtualenvwrapper installed, clone this repo, `cd` into it, and create a virtualenv:
