@@ -16,3 +16,6 @@ celerybeat-schedule
 popit-api-for-testing
 src
 *.egg-info
+
+.vagrant/
+Vagrantfile

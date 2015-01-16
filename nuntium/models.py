@@ -654,9 +654,7 @@ class Confirmation(models.Model):
 
     @property
     def is_confirmed(self):
-        if self.confirmated_at is None:
-            return False
-        return True
+        return self.confirmated_at is not None
 
 
     @classmethod
@@ -664,7 +662,6 @@ class Confirmation(models.Model):
         return str(uuid.uuid1().hex)
 
     def get_absolute_url(self):
-
         return reverse('confirm', kwargs={'slug': self.key})
 
 

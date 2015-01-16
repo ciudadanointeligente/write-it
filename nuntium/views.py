@@ -87,15 +87,8 @@ class MessageDetailView(DetailView):
         the_message = super(MessageDetailView, self).get_object()
         if not the_message.public:
             raise Http404
-        is_confirmed = False
-        if the_message.confirmated:
-            is_confirmed = the_message.confirmated
-        else:
-            is_confirmed = the_message.confirmation.is_confirmed
-
-        if not is_confirmed:
+        if not (the_message.confirmated or the_message.confirmation.is_confirmed):
             raise Http404
-
         return the_message
 
 class ConfirmView(DetailView):
