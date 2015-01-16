@@ -2,22 +2,6 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block extrajs %}
-$.fn.editable.defaults.mode = 'inline';
-$('.contact_value').editable({
-  'success' : function(response, newValue) {
-      $(this).closest('li').removeClass('alert-danger', 1000 )
-    }
-});
-{% endblock extrajs %}
-
-
-{% block extrascripts %}
-<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
-<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-{% endblock extrascripts %}
-
-
 {% block header %}
 {% include 'nuntium/profiles/top_menu.html' with section='your-instances' %}
 {% endblock header %}
