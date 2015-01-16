@@ -102,7 +102,7 @@ class BasicInstanceCreateFormTestCase(TestCase):
         self.assertNotIn("notify_owner_when_new_answer", form.fields)
         self.assertNotIn("autoconfirm_api_messages", form.fields)
 
-
+@skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class EmailCreationWhenPullingFromPopit(TestCase):
     def setUp(self):
         super(EmailCreationWhenPullingFromPopit, self).setUp()

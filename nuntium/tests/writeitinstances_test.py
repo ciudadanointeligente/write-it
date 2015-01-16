@@ -122,6 +122,7 @@ class InstanceTestCase(TestCase):
 from nuntium.popit_api_instance import PopitApiInstance
 from requests.exceptions import ConnectionError
 
+@skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
     def setUp(self):
         super(WriteItInstanceLoadingPeopleFromAPopitApiTestCase, self).setUp()
@@ -130,6 +131,7 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
         self.person1 = Person.objects.all()[0]
 
         self.owner = User.objects.all()[0]
+
 
     def test_load_persons_from_a_popit_api(self):
         '''Loading persons from a popit api'''
