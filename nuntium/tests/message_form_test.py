@@ -86,7 +86,6 @@ class MessageFormTestCase(TestCase):
         self.assertTrue("author_name" in form.fields)
         self.assertTrue("author_email" in form.fields)
         self.assertTrue("slug" not in form.fields)
-        self.assertTrue("public"  in form.fields)
         self.assertNotIn('moderated', form.fields)
         self.assertNotIn('confirmated', form.fields)
 

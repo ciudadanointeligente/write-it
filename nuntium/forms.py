@@ -89,7 +89,7 @@ class MessageCreateForm(ModelForm):
 
     class Meta:
         model = Message
-        exclude = ("writeitinstance", "status", "slug", "moderated", "confirmated")
+        exclude = ("writeitinstance", "status", "slug", "moderated", "confirmated", "public")
 
 
 class MessageSearchForm(SearchForm):
