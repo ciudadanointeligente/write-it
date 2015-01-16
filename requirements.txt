@@ -30,5 +30,5 @@ dj-static==0.0.5
 psycopg2==2.5.1
 static==0.4
 wsgiref==0.1.2
-kombu==3.0.24
-billiard==3.3.0.18
+kombu
+billiard==2.7.3.31
