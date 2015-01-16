@@ -126,6 +126,17 @@ class OutboundMessageIdentifierTestCase(TestCase):
 
         self.assertEquals(the_answer.content, answer_content)
 
+    def test_create_an_answer_returns_the_answer_created(self):
+        '''OutboundMessageIdentifier.create_answer returns an answer'''
+        identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
+        answer_content = "La fiera no tiene pulgas."
+        returned_answer = OutboundMessageIdentifier.create_answer(identifier.key, answer_content)
+        the_person = self.outbound_message.contact.person
+        the_answer = Answer.objects.get(message=self.outbound_message.message, person=the_person, content=answer_content)
+
+        self.assertEquals(returned_answer, the_answer)
+
+
 
 
 

@@ -9,7 +9,7 @@ Write-it is an application that aims to deliver messages to people whose contact
 
 Write-it is a layer on top of [popit](http://popit.mysociety.org) from where it takes the people and adds contacts. The way it delivers messages is using plugins for example: mailit. And this approach allows for future ways of delivering for example: twitter, whatsapp, fax or pager.
 
-Future uses are in [votainteligente](http://www.votainteligente.cl) to replace the old "preguntales" (You can [check here](http://municipales2012.votainteligente.cl/valdivia/preguntales), to see how it used to work) feature, could be in the way for the site [writetothem](http://www.writetothem.com/) and any parlamentary monitoring site.
+Future uses are in [votainteligente](http://www.votainteligente.cl) to replace the old "preguntales" (You can [check here](http://municipales2012.votainteligente.cl/valdivia/preguntales), to see how it used to work) feature, could be in the way for the site [writetothem](http://www.writetothem.com/) and any parliamentary monitoring site.
 
 
 
@@ -21,7 +21,7 @@ System Requirements
 
  * [Elasticsearch](http://www.elasticsearch.org/)
 
- Sometimes it's required
+ It's required if you want to play around seaching messages and answers, this part is optional.
 
  * [Urllib3](http://urllib3.readthedocs.org/en/latest/)
 
@@ -41,14 +41,46 @@ Set up the database, creating an admin user when prompted:
 
     ./manage.py syncdb && ./manage.py migrate
 
+Troubleshooting database migration
+----------------------------------
+There's a problem migrating and the problem looks like 
+
+	django.db.utils.OperationalError: no such table: tastypie_apikey
+
+It can be fixed by running it twice.
+
 Then run the server:
 
     ./manage.py runserver
 
 
-Testing
--------
-For testing you could run ./test.sh
+
+
+Testing and Development
+-----------------------
+
+If you want to test without PopitAPI or Elasticsearch
+-----------------------------------------------------
+Elasticsearch and a popit api both are optional and can be turned off by creating a new local_settings.py file ```vi writeit/local_settings.py``` with the following content
+
+
+```
+LOCAL_POPIT = False
+LOCAL_ELASTICSEARCH = False
+```
+
+Testing with Popit and Elasticsearch
+------------------------------------
+If you want to test the pulling from popit parts, we're using a separate popit-api from which to pull people. For that you need to have MongoDB running, here is the [download page and installation instructions](http://www.mongodb.org/downloads).
+
+After you have mongodb running you can do in a separate terminal:
+
+	./start_local_popit_api.bash
+
+Running tests
+--------------
+
+For testing you need to run ```./test.py```
 
 Coverage Analysis
 -----------------
@@ -58,7 +90,7 @@ For coverage analysis run ./coverage.sh
 API clients
 -----------
 
-Write-it has been used mostly through it's REST API for which there are a number of API clients.
+Write-it has been used mostly through its REST API for which there are a number of API clients.
 The github repos and the status of the development are listed below:
 - [writeit-rails](https://github.com/ciudadanointeligente/writeit-rails) ALPHA
 - [writeit-django](https://github.com/ciudadanointeligente/writeit-django) ALPHA

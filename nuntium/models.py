@@ -601,7 +601,8 @@ class OutboundMessageIdentifier(models.Model):
         identifier = cls.objects.get(key=identifier_key)
         message = identifier.outbound_message.message
         person = identifier.outbound_message.contact.person
-        Answer.objects.create(message=message, person=person, content=content)
+        the_created_answer = Answer.objects.create(message=message, person=person, content=content)
+        return the_created_answer
 
     def save(self, *args, **kwargs):
         if not self.key:

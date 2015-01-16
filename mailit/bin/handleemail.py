@@ -12,6 +12,8 @@ from email_reply_parser import EmailReplyParser
 import quopri
 import HTMLParser
 from flufl.bounce import all_failures, scan_message
+from mailit.models import RawIncomingEmail
+from nuntium.models import Answer
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
@@ -52,6 +54,13 @@ class EmailSaveMixin(object):
             'status_code':result.status_code
             }
         logging.info(log)
+        answer = None
+        try:
+            answer_id = json.loads(result.content)['id']
+            answer = Answer.objects.get(id=answer_id)
+        except Exception, e:
+            pass
+        return answer
 
 class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
     def __init__(self):
@@ -60,6 +69,7 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
         self.outbound_message_identifier = ''
         self.email_from = ''
         self.when = ''
+        self.message_id = None # http://en.wikipedia.org/wiki/Message-ID
         self.requests_session = requests.Session()
         username = config.WRITEIT_USERNAME
         apikey = config.WRITEIT_API_KEY
@@ -86,7 +96,16 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
         if self.is_bounced:
             self.report_bounce()
         else:
-            self.save()
+
+            
+            answer = self.save()
+            raw_answers = RawIncomingEmail.objects.filter(message_id=self.message_id)
+            if answer is not None and raw_answers:
+                raw_email = raw_answers[0]
+                raw_email = RawIncomingEmail.objects.get(message_id=self.message_id)
+                raw_email.answer = answer
+                raw_email.save()
+
 
 
 class EmailHandler():
@@ -94,7 +113,11 @@ class EmailHandler():
         self.message = None
         self.answer_class = answer_class
 
-    def handle(self, lines):
+    def save_raw_email(self, lines):
+        raw_email = RawIncomingEmail.objects.create(content=lines)
+        return raw_email
+
+    def instanciate_answer(self, lines):
         answer = self.answer_class()
         msgtxt = ''.join(lines)
 
@@ -112,6 +135,7 @@ class EmailHandler():
         the_recipient = msg["To"]
         answer.subject = msg["Subject"]
         answer.when = msg["Date"]
+        answer.message_id = msg["Message-ID"]
 
         the_recipient = re.sub(r"\n", "", the_recipient)
 
@@ -142,13 +166,16 @@ class EmailHandler():
         logging.info(log)
         return answer
 
+    def set_raw_email_with_processed_email(self, raw_email, email_answer):
+        raw_email.message_id = email_answer.message_id
+        raw_email.save()
 
+    def handle(self, lines):
+        raw_email = self.save_raw_email(lines)
+        email_answer = self.instanciate_answer(lines)
+        self.set_raw_email_with_processed_email(raw_email, email_answer)
 
-
-
-
-
-
+        return email_answer
 
 if __name__ == '__main__': # pragma: no cover
     lines = sys.stdin.readlines()

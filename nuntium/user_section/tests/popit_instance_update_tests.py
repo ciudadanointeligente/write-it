@@ -38,13 +38,13 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         '''My popit apis admin page brings all my popit apis'''
         benito = User.objects.create_user(username="benito", password="feroz")
         benitos_instance = WriteItInstance.objects.create(
-            name='instance 1', 
+            name='instance 1',
             slug='instance-1',
             owner=benito)
 
 
         writeitinstance = WriteItInstance.objects.create(
-            name='instance 1', 
+            name='instance 1',
             slug='instance-1',
             owner=self.user)
 
@@ -106,7 +106,7 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         '''There is a url to update a popit instance'''
         api_instance = ApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(
-            name='instance 1', 
+            name='instance 1',
             slug='instance-1',
             owner=self.user)
 
@@ -127,7 +127,7 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         popit_load_data()
         api_instance = ApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(
-            name='instance 1', 
+            name='instance 1',
             slug='instance-1',
             owner=self.user)
 
@@ -153,7 +153,7 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         '''
         api_instance = ApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(
-            name='instance 1', 
+            name='instance 1',
             slug='instance-1',
             owner=self.user)
 
@@ -179,7 +179,7 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         benito = User.objects.create_user(username="benito", password="feroz")
         api_instance = ApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(
-            name='instance 1', 
+            name='instance 1',
             slug='instance-1',
             owner=benito)
 
@@ -189,7 +189,7 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
             )
         url = reverse('rerelate-writeit-popit', kwargs={'pk':record.pk})
         c = Client()
-        #fiera is trying to update a 
+        #fiera is trying to update a
         c.login(username="fieraferoz", password="feroz")
 
         response = c.post(url)
@@ -265,7 +265,7 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
         call_command('back_fill_writeit_popit_records'\
                 , verbosity=0\
                 , interactive = False)
-        
+
         w = self.owner.writeitinstances.first()
         records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
         self.assertEquals(records.count(), 0)
@@ -277,18 +277,19 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
                 , "i_dont_exist"\
                 , verbosity=0\
                 , interactive = False)
-        
+
         w = self.owner.writeitinstances.first()
         records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
         self.assertEquals(records.count(), 0)
 
 from nuntium.user_section.forms import RelatePopitInstanceWithWriteItInstance
 from nuntium.popit_api_instance import PopitPullingStatus
+@skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
     def setUp(self):
         self.owner = User.objects.create_user(username="fieraferoz", password="feroz")
         self.writeitinstance = WriteItInstance.objects.create(
-            name='instance 1', 
+            name='instance 1',
             slug='instance-1',
             owner=self.owner)
         self.data = {
