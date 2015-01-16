@@ -282,6 +282,7 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
         self.assertEquals(records.count(), 0)
 
 from nuntium.user_section.forms import RelatePopitInstanceWithWriteItInstance
+@skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
     def setUp(self):
         self.owner = User.objects.create_user(username="fieraferoz", password="feroz")
