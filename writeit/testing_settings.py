@@ -3,7 +3,7 @@ import os
 LOCAL_POPIT = True
 LOCAL_ELASTICSEARCH = True
 SOUTH_TESTS_MIGRATE = False
-
+CELERY_ALWAYS_EAGER = True
 TRAVIS = 'TRAVIS' in os.environ and os.environ['TRAVIS']
 
 if TRAVIS:
