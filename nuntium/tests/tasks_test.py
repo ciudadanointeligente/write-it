@@ -11,10 +11,9 @@ from django.conf import settings
 
 
 class TasksTestCase(TestCase):
-
     def setUp(self):
         super(TasksTestCase,self).setUp()
-        
+
     def test_it_has_a_name(self):
         self.assertEquals(send_mails_task.name,'nuntium.tasks.send_mails_task')
 
@@ -60,6 +59,7 @@ class TasksTestCase(TestCase):
 from nuntium.tasks import pull_from_popit
 
 class PullFromPopitTask(TestCase):
+
     def setUp(self):
         super(PullFromPopitTask, self).setUp()
         self.api_instance1 = PopitApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
@@ -77,9 +77,7 @@ class PullFromPopitTask(TestCase):
         Person.objects.all().delete()
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         result = pull_from_popit.delay(writeitinstance, self.api_instance1)
-        print result.result
         self.assertTrue(writeitinstance.persons.all())
-
 
 
     # def test_pull_from_popit_task(self):
