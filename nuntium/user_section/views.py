@@ -189,23 +189,26 @@ class WriteItInstanceOwnerMixin(SingleObjectMixin):
     def get_writeitinstance(self):
         return get_object_or_404(WriteItInstance, pk=self.kwargs['pk'])
 
-    def get_object(self):
+    def check_ownership(self):
         self.writeitinstance = self.get_writeitinstance()
         if not self.writeitinstance.owner.__eq__(self.request.user):
             raise Http404
+
+    def get_object(self):
+        self.check_ownership()
         self.object = super(WriteItInstanceOwnerMixin, self).get_object()
         return self.object
 
 
 class WriteItRelatedModelMixin(SingleObjectMixin):
     def get_writeitinstance(self):
-        obj = get_object_or_404(self.model, pk=self.kwargs['pk'])
+        obj = get_object_or_404(self.model, writeitinstance__pk=self.kwargs['pk'])
         return obj.writeitinstance
 
 
-class UpdateTemplateWithWriteitMixin(UpdateView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
+class UpdateTemplateWithWriteitMixin(WriteItRelatedModelMixin, UpdateView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
     def get_object(self):
-        super(UpdateTemplateWithWriteitMixin, self).get_object()
+        self.check_ownership()
         self.object = self.model.objects.get(writeitinstance=self.writeitinstance)
         return self.object
 
