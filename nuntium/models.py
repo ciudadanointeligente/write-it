@@ -30,7 +30,6 @@ import os
 from popit_api_instance import PopitApiInstance
 from requests.exceptions import ConnectionError
 
-
 def read_template_as_string(path, file_source_path=__file__):
     script_dir = os.path.dirname(file_source_path)
     result = ''
@@ -80,17 +79,22 @@ class WriteItInstance(models.Model):
 
         return (True, None)
 
-    def load_persons_from_a_popit_api(self, popit_url):
-        api_instance, created = PopitApiInstance.objects.get_or_create(url=popit_url)
-        success_relating_people, error = self.relate_with_persons_from_popit_api_instance(api_instance)
+    def _load_persons_from_a_popit_api(self, popit_api_instance):
+        success_relating_people, error = self.relate_with_persons_from_popit_api_instance(popit_api_instance)
 
         if success_relating_people:
             record, created = WriteitInstancePopitInstanceRecord\
                 .objects.get_or_create(
                     writeitinstance=self,
-                    popitapiinstance=api_instance)
+                    popitapiinstance=popit_api_instance)
 
         return (success_relating_people, error)
+
+    def load_persons_from_a_popit_api(self, popit_url):
+        '''This is an async wrapper for getting people from the api'''
+        api_instance, created = PopitApiInstance.objects.get_or_create(url=popit_url)
+        from nuntium.tasks import pull_from_popit
+        return pull_from_popit.delay(self, api_instance)
 
     def get_absolute_url(self):
         return reverse('instance_detail', kwargs={

@@ -1,14 +1,16 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from django.core.urlresolvers import reverse
-from nuntium.models import WriteItInstance, Message, Membership, Confirmation, WriteitInstancePopitInstanceRecord
-from nuntium.views import MessageCreateForm, PerInstanceSearchForm
+from ..models import WriteItInstance, Message, Membership, Confirmation
+from ..views import MessageCreateForm, PerInstanceSearchForm
+from ..models import WriteitInstancePopitInstanceRecord
 from popit.models import ApiInstance, Person
 from django.utils.unittest import skipUnless
 from django.contrib.auth.models import User
 from django.utils.translation import activate
 from django.utils.translation import ugettext as _
 from django.conf import settings
+from mock import patch
 from nuntium.popit_api_instance import PopitApiInstance
 from requests.exceptions import ConnectionError
 
@@ -117,6 +119,19 @@ class InstanceTestCase(TestCase):
         self.assertIn(raton, [r for r in writeitinstance.persons.all()])
         self.assertIn(fiera, [r for r in writeitinstance.persons.all()])
 
+    def test_it_uses_the_async_task_to_pull_people_from_popit(self):
+        '''It uses the async task to pull people from popit'''
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+
+        '''
+        I'm going to patch the method to know that it was run, I could do some other properties but I'm thinking that
+        this is the easyest to know if the method was used.
+        '''
+        with patch('nuntium.tasks.pull_from_popit.delay') as async_pulling_from_popit:
+            writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+            async_pulling_from_popit.assert_called_with(writeitinstance, popit_api_instance)
+
 
 @skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
@@ -171,7 +186,6 @@ class PopitWriteitRelationRecord(TestCase):
     in some for that does not force them to be
     1-1
     '''
-
     def setUp(self):
         self.writeitinstance = WriteItInstance.objects.first()
         self.api_instance = ApiInstance.objects.first()
