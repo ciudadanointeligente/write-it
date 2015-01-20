@@ -4,12 +4,10 @@ from django.core.urlresolvers import reverse
 from ..models import WriteItInstance, Message, Membership,\
     NewAnswerNotificationTemplate, ConfirmationTemplate, \
     WriteitInstancePopitInstanceRecord, Answer
-
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
     WriteItInstanceCreateForm, AnswerForm, \
     RelatePopitInstanceWithWriteItInstance
-
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -363,11 +361,10 @@ class WriteitPopitRelatingView(WriteItInstanceOwnerMixin, FormView):
         return url
 
     def form_valid(self, form):
-        result = form.relate()
-        if not result[0]:
-            view_messages.add_message(self.request, view_messages.INFO, result[1].message)
-        else:
-            view_messages.add_message(self.request, view_messages.SUCCESS, _("Everything went ok"))
+        form.relate()
+        # It returns an AsyncResult http://celery.readthedocs.org/en/latest/reference/celery.result.html
+        # that we could use for future information about this process
+        view_messages.add_message(self.request, view_messages.INFO, _("We are now getting the people from popit"))
         response = super(WriteitPopitRelatingView, self).form_valid(form)
         return response
 
