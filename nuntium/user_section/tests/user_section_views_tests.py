@@ -1,24 +1,23 @@
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
-from django.core.urlresolvers  import reverse
+from django.core.urlresolvers import reverse
 from django.core.urlresolvers import reverse as original_reverse
 from ...models import WriteItInstance
 from django.contrib.auth.models import User
 from django.test.client import Client, RequestFactory
 from ..views import WriteItInstanceUpdateView
-from django.forms import ModelForm
 from django.contrib.sites.models import Site
 from django.conf import settings
+from django.db.models import Q
+
 from django.utils.translation import activate
 from ..forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
-                            WriteItInstanceCreateForm
+    WriteItInstanceCreateForm
 from popit.models import Person
-from django.forms.models import model_to_dict
 from contactos.models import Contact
 from contactos.forms import ContactCreateForm
 from ..forms import NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
 from mailit.forms import MailitTemplateForm
 from django.utils.unittest import skipUnless
-
 
 
 class UserSectionTestCase(TestCase):
@@ -30,29 +29,26 @@ class UserSectionTestCase(TestCase):
     # and if given a certain next_url then it also tests that
     # rigth after login it should go to that url
     def assertRedirectToLogin(self, response, next_url=None):
-
         self.assertEquals(response.status_code, 302)
-        #when redirecting it always returns the full url based on test server so
-        #in order to compare it I'll remove the testserver from the url
-        location_this_response_is_taking_us_to = response['Location'].replace("http://testserver","")
-        #the login url comes with the localized url
-        #So I'll set it to english and then remove it from the url
+        # when redirecting it always returns the full url based on test server so
+        # in order to compare it I'll remove the testserver from the url
+        location_this_response_is_taking_us_to = response['Location'].replace("http://testserver", "")
+        # the login url comes with the localized url
+        # So I'll set it to english and then remove it from the url
         activate('en')
-        login_url = original_reverse('django.contrib.auth.views.login').replace('/en','')
+        login_url = original_reverse('django.contrib.auth.views.login').replace('/en', '')
         self.assertTrue(location_this_response_is_taking_us_to.startswith(login_url))
         if next_url:
             current_domain = "http://" + Site.objects.get_current().domain
             next_url = next_url.replace(current_domain, "")
-            self.assertTrue(location_this_response_is_taking_us_to.endswith("?next="+next_url))
+            self.assertTrue(location_this_response_is_taking_us_to.endswith("?next=" + next_url))
 
-
-    #this code smels not nice
-    #but it serves its porpouse for now if there is anyone that can improve it
-    #feel free to do so
+    # this code smels not nice
+    # but it serves its porpouse for now if there is anyone that can improve it
+    # feel free to do so
 
 
 class UserViewTestCase(UserSectionTestCase):
-
     def test_account_url_exists(self):
         url = reverse('account')
 
@@ -64,7 +60,6 @@ class UserViewTestCase(UserSectionTestCase):
         response = c.get(url)
         self.assertRedirectToLogin(response, next_url=url)
 
-
     def test_the_url_exists_and_is_reachable_when_logged(self):
         c = Client()
         c.login(username='fiera', password='feroz')
@@ -74,6 +69,7 @@ class UserViewTestCase(UserSectionTestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "nuntium/profiles/your-profile.html")
         self.assertTemplateUsed(response, "base_edit.html")
+
 
 class YourContactsViewTestCase(UserSectionTestCase):
     def setUp(self):
@@ -142,6 +138,7 @@ class YourInstancesViewTestCase(UserSectionTestCase):
         response = client.get(url)
         self.assertRedirectToLogin(response, next_url=url)
 
+
 class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
     def setUp(self):
         super(WriteitInstanceAdvancedUpdateTestCase, self).setUp()
@@ -154,9 +151,9 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
             'moderation_needed_in_all_messages': 1,
             'allow_messages_using_form': 1,
             'rate_limiter': 3,
-            'notify_owner_when_new_answer' : 1,
-            'autoconfirm_api_messages' : 1
-        }
+            'notify_owner_when_new_answer': 1,
+            'autoconfirm_api_messages': 1,
+            }
 
     def test_writeitinstance_basic_form(self):
         form = WriteItInstanceAdvancedUpdateForm()
@@ -172,20 +169,20 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         self.assertIn("autoconfirm_api_messages", form.fields)
 
     def test_writeitinstance_advanced_form_save(self):
-        url = reverse('writeitinstance_advanced_update', kwargs={'pk':self.writeitinstance.pk})
+        url = reverse('writeitinstance_advanced_update', kwargs={'pk': self.writeitinstance.pk})
         c = Client()
         c.login(username=self.owner.username, password='admin')
-        response = c.post(url,data=self.data, follow=True)
+        response = c.post(url, data=self.data, follow=True)
         self.assertRedirects(response, url)
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
         self.assertEquals(writeitinstance.moderation_needed_in_all_messages, True)
         self.assertEquals(writeitinstance.allow_messages_using_form, 1)
         self.assertEquals(writeitinstance.rate_limiter, 3)
-        self.assertEquals(writeitinstance.notify_owner_when_new_answer , 1)
-        self.assertEquals(writeitinstance.autoconfirm_api_messages , 1 )
+        self.assertEquals(writeitinstance.notify_owner_when_new_answer, 1)
+        self.assertEquals(writeitinstance.autoconfirm_api_messages, 1)
 
     def test_update_view_is_not_reachable_by_a_non_user(self):
-        url = reverse('writeitinstance_advanced_update', kwargs={'pk':self.writeitinstance.pk})
+        url = reverse('writeitinstance_advanced_update', kwargs={'pk': self.writeitinstance.pk})
         client = Client()
         response = client.get(url)
         self.assertRedirectToLogin(response, next_url=url)
@@ -194,18 +191,18 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         # I think that this test is unnecesary but
         # it could be of some use in the future
         # I have no opinion on this =/
-        fiera = User.objects.create_user(username="fierita", \
-            email="fiera@votainteligente.cl", \
-            password="feroz")
-        url = reverse('writeitinstance_advanced_update', kwargs={'pk':self.writeitinstance.pk})
+        fiera = User.objects.create_user(
+            username="fierita",
+            email="fiera@votainteligente.cl",
+            password="feroz",
+            )
+        url = reverse('writeitinstance_advanced_update', kwargs={'pk': self.writeitinstance.pk})
         c = Client()
         c.login(username=fiera.username, password='feroz')
 
-        response = c.post(url,data=self.data, follow=True)
+        response = c.post(url, data=self.data, follow=True)
 
         self.assertEquals(response.status_code, 404)
-
-
 
 
 class WriteitInstanceUpdateTestCase(UserSectionTestCase):
@@ -218,12 +215,12 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         self.marcel = Person.objects.get(name="Marcel")
 
     def test_writeit_instance_edit_url_exists(self):
-        url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
+        url = reverse('writeitinstance_basic_update', kwargs={'pk': self.writeitinstance.pk})
 
         self.assertTrue(url)
 
     def test_update_view_is_not_reachable_by_a_non_user(self):
-        url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
+        url = reverse('writeitinstance_basic_update', kwargs={'pk': self.writeitinstance.pk})
         client = Client()
         response = client.get(url)
         self.assertRedirectToLogin(response, next_url=url)
@@ -236,15 +233,15 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
     def test_writeitinstance_basic_form_save(self):
         data = {
             'name': 'name 1',
-            'persons':[self.pedro.id, self.marcel.id]
-        }
-        url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
+            'persons': [self.pedro.id, self.marcel.id],
+            }
+        url = reverse('writeitinstance_basic_update', kwargs={'pk': self.writeitinstance.pk})
         c = Client()
         c.login(username=self.owner.username, password='admin')
 
-        response = c.post(url,data=data, follow=True)
+        response = c.post(url, data=data, follow=True)
 
-        #self.assertEquals(response.status_code, 200)
+        # self.assertEquals(response.status_code, 200)
         self.assertRedirects(response, url)
 
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
@@ -252,17 +249,16 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         self.assertIn(self.pedro, writeitinstance.persons.all())
         self.assertIn(self.marcel, writeitinstance.persons.all())
 
-
     def test_removing_a_person_from_writeitinstance_basic_form_save(self):
         data = {
             'name': 'name 1',
-            'persons':[self.marcel.id]
-        }
-        url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
+            'persons': [self.marcel.id],
+            }
+        url = reverse('writeitinstance_basic_update', kwargs={'pk': self.writeitinstance.pk})
         c = Client()
         c.login(username=self.owner.username, password='admin')
 
-        response = c.post(url,data=data, follow=True)
+        c.post(url, data=data, follow=True)
 
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
         self.assertNotIn(self.pedro, writeitinstance.persons.all())
@@ -274,18 +270,18 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         fiera = User.objects.create_user(username="fierita", email="fiera@votainteligente.cl", password="feroz")
         data = {
             'name': 'name 1',
-            'persons':[self.pedro.id, self.marcel.id]
-        }
-        url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
+            'persons': [self.pedro.id, self.marcel.id],
+            }
+        url = reverse('writeitinstance_basic_update', kwargs={'pk': self.writeitinstance.pk})
         c = Client()
         c.login(username=fiera.username, password='feroz')
 
-        response = c.post(url,data=data, follow=True)
+        response = c.post(url, data=data, follow=True)
 
         self.assertEquals(response.status_code, 404)
 
     def test_update_view(self):
-        url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
+        url = reverse('writeitinstance_basic_update', kwargs={'pk': self.writeitinstance.pk})
         request = self.factory.get(url)
         request.user = self.user
 
@@ -301,7 +297,7 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         c = Client()
         c.login(username=fiera.username, password='feroz')
 
-        url = reverse('writeitinstance_basic_update', kwargs={'pk':self.writeitinstance.pk})
+        url = reverse('writeitinstance_basic_update', kwargs={'pk': self.writeitinstance.pk})
 
         response = c.get(url)
 
@@ -313,7 +309,7 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         c = Client()
         c.login(username=self.writeitinstance.owner.get_username(), password='feroz')
 
-        url = reverse('writeitinstance_template_update', kwargs={'pk':self.writeitinstance.pk})
+        url = reverse('writeitinstance_template_update', kwargs={'pk': self.writeitinstance.pk})
 
         response = c.get(url)
         self.assertEquals(response.status_code, 200)
@@ -332,17 +328,16 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         non_user = Client()
 
         response2 = non_user.get(url)
-        self.assertRedirectToLogin(response2,next_url=url)
+        self.assertRedirectToLogin(response2, next_url=url)
 
         # Benito does not own the instance
-        fiera = User.objects.create_user(username="benito", email="benito@votainteligente.cl", password="feroz")
+        User.objects.create_user(username="benito", email="benito@votainteligente.cl", password="feroz")
 
         fiera_client = Client()
         fiera_client.login(username="benito", password="feroz")
 
         response = fiera_client.get(url)
         self.assertEquals(response.status_code, 404)
-
 
 
 class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
@@ -355,13 +350,12 @@ class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
         self.pedro = Person.objects.get(name="Pedro")
         self.marcel = Person.objects.get(name="Marcel")
 
-
     def test_update_template_form(self):
         data = {
-        'template_html':self.writeitinstance.new_answer_notification_template.template_html,
-        'template_text':self.writeitinstance.new_answer_notification_template.template_text,
-        'subject_template':'subject =)'
-        }
+            'template_html': self.writeitinstance.new_answer_notification_template.template_html,
+            'template_text': self.writeitinstance.new_answer_notification_template.template_text,
+            'subject_template': 'subject =)',
+            }
         form = NewAnswerNotificationTemplateForm(data,
             writeitinstance=self.writeitinstance,
             instance=self.writeitinstance.new_answer_notification_template)
@@ -371,8 +365,7 @@ class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
         self.assertEquals(template.subject_template, data['subject_template'])
 
     def test_update_template_view(self):
-
-        url = reverse('edit_new_answer_notification_template', kwargs={'pk':self.writeitinstance.id})
+        url = reverse('edit_new_answer_notification_template', kwargs={'pk': self.writeitinstance.id})
 
         self.assertTrue(url)
 
@@ -382,63 +375,60 @@ class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
         c.login(username="fiera", password="feroz")
 
         data = {
-        'template_html':self.writeitinstance.new_answer_notification_template.template_html,
-        'template_text':self.writeitinstance.new_answer_notification_template.template_text,
-        'subject_template':'subject =)'
-        }
+            'template_html': self.writeitinstance.new_answer_notification_template.template_html,
+            'template_text': self.writeitinstance.new_answer_notification_template.template_text,
+            'subject_template': 'subject =)',
+            }
 
         response = c.post(url, data=data)
-        url = reverse('writeitinstance_template_update', kwargs={'pk':self.writeitinstance.pk})
+        url = reverse('writeitinstance_template_update', kwargs={'pk': self.writeitinstance.pk})
         self.assertRedirects(response, url)
 
-        actual_subject = self.writeitinstance.new_answer_notification_template.subject_template
-
+        # actual_subject = self.writeitinstance.new_answer_notification_template.subject_template
 
     def test_a_non_owner_cannot_update_a_template(self):
-        not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
+        User.objects.create_user(username="not_owner", password="secreto")
 
-        url = reverse('edit_new_answer_notification_template', kwargs={'pk':self.writeitinstance.id})
+        url = reverse('edit_new_answer_notification_template', kwargs={'pk': self.writeitinstance.id})
         c = Client()
-        #logging in as another person different to the owner
+        # logging in as another person different to the owner
         c.login(username="not_owner", password="secreto")
 
         data = {
-        'template_html':self.writeitinstance.new_answer_notification_template.template_html,
-        'template_text':self.writeitinstance.new_answer_notification_template.template_text,
-        'subject_template':'subject =)'
-        }
+            'template_html': self.writeitinstance.new_answer_notification_template.template_html,
+            'template_text': self.writeitinstance.new_answer_notification_template.template_text,
+            'subject_template': 'subject =)',
+            }
 
         response = c.post(url, data=data)
 
         self.assertEquals(response.status_code, 404)
 
     def test_login_required_to_do_this_kind_of_stuff(self):
-        url = reverse('edit_new_answer_notification_template', kwargs={'pk':self.writeitinstance.id})
+        url = reverse('edit_new_answer_notification_template', kwargs={'pk': self.writeitinstance.id})
         c = Client()
         data = {
-        'template_html':self.writeitinstance.new_answer_notification_template.template_html,
-        'template_text':self.writeitinstance.new_answer_notification_template.template_text,
-        'subject_template':'subject =)'
-        }
+            'template_html': self.writeitinstance.new_answer_notification_template.template_html,
+            'template_text': self.writeitinstance.new_answer_notification_template.template_text,
+            'subject_template': 'subject =)',
+            }
 
         response = c.post(url, data=data)
         self.assertRedirectToLogin(response)
 
-from django.db.models import Q
 
 class CreateUserSectionInstanceTestCase(UserSectionTestCase):
     def setUp(self):
         super(CreateUserSectionInstanceTestCase, self).setUp()
         self.user = User.objects.first()
         self.data = {
-            "name":'instance',
-            "popit_url":settings.TEST_POPIT_API_URL
-        }
+            "name": 'instance',
+            "popit_url": settings.TEST_POPIT_API_URL,
+            }
 
     def test_create_an_instance_form(self):
         '''Create an instance with a very simple form in the user interface'''
 
-        
         form = WriteItInstanceCreateForm(data=self.data, owner=self.user)
         self.assertTrue(form)
         self.assertTrue(form.is_valid())
@@ -447,7 +437,7 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         attrs_for_name = form.fields['name'].widget.attrs
         self.assertIn('class', attrs_for_name)
         self.assertEquals(attrs_for_name['class'], 'form-control')
-        #everything ok until now
+        # everything ok until now
         attrs_for_popit_url = form.fields['popit_url'].widget.attrs
         self.assertIn('class', attrs_for_popit_url)
         self.assertEquals(attrs_for_popit_url['class'], 'form-control')
@@ -484,7 +474,6 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         response = c.get(url)
         self.assertRedirectToLogin(response)
 
-
     def test_it_redirects_to_your_instances(self):
         '''When get to create an instance it redirects to your instances'''
         url = reverse('create_writeit_instance')
@@ -497,7 +486,6 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         your_instances_url = reverse('your-instances')
         self.assertRedirects(response, your_instances_url)
 
-
     def test_your_instances_carries_a_create_form(self):
         '''Your instances has a form for creating an instance'''
         your_instances_url = reverse('your-instances')
@@ -507,5 +495,3 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         response = c.get(your_instances_url)
         self.assertIn('new_instance_form', response.context)
         self.assertIsInstance(response.context['new_instance_form'], WriteItInstanceCreateForm)
-        
-

@@ -1,15 +1,11 @@
 # coding=utf8
 from global_test_case import GlobalTestCase as TestCase
-from global_test_case import ResourceGlobalTestCase as ResourceTestCase
-import os
-import logging
 from mailit.models import RawIncomingEmail
 from ..bin.handleemail import EmailHandler
-from nuntium.models import WriteItInstance, Answer, OutboundMessageIdentifier, OutboundMessage
+from nuntium.models import WriteItInstance, Answer, OutboundMessage
 from ..bin import config
 from django.contrib.auth.models import User
 from mailit.bin.handleemail import EmailAnswer
-from django.utils.unittest import skip
 from mailit.management.commands.handleemail import AnswerForManageCommand
 from mock import patch
 
@@ -19,6 +15,7 @@ class IncomingRawEmailMixin():
         f = open('mailit/tests/fixture/mail.txt')
         self.email_content = f.readlines()
         f.close()
+
 
 class IncomingRawEmailTestCase(TestCase, IncomingRawEmailMixin):
     def setUp(self):
@@ -33,7 +30,6 @@ class IncomingRawEmailTestCase(TestCase, IncomingRawEmailMixin):
         self.assertEquals(raw_email.content, self.email_content)
         self.assertFalse(raw_email.problem)
         self.assertFalse(raw_email.message_id)
-        
 
     def test_it_relates_the_raw_mail_to_an_instance(self):
         '''The raw message can be related to an instance'''
@@ -51,7 +47,7 @@ class IncomingRawEmailTestCase(TestCase, IncomingRawEmailMixin):
     def test_can_be_related_to_an_answe(self):
         '''A raw mail can be related to an answer'''
         answer = Answer.objects.all()[0]
-        with self.assertRaises(RawIncomingEmail.DoesNotExist) as error:
+        with self.assertRaises(RawIncomingEmail.DoesNotExist):
             answer.raw_email
         raw_email = RawIncomingEmail(content=self.email_content)
         raw_email.answer = answer
@@ -60,6 +56,7 @@ class IncomingRawEmailTestCase(TestCase, IncomingRawEmailMixin):
         answer = Answer.objects.get(id=answer.id)
         self.assertTrue(answer.raw_email)
         self.assertEquals(answer.raw_email, raw_email)
+
 
 class IncomingEmailAutomaticallySavesRawMessage(TestCase, IncomingRawEmailMixin):
     def setUp(self):
@@ -80,15 +77,15 @@ class IncomingEmailAutomaticallySavesRawMessage(TestCase, IncomingRawEmailMixin)
     def test_it_automatically_saves(self):
         '''It automatically saves the answer when an incoming email arrives'''
         handler = EmailHandler()
-        answer = handler.handle(self.email_content)
+        handler.handle(self.email_content)
         raw_emails = RawIncomingEmail.objects.all()
         self.assertTrue(raw_emails)
         self.assertTrue(raw_emails.filter(content=self.email_content))
-    
+
     def test_it_sets_the_message_id(self):
         '''It automatically saves the answer when an incoming email arrives'''
         handler = EmailHandler()
-        answer = handler.handle(self.email_content)
+        handler.handle(self.email_content)
         raw_emails = RawIncomingEmail.objects.filter(message_id='<CAA5PczfGfdhf29wgK=8t6j7hm8HYsBy8Qg87iTU2pF42Ez3VcQ@mail.gmail.com>')
 
         self.assertTrue(raw_emails)
@@ -96,7 +93,7 @@ class IncomingEmailAutomaticallySavesRawMessage(TestCase, IncomingRawEmailMixin)
     def test_it_relates_it_to_an_answer(self):
         '''After handling email the answer should be related'''
 
-        handler = EmailHandler(answer_class = AnswerForManageCommand)
+        handler = EmailHandler(answer_class=AnswerForManageCommand)
         email_answer = handler.handle(self.email_content)
         email_answer.send_back()
         raw_emails = RawIncomingEmail.objects.filter(message_id=email_answer.message_id)
@@ -107,14 +104,13 @@ class IncomingEmailAutomaticallySavesRawMessage(TestCase, IncomingRawEmailMixin)
         self.assertIsNotNone(raw_email.answer)
         self.assertEquals(raw_email.answer, answer)
 
-
     def test_if_answer_is_none_then_it_does_not_store_it(self):
         '''If answer is none when saving then it keeps on being none'''
         class NotGoingToReturnAnyAnswer(EmailAnswer):
             def save(self):
                 return None
 
-        handler = EmailHandler(answer_class = NotGoingToReturnAnyAnswer)
+        handler = EmailHandler(answer_class=NotGoingToReturnAnyAnswer)
         email_answer = handler.handle(self.email_content)
         email_answer.send_back()
         raw_email = RawIncomingEmail.objects.get(message_id=email_answer.message_id)
@@ -126,16 +122,16 @@ class IncomingEmailAutomaticallySavesRawMessage(TestCase, IncomingRawEmailMixin)
         person = self.outbound_message.message.people[0]
 
         answer = Answer.objects.create(
-            message = self.outbound_message.message,
-            person = person
+            message=self.outbound_message.message,
+            person=person,
             )
+
         class PostMock():
             def __init__(self):
                 self.status_code = 201
-                self.content = '{"content": "Fiera tiene una pulga", "id": %(id)s, "key": "47bc10f49c3811e4a1f30026b6e903f7", "resource_uri": "/api/v1/create_answer/%(id)s/"}' % {'id':answer.id}
+                self.content = '{"content": "Fiera tiene una pulga", "id": %(id)s, "key": "47bc10f49c3811e4a1f30026b6e903f7", "resource_uri": "/api/v1/create_answer/%(id)s/"}' % {'id': answer.id}
 
         return PostMock
-
 
     def test_it_relates_to_an_answer_using_web_answer_creation(self):
         '''When creating an answer using the API then it also relates the answer to the raw email'''

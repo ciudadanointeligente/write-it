@@ -1,15 +1,11 @@
 from global_test_case import GlobalTestCase as TestCase
 from ..plugins import OutputPlugin
 
-from contactos.models import Contact, ContactType
-
-
 
 class PluginsStructure(TestCase):
     def setUp(self):
-    	super(PluginsStructure,self).setUp()
-        from plugin_mock.mental_message_plugin import MentalMessage
-
+        super(PluginsStructure, self).setUp()
+        from plugin_mock.mental_message_plugin import MentalMessage  # noqa
 
     def test_output_plugins(self):
         plugins = OutputPlugin.get_plugins()
@@ -18,19 +14,18 @@ class PluginsStructure(TestCase):
         for plugin in plugins:
             plugin_names.append(plugin.name)
 
-
         self.assertTrue("mental-message" in plugin_names)
 
 
 class OutputPluginTestCase(TestCase):
-	def setUp(self):
-		pass
+    def setUp(self):
+        pass
 
-	def test_it_returns_contact_type(self):
-		plugin = OutputPlugin()
-		plugin.name = "name"
-		plugin.title = "The title thing"
-		contact_type = plugin.get_contact_type()
+    def test_it_returns_contact_type(self):
+        plugin = OutputPlugin()
+        plugin.name = "name"
+        plugin.title = "The title thing"
+        contact_type = plugin.get_contact_type()
 
-		self.assertEquals(contact_type.name, plugin.name)
-		self.assertEquals(contact_type.label_name, plugin.title)
+        self.assertEquals(contact_type.name, plugin.name)
+        self.assertEquals(contact_type.label_name, plugin.title)

@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os
-import sys
-
 from setuptools import find_packages, setup
 
 install_requires = ['Django',
@@ -28,8 +25,8 @@ install_requires = ['Django',
 'unidecode']
 
 
-
-setup(name='write-it',
+setup(
+    name='write-it',
     version='0.0.1',
     url='http://writeit.ciudadanointeligente.org',
     author='Fundación Ciudadano Inteligente',
@@ -40,4 +37,4 @@ setup(name='write-it',
     install_requires=install_requires,
     zip_safe=False,
     license='License',
-)
+    )

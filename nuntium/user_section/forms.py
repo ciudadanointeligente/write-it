@@ -1,21 +1,15 @@
 # coding=utf-8
-from django.forms import ModelForm, ModelMultipleChoiceField, CheckboxSelectMultiple, \
-                        CharField, EmailField, SelectMultiple, TextInput, Textarea, \
-                        URLField, IntegerField, CheckboxInput, NumberInput, URLInput, \
-                        Select
-from ..models import Message, WriteItInstance, OutboundMessage, \
-    Confirmation, Membership, NewAnswerNotificationTemplate, \
+from django.forms import ModelForm, SelectMultiple, TextInput, Textarea, \
+    CheckboxInput, NumberInput
+
+from ..models import WriteItInstance, \
+    NewAnswerNotificationTemplate, \
     ConfirmationTemplate, Answer
-from contactos.models import Contact
+
 from django.forms import ValidationError, ModelChoiceField, Form, URLField
+
 from django.utils.translation import ugettext as _
 from popit.models import Person
-from haystack.forms import SearchForm
-from django.utils.html import format_html
-from django.forms.util import flatatt
-from django.utils.encoding import force_text
-from django.utils.safestring import mark_safe
-from itertools import chain
 from ..forms import WriteItInstanceCreateFormPopitUrl
 
 
@@ -29,15 +23,17 @@ class WriteItInstanceBasicForm(ModelForm):
             'persons': SelectMultiple(attrs={'class': 'form-control chosen-person-select'}),
         }
 
+
 class WriteItInstanceAdvancedUpdateForm(ModelForm):
     class Meta:
         model = WriteItInstance
-        fields = ['moderation_needed_in_all_messages', \
-        'allow_messages_using_form', \
-        'rate_limiter', \
-        'notify_owner_when_new_answer', \
-        'autoconfirm_api_messages'
-        ]
+        fields = [
+            'moderation_needed_in_all_messages',
+            'allow_messages_using_form',
+            'rate_limiter',
+            'notify_owner_when_new_answer',
+            'autoconfirm_api_messages',
+            ]
         widgets = {
             'moderation_needed_in_all_messages': CheckboxInput(attrs={'class': 'form-control'}),
             'allow_messages_using_form': CheckboxInput(attrs={'class': 'form-control'}),
@@ -45,6 +41,7 @@ class WriteItInstanceAdvancedUpdateForm(ModelForm):
             'notify_owner_when_new_answer': CheckboxInput(attrs={'class': 'form-control'}),
             'autoconfirm_api_messages': CheckboxInput(attrs={'class': 'form-control'}),
         }
+
 
 class NewAnswerNotificationTemplateForm(ModelForm):
 
@@ -69,26 +66,29 @@ class NewAnswerNotificationTemplateForm(ModelForm):
             'template_text': Textarea(attrs={'class': 'form-control'}),
         }
 
+
 class ConfirmationTemplateForm(ModelForm):
     class Meta:
         model = ConfirmationTemplate
-        fields = ['subject','content_html','content_text',]
+        fields = ['subject', 'content_html', 'content_text']
         widgets = {
             'subject': TextInput(attrs={'class': 'form-control'}),
             'content_html': Textarea(attrs={'class': 'form-control'}),
             'content_text': Textarea(attrs={'class': 'form-control'}),
         }
 
-    def __init__(self, *args,**kwargs):
+    def __init__(self, *args, **kwargs):
         if "writeitinstance" not in kwargs:
             raise ValidationError(_("WriteIt Instance not present"))
         self.writeitinstance = kwargs.pop("writeitinstance")
         super(ConfirmationTemplateForm, self).__init__(*args, **kwargs)
 
+
 class SimpleInstanceCreateFormPopitUrl(WriteItInstanceCreateFormPopitUrl):
     class Meta:
         model = WriteItInstance
         fields = ('owner', 'name', 'popit_url')
+
 
 class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
     class Meta:
@@ -111,9 +111,10 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
         self.relate_with_people()
         return instance
 
-class AnswerForm(ModelForm):
 
+class AnswerForm(ModelForm):
     person = ModelChoiceField(queryset=Person.objects.none())
+
     class Meta:
         model = Answer
         fields = ('person', 'content')
@@ -127,7 +128,6 @@ class AnswerForm(ModelForm):
         self.fields['person'].queryset = self.message.people
         self.fields['person'].widget.attrs['class'] = 'form-control'
 
-
     def save(self, commit=True):
         answer = super(AnswerForm, self).save(commit=False)
         answer.message = self.message
@@ -136,8 +136,10 @@ class AnswerForm(ModelForm):
 
 
 class RelatePopitInstanceWithWriteItInstance(Form):
-    popit_url = URLField(label=_('Url of the popit instance api'), \
-        help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"))
+    popit_url = URLField(
+        label=_('Url of the popit instance api'),
+        help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"),
+        )
 
     def __init__(self, *args, **kwargs):
         self.writeitinstance = kwargs.pop('writeitinstance')

@@ -2,14 +2,14 @@ from mailit.bin.handleemail import EmailAnswer, EmailHandler
 from mailit.models import BouncedMessageRecord
 import logging
 from nuntium.models import OutboundMessageIdentifier, OutboundMessage, OutboundMessagePluginRecord
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 import sys
-from django.core.mail import mail_admins
 from django.conf import settings
 from django.core.mail.message import EmailMultiAlternatives
 import traceback
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
+
 
 class AnswerForManageCommand(EmailAnswer):
     def save(self):
@@ -32,7 +32,6 @@ class AnswerForManageCommand(EmailAnswer):
         contact.save()
 
 
-
 class Command(BaseCommand):
     args = ''
     help = 'Handles incoming EmailAnswer'
@@ -45,28 +44,27 @@ class Command(BaseCommand):
             text_content = "New incomming email"
             subject = "New incomming email"
 
-            mail = EmailMultiAlternatives('%s%s' % (settings.EMAIL_SUBJECT_PREFIX, subject), 
-                text_content,#content
-                settings.DEFAULT_FROM_EMAIL,#From
-                [a[1] for a in settings.ADMINS]#To
+            mail = EmailMultiAlternatives('%s%s' % (settings.EMAIL_SUBJECT_PREFIX, subject),
+                text_content,  # content
+                settings.DEFAULT_FROM_EMAIL,  # From
+                [a[1] for a in settings.ADMINS]  # To
                 )
             mail.attach('mail.txt', ''.join(lines), 'text/plain')
             mail.send()
 
-        handler = EmailHandler(answer_class = AnswerForManageCommand)
+        handler = EmailHandler(answer_class=AnswerForManageCommand)
         try:
             answer = handler.handle(lines)
             answer.send_back()
-        except Exception, e:
+        except:
             tb = traceback.format_exc()
-            text_content = "Error the traceback was:\n"+ tb
+            text_content = "Error the traceback was:\n" + tb
             #mail_admins('Error handling incoming email', html_message, html_message=html_message)
             subject = "Error handling incoming email"
-            mail = EmailMultiAlternatives('%s%s' % (settings.EMAIL_SUBJECT_PREFIX, subject), 
-                text_content,#content
-                settings.DEFAULT_FROM_EMAIL,#From
-                [a[1] for a in settings.ADMINS]#To
+            mail = EmailMultiAlternatives('%s%s' % (settings.EMAIL_SUBJECT_PREFIX, subject),
+                text_content,  # content
+                settings.DEFAULT_FROM_EMAIL,  # From
+                [a[1] for a in settings.ADMINS],  # To
                 )
             mail.attach('mail.txt', ''.join(lines), 'text/plain')
             mail.send()
-        

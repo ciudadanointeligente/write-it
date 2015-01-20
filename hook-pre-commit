@@ -1,0 +1,21 @@
+#!/bin/bash
+# A pre-commit hook to check code for PEP8 compliance.
+# Copy or symlink this to .git/hooks/pre-commit to make sure your code
+# always satisfies flake8.
+
+command -v flake8 >/dev/null 2>&1 || {
+  echo >&2 "flake8 does not appear to be available. Unable to lint code."
+  exit 1
+}
+
+flake8
+exit_code=$?
+
+if [ $exit_code -eq 0 ]
+then
+    echo -e "\033[32mOK \033[0mflake8"
+else
+    echo -e "\033[31mFAILED \033[0mflake8"
+fi
+
+exit $exit_code

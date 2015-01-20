@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from tastypie.resources import ModelResource, ALL_WITH_RELATIONS, Resource
 from .models import WriteItInstance, Message, Answer, \
-                            OutboundMessageIdentifier, OutboundMessage, \
-                            Confirmation
+    OutboundMessageIdentifier, OutboundMessage, Confirmation
 from tastypie.authentication import ApiKeyAuthentication
 from tastypie.authorization import Authorization
 from django.core.exceptions import ObjectDoesNotExist
@@ -18,6 +17,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from tastypie.bundle import Bundle
 
+
 class PagePaginator(Paginator):
     def get_offset(self):
         if 'page' in self.request_data:
@@ -28,7 +28,7 @@ class PagePaginator(Paginator):
         page = int(self.request_data.get('page'))
         offset = (page - 1) * self.get_limit()
         return offset
-        
+
 
 class PersonResource(ModelResource):
     class Meta:
@@ -39,6 +39,7 @@ class PersonResource(ModelResource):
     def dehydrate(self, bundle):
         bundle.data['resource_uri'] = bundle.obj.popit_url
         return bundle
+
 
 class WriteItInstanceResource(ModelResource):
     # I should add persons but the thing is that
@@ -56,33 +57,32 @@ class WriteItInstanceResource(ModelResource):
     def prepend_urls(self):
         return [
             url(
-                r"^(?P<resource_name>%s)/(?P<id>[-\d]+)/messages/$" %
-                 self._meta.resource_name,\
-                 self.wrap_view('handle_instance_messages'),
-                 name="api_handle_messages"),
+                r"^(?P<resource_name>%s)/(?P<id>[-\d]+)/messages/$" % self._meta.resource_name,
+                self.wrap_view('handle_instance_messages'),
+                name="api_handle_messages"),
             url(
-                r"^(?P<resource_name>%s)/(?P<id>[-\d]+)/answers/$" %
-                 self._meta.resource_name,\
-                 self.wrap_view('handle_instance_answers'),
-                 name="api_handle_messages"),
-        ]
+                r"^(?P<resource_name>%s)/(?P<id>[-\d]+)/answers/$" % self._meta.resource_name,
+                self.wrap_view('handle_instance_answers'),
+                name="api_handle_messages"),
+            ]
 
-    def handle_instance_messages(self,request, *args, **kwargs):
+    def handle_instance_messages(self, request, *args, **kwargs):
         basic_bundle = self.build_bundle(request=request)
-        obj = self.cached_obj_get(bundle=basic_bundle, \
-                        **self.remove_api_resource_names(kwargs))
+        obj = self.cached_obj_get(
+            bundle=basic_bundle,
+            **self.remove_api_resource_names(kwargs)
+            )
         return MessageResource().get_list(request, writeitinstance=obj)
 
     def handle_instance_answers(self, request, *args, **kwargs):
         basic_bundle = self.build_bundle(request=request)
-        obj = self.cached_obj_get(bundle=basic_bundle, \
+        obj = self.cached_obj_get(bundle=basic_bundle,
                         **self.remove_api_resource_names(kwargs))
         return AnswerResource().get_list(request, writeitinstance=obj)
 
-
     def dehydrate(self, bundle):
         #not completely sure that this is the right way to get the messages
-        bundle.data['messages_uri'] = bundle.data['resource_uri']+'messages/'
+        bundle.data['messages_uri'] = bundle.data['resource_uri'] + 'messages/'
         self.add_persons_to_bundle(bundle)
         return bundle
 
@@ -103,13 +103,17 @@ class WriteItInstanceResource(ModelResource):
             instance.load_persons_from_a_popit_api(bundle.data["popit-api"])
         return bundle
 
+
 class AnswerResource(ModelResource):
-    person = fields.ToOneField(PersonResource,\
-     'person', \
-     full=True, \
-     null=True)
+    person = fields.ToOneField(
+        PersonResource,
+        'person',
+        full=True,
+        null=True,
+        )
+
     class Meta:
-        queryset =  Answer.objects.all().order_by('-created')
+        queryset = Answer.objects.all().order_by('-created')
         resource_name = 'answer'
 
     def get_list(self, request, **kwargs):
@@ -128,15 +132,16 @@ class AnswerResource(ModelResource):
         bundle.data['message_id'] = bundle.obj.message.id
         return bundle
 
+
 class MessageResource(ModelResource):
-    writeitinstance = fields.ToOneField(WriteItInstanceResource, \
+    writeitinstance = fields.ToOneField(WriteItInstanceResource,
         'writeitinstance')
-    answers = fields.ToManyField(AnswerResource, 'answers', \
-        null=True, \
+    answers = fields.ToManyField(AnswerResource, 'answers',
+        null=True,
         full=True)
-    people = fields.ToManyField(PersonResource, 'people', \
-        null=True, \
-        readonly=True, \
+    people = fields.ToManyField(PersonResource, 'people',
+        null=True,
+        readonly=True,
         full=True)
 
     class Meta:
@@ -164,7 +169,7 @@ class MessageResource(ModelResource):
         if 'person__popit_id' in filters:
             try:
                 person = Person.objects.get(popit_id=filters['person__popit_id'])
-            except ObjectDoesNotExist, e:
+            except ObjectDoesNotExist:
                 raise Http404("Person does not exist")
         if person:
             result['person'] = person
@@ -173,10 +178,10 @@ class MessageResource(ModelResource):
     def hydrate(self, bundle):
         persons = []
         instance = WriteItInstanceResource().get_via_uri(
-                bundle.data["writeitinstance"]
-                )
+            bundle.data["writeitinstance"]
+            )
         if not instance.autoconfirm_api_messages:
-            if not 'author_email' in bundle.data:
+            if 'author_email' not in bundle.data:
                 raise ImmediateHttpResponse(response=HttpResponseBadRequest("The author has no email"))
         if 'author_email' in bundle.data:
             # Validating author_email
@@ -215,6 +220,7 @@ class MessageResource(ModelResource):
             Confirmation.objects.create(message=bundle.obj)
         return bundle
 
+
 class AnswerCreationResource(Resource):
     class Meta:
         resource_name = 'create_answer'
@@ -223,12 +229,11 @@ class AnswerCreationResource(Resource):
         allowed_methods = ['post', ]
         always_return_data = True
 
-
     def obj_create(self, bundle, **kwargs):
         identifier_key = bundle.data['key']
         identifier = OutboundMessageIdentifier.objects.get(key=bundle.data['key'])
         owner = identifier.outbound_message.message.writeitinstance.owner
-        
+
         if owner != bundle.request.user:
             raise ImmediateHttpResponse(response=http.HttpUnauthorized())
 
@@ -254,7 +259,6 @@ class HandleBouncesResource(Resource):
         authentication = ApiKeyAuthentication()
         allowed_methods = ['post', ]
 
-
     def obj_create(self, bundle, **kwargs):
         identifier_key = bundle.data['key']
         identifier = OutboundMessageIdentifier.objects.get(key=identifier_key)
@@ -264,4 +268,3 @@ class HandleBouncesResource(Resource):
         contact = outbound_message.contact
         contact.is_bounced = True
         contact.save()
-        

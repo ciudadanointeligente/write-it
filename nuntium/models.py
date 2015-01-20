@@ -8,15 +8,14 @@ from .plugins import OutputPlugin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 import datetime
-from django.utils.timezone import utc
 from djangoplugins.models import Plugin
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template, get_template_from_string
 from django.template import Context, Template
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.contrib.sites.models import Site
 import uuid
 from django.template.defaultfilters import slugify
 import re
@@ -31,11 +30,12 @@ import os
 from popit_api_instance import PopitApiInstance
 from requests.exceptions import ConnectionError
 
+
 def read_template_as_string(path, file_source_path=__file__):
     script_dir = os.path.dirname(file_source_path)
     result = ''
     with open(os.path.join(script_dir, path), 'r') as f:
-       result = f.read()
+        result = f.read()
 
     return result
 
@@ -80,19 +80,17 @@ class WriteItInstance(models.Model):
 
         return (True, None)
 
-
     def load_persons_from_a_popit_api(self, popit_url):
         api_instance, created = PopitApiInstance.objects.get_or_create(url=popit_url)
         success_relating_people, error = self.relate_with_persons_from_popit_api_instance(api_instance)
 
         if success_relating_people:
             record, created = WriteitInstancePopitInstanceRecord\
-                .objects.get_or_create(\
+                .objects.get_or_create(
                     writeitinstance=self,
                     popitapiinstance=api_instance)
 
         return (success_relating_people, error)
-
 
     def get_absolute_url(self):
         return reverse('instance_detail', kwargs={
@@ -148,21 +146,25 @@ class MessagesQuerySet(QuerySet):
             queryset = queryset.filter(outboundmessage__contact__person=person)
         return queryset
 
+
 class MessagesManager(models.Manager):
     def get_queryset(self):
         return MessagesQuerySet(self.model, using=self._db)
 
+
 class PublicMessagesManager(MessagesManager):
     def get_queryset(self):
         queryset = super(PublicMessagesManager, self).get_queryset()
-        return queryset.filter(Q(public=True), Q(confirmated=True), \
+        return queryset.filter(Q(public=True), Q(confirmated=True),
             Q(moderated=True) | Q(moderated=None))
+
 
 class NonModeratedMessagesManager(MessagesManager):
     def get_queryset(self):
         queryset = super(NonModeratedMessagesManager, self).get_queryset()
         return queryset.filter(Q(public=True), Q(confirmated=True))\
-                    .exclude(Q(moderated=True) | Q(moderated=None))
+            .exclude(Q(moderated=True) | Q(moderated=None))
+
 
 class Message(models.Model):
     """Message: Class that contain the info for a model, \
@@ -202,19 +204,18 @@ class Message(models.Model):
                 day=datetime.date.today()
                 )
             if self.writeitinstance.rate_limiter > 0 and \
-                rate_limiter.count >= self.writeitinstance.rate_limiter:
+                    rate_limiter.count >= self.writeitinstance.rate_limiter:
                 raise ValidationError(_('You have reached '
                     + 'your limit for today please try again tomorrow'))
         except ObjectDoesNotExist:
             pass
         super(Message, self).clean()
 
-
     #TODO: only new outbound_messages
     def recently_confirmated(self):
         status = 'ready'
         if not self.public or \
-            self.writeitinstance.moderation_needed_in_all_messages:
+                self.writeitinstance.moderation_needed_in_all_messages:
             moderation, created = Moderation.objects.get_or_create(message=self)
             self.send_moderation_mail()
             status = 'needmodera'
@@ -229,12 +230,10 @@ class Message(models.Model):
 
     @property
     def people(self):
-        people = Person.objects\
-                        .filter(
-                            Q(contact__outboundmessage__message=self) | \
-                            Q(nocontactom__message=self)
-                         ).distinct()
-
+        people = Person.objects.filter(
+            Q(contact__outboundmessage__message=self) |
+            Q(nocontactom__message=self)
+            ).distinct()
 
         return people
 
@@ -246,11 +245,13 @@ class Message(models.Model):
         return list(chain(no_contact_oms, outbound_messages))
 
     def get_absolute_url(self):
-        return reverse('message_detail', \
+        return reverse(
+            'message_detail',
             kwargs={
-            'slug': self.slug,
-            'instance_slug':self.writeitinstance.slug,
-            })
+                'slug': self.slug,
+                'instance_slug': self.writeitinstance.slug,
+                },
+            )
 
     def slugifyme(self):
         if not slugify(unidecode(unicode(self.subject))):
@@ -259,17 +260,16 @@ class Message(models.Model):
         self.slug = slugify(unidecode(unicode(self.subject)))
         #Previously created messages with the same slug
 
-        regex = "^"+self.slug+"(-[0-9]*){0,1}$"
+        regex = "^" + self.slug + "(-[0-9]*){0,1}$"
         previously = Message.objects.filter(slug__regex=regex)
         count = 1
         for message in previously:
-            new_regex = "^"+self.slug+"-(\d+){0,1}$"
+            new_regex = "^" + self.slug + "-(\d+){0,1}$"
             if re.match(new_regex, message.slug) is not None:
                 groups = re.match(new_regex, message.slug).groups()
                 if len(groups) > 0:
                     if int(groups[0]) > count:
                         count = int(groups[0])
-
 
         previously = previously.count()
         if previously > 0:
@@ -288,16 +288,14 @@ class Message(models.Model):
         for person in self.persons:
             self.create_outbound_messages_to_person(person)
 
-
     def create_outbound_messages_to_person(self, person):
         if not person.contact_set.all():
             NoContactOM.objects.get_or_create(message=self, person=person)
             return
-        for contact in person.contact_set.filter(
-            owner=self.writeitinstance.owner):
+        for contact in person.contact_set.filter(owner=self.writeitinstance.owner):
             if not contact.is_bounced:
-                outbound_message = OutboundMessage.objects.\
-                get_or_create(contact=contact, message=self)
+                OutboundMessage.objects.get_or_create(
+                    contact=contact, message=self)
 
     def save(self, *args, **kwargs):
         created = self.id is None
@@ -313,12 +311,11 @@ class Message(models.Model):
             outbound_message.status = 'ready'
             outbound_message.save()
 
-
     def send_moderation_mail(self):
         plaintext = get_template('nuntium/mails/moderation_mail.txt')
         htmly = get_template('nuntium/mails/moderation_mail.html')
         current_site = Site.objects.get_current()
-        current_domain = 'http://'+current_site.domain
+        current_domain = 'http://' + current_site.domain
         url_rejected = current_domain + reverse('moderation_rejected', kwargs={
             'slug': self.moderation.key
             })
@@ -327,26 +324,25 @@ class Message(models.Model):
             'slug': self.moderation.key
             })
 
-        d = Context({
-            'message': self,
-            'url_rejected':url_rejected,
-            'url_accept':url_accept
+        d = Context(
+            {'message': self,
+             'url_rejected': url_rejected,
+             'url_accept': url_accept,
              })
 
         text_content = plaintext.render(d)
         html_content = htmly.render(d)
-        
+
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = settings.DEFAULT_FROM_EMAIL
         else:
-            from_email = self.writeitinstance.slug+"@"+settings.DEFAULT_FROM_DOMAIN
-
+            from_email = self.writeitinstance.slug + "@" + settings.DEFAULT_FROM_DOMAIN
 
         msg = EmailMultiAlternatives(_('Moderation required for\
          a message in WriteIt'),
-            text_content,#content
-            from_email,#From
-            [self.writeitinstance.owner.email]#To
+            text_content,  # content
+            from_email,  # From
+            [self.writeitinstance.owner.email]  # To
             )
         msg.attach_alternative(html_content, "text/html")
         msg.send()
@@ -358,11 +354,10 @@ class Message(models.Model):
         self.set_to_ready()
         self.moderation.success()
 
-
     def __unicode__(self):
         return _('%(subject)s at %(instance)s') % {
-            'subject':self.subject,
-            'instance':self.writeitinstance.name
+            'subject': self.subject,
+            'instance': self.writeitinstance.name,
             }
 
 
@@ -374,30 +369,27 @@ def slugify_message(sender, instance, **kwargs):
 
 pre_save.connect(slugify_message, sender=Message)
 
+
 class Answer(models.Model):
     content = models.TextField()
     person = models.ForeignKey(Person)
-    message = models.ForeignKey(Message, \
-        related_name='answers')
+    message = models.ForeignKey(Message, related_name='answers')
     created = models.DateTimeField(auto_now=True, null=True)
 
     def save(self, *args, **kwargs):
-        memberships = self.message.writeitinstance.\
-                            membership_set.filter(person=self.person)
+        memberships = self.message.writeitinstance.membership_set.filter(person=self.person)
         if memberships.count() == 0:
             raise AttributeError(_("This guy does not belong here"))
         super(Answer, self).save(*args, **kwargs)
 
-
-
-
     def __unicode__(self):
         return _("%(person)s said \"%(content)s\""
-                 +" to the message %(message)s") % {
+                 + " to the message %(message)s") % {
             'person': self.person.name,
             'content': self.content,
-            'message': self.message.subject
+            'message': self.message.subject,
             }
+
 
 # Possible values are: \n {{ user }} is the name of who
 # created the message, \n {{ person }}
@@ -407,74 +399,73 @@ class Answer(models.Model):
 def send_new_answer_payload(sender, instance, created, **kwargs):
     answer = instance
     if created:
-        new_answer_template = answer.message.writeitinstance.\
-                                new_answer_notification_template
+        new_answer_template = answer.message.writeitinstance.new_answer_notification_template
         htmly = get_template_from_string(new_answer_template.template_html)
         texty = get_template_from_string(new_answer_template.template_text)
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = settings.DEFAULT_FROM_EMAIL
         else:
-            from_email = answer.message.writeitinstance.slug+"@"+\
-                            settings.DEFAULT_FROM_DOMAIN
+            from_email = "%s@%s" % (
+                answer.message.writeitinstance.slug, settings.DEFAULT_FROM_DOMAIN)
         subject_template = new_answer_template.subject_template
         for subscriber in answer.message.subscribers.all():
             d = Context({
                 'user': answer.message.author_name,
-                'person':answer.person,
-                'message':answer.message,
-                'answer':answer
+                'person': answer.person,
+                'message': answer.message,
+                'answer': answer,
             })
             html_content = htmly.render(d)
             txt_content = texty.render(d)
             subject = subject_template % {
-            'person':answer.person.name,
-            'message':answer.message.subject
-            }
-            msg = EmailMultiAlternatives(subject, \
-                        txt_content, from_email, [subscriber.email])
+                'person': answer.person.name,
+                'message': answer.message.subject,
+                }
+            msg = EmailMultiAlternatives(
+                subject, txt_content, from_email, [subscriber.email])
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
         if answer.message.writeitinstance.notify_owner_when_new_answer:
             d = Context({
                 'user': answer.message.writeitinstance.owner,
-                'person':answer.person,
-                'message':answer.message,
-                'answer':answer
-            })
+                'person': answer.person,
+                'message': answer.message,
+                'answer': answer,
+                })
             html_content = htmly.render(d)
             txt_content = texty.render(d)
             subject = subject_template % {
-            'person':answer.message.writeitinstance.owner.username,
-            'message':answer.message.subject
-            }
-            msg = EmailMultiAlternatives(subject, txt_content,\
-                         from_email, \
-                         [answer.message.writeitinstance.owner.email])
+                'person': answer.message.writeitinstance.owner.username,
+                'message': answer.message.subject,
+                }
+            msg = EmailMultiAlternatives(
+                subject,
+                txt_content,
+                from_email,
+                [answer.message.writeitinstance.owner.email],
+                )
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
         for webhook in answer.message.writeitinstance.answer_webhooks.all():
             payload = {
-                    'message_id':'/api/v1/message/{0}/'.\
-                                    format(answer.message.id),
-                    'content': answer.content,
-                    'person':answer.person.name,
-                    'person_id':answer.person.popit_url
-            }
+                'message_id': '/api/v1/message/{0}/'.format(answer.message.id),
+                'content': answer.content,
+                'person': answer.person.name,
+                'person_id': answer.person.popit_url,
+                }
             requests.post(webhook.url, data=payload)
 
 
 post_save.connect(send_new_answer_payload, sender=Answer)
 
 
-
-
-
 class OutboundMessageManager(models.Manager):
     def to_send(self, *args, **kwargs):
         query = super(OutboundMessageManager, self).filter(*args, **kwargs)
         return query.filter(status="ready")
+
 
 class AbstractOutboundMessage(models.Model):
     STATUS_CHOICES = (
@@ -485,17 +476,20 @@ class AbstractOutboundMessage(models.Model):
         ("needmodera", _("Needs moderation")),
         )
 
-
     message = models.ForeignKey(Message)
-    status = models.CharField(max_length="10", \
-                choices=STATUS_CHOICES, \
-                default="new")
+    status = models.CharField(
+        max_length="10",
+        choices=STATUS_CHOICES,
+        default="new",
+        )
 
     class Meta:
         abstract = True
 
+
 class NoContactOM(AbstractOutboundMessage):
     person = models.ForeignKey(Person)
+
 
 # This will happen everytime a contact is created
 
@@ -508,24 +502,25 @@ def create_new_outbound_messages_for_newly_created_contact(sender, instance, cre
         return
     writeitinstances = WriteItInstance.objects.filter(owner=contact.owner)
     messages = Message.objects.filter(writeitinstance__in=writeitinstances)
-    no_contact_oms = NoContactOM.objects.filter(\
-        message__in=messages, \
+    no_contact_oms = NoContactOM.objects.filter(
+        message__in=messages,
         person=contact.person)
     # NOTE TO DEVELOPER:
     # now it is automatic that everytime a contact is created
     # the nocontact_om is deleted and we create outbound messages
     # but what if we let the user choose if they want or not that behaviour
     for no_contact_om in no_contact_oms:
-        om = OutboundMessage.objects.create(\
-            contact=contact, \
+        OutboundMessage.objects.create(
+            contact=contact,
             message=no_contact_om.message,
-            #here I should test that it also
+            # here I should test that it also
             # copies the status
-            status=no_contact_om.status
+            status=no_contact_om.status,
             )
 
     no_contact_oms.delete()
 post_save.connect(create_new_outbound_messages_for_newly_created_contact, sender=Contact)
+
 
 class OutboundMessage(AbstractOutboundMessage):
     """docstring for OutboundMessage: This class is \
@@ -539,11 +534,11 @@ class OutboundMessage(AbstractOutboundMessage):
 
     def __unicode__(self):
         return _('%(subject)s sent to %(person)s '
-                            + '(%(contact)s) at %(instance)s') % {
+                 + '(%(contact)s) at %(instance)s') % {
             'subject': self.message.subject,
-            'person':self.contact.person.name,
-            'contact':self.contact.value,
-            'instance':self.message.writeitinstance.name
+            'person': self.contact.person.name,
+            'contact': self.contact.value,
+            'instance': self.message.writeitinstance.name,
         }
 
     def send(self):
@@ -560,11 +555,10 @@ class OutboundMessage(AbstractOutboundMessage):
             if self.contact.contact_type == plugin.get_contact_type():
                 outbound_message_plugin = plugin
                 break
-        outbound_record, created = OutboundMessagePluginRecord.\
-                                    objects.get_or_create(\
-                                        outbound_message=self,
-                                        plugin=plugin.get_model()
-                                        )
+        outbound_record, created = OutboundMessagePluginRecord.objects.get_or_create(
+            outbound_message=self,
+            plugin=plugin.get_model(),
+            )
         if not outbound_record.try_again:
             return
 
@@ -592,6 +586,7 @@ class OutboundMessage(AbstractOutboundMessage):
             self.save()
         MessageRecord.objects.create(content_object=self, status=self.status)
 
+
 class OutboundMessageIdentifier(models.Model):
     outbound_message = models.OneToOneField(OutboundMessage)
     key = models.CharField(max_length=255)
@@ -613,9 +608,11 @@ class OutboundMessageIdentifier(models.Model):
 def create_a_message_record(sender, instance, created, **kwargs):
     outbound_message = instance
     if created:
-        MessageRecord.objects.create(content_object=outbound_message,\
-                    status=outbound_message.status)
-        OutboundMessageIdentifier.objects.create(\
+        MessageRecord.objects.create(
+            content_object=outbound_message,
+            status=outbound_message.status,
+            )
+        OutboundMessageIdentifier.objects.create(
             outbound_message=outbound_message)
 post_save.connect(create_a_message_record, sender=OutboundMessage)
 
@@ -628,18 +625,19 @@ class OutboundMessagePluginRecord(models.Model):
     try_again = models.BooleanField(default=True)
 
 
-
 default_confirmation_template_content = read_template_as_string('templates/nuntium/mails/confirmation/content_template.html')
 
 default_confirmation_template_content_text = read_template_as_string('templates/nuntium/mails/confirmation/content_template.txt')
 
 default_confirmation_template_subject = read_template_as_string('templates/nuntium/mails/confirmation/subject_template.txt')
 
+
 class ConfirmationTemplate(models.Model):
     writeitinstance = models.OneToOneField(WriteItInstance)
     content_html = models.TextField(default=default_confirmation_template_content)
     content_text = models.TextField(default=default_confirmation_template_content_text)
     subject = models.CharField(max_length=512, default=default_confirmation_template_subject)
+
 
 class Confirmation(models.Model):
     message = models.OneToOneField(Message)
@@ -656,7 +654,6 @@ class Confirmation(models.Model):
     def is_confirmed(self):
         return self.confirmated_at is not None
 
-
     @classmethod
     def key_generator(cls):
         return str(uuid.uuid1().hex)
@@ -669,19 +666,20 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
     confirmation = instance
     if created:
         url = reverse('confirm', kwargs={
-            'slug':confirmation.key
+            'slug': confirmation.key
             })
         current_site = Site.objects.get_current()
-        confirmation_full_url = "http://"+current_site.domain+url
-        message_full_url = "http://"+current_site.domain+confirmation.message.get_absolute_url()
+        confirmation_full_url = "http://" + current_site.domain + url
+        message_full_url = "http://" + current_site.domain + confirmation.message.get_absolute_url()
         plaintext = Template(confirmation.message.writeitinstance.confirmationtemplate.content_text)
         htmly = Template(confirmation.message.writeitinstance.confirmationtemplate.content_html)
         subject = confirmation.message.writeitinstance.confirmationtemplate.subject
         subject = subject.rstrip()
 
-        d = Context({'confirmation': confirmation,
-            'confirmation_full_url': confirmation_full_url,
-            'message_full_url' : message_full_url
+        d = Context(
+            {'confirmation': confirmation,
+             'confirmation_full_url': confirmation_full_url,
+             'message_full_url': message_full_url,
              })
 
         text_content = plaintext.render(d)
@@ -689,19 +687,21 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = settings.DEFAULT_FROM_EMAIL
         else:
-            from_email = confirmation.message.writeitinstance.slug+"@"+\
-                        settings.DEFAULT_FROM_DOMAIN
+            from_email = "%s@%s" % (
+                confirmation.message.writeitinstance.slug,
+                settings.DEFAULT_FROM_DOMAIN,
+                )
 
         msg = EmailMultiAlternatives(
             subject,
-            text_content,#content
-            from_email,#From
-            [confirmation.message.author_email]#To
+            text_content,  # content
+            from_email,  # From
+            [confirmation.message.author_email],  # To
             )
         msg.attach_alternative(html_content, "text/html")
         try:
             msg.send()
-        except Exception, e:
+        except:
             pass
 
 
@@ -711,7 +711,6 @@ post_save.connect(send_an_email_to_the_author, sender=Confirmation)
 class Moderation(models.Model):
     message = models.OneToOneField(Message, related_name='moderation')
     key = models.CharField(max_length=256)
-
 
     def save(self, *args, **kwargs):
         created = self.id is None
@@ -733,15 +732,18 @@ class Moderation(models.Model):
             'slug': self.key
             })
 
+
 class AnswerWebHook(models.Model):
     url = models.URLField(max_length=255)
-    writeitinstance = models.ForeignKey(WriteItInstance, \
-        related_name='answer_webhooks')
+    writeitinstance = models.ForeignKey(
+        WriteItInstance,
+        related_name='answer_webhooks',
+        )
 
     def __unicode__(self):
-        return '%(url)s at %(instance)s'%{
-            'url':self.url,
-            'instance':self.writeitinstance.name
+        return '%(url)s at %(instance)s' % {
+            'url': self.url,
+            'instance': self.writeitinstance.name
         }
 
 
@@ -755,21 +757,30 @@ nant_txt = read_template_as_string('templates/nuntium/mails/new_answer.txt')
 
 nant_subject = read_template_as_string('templates/nuntium/mails/nant_subject.txt')
 
+
 class NewAnswerNotificationTemplate(models.Model):
-    writeitinstance = models.OneToOneField(WriteItInstance, \
-        related_name='new_answer_notification_template')
-    template_html = models.TextField(default=nant_html\
-        , help_text=_('You can use {{ user }}, {{ person }}, \
-            {{ message.subject }} and {{ answer.content }}'))
-    template_text = models.TextField(default=nant_txt\
-        , help_text=_('You can use {{ user }}, {{ person }}, \
-            {{ message.subject }} and {{ answer.content }}'))
-    subject_template = models.CharField(max_length=255, \
-        default=nant_subject\
-        , help_text=_('You can use %(message)s and %(person)s'))
+    writeitinstance = models.OneToOneField(
+        WriteItInstance,
+        related_name='new_answer_notification_template',
+        )
+    template_html = models.TextField(
+        default=nant_html,
+        help_text=_('You can use {{ user }}, {{ person }}, \
+            {{ message.subject }} and {{ answer.content }}'),
+        )
+    template_text = models.TextField(
+        default=nant_txt,
+        help_text=_('You can use {{ user }}, {{ person }}, \
+            {{ message.subject }} and {{ answer.content }}'),
+        )
+    subject_template = models.CharField(
+        max_length=255,
+        default=nant_subject,
+        help_text=_('You can use %(message)s and %(person)s'),
+        )
 
     def __unicode__(self):
-        return _("Notification template for %s")%(self.writeitinstance.name)
+        return _("Notification template for %s") % self.writeitinstance.name
 
 
 class RateLimiter(models.Model):
@@ -782,8 +793,6 @@ class RateLimiter(models.Model):
         if not self.day:
             self.day = datetime.date.today()
         super(RateLimiter, self).save(*args, **kwargs)
-
-
 
 
 def rate_limiting(sender, instance, created, **kwargs):
@@ -813,6 +822,6 @@ class WriteitInstancePopitInstanceRecord(models.Model):
 
     def __unicode__(self):
         return "The people from {url} was loaded into {instance}".format(
-            url=self.popitapiinstance.url,\
-            instance=self.writeitinstance.__unicode__()
+            url=self.popitapiinstance.url,
+            instance=self.writeitinstance.__unicode__(),
             )

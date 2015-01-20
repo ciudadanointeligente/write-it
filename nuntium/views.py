@@ -1,26 +1,18 @@
-from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, View, ListView
-from django.views.generic.edit import UpdateView
-from django.core.urlresolvers  import reverse
-from django.core.urlresolvers import reverse as original_reverse
-from .models import WriteItInstance, Confirmation, OutboundMessage, Message, Moderation, Membership,\
-                            NewAnswerNotificationTemplate, ConfirmationTemplate
-from .forms import MessageCreateForm, MessageSearchForm, \
-                            PerInstanceSearchForm
-from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime
+
+from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, ListView
+from django.core.urlresolvers import reverse
 from django.http import Http404
-from django.shortcuts import get_object_or_404
-from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.contrib import messages
+
 from haystack.views import SearchView
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from contactos.models import Contact
-from contactos.forms import ContactCreateForm
-from django.http import Http404
-from mailit.forms import MailitTemplateForm
+
 from popit.models import Person
+
+from .models import WriteItInstance, Confirmation, Message, Moderation
+from .forms import MessageCreateForm, MessageSearchForm, PerInstanceSearchForm
+
 
 class HomeTemplateView(TemplateView):
     def get_context_data(self, **kwargs):
@@ -30,24 +22,25 @@ class HomeTemplateView(TemplateView):
         context['writeitinstances'] = all_instances
         return context
 
+
 class WriteItInstanceListView(ListView):
     model = WriteItInstance
+
 
 class WriteItInstanceDetailView(CreateView):
     form_class = MessageCreateForm
     model = WriteItInstance
-    template_name='nuntium/instance_detail.html'
+    template_name = 'nuntium/instance_detail.html'
 
     def get_object(self):
         subdomain = self.kwargs['slug']
         if not self.object:
             try:
                 self.object = self.model.objects.get(slug=subdomain)
-            except WriteItInstance.DoesNotExist, e:
+            except WriteItInstance.DoesNotExist:
                 raise Http404
 
         return self.object
-
 
     def form_valid(self, form):
         response = super(WriteItInstanceDetailView, self).form_valid(form)
@@ -57,7 +50,6 @@ class WriteItInstanceDetailView(CreateView):
         else:
             messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link"))
         return response
-
 
     def get_success_url(self):
         return self.object.writeitinstance.get_absolute_url()
@@ -75,9 +67,10 @@ class WriteItInstanceDetailView(CreateView):
         context['search_form'] = PerInstanceSearchForm(writeitinstance=self.object)
         return context
 
+
 class MessageDetailView(DetailView):
-    template_name='nuntium/message/message_detail.html'
-    model=Message
+    template_name = 'nuntium/message/message_detail.html'
+    model = Message
 
     def get_queryset(self):
         qs = Message.objects.filter(slug__iexact=self.kwargs['slug'])
@@ -91,8 +84,9 @@ class MessageDetailView(DetailView):
             raise Http404
         return the_message
 
+
 class ConfirmView(DetailView):
-    template_name='nuntium/confirm.html'
+    template_name = 'nuntium/confirm.html'
     model = Confirmation
     slug_field = 'key'
 
@@ -100,45 +94,44 @@ class ConfirmView(DetailView):
         confirmation = super(ConfirmView, self).get_object()
         if confirmation.confirmated_at is not None:
             raise Http404
-        return super(ConfirmView,self).dispatch(*args, **kwargs)
+        return super(ConfirmView, self).dispatch(*args, **kwargs)
 
     def get_object(self, queryset=None):
         confirmation = super(ConfirmView, self).get_object(queryset)
 
         return confirmation
 
-
     def get_context_data(self, **kwargs):
         context = super(ConfirmView, self).get_context_data(**kwargs)
         return context
-
 
     def get(self, *args, **kwargs):
         confirmation = self.get_object()
         confirmation.confirmated_at = datetime.now()
         confirmation.save()
         confirmation.message.recently_confirmated()
-        return super(ConfirmView,self).get(*args, **kwargs)
+        return super(ConfirmView, self).get(*args, **kwargs)
+
 
 class ModerationView(DetailView):
     model = Moderation
     slug_field = 'key'
 
+
 class AcceptModerationView(ModerationView):
     template_name = "nuntium/moderation_accepted.html"
-
 
     def get(self, *args, **kwargs):
         moderation = self.get_object()
         moderation.message.moderate()
-        return super(AcceptModerationView, self).get(*args,**kwargs)
+        return super(AcceptModerationView, self).get(*args, **kwargs)
 
 
 class RejectModerationView(ModerationView):
     template_name = "nuntium/moderation_rejected.html"
 
     def get(self, *args, **kwargs):
-        get = super(RejectModerationView, self).get(*args,**kwargs)
+        get = super(RejectModerationView, self).get(*args, **kwargs)
         self.get_object().message.delete()
         return get
 
@@ -146,16 +139,16 @@ class RejectModerationView(ModerationView):
 class RootRedirectView(RedirectView):
     def get_redirect_url(self, **kwargs):
 
-        url = original_reverse("home")
+        url = reverse("home")
         return url
 
+
 class MessageSearchView(SearchView):
-
-
     def __init__(self, *args, **kwargs):
         super(MessageSearchView, self).__init__(*args, **kwargs)
         self.form_class = MessageSearchForm
         self.template = 'nuntium/search.html'
+
 
 class PerInstanceSearchView(SearchView):
     def __init__(self, *args, **kwargs):
@@ -167,14 +160,14 @@ class PerInstanceSearchView(SearchView):
         self.slug = kwargs.pop('slug')
         return super(PerInstanceSearchView, self).__call__(*args, **kwargs)
 
-
     def build_form(self, form_kwargs=None):
         self.writeitinstance = WriteItInstance.objects.get(slug=self.slug)
         if form_kwargs is None:
             form_kwargs = {}
-        form_kwargs['writeitinstance']=self.writeitinstance
+        form_kwargs['writeitinstance'] = self.writeitinstance
 
         return super(PerInstanceSearchView, self).build_form(form_kwargs)
+
 
 class MessagesPerPersonView(ListView):
     model = Message
@@ -193,7 +186,7 @@ class MessagesPerPersonView(ListView):
             )
         return qs
 
-    def get_context_data(self,**kwargs):
+    def get_context_data(self, **kwargs):
         context = super(MessagesPerPersonView, self).get_context_data(**kwargs)
         context['person'] = self.person
         return context
