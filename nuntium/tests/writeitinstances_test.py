@@ -217,9 +217,7 @@ class PopitWriteitRelationRecord(TestCase):
     def test_it_does_not_try_to_replicate_the_memberships(self):
         '''This is related to issue #429'''
         popit_load_data()
-        popit_api_instance = self.api_instance
-        popit_api_instance.url = settings.TEST_POPIT_API_URL
-        popit_api_instance.save()
+        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
 
         # Doing it twice so I can replicate the bug
@@ -228,8 +226,8 @@ class PopitWriteitRelationRecord(TestCase):
 
         amount_of_memberships = Membership.objects.filter(writeitinstance=writeitinstance).count()
 
-        # There are only 3
-        self.assertEquals(amount_of_memberships, 3)
+        # There are only 2
+        self.assertEquals(amount_of_memberships, 2)
         self.assertEquals(amount_of_memberships, writeitinstance.persons.count())
 
     @skipUnless(settings.LOCAL_POPIT, "No local popit running")
