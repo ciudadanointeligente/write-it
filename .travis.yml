@@ -15,8 +15,6 @@ install:
 before_script:
   - mysql -e 'create database writeit;'
   - psql -c 'create database writeit;' -U postgres
-env:
-  - DJANGO_VERSION=1.6.1
 script:
   - ./start_local_popit_api.bash
   - coverage run --source=nuntium,contactos,mailit manage.py test nuntium contactos mailit
