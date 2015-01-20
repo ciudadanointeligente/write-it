@@ -153,6 +153,25 @@ class PopitWriteitRelationRecord(TestCase):
         self.assertEquals(record.__unicode__(), expected_unicode)
 
     @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    def test_it_does_not_try_to_replicate_the_memberships(self):
+        '''This is related to issue #429'''
+        popit_load_data()
+        popit_api_instance = self.api_instance
+        popit_api_instance.url = settings.TEST_POPIT_API_URL
+        popit_api_instance.save()
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+
+        # Doing it twice so I can replicate the bug
+        writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+
+        amount_of_memberships = Membership.objects.filter(writeitinstance=writeitinstance).count()
+
+        # There are only 3
+        self.assertEquals(amount_of_memberships, 3)
+        self.assertEquals(amount_of_memberships, writeitinstance.persons.count())
+
+    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
     def test_it_is_created_automatically_when_fetching_a_popit_instance(self):
         '''create automatically a record when fetching a popit instance'''
 
