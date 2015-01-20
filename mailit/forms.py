@@ -1,16 +1,15 @@
 from django.forms import ModelForm, TextInput, Textarea
-from popit.models import Person
 from .models import MailItTemplate
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
 
-class MailitTemplateForm(ModelForm):
 
+class MailitTemplateForm(ModelForm):
     def __init__(self, *args, **kwargs):
         try:
             writeitinstance = kwargs.pop("writeitinstance")
         except:
-            raise ValidationError(_('Instance not present'))        
+            raise ValidationError(_('Instance not present'))
         self.writeitinstance = writeitinstance
 
         super(MailitTemplateForm, self).__init__(*args, **kwargs)

@@ -1,21 +1,20 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
-from django.core.urlresolvers  import reverse
-from ..models import WriteItInstance, Message, Membership, Confirmation, Moderation
+from django.core.urlresolvers import reverse
+from ..models import WriteItInstance, Message, Membership, Confirmation
 from ..views import MessageCreateForm, PerInstanceSearchForm
-from contactos.models import Contact, ContactType
+from ..models import WriteitInstancePopitInstanceRecord
 from popit.models import ApiInstance, Person
 from django.utils.unittest import skipUnless
-from datetime import datetime
 from django.contrib.auth.models import User
 from django.utils.translation import activate
 from django.utils.translation import ugettext as _
 from django.conf import settings
 
-class InstanceTestCase(TestCase):
 
+class InstanceTestCase(TestCase):
     def setUp(self):
-        super(InstanceTestCase,self).setUp()
+        super(InstanceTestCase, self).setUp()
         self.api_instance1 = ApiInstance.objects.all()[0]
         self.api_instance2 = ApiInstance.objects.all()[1]
         self.person1 = Person.objects.all()[0]
@@ -24,7 +23,7 @@ class InstanceTestCase(TestCase):
 
     def test_create_instance(self):
         writeitinstance = WriteItInstance.objects.create(
-            name='instance 1', 
+            name='instance 1',
             slug='instance-1',
             owner=self.owner)
         self.assertTrue(writeitinstance.id)
@@ -37,7 +36,7 @@ class InstanceTestCase(TestCase):
 
     def test_owner_related_name(self):
         writeitinstance = WriteItInstance.objects.create(
-            name='instance 1', 
+            name='instance 1',
             slug='instance-1',
 
             owner=self.owner)
@@ -45,39 +44,39 @@ class InstanceTestCase(TestCase):
         self.assertIn(writeitinstance, self.owner.writeitinstances.all())
 
     def test_moderation_needed_in_all_messages(self):
-        
         writeitinstance = WriteItInstance.objects.create(
-            name='instance 1', 
+            name='instance 1',
             slug='instance-1',
-            moderation_needed_in_all_messages=False, 
-            owner=self.owner)
+            moderation_needed_in_all_messages=False,
+            owner=self.owner,
+            )
 
         self.assertTrue(writeitinstance)
 
-
     def test_instance_unicode(self):
         writeitinstance = WriteItInstance.objects.all()[0]
-        self.assertEquals(writeitinstance.__unicode__() , writeitinstance.name)
+        self.assertEquals(writeitinstance.__unicode__(), writeitinstance.name)
 
     def test_instance_containning_several_messages(self):
         writeitinstance1 = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         writeitinstance2 = WriteItInstance.objects.create(name='instance 2', slug='instance-2', owner=self.owner)
-        message1 = Message.objects.create(content='Content 1', subject='Subject 1', writeitinstance = writeitinstance1, persons=[self.person1])
-        message2 = Message.objects.create(content='Content 2', subject='Subject 2', writeitinstance = writeitinstance1, persons=[self.person1])
-        message3 = Message.objects.create(content='Content 3', subject='Subject 3', writeitinstance = writeitinstance2, persons=[self.person1])
-        self.assertEquals(writeitinstance1.message_set.count(),2)
+        message1 = Message.objects.create(content='Content 1', subject='Subject 1', writeitinstance=writeitinstance1, persons=[self.person1])
+        message2 = Message.objects.create(content='Content 2', subject='Subject 2', writeitinstance=writeitinstance1, persons=[self.person1])
+        message3 = Message.objects.create(content='Content 3', subject='Subject 3', writeitinstance=writeitinstance2, persons=[self.person1])
+        self.assertEquals(writeitinstance1.message_set.count(), 2)
         self.assertEquals(message1.writeitinstance, writeitinstance1)
         self.assertEquals(message2.writeitinstance, writeitinstance1)
-        self.assertEquals(writeitinstance2.message_set.count(),1)
+        self.assertEquals(writeitinstance2.message_set.count(), 1)
         self.assertEquals(message3.writeitinstance, writeitinstance2)
 
     def test_get_absolute_url(self):
         writeitinstance1 = WriteItInstance.objects.all()[0]
-        expected_url = reverse('instance_detail',
-            kwargs={'slug':writeitinstance1.slug})
+        expected_url = reverse(
+            'instance_detail',
+            kwargs={'slug': writeitinstance1.slug},
+            )
 
         self.assertEquals(expected_url, writeitinstance1.get_absolute_url())
-
 
     def test_get_absolute_url_i18n(self):
         activate("es")
@@ -87,10 +86,8 @@ class InstanceTestCase(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'nuntium/instance_detail.html')
 
-
     def test_get_non_existing_instance(self):
-        url = reverse('instance_detail',
-            kwargs={'slug':"non-existing-slug"})
+        url = reverse('instance_detail', kwargs={'slug': "non-existing-slug"})
         response = self.client.get(url)
         self.assertEquals(response.status_code, 404)
 
@@ -103,7 +100,7 @@ class InstanceTestCase(TestCase):
 
     @skipUnless(settings.LOCAL_POPIT, "No local popit running")
     def test_create_an_instance_and_load_persons_from_an_api(self):
-        # We have a popit running locally using the 
+        # We have a popit running locally using the
         # start_local_popit_api.bash script
         popit_load_data()
         #loading data into the popit-api
@@ -119,26 +116,25 @@ class InstanceTestCase(TestCase):
         self.assertIn(raton, [r for r in writeitinstance.persons.all()])
         self.assertIn(fiera, [r for r in writeitinstance.persons.all()])
 
-from ..models import WriteitInstancePopitInstanceRecord
+
 class PopitWriteitRelationRecord(TestCase):
     '''
     This set of tests are intended to solve the problem
     of relating a writeit instance and a popit instance
-    in some for that does not force them to be 
+    in some for that does not force them to be
     1-1
     '''
 
     def setUp(self):
         self.writeitinstance = WriteItInstance.objects.first()
-        self.api_instance =  ApiInstance.objects.first()
+        self.api_instance = ApiInstance.objects.first()
         self.owner = User.objects.first()
 
     def test_instanciate(self):
         '''Instanciate a WriteitInstancePopitInstanceRelation'''
-        record = WriteitInstancePopitInstanceRecord\
-            .objects.create(
-                writeitinstance = self.writeitinstance,
-                popitapiinstance = self.api_instance
+        record = WriteitInstancePopitInstanceRecord.objects.create(
+            writeitinstance=self.writeitinstance,
+            popitapiinstance=self.api_instance,
             )
 
         self.assertTrue(record)
@@ -149,34 +145,32 @@ class PopitWriteitRelationRecord(TestCase):
 
     def test_unicode(self):
         '''A WriteitInstancePopitInstanceRelation has a __unicode__ method'''
-        record = WriteitInstancePopitInstanceRecord\
-            .objects.create(
-                writeitinstance = self.writeitinstance,
-                popitapiinstance = self.api_instance
+        record = WriteitInstancePopitInstanceRecord.objects.create(
+            writeitinstance=self.writeitinstance,
+            popitapiinstance=self.api_instance,
             )
         expected_unicode = "The people from http://popit.org/api/v1 was loaded into instance 1"
         self.assertEquals(record.__unicode__(), expected_unicode)
-
-
 
     @skipUnless(settings.LOCAL_POPIT, "No local popit running")
     def test_it_is_created_automatically_when_fetching_a_popit_instance(self):
         '''create automatically a record when fetching a popit instance'''
 
         popit_load_data()
-        #loading data into the popit-api
-        writeitinstance = WriteItInstance.objects.create(\
-            name='instance 1', \
-            slug='instance-1', \
-            owner=self.owner)
+        # loading data into the popit-api
+        writeitinstance = WriteItInstance.objects.create(
+            name='instance 1',
+            slug='instance-1',
+            owner=self.owner,
+            )
 
         writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
 
         popit_instance = ApiInstance.objects.get(url=settings.TEST_POPIT_API_URL)
 
-        record = WriteitInstancePopitInstanceRecord.objects.get(\
+        record = WriteitInstancePopitInstanceRecord.objects.get(
             writeitinstance=writeitinstance,
-            popitapiinstance=popit_instance
+            popitapiinstance=popit_instance,
             )
 
         self.assertTrue(record)
@@ -185,41 +179,41 @@ class PopitWriteitRelationRecord(TestCase):
 
     def test_what_if_the_url_doesnt_exist(self):
         '''It solves the problem when there is no popit api running'''
-        writeitinstance = WriteItInstance.objects.create(\
-            name='instance 1', \
-            slug='instance-1', \
-            owner=self.owner)
+        writeitinstance = WriteItInstance.objects.create(
+            name='instance 1',
+            slug='instance-1',
+            owner=self.owner,
+            )
 
         non_existing_url = "http://nonexisting.url"
-        writeitinstance.load_persons_from_a_popit_api("http://nonexisting.url")
-        popit_instance_count = ApiInstance.objects.filter(url="http://nonexisting.url").count()
+        writeitinstance.load_persons_from_a_popit_api(non_existing_url)
+        popit_instance_count = ApiInstance.objects.filter(url=non_existing_url).count()
 
         self.assertFalse(popit_instance_count)
-        
+
     @skipUnless(settings.LOCAL_POPIT, "No local popit running")
     def test_it_should_be_able_to_update_twice(self):
         '''It should be able to update all data twice'''
         popit_load_data()
-        #loading data into the popit-api
-        writeitinstance = WriteItInstance.objects.create(\
-            name='instance 1', \
-            slug='instance-1', \
-            owner=self.owner)
+        # loading data into the popit-api
+        writeitinstance = WriteItInstance.objects.create(
+            name='instance 1',
+            slug='instance-1',
+            owner=self.owner,
+            )
 
         writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
 
         popit_instance = ApiInstance.objects.get(url=settings.TEST_POPIT_API_URL)
 
-        
         writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
 
-        record = WriteitInstancePopitInstanceRecord.objects.get(\
+        record = WriteitInstancePopitInstanceRecord.objects.get(
             writeitinstance=writeitinstance,
-            popitapiinstance=popit_instance
+            popitapiinstance=popit_instance,
             )
 
         self.assertNotEqual(record.created, record.updated)
-
 
 
 class InstanceDetailView(TestCase):
@@ -231,7 +225,6 @@ class InstanceDetailView(TestCase):
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
         self.url = self.writeitinstance1.get_absolute_url()
 
-    
     def test_detail_instance_view(self):
         #I'm removing this because it has been already tested
         #self.assertTrue(url)
@@ -239,7 +232,7 @@ class InstanceDetailView(TestCase):
         self.assertTemplateUsed(response, 'nuntium/instance_detail.html')
         self.assertEquals(response.context['writeitinstance'], self.writeitinstance1)
         self.assertTrue(response.context['form'])
-        self.assertTrue(isinstance(response.context['form'],MessageCreateForm))
+        self.assertTrue(isinstance(response.context['form'], MessageCreateForm))
         self.assertEquals(response.status_code, 200)
 
     def test_instance_view_has_a_search_form(self):
@@ -251,115 +244,105 @@ class InstanceDetailView(TestCase):
 
         self.assertEquals(response.context['search_form'].writeitinstance, self.writeitinstance1)
 
-
     def test_list_only_public_messages(self):
-        private_message = Message.objects.create(content='Content 1', subject='a private message', writeitinstance = self.writeitinstance1, persons=[self.person1], public=False)
+        private_message = Message.objects.create(
+            content='Content 1',
+            subject='a private message',
+            writeitinstance=self.writeitinstance1,
+            persons=[self.person1],
+            public=False,
+            )
         response = self.client.get(self.url)
 
         self.assertTrue('public_messages' in response.context)
         self.assertTrue(private_message not in response.context['public_messages'])
-
 
     def test_in_moderation_needed_instances_does_not_show_a_confirmated_but_not_moderated(self):
         self.writeitinstance1.moderation_needed_in_all_messages = True
 
         self.writeitinstance1.save()
         message = Message.objects.create(
-            content='Content 3', 
-            subject='Subject 3', 
-            writeitinstance = self.writeitinstance1, 
-            confirmated = True,
-            persons=[self.person1]
+            content='Content 3',
+            subject='Subject 3',
+            writeitinstance=self.writeitinstance1,
+            confirmated=True,
+            persons=[self.person1],
             )
 
         confirmation = Confirmation.objects.create(message=message)
         self.client.get(confirmation.get_absolute_url())
 
-        #ok it is now confirmated but it is not moderated
+        # ok it is now confirmated but it is not moderated
 
         url = self.writeitinstance1.get_absolute_url()
-
-        response = self.client.get(self.url)
+        response = self.client.get(url)
 
         self.assertNotIn(message, response.context['public_messages'])
-
-
-
-
-
-
-
 
     def test_list_only_confirmed_and_public_messages(self):
         message1 = self.writeitinstance1.message_set.all()[0]
         message2 = self.writeitinstance1.message_set.all()[1]
         message3 = Message.objects.create(
-            content='Content 3', 
-            subject='Subject 3', 
-            writeitinstance = self.writeitinstance1, 
-            confirmated = True,
-            persons=[self.person1]
+            content='Content 3',
+            subject='Subject 3',
+            writeitinstance=self.writeitinstance1,
+            confirmated=True,
+            persons=[self.person1],
             )
-        private_message = Message.objects.create(content='Content 1', 
-            subject='a private message', 
-            writeitinstance = self.writeitinstance1, 
-            persons=[self.person1], 
-            confirmated = True,
-            public=False)
+        private_message = Message.objects.create(
+            content='Content 1',
+            subject='a private message',
+            writeitinstance=self.writeitinstance1,
+            persons=[self.person1],
+            confirmated=True,
+            public=False,
+            )
 
         confirmation_for_message2 = Confirmation.objects.create(message=message2)
         self.client.get(confirmation_for_message2.get_absolute_url())
 
-
-        #now i need to moderate this
+        # now I need to moderate this
         self.client.get(private_message.moderation.get_success_url())
 
         confirmation_for_private_message = Confirmation.objects.create(message=private_message)
-        self.client.get(reverse('confirm', kwargs={'slug':confirmation_for_private_message.key}))
-
-        
+        self.client.get(reverse('confirm', kwargs={'slug': confirmation_for_private_message.key}))
 
         url = self.writeitinstance1.get_absolute_url()
-        
-        response = self.client.get(self.url)
-        
-        
-        #message1 is not confirmed so it should not be in the list
-        #private_message is not in the list either
-        #only message 2 is in the list because is public and confirmed
+        response = self.client.get(url)
+
+        # message1 is not confirmed so it should not be in the list
+        # private_message is not in the list either
+        # only message 2 is in the list because is public and confirmed
 
         self.assertIn(message2, response.context['public_messages'])
         self.assertNotIn(message1, response.context['public_messages'])
         self.assertIn(message3, response.context['public_messages'])
         self.assertNotIn(private_message, response.context["public_messages"])
 
-
-
     def test_message_creation_on_post_form(self):
-
-        #spanish
+        # Spanish
         data = {
-        'author_email':u'falvarez@votainteligente.cl',
-        'author_name':u'feli',
-        'subject':u'Fiera no está',
-        'content':u'¿Dónde está Fiera Feroz? en la playa?',
-        'persons': [self.person1.id]
-        }
+            'author_email': u'falvarez@votainteligente.cl',
+            'author_name': u'feli',
+            'subject': u'Fiera no está',
+            'content': u'¿Dónde está Fiera Feroz? en la playa?',
+            'persons': [self.person1.id],
+            }
         response = self.client.post(self.url, data, follow=True)
         self.assertEquals(response.status_code, 200)
         new_messages = Message.objects.filter(subject='Fiera no está')
-        self.assertTrue(new_messages.count()>0)
+        self.assertTrue(new_messages.count() > 0)
         self.assertEquals(len(response.context["form"].errors), 0)
 
     def test_I_get_an_acknoledgement_for_creating_a_message(self):
-        #spanish
+        # Spanish
         data = {
-        'subject':u'Fiera no está',
-        'author_email':u'falvarez@votainteligente.cl',
-        'author_name':u'feli',
-        'public':True,
-        'content':u'¿Dónde está Fiera Feroz? en la playa?',
-        'persons': [self.person1.id]
+            'subject': u'Fiera no está',
+            'author_email': u'falvarez@votainteligente.cl',
+            'author_name': u'feli',
+            'public': True,
+            'content': u'¿Dónde está Fiera Feroz? en la playa?',
+            'persons': [self.person1.id],
         }
 
         response = self.client.post(self.url, data, follow=True)
@@ -375,43 +358,32 @@ class InstanceDetailView(TestCase):
 
     def test_after_the_creation_of_a_message_it_redirects(self):
         data = {
-        'subject':u'Fiera no está',
-        'content':u'¿Dónde está Fiera Feroz? en la playa?',
-        'author_name':u"Felipe",
-        'author_email':u"falvarez@votainteligente.cl",
-        'persons': [self.person1.id]
-        }
+            'subject': u'Fiera no está',
+            'content': u'¿Dónde está Fiera Feroz? en la playa?',
+            'author_name': u"Felipe",
+            'author_email': u"falvarez@votainteligente.cl",
+            'persons': [self.person1.id],
+            }
         url = self.writeitinstance1.get_absolute_url()
         response = self.client.post(self.url, data)
 
         self.assertRedirects(response, url)
 
-
     def test_if_the_instance_needs_moderation_in_all_messages(self):
         self.writeitinstance1.moderation_needed_in_all_messages = True
         self.writeitinstance1.save()
         data = {
-            'subject':u'Fiera no está',
-            'content':u'¿Dónde está Fiera Feroz? en la playa?',
-            'author_name':u"Felipe",
+            'subject': u'Fiera no está',
+            'content': u'¿Dónde está Fiera Feroz? en la playa?',
+            'author_name': u"Felipe",
             'public': True,
-            'author_email':u"falvarez@votainteligente.cl",
+            'author_email': u"falvarez@votainteligente.cl",
             'persons': [self.person1.id]
         }
 
         url = self.writeitinstance1.get_absolute_url()
-        response = self.client.post(self.url, data, follow=True)
+        response = self.client.post(url, data, follow=True)
 
         expected_acknoledgments = _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation")
 
-
         self.assertContains(response, expected_acknoledgments)
-
-
-
-
-
-
-
-
-

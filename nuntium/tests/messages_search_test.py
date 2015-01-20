@@ -1,19 +1,17 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, SearchIndexTestCase
 from ..search_indexes import MessageIndex
-from django.core.management import call_command
+from django.contrib.contenttypes.models import ContentType
+
 from ..models import Message
-from ..forms import  MessageSearchForm, PerInstanceSearchForm
+from ..forms import MessageSearchForm, PerInstanceSearchForm
 from haystack import indexes
 from haystack.fields import CharField
 from haystack.forms import SearchForm
-from django.core.urlresolvers  import reverse
+from django.core.urlresolvers import reverse
 from ..views import MessageSearchView, PerInstanceSearchView
-from ..models import WriteItInstance, Confirmation, Answer
-from django.views.generic.edit import FormView
-from django.utils.unittest import skip
+from ..models import WriteItInstance
 from haystack.views import SearchView
-from django.utils.unittest import skip
 from popit.models import Person
 
 
@@ -29,9 +27,7 @@ class MessagesSearchTestCase(TestCase):
             message.confirmated = True
             message.save()
 
-
     def test_messages_index(self):
-
         public_messages = list(Message.objects.filter(public=True))
 
         self.assertIsInstance(self.index, indexes.SearchIndex)
@@ -42,7 +38,7 @@ class MessagesSearchTestCase(TestCase):
         self.assertQuerysetEqual(self.index.index_queryset(), [repr(r) for r in public_messages], ordered=False)
 
         self.assertIsInstance(self.index.text, CharField)
-        
+
         self.assertTrue(self.index.text.use_template)
 
         indexed_text = self.index.text.prepare_template(self.first_message)
@@ -50,62 +46,64 @@ class MessagesSearchTestCase(TestCase):
         self.assertTrue(self.first_message.subject in indexed_text)
         self.assertTrue(self.first_message.content in indexed_text)
 
-
         self.assertEquals(self.index.writeitinstance.model_attr, 'writeitinstance__id')
 
-
         self.assertEquals(self.index.writeitinstance.prepare(self.first_message), self.first_message.writeitinstance.id)
-        
 
     def test_it_does_not_search_within_private_messages(self):
-        message = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl", 
-            subject='Fiera es una perra feroz', 
+        message = Message.objects.create(
+            content='Content 1',
+            author_name='Felipe',
+            author_email="falvarez@votainteligente.cl",
+            subject='Fiera es una perra feroz',
             public=False,
-            writeitinstance= self.writeitinstance1,
-            persons = [self.person1])
+            writeitinstance=self.writeitinstance1,
+            persons=[self.person1],
+            )
 
         self.assertNotIn(message, self.index.index_queryset())
 
     def test_it_does_not_search_within_non_confirmated_messages(self):
-        non_message = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl", 
-            subject='Fiera es una perra feroz', 
-            writeitinstance= self.writeitinstance1,
-            persons = [self.person1])
+        non_message = Message.objects.create(
+            content='Content 1',
+            author_name='Felipe',
+            author_email="falvarez@votainteligente.cl",
+            subject='Fiera es una perra feroz',
+            writeitinstance=self.writeitinstance1,
+            persons=[self.person1],
+            )
 
-        confirmated_message = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl", 
-            subject='Fiera es una perra feroz2', 
+        confirmated_message = Message.objects.create(
+            content='Content 1',
+            author_name='Felipe',
+            author_email="falvarez@votainteligente.cl",
+            subject='Fiera es una perra feroz2',
             confirmated=True,
-            writeitinstance= self.writeitinstance1,
-            persons = [self.person1])
+            writeitinstance=self.writeitinstance1,
+            persons=[self.person1],
+            )
 
         self.assertIn(confirmated_message, self.index.index_queryset())
         self.assertNotIn(non_message, self.index.index_queryset())
 
-
     def test_it_does_not_search_within_non_moderated_messages(self):
         self.writeitinstance1.moderation_needed_in_all_messages = True
         self.writeitinstance1.save()
-        message = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl", 
-            subject='Fiera es una perra feroz2', 
-            writeitinstance= self.writeitinstance1,
-            persons = [self.person1])
+        message = Message.objects.create(
+            content='Content 1',
+            author_name='Felipe',
+            author_email="falvarez@votainteligente.cl",
+            subject='Fiera es una perra feroz2',
+            writeitinstance=self.writeitinstance1,
+            persons=[self.person1],
+            )
         message.recently_confirmated()
 
-        #message is confirmed (or whatever way you spell it)
-        #but it was written in an instance in wich all messages need moderation,
-        #and therefore it needs to be moderated before it is shown in the searches
+        # message is confirmed (or whatever way you spell it)
+        # but it was written in an instance in wich all messages need moderation,
+        # and therefore it needs to be moderated before it is shown in the searches
 
         self.assertNotIn(message, self.index.index_queryset())
-
-
 
 
 class MessageSearchFormTestCase(TestCase):
@@ -117,10 +115,10 @@ class MessageSearchFormTestCase(TestCase):
 
         self.assertIsInstance(form, SearchForm)
 
+
 class MessageSearchViewTestCase(TestCase):
     def setUp(self):
         super(MessageSearchViewTestCase, self).setUp()
-
 
     def test_access_the_search_url(self):
         url = reverse('search_messages')
@@ -128,7 +126,6 @@ class MessageSearchViewTestCase(TestCase):
 
         self.assertEquals(response.status_code, 200)
         self.assertIsInstance(response.context['form'], MessageSearchForm)
-
 
     def test_search_view(self):
         view = MessageSearchView()
@@ -138,35 +135,30 @@ class MessageSearchViewTestCase(TestCase):
         self.assertEquals(view.template, 'nuntium/search.html')
 
 
-
-
 class SearchMessageAccess(SearchIndexTestCase):
     def setUp(self):
         super(SearchMessageAccess, self).setUp()
 
-
     def test_access_the_url(self):
-        #I don't like this test that much 
-        #because it seems to be likely to break if I add more 
-        #public messages
-        #if it ever fails
-        #well then I'll fix it
+        # I don't like this test that much
+        # because it seems to be likely to break if I add more
+        # public messages
+        # if it ever fails
+        # well then I'll fix it
         url = reverse('search_messages')
-        data = {
-        'q':'Content'
-        }
+        data = {'q': 'Content'}
         response = self.client.get(url, data=data)
         self.assertEquals(response.status_code, 200)
 
-        #the first one the one that says "Public Answer" in example_data.yml
-        expected_answer = Message.objects.get(id=2) 
+        # the first one the one that says "Public Answer" in example_data.yml
+        expected_answer = Message.objects.get(id=2)
         self.assertIn('page', response.context)
         results = response.context['page'].object_list
 
         self.assertGreaterEqual(len(results), 1)
         self.assertEquals(results[0].object.id, expected_answer.id)
 
-from django.contrib.contenttypes.models import ContentType
+
 class PerInstanceSearchFormTestCase(SearchIndexTestCase):
     def setUp(self):
         super(PerInstanceSearchFormTestCase, self).setUp()
@@ -183,7 +175,6 @@ class PerInstanceSearchFormTestCase(SearchIndexTestCase):
             if result.content_type() == content_type.app_label + ".message":
                 ids_of_messages_returned_by_searchqueryset.append(result.object.id)
 
-
         public_messages = Message.public_objects.filter(writeitinstance=self.writeitinstance)
 
         ids_of_public_messages_in_writeitinstance = [r.id for r in public_messages]
@@ -197,7 +188,7 @@ class PerInstanceSearchFormTestCase(SearchIndexTestCase):
         self.assertEquals(view.template, 'nuntium/instance_search.html')
 
     def test_per_instance_search_url(self):
-        url = reverse('instance_search', kwargs={'slug':self.writeitinstance.slug})
+        url = reverse('instance_search', kwargs={'slug': self.writeitinstance.slug})
 
         response = self.client.get(url)
 

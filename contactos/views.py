@@ -5,7 +5,8 @@ from django.http import HttpResponse
 import simplejson as json
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.core.urlresolvers  import reverse
+from django.core.urlresolvers import reverse
+
 
 class ContactoUpdateView(UpdateView):
     model = Contact
@@ -22,9 +23,9 @@ class ContactoUpdateView(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        self.object.is_bounced=False
+        self.object.is_bounced = False
         self.object.save()
-        return self.render_to_response({'contact':{'value':self.object.value}})
+        return self.render_to_response({'contact': {'value': self.object.value}})
 
     def render_to_response(self, context, **response_kwargs):
         data = json.dumps(context)
@@ -37,7 +38,6 @@ class ContactCreateView(CreateView):
     template_name = "contactos/mails/bounce_notification.html"
     form_class = ContactCreateForm
 
-
     def get_success_url(self):
         return reverse('your-contacts')
 
@@ -45,8 +45,3 @@ class ContactCreateView(CreateView):
         kwargs = super(ContactCreateView, self).get_form_kwargs()
         kwargs['owner'] = self.request.user
         return kwargs
-        
-
-
-
-

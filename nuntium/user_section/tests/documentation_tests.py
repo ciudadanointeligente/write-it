@@ -1,10 +1,7 @@
-from django.utils.unittest import skipUnless, skip
 from global_test_case import GlobalTestCase as TestCase
-from user_section_views_tests import UserSectionTestCase
-from django.core.urlresolvers  import reverse
+from django.core.urlresolvers import reverse
 from django.test.client import Client
 from nuntium.models import WriteItInstance
-
 
 
 class DocumentationTestCase(TestCase):

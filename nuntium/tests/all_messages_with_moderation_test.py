@@ -1,26 +1,27 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from ..models import Message, WriteItInstance, \
-                            Moderation
+from ..models import Message, WriteItInstance, Moderation
 from popit.models import Person
 from django.core import mail
 
+
 class AllMessagesWithModerationInAWriteItInstances(TestCase):
     def setUp(self):
-        super(AllMessagesWithModerationInAWriteItInstances,self).setUp()
+        super(AllMessagesWithModerationInAWriteItInstances, self).setUp()
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
         self.writeitinstance1.moderation_needed_in_all_messages = True
         self.writeitinstance1.save()
         self.person1 = Person.objects.all()[0]
-        self.message = Message.objects.create(content = 'Content 1', 
-            author_name='Felipe', 
-            author_email="falvarez@votainteligente.cl", 
+        self.message = Message.objects.create(
+            content='Content 1',
+            author_name='Felipe',
+            author_email="falvarez@votainteligente.cl",
             subject='Subject 1',
-            writeitinstance= self.writeitinstance1, 
-            persons = [self.person1])
+            writeitinstance=self.writeitinstance1,
+            persons=[self.person1],
+            )
 
     def test_a_message_is_considered_not_moderated(self):
-        
         self.assertFalse(self.message.moderated is None)
         self.assertFalse(self.message.moderated)
 
@@ -36,12 +37,12 @@ class AllMessagesWithModerationInAWriteItInstances(TestCase):
         self.assertEquals(Moderation.objects.filter(message=self.message).count(), 0)
 
     def test_when_you_create_a_public_message_in_the_instance(self):
-        self.assertEquals(len(mail.outbox),0)
-        #the message is confirmated
+        self.assertEquals(len(mail.outbox), 0)
+        # the message is confirmated
         self.message.recently_confirmated()
 
         self.assertFalse(self.message.moderation is None)
-        self.assertEquals(len(mail.outbox),1)
-        #the second should be the confirmation thing
-        #just to make sure 
+        self.assertEquals(len(mail.outbox), 1)
+        # the second should be the confirmation thing
+        # just to make sure
         self.assertModerationMailSent(self.message, mail.outbox[0])

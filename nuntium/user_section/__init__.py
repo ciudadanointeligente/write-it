@@ -1,2 +1,2 @@
-from .views import *
-from .forms import *
+from .views import *  # noqa
+from .forms import *  # noqa
