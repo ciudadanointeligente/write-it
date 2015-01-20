@@ -275,8 +275,7 @@ class InstanceDetailView(TestCase):
         # ok it is now confirmated but it is not moderated
 
         url = self.writeitinstance1.get_absolute_url()
-
-        response = self.client.get(self.url)
+        response = self.client.get(url)
 
         self.assertNotIn(message, response.context['public_messages'])
 
@@ -309,8 +308,7 @@ class InstanceDetailView(TestCase):
         self.client.get(reverse('confirm', kwargs={'slug': confirmation_for_private_message.key}))
 
         url = self.writeitinstance1.get_absolute_url()
-
-        response = self.client.get(self.url)
+        response = self.client.get(url)
 
         # message1 is not confirmed so it should not be in the list
         # private_message is not in the list either
@@ -384,7 +382,7 @@ class InstanceDetailView(TestCase):
         }
 
         url = self.writeitinstance1.get_absolute_url()
-        response = self.client.post(self.url, data, follow=True)
+        response = self.client.post(url, data, follow=True)
 
         expected_acknoledgments = _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation")
 
