@@ -185,11 +185,6 @@ class LoginRequiredMixin(View):
         return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
 
 
-class WriteitMixin(View):
-    def get_writeitinstance(self):
-        raise NotImplementedError
-
-
 class WriteItInstanceOwnerMixin(SingleObjectMixin):
     def get_writeitinstance(self):
         return get_object_or_404(WriteItInstance, pk=self.kwargs['pk'])
