@@ -8,7 +8,6 @@ from nuntium.popit_api_instance import PopitApiInstance
 from django.contrib.auth.models import User
 from django.utils.unittest import skipUnless
 from django.conf import settings
-from nuntium.tasks import pull_from_popit
 
 
 class TasksTestCase(TestCase):
@@ -51,12 +50,13 @@ class TasksTestCase(TestCase):
     def test_it_logs_everytime_it_starts_sending_emails(self):
         with patch('logging.info') as info:
             expected_log = 'Sending messages'
-            send_mails_task()
+            send_mails_task()  # It returns a result
             info.assert_called_with(expected_log)
+
+from nuntium.tasks import pull_from_popit
 
 
 class PullFromPopitTask(TestCase):
-
     def setUp(self):
         super(PullFromPopitTask, self).setUp()
         self.api_instance1 = PopitApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
@@ -73,5 +73,5 @@ class PullFromPopitTask(TestCase):
         '''Actually do the pulling from popit in an asynchronous way'''
         Person.objects.all().delete()
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
-        pull_from_popit.delay(writeitinstance, self.api_instance1)
+        pull_from_popit.delay(writeitinstance, self.api_instance1)  # Returns result
         self.assertTrue(writeitinstance.persons.all())
