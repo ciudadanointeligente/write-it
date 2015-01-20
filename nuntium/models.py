@@ -76,7 +76,7 @@ class WriteItInstance(models.Model):
             return (False, e)
         persons = Person.objects.filter(api_instance=popit_api_instance)
         for person in persons:
-            Membership.objects.create(writeitinstance=self, person=person)
+            Membership.objects.get_or_create(writeitinstance=self, person=person)
 
         return (True, None)
 
