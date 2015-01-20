@@ -5,7 +5,7 @@ from django.utils.unittest import skipUnless
 from django.contrib.auth.models import User
 from django.conf import settings
 from nuntium.models import WriteItInstance
-from contactos import Contact, ContactType
+from contactos.models import Contact, ContactType
 
 
 @skipUnless(settings.LOCAL_POPIT, "No local popit running")
