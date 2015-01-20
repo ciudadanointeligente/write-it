@@ -30,6 +30,7 @@ import os
 from popit_api_instance import PopitApiInstance
 from requests.exceptions import ConnectionError
 
+
 def read_template_as_string(path, file_source_path=__file__):
     script_dir = os.path.dirname(file_source_path)
     result = ''
