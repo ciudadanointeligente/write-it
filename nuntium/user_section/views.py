@@ -197,6 +197,12 @@ class WriteItInstanceOwnerMixin(SingleObjectMixin):
         return self.object
 
 
+class WriteItRelatedModelMixin(SingleObjectMixin):
+    def get_writeitinstance(self):
+        obj = get_object_or_404(self.model, pk=self.kwargs['pk'])
+        return obj.writeitinstance
+
+
 class UpdateTemplateWithWriteitMixin(UpdateView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
     def get_object(self):
         super(UpdateTemplateWithWriteitMixin, self).get_object()
@@ -248,13 +254,9 @@ class MessagesPerWriteItInstance(DetailView, LoginRequiredMixin, WriteItInstance
     template_name = 'nuntium/profiles/messages_per_instance.html'
 
 
-class MessageDetail(DetailView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
+class MessageDetail(WriteItRelatedModelMixin, DetailView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
     model = Message
     template_name = "nuntium/profiles/message_detail.html"
-
-    def get_writeitinstance(self):
-        message = get_object_or_404(Message, pk=self.kwargs['pk'])
-        return message.writeitinstance
 
     def get_context_data(self, **kwargs):
         context = super(MessageDetail, self).get_context_data(**kwargs)
@@ -262,13 +264,9 @@ class MessageDetail(DetailView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
         return context
 
 
-class MessageDelete(DeleteView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
+class MessageDelete(WriteItRelatedModelMixin, DeleteView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
     model = Message
     template_name = "nuntium/profiles/message_delete_confirm.html"
-
-    def get_writeitinstance(self):
-        message = get_object_or_404(Message, pk=self.kwargs['pk'])
-        return message.writeitinstance
 
     def get_success_url(self):
         success_url = reverse(
