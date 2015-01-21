@@ -1,6 +1,16 @@
-from django.views.generic import TemplateView, CreateView, DetailView, View, ListView
-from django.views.generic.edit import UpdateView, DeleteView
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseForbidden, Http404
+from django.shortcuts import get_object_or_404, redirect
+from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView, CreateView, DetailView, View, ListView
+from django.views.generic.edit import UpdateView, DeleteView, FormView
+from django.views.generic.detail import SingleObjectMixin
+
+from contactos.models import Contact
+from contactos.forms import ContactCreateForm
+from mailit.forms import MailitTemplateForm
+
 from ..models import WriteItInstance, Message, Membership,\
     NewAnswerNotificationTemplate, ConfirmationTemplate, \
     WriteitInstancePopitInstanceRecord, Answer
@@ -9,17 +19,6 @@ from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, 
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
     WriteItInstanceCreateForm, AnswerForm, \
     RelatePopitInstanceWithWriteItInstance
-
-from django.http import Http404
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from contactos.models import Contact
-from contactos.forms import ContactCreateForm
-from mailit.forms import MailitTemplateForm
-from django.shortcuts import redirect
-from django.views.generic.detail import SingleObjectMixin
-from django.views.generic.edit import FormView
 
 
 class UserAccountView(TemplateView):
@@ -232,9 +231,6 @@ class NewAnswerNotificationTemplateUpdateView(UpdateTemplateWithWriteitMixin):
 class ConfirmationTemplateUpdateView(UpdateTemplateWithWriteitMixin):
     form_class = ConfirmationTemplateForm
     model = ConfirmationTemplate
-
-
-from django.http import HttpResponse, HttpResponseForbidden
 
 
 class WriteItPopitUpdateView(View):
