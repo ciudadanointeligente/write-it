@@ -119,7 +119,9 @@ class IncomingEmailAutomaticallySavesRawMessage(TestCase, IncomingRawEmailMixin)
     # @skip('gotta check API first, because it is not returning the answer')
 
     def mock_request_to_api(self):
-        person = self.outbound_message.message.people[0]
+        person = self.outbound_message.message.people.get(
+            membership__writeitinstance=self.outbound_message.message.writeitinstance,
+            )
 
         answer = Answer.objects.create(
             message=self.outbound_message.message,
