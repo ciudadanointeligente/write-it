@@ -14,6 +14,7 @@ def pull_from_popit(writeitinstance, popit_api_instance):
     result = writeitinstance._load_persons_from_a_popit_api(popit_api_instance)
     return result
 
+
 @task()
 def update_all_popits():
     all_records = WriteitInstancePopitInstanceRecord.objects.all()

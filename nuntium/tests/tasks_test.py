@@ -9,7 +9,6 @@ from django.contrib.auth.models import User
 from django.utils.unittest import skipUnless
 from django.conf import settings
 from nuntium.tasks import pull_from_popit
-from django.utils.unittest import skipUnless
 
 
 class TasksTestCase(TestCase):
@@ -55,6 +54,7 @@ class TasksTestCase(TestCase):
             send_mails_task()  # It returns a result
             info.assert_called_with(expected_log)
 
+
 @skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class PullFromPopitTask(TestCase):
     def setUp(self):
@@ -78,6 +78,7 @@ class PullFromPopitTask(TestCase):
 
 from nuntium.tasks import update_all_popits
 
+
 @skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class PeriodicallyPullFromPopitClass(TestCase):
     def setUp(self):
@@ -92,7 +93,6 @@ class PeriodicallyPullFromPopitClass(TestCase):
         #loading data from popit in a sync way
         self.writeitinstance._load_persons_from_a_popit_api(self.popit_api_instance)
         self.previously_created_persons = list(self.writeitinstance.persons.all())
-
 
     def test_update_existing_(self):
         popit_load_data("other_persons")
