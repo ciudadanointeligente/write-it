@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+LOGFILE=/home/ubuntu/writeit/writeit_send_emails.log
+LOGDIR=$(dirname $LOGFILE)
+# user/group to run as
+cd /home/ubuntu/writeit/write-it/
+source /home/ubuntu/.virtualenvs/writeit/bin/activate
+test -d $LOGDIR || mkdir -p $LOGDIR
+exec python manage.py celery beat --logfile=$LOGFILE
