@@ -1,5 +1,5 @@
 # coding=utf-8
-from global_test_case import GlobalTestCase as TestCase
+from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from nuntium.models import OutboundMessage, WriteItInstance
 from ..tasks import send_mails_task
 from mock import patch
@@ -8,6 +8,8 @@ from nuntium.popit_api_instance import PopitApiInstance
 from django.contrib.auth.models import User
 from django.utils.unittest import skipUnless
 from django.conf import settings
+from nuntium.tasks import pull_from_popit
+from django.utils.unittest import skipUnless
 
 
 class TasksTestCase(TestCase):
@@ -53,9 +55,7 @@ class TasksTestCase(TestCase):
             send_mails_task()  # It returns a result
             info.assert_called_with(expected_log)
 
-from nuntium.tasks import pull_from_popit
-
-
+@skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class PullFromPopitTask(TestCase):
     def setUp(self):
         super(PullFromPopitTask, self).setUp()
@@ -75,3 +75,30 @@ class PullFromPopitTask(TestCase):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         pull_from_popit.delay(writeitinstance, self.api_instance1)  # Returns result
         self.assertTrue(writeitinstance.persons.all())
+
+from nuntium.tasks import update_all_popits
+
+@skipUnless(settings.LOCAL_POPIT, "No local popit running")
+class PeriodicallyPullFromPopitClass(TestCase):
+    def setUp(self):
+        super(PeriodicallyPullFromPopitClass, self).setUp()
+        popit_load_data()
+        self.owner = User.objects.all()[0]
+        #this is the popit_api_instance created based on the previous load
+        self.writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+
+        self.popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+
+        #loading data from popit in a sync way
+        self.writeitinstance._load_persons_from_a_popit_api(self.popit_api_instance)
+        self.previously_created_persons = list(self.writeitinstance.persons.all())
+
+
+    def test_update_existing_(self):
+        popit_load_data("other_persons")
+
+        # This means that if I run the task then it should update the persons
+        update_all_popits.delay()
+
+        persons_after_updating = list(self.writeitinstance.persons.all())
+        self.assertNotEquals(self.previously_created_persons, persons_after_updating)
