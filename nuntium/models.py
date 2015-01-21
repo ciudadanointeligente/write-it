@@ -66,13 +66,16 @@ class WriteItInstance(models.Model):
         try:
             popit_api_instance.fetch_all_from_api()
         except:
-            popit_api_instance.delete()
+            self.do_something_with_a_vanished_popit_api_instance(popit_api_instance)
             return False
         persons = Person.objects.filter(api_instance=popit_api_instance)
         for person in persons:
             Membership.objects.get_or_create(writeitinstance=self, person=person)
 
         return True
+
+    def do_something_with_a_vanished_popit_api_instance(self, popit_api_instance):
+        pass
 
     def load_persons_from_a_popit_api(self, popit_url):
         api_instance, created = ApiInstance.objects.get_or_create(url=popit_url)
