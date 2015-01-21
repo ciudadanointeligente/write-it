@@ -16,7 +16,7 @@ def send_mails_task():
 @task()
 def pull_from_popit(writeitinstance, popit_api_instance):
     result = writeitinstance._load_persons_from_a_popit_api(popit_api_instance)
-    logger.info(u'Resyncing ' + writeitinstance + u' with ' + popit_api_instance)
+    logger.info(u'Resyncing ' + writeitinstance.__unicode__() + u' with ' + popit_api_instance.__unicode__())
     return result
 
 
