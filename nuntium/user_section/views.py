@@ -1,6 +1,16 @@
-from django.views.generic import TemplateView, CreateView, DetailView, View, ListView
-from django.views.generic.edit import UpdateView, DeleteView
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseForbidden, Http404
+from django.shortcuts import get_object_or_404, redirect
+from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView, CreateView, DetailView, View, ListView
+from django.views.generic.edit import UpdateView, DeleteView, FormView
+from django.views.generic.detail import SingleObjectMixin
+
+from contactos.models import Contact
+from contactos.forms import ContactCreateForm
+from mailit.forms import MailitTemplateForm
+
 from ..models import WriteItInstance, Message, Membership,\
     NewAnswerNotificationTemplate, ConfirmationTemplate, \
     WriteitInstancePopitInstanceRecord, Answer
@@ -8,17 +18,6 @@ from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, 
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
     WriteItInstanceCreateForm, AnswerForm, \
     RelatePopitInstanceWithWriteItInstance
-from django.http import Http404
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from contactos.models import Contact
-from contactos.forms import ContactCreateForm
-from mailit.forms import MailitTemplateForm
-from django.shortcuts import redirect
-from django.views.generic.detail import SingleObjectMixin
-from django.views.generic.edit import FormView
-from django.http import HttpResponse, HttpResponseForbidden
 from nuntium.popit_api_instance import PopitApiInstance
 from django.contrib import messages as view_messages
 from django.utils.translation import ugettext as _
@@ -187,26 +186,30 @@ class LoginRequiredMixin(View):
         return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
 
 
-class WriteitMixin(View):
-    def get_writeitinstance(self):
-        raise NotImplementedError
-
-
 class WriteItInstanceOwnerMixin(SingleObjectMixin):
     def get_writeitinstance(self):
         return get_object_or_404(WriteItInstance, pk=self.kwargs['pk'])
 
-    def get_object(self):
+    def check_ownership(self):
         self.writeitinstance = self.get_writeitinstance()
         if not self.writeitinstance.owner.__eq__(self.request.user):
             raise Http404
+
+    def get_object(self):
+        self.check_ownership()
         self.object = super(WriteItInstanceOwnerMixin, self).get_object()
         return self.object
 
 
-class UpdateTemplateWithWriteitMixin(UpdateView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
+class WriteItRelatedModelMixin(SingleObjectMixin):
+    def get_writeitinstance(self):
+        obj = get_object_or_404(self.model, writeitinstance__pk=self.kwargs['pk'])
+        return obj.writeitinstance
+
+
+class UpdateTemplateWithWriteitMixin(WriteItRelatedModelMixin, UpdateView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
     def get_object(self):
-        super(UpdateTemplateWithWriteitMixin, self).get_object()
+        self.check_ownership()
         self.object = self.model.objects.get(writeitinstance=self.writeitinstance)
         return self.object
 
@@ -253,13 +256,9 @@ class MessagesPerWriteItInstance(DetailView, LoginRequiredMixin, WriteItInstance
     template_name = 'nuntium/profiles/messages_per_instance.html'
 
 
-class MessageDetail(DetailView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
+class MessageDetail(WriteItRelatedModelMixin, DetailView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
     model = Message
     template_name = "nuntium/profiles/message_detail.html"
-
-    def get_writeitinstance(self):
-        message = get_object_or_404(Message, pk=self.kwargs['pk'])
-        return message.writeitinstance
 
     def get_context_data(self, **kwargs):
         context = super(MessageDetail, self).get_context_data(**kwargs)
@@ -267,13 +266,9 @@ class MessageDetail(DetailView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
         return context
 
 
-class MessageDelete(DeleteView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
+class MessageDelete(WriteItRelatedModelMixin, DeleteView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
     model = Message
     template_name = "nuntium/profiles/message_delete_confirm.html"
-
-    def get_writeitinstance(self):
-        message = get_object_or_404(Message, pk=self.kwargs['pk'])
-        return message.writeitinstance
 
     def get_success_url(self):
         success_url = reverse(
