@@ -76,7 +76,13 @@ class WriteItInstance(models.Model):
             return (False, e)
         persons = Person.objects.filter(api_instance=popit_api_instance)
         for person in persons:
-            Membership.objects.get_or_create(writeitinstance=self, person=person)
+            # There could be several memberships created.
+            memberships = Membership.objects.filter(writeitinstance=self, person=person)
+            if memberships.count() == 0:
+                Membership.objects.create(writeitinstance=self, person=person)
+            if memberships.count() > 1:
+                membership = memberships[0]
+                memberships.exclude(id=membership.id).delete()
 
         return (True, None)
 

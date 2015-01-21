@@ -231,6 +231,32 @@ class PopitWriteitRelationRecord(TestCase):
         self.assertEquals(amount_of_memberships, writeitinstance.persons.count())
 
     @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    def test_clean_memberships(self):
+        '''As part of bug #429 there can be several Membership between one writeitinstance and a person'''
+        popit_load_data()
+        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+        # there should be an amount of memberships
+        writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        amount_of_memberships = Membership.objects.filter(writeitinstance=writeitinstance).count()
+        previous_memberships = list(Membership.objects.filter(writeitinstance=writeitinstance))
+
+        person = writeitinstance.persons.all()[0]
+
+        # Creating a new one
+        Membership.objects.create(writeitinstance=writeitinstance, person=person)
+        try:
+            writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        except Membership.MultipleObjectsReturned, e:
+            self.fail("There are more than one Membership " + e)
+
+        # It deletes the bad membership
+        new_amount_of_memberships = Membership.objects.filter(writeitinstance=writeitinstance).count()
+        later_memberships = list(Membership.objects.filter(writeitinstance=writeitinstance))
+        self.assertEquals(amount_of_memberships, new_amount_of_memberships)
+        self.assertEquals(previous_memberships, later_memberships)
+
+    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
     def test_it_is_created_automatically_when_fetching_a_popit_instance(self):
         '''create automatically a record when fetching a popit instance'''
 
