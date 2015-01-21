@@ -276,6 +276,10 @@ CELERYBEAT_SCHEDULE = {
         'task': 'nuntium.tasks.send_mails_task',
         'schedule': crontab(minute='*/2'),
     },
+    'repsync-popit-apis-every-day': {
+        'task': 'nuntium.tasks.pull_from_popit',
+        'schedule': crontab(hour=5, minute=30, day_of_week=1),
+    },
 }
 # Logs every incoming email??
 INCOMING_EMAIL_LOGGING = 'None'
