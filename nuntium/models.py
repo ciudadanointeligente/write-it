@@ -68,17 +68,20 @@ class WriteItInstance(models.Model):
         try:
             popit_api_instance.fetch_all_from_api(owner=self.owner)
         except ConnectionError, e:
-            popit_api_instance.delete()
+            self.do_something_with_a_vanished_popit_api_instance(popit_api_instance)
             e.message = _('We could not connect with the URL')
             return (False, e)
         except Exception, e:
-            popit_api_instance.delete()
+            self.do_something_with_a_vanished_popit_api_instance(popit_api_instance)
             return (False, e)
         persons = Person.objects.filter(api_instance=popit_api_instance)
         for person in persons:
             Membership.objects.get_or_create(writeitinstance=self, person=person)
 
         return (True, None)
+
+    def do_something_with_a_vanished_popit_api_instance(self, popit_api_instance):
+        pass
 
     def _load_persons_from_a_popit_api(self, popit_api_instance):
         success_relating_people, error = self.relate_with_persons_from_popit_api_instance(popit_api_instance)
