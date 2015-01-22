@@ -1,6 +1,6 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
-from nuntium.models import OutboundMessage, WriteItInstance
+from nuntium.models import OutboundMessage, WriteItInstance, WriteitInstancePopitInstanceRecord
 from ..tasks import send_mails_task
 from mock import patch
 from popit.models import Person
@@ -95,6 +95,7 @@ class PeriodicallyPullFromPopitClass(TestCase):
         self.previously_created_persons = list(self.writeitinstance.persons.all())
 
     def test_update_existing_(self):
+        '''Update existing instance with new information coming from popit'''
         popit_load_data("other_persons")
 
         # This means that if I run the task then it should update the persons
@@ -102,3 +103,20 @@ class PeriodicallyPullFromPopitClass(TestCase):
 
         persons_after_updating = list(self.writeitinstance.persons.all())
         self.assertNotEquals(self.previously_created_persons, persons_after_updating)
+
+    def test_it_does_not_autosync_if_disabled(self):
+        '''If the instance has autosync disabled then it does not sync'''
+        writeitinstance_popit_record = WriteitInstancePopitInstanceRecord.objects.get(
+            writeitinstance=self.writeitinstance,
+            popitapiinstance=self.popit_api_instance
+        )
+        writeitinstance_popit_record.autosync = False
+        writeitinstance_popit_record.save()
+
+        # The record has been set to autosync False
+        popit_load_data("other_persons")
+        update_all_popits.delay()
+        # Loading new data
+        persons_after_updating = list(self.writeitinstance.persons.all())
+        # It should not have updated our writeit instance
+        self.assertEquals(self.previously_created_persons, persons_after_updating)
