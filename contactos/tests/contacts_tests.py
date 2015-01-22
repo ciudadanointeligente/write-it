@@ -16,7 +16,7 @@ from django.core.urlresolvers import reverse
 from django.forms.widgets import Select
 from ..forms import SelectSinglePersonField
 import simplejson as json
-
+from nuntium.models import WriteItInstance
 
 class ContactTestCase(TestCase):
     def setUp(self):
@@ -79,6 +79,28 @@ class ContactTestCase(TestCase):
         self.assertEquals(contact1.contact_type, contact_type)
         self.assertEquals(contact1.value, 'contact point')
         self.assertEquals(contact1.person, self.person)
+        self.assertEquals(contact1.popit_identifier, '12345')
+
+    def test_contact_with_writeitinstance(self):
+        '''A contact is related to a writeit instance'''
+        contact_type = ContactType.objects.create(
+            name='mental message',
+            label_name='mental address id',
+            )
+        writeitinstance = WriteItInstance.objects.all()[0]
+        contact1 = Contact.objects.create(
+            contact_type=contact_type,
+            value='contact point',
+            person=self.person,
+            writeitinstance=writeitinstance,
+            popit_identifier='12345'
+            )
+        self.assertTrue(contact1)
+        self.assertFalse(contact1.is_bounced)
+        self.assertEquals(contact1.contact_type, contact_type)
+        self.assertEquals(contact1.value, 'contact point')
+        self.assertEquals(contact1.person, self.person)
+        self.assertEquals(contact1.writeitinstance, writeitinstance)
         self.assertEquals(contact1.popit_identifier, '12345')
 
     def test_create_contact_without_popit_identifier(self):

@@ -24,7 +24,8 @@ class Contact(models.Model):
     person = models.ForeignKey(Person)
     value = models.CharField(max_length=512)
     is_bounced = models.BooleanField(default=False)
-    owner = models.ForeignKey(User, related_name="contacts")
+    owner = models.ForeignKey(User, related_name="contacts", null=True)
+    writeitinstance = models.ForeignKey('nuntium.WriteItInstance', null=True)
     popit_identifier = models.CharField(max_length=512, null=True)
 
     def __unicode__(self):
