@@ -91,7 +91,6 @@ class WriteItInstance(models.Model):
 
     def _load_persons_from_a_popit_api(self, popit_api_instance):
         success_relating_people, error = self.relate_with_persons_from_popit_api_instance(popit_api_instance)
-
         if success_relating_people:
             record, created = WriteitInstancePopitInstanceRecord\
                 .objects.get_or_create(

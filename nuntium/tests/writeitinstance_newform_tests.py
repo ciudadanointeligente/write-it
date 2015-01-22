@@ -118,3 +118,39 @@ class EmailCreationWhenPullingFromPopit(TestCase):
         self.assertEquals(contact.contact_type, contact_type)
         self.assertEquals(contact.value, "fiera@ciudadanointeligente.org")
         self.assertEquals(contact.owner, self.instance.owner)
+
+    def test_it_does_not_replicate_contacts(self):
+        '''It does not replicate a contact several times'''
+        popit_load_data(fixture_name='persons_with_emails')
+
+        self.instance.load_persons_from_a_popit_api(
+            settings.TEST_POPIT_API_URL
+        )
+        self.instance.load_persons_from_a_popit_api(
+            settings.TEST_POPIT_API_URL
+        )
+        User.objects.create_user(username="perro", password="gato")
+        fiera = self.instance.persons.filter(name="Fiera Feroz")
+        # fiera should have at least one contact commig from popit
+        contacts = Contact.objects.filter(person=fiera)
+        self.assertEquals(contacts.count(), 1)
+
+    def test_not_replicate_contact_even_if_value_changes(self):
+        '''The value of an email has changed in popit but in writeit it should just update the value'''
+        # Creating and loading the data
+        popit_load_data(fixture_name='persons_with_emails')
+
+        self.instance.load_persons_from_a_popit_api(
+            settings.TEST_POPIT_API_URL
+        )
+
+        # Updating the data and loading again
+        popit_load_data(fixture_name='persons_with_emails2')
+
+        self.instance.load_persons_from_a_popit_api(
+            settings.TEST_POPIT_API_URL
+        )
+
+        fiera = self.instance.persons.filter(name="Fiera Feroz")
+        contacts = Contact.objects.filter(person=fiera)
+        self.assertEquals(contacts.count(), 1)
