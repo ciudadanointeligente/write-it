@@ -35,7 +35,7 @@ class PopitPerson(Person):
         for contact_detail in doc['contact_details']:
             if contact_detail['type'] == 'email':
                 contact_type = MailChannel().get_contact_type()
-                Contact.objects.create(person=obj, contact_type=contact_type, value=contact_detail['value'], owner=owner)
+                Contact.objects.get_or_create(person=obj, contact_type=contact_type, value=contact_detail['value'], owner=owner)
 
 
 class PopitApiInstance(ApiInstance):
