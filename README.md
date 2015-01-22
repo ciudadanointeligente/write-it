@@ -96,6 +96,20 @@ Coverage Analysis
 -----------------
 For coverage analysis run ./coverage.sh
 
+Logging in
+--------------
+At this point you probably have write-it running without any users. You could create a (super) user by running:
+
+```
+python manage.py createsuperuser
+```
+
+It will ask you the username and password (which you will need to repeat).
+
+With that done you will be able to access '/accounts/login/'.
+
+
+
 
 API clients
 -----------
