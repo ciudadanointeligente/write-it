@@ -72,7 +72,6 @@ class WriteItInstance(models.Model):
             e.message = _('We could not connect with the URL')
             return (False, e)
         except Exception, e:
-            print e
             self.do_something_with_a_vanished_popit_api_instance(popit_api_instance)
             return (False, e)
         persons = Person.objects.filter(api_instance=popit_api_instance)
