@@ -30,6 +30,14 @@
   </div>
 </div>
 
+{% if messages %}
+  <div class="alert alert-info" role="alert">
+    {% for message in messages %}
+    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
+
 
 <!-- Tab panes -->
 <div class="tab-content profile-page-tab-content">

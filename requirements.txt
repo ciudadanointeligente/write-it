@@ -31,7 +31,7 @@ psycopg2==2.5.1
 static==0.4
 wsgiref==0.1.2
 kombu
-billiard==2.7.3.31
+billiard==3.3.0.19
 pyOpenSSL
 ndg-httpsclient
 pyasn1

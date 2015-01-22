@@ -27,6 +27,8 @@ from django.db.models.query import QuerySet
 from itertools import chain
 from django.utils.timezone import now
 import os
+from popit_api_instance import PopitApiInstance
+from requests.exceptions import ConnectionError
 
 
 def read_template_as_string(path, file_source_path=__file__):
@@ -64,28 +66,44 @@ class WriteItInstance(models.Model):
 
     def relate_with_persons_from_popit_api_instance(self, popit_api_instance):
         try:
-            popit_api_instance.fetch_all_from_api()
-        except:
+            popit_api_instance.fetch_all_from_api(owner=self.owner)
+        except ConnectionError, e:
             self.do_something_with_a_vanished_popit_api_instance(popit_api_instance)
-            return False
+            e.message = _('We could not connect with the URL')
+            return (False, e)
+        except Exception, e:
+            self.do_something_with_a_vanished_popit_api_instance(popit_api_instance)
+            return (False, e)
         persons = Person.objects.filter(api_instance=popit_api_instance)
         for person in persons:
-            Membership.objects.get_or_create(writeitinstance=self, person=person)
+            # There could be several memberships created.
+            memberships = Membership.objects.filter(writeitinstance=self, person=person)
+            if memberships.count() == 0:
+                Membership.objects.create(writeitinstance=self, person=person)
+            if memberships.count() > 1:
+                membership = memberships[0]
+                memberships.exclude(id=membership.id).delete()
 
-        return True
+        return (True, None)
 
     def do_something_with_a_vanished_popit_api_instance(self, popit_api_instance):
         pass
 
-    def load_persons_from_a_popit_api(self, popit_url):
-        api_instance, created = ApiInstance.objects.get_or_create(url=popit_url)
-        success_relating_people = self.relate_with_persons_from_popit_api_instance(api_instance)
-
+    def _load_persons_from_a_popit_api(self, popit_api_instance):
+        success_relating_people, error = self.relate_with_persons_from_popit_api_instance(popit_api_instance)
         if success_relating_people:
             record, created = WriteitInstancePopitInstanceRecord\
                 .objects.get_or_create(
                     writeitinstance=self,
-                    popitapiinstance=api_instance)
+                    popitapiinstance=popit_api_instance)
+
+        return (success_relating_people, error)
+
+    def load_persons_from_a_popit_api(self, popit_url):
+        '''This is an async wrapper for getting people from the api'''
+        api_instance, created = PopitApiInstance.objects.get_or_create(url=popit_url)
+        from nuntium.tasks import pull_from_popit
+        return pull_from_popit.delay(self, api_instance)
 
     def get_absolute_url(self):
         return reverse('instance_detail', kwargs={

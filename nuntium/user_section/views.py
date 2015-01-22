@@ -14,11 +14,13 @@ from mailit.forms import MailitTemplateForm
 from ..models import WriteItInstance, Message, Membership,\
     NewAnswerNotificationTemplate, ConfirmationTemplate, \
     WriteitInstancePopitInstanceRecord, Answer
-
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
     WriteItInstanceCreateForm, AnswerForm, \
     RelatePopitInstanceWithWriteItInstance
+from nuntium.popit_api_instance import PopitApiInstance
+from django.contrib import messages as view_messages
+from django.utils.translation import ugettext as _
 
 
 class UserAccountView(TemplateView):
@@ -243,8 +245,9 @@ class WriteItPopitUpdateView(View):
         record = WriteitInstancePopitInstanceRecord.objects.get(id=kwargs.get('pk'))
         if record.writeitinstance.owner != request.user:
             return HttpResponseForbidden()
+        popit_api_instance = PopitApiInstance.objects.get(id=record.popitapiinstance.id)
         record.writeitinstance.\
-            relate_with_persons_from_popit_api_instance(record.popitapiinstance)
+            relate_with_persons_from_popit_api_instance(popit_api_instance)
         return HttpResponse('result')
 
 
@@ -354,6 +357,9 @@ class WriteitPopitRelatingView(WriteItInstanceOwnerMixin, FormView):
 
     def form_valid(self, form):
         form.relate()
+        # It returns an AsyncResult http://celery.readthedocs.org/en/latest/reference/celery.result.html
+        # that we could use for future information about this process
+        view_messages.add_message(self.request, view_messages.INFO, _("We are now getting the people from popit"))
         response = super(WriteitPopitRelatingView, self).form_valid(form)
         return response
 

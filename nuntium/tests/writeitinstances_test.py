@@ -10,6 +10,9 @@ from django.contrib.auth.models import User
 from django.utils.translation import activate
 from django.utils.translation import ugettext as _
 from django.conf import settings
+from mock import patch
+from nuntium.popit_api_instance import PopitApiInstance
+from requests.exceptions import ConnectionError
 
 
 class InstanceTestCase(TestCase):
@@ -116,6 +119,65 @@ class InstanceTestCase(TestCase):
         self.assertIn(raton, [r for r in writeitinstance.persons.all()])
         self.assertIn(fiera, [r for r in writeitinstance.persons.all()])
 
+    def test_it_uses_the_async_task_to_pull_people_from_popit(self):
+        '''It uses the async task to pull people from popit'''
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+
+        '''
+        I'm going to patch the method to know that it was run, I could do some other properties but I'm thinking that
+        this is the easyest to know if the method was used.
+        '''
+        with patch('nuntium.tasks.pull_from_popit.delay') as async_pulling_from_popit:
+            writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+            async_pulling_from_popit.assert_called_with(writeitinstance, popit_api_instance)
+
+
+@skipUnless(settings.LOCAL_POPIT, "No local popit running")
+class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
+    def setUp(self):
+        super(WriteItInstanceLoadingPeopleFromAPopitApiTestCase, self).setUp()
+        self.api_instance1 = ApiInstance.objects.all()[0]
+        self.api_instance2 = ApiInstance.objects.all()[1]
+        self.person1 = Person.objects.all()[0]
+
+        self.owner = User.objects.all()[0]
+
+    def test_load_persons_from_a_popit_api(self):
+        '''Loading persons from a popit api'''
+        popit_load_data()
+        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+        writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+
+        self.assertEquals(writeitinstance.persons.all().count(), 2)
+
+        raton = Person.objects.get(name='Ratón Inteligente')
+        fiera = Person.objects.get(name="Fiera Feroz")
+
+        self.assertIn(raton, [r for r in writeitinstance.persons.all()])
+        self.assertIn(fiera, [r for r in writeitinstance.persons.all()])
+
+    def test_it_returns_a_tuple(self):
+        '''Returns a tuple'''
+        popit_load_data()
+        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+        result = writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        self.assertIsInstance(result, tuple)
+        self.assertTrue(result[0])
+        self.assertIsNone(result[1])
+
+    def test_it_returns_false_when_theres_a_problem(self):
+        '''When there's a problem it returns false and the problem in the tuple'''
+        non_existing_url = "http://nonexisting.url"
+        popit_api_instance = PopitApiInstance.objects.create(url=non_existing_url)
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+        result = writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        self.assertIsInstance(result, tuple)
+        self.assertFalse(result[0])
+        self.assertIsInstance(result[1], ConnectionError)
+
 
 class PopitWriteitRelationRecord(TestCase):
     '''
@@ -124,7 +186,6 @@ class PopitWriteitRelationRecord(TestCase):
     in some for that does not force them to be
     1-1
     '''
-
     def setUp(self):
         self.writeitinstance = WriteItInstance.objects.first()
         self.api_instance = ApiInstance.objects.first()
@@ -156,9 +217,7 @@ class PopitWriteitRelationRecord(TestCase):
     def test_it_does_not_try_to_replicate_the_memberships(self):
         '''This is related to issue #429'''
         popit_load_data()
-        popit_api_instance = self.api_instance
-        popit_api_instance.url = settings.TEST_POPIT_API_URL
-        popit_api_instance.save()
+        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
 
         # Doing it twice so I can replicate the bug
@@ -167,9 +226,35 @@ class PopitWriteitRelationRecord(TestCase):
 
         amount_of_memberships = Membership.objects.filter(writeitinstance=writeitinstance).count()
 
-        # There are only 3
-        self.assertEquals(amount_of_memberships, 3)
+        # There are only 2
+        self.assertEquals(amount_of_memberships, 2)
         self.assertEquals(amount_of_memberships, writeitinstance.persons.count())
+
+    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    def test_clean_memberships(self):
+        '''As part of bug #429 there can be several Membership between one writeitinstance and a person'''
+        popit_load_data()
+        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+        # there should be an amount of memberships
+        writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        amount_of_memberships = Membership.objects.filter(writeitinstance=writeitinstance).count()
+        previous_memberships = list(Membership.objects.filter(writeitinstance=writeitinstance))
+
+        person = writeitinstance.persons.all()[0]
+
+        # Creating a new one
+        Membership.objects.create(writeitinstance=writeitinstance, person=person)
+        try:
+            writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        except Membership.MultipleObjectsReturned, e:
+            self.fail("There are more than one Membership " + e)
+
+        # It deletes the bad membership
+        new_amount_of_memberships = Membership.objects.filter(writeitinstance=writeitinstance).count()
+        later_memberships = list(Membership.objects.filter(writeitinstance=writeitinstance))
+        self.assertEquals(amount_of_memberships, new_amount_of_memberships)
+        self.assertEquals(previous_memberships, later_memberships)
 
     @skipUnless(settings.LOCAL_POPIT, "No local popit running")
     def test_it_is_created_automatically_when_fetching_a_popit_instance(self):

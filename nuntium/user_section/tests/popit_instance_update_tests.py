@@ -1,15 +1,17 @@
 from global_test_case import popit_load_data
 from django.core.urlresolvers import reverse
-from ...models import WriteItInstance, Membership, WriteitInstancePopitInstanceRecord
+from nuntium.models import WriteItInstance, Membership, WriteitInstancePopitInstanceRecord
 from django.contrib.auth.models import User
 from django.test.client import Client
 from django.forms import Form, URLField
 from django.conf import settings
 from django.core.management import call_command
 from popit.models import Person, ApiInstance
-from django.utils.unittest import skipUnless
+from django.utils.unittest import skipUnless, skip
 from user_section_views_tests import UserSectionTestCase
+from django.utils.translation import ugettext as _
 from nuntium.user_section.forms import RelatePopitInstanceWithWriteItInstance
+from nuntium.management.commands.back_fill_writeit_popit_records import WPBackfillRecords
 
 
 class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
@@ -183,8 +185,6 @@ class UpdateMyPopitInstancesTestCase(UserSectionTestCase):
         self.assertFalse(api_instance.person_set.all())
         self.assertFalse(writeitinstance.persons.all())
 
-from ...management.commands.back_fill_writeit_popit_records import WPBackfillRecords
-
 
 class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
     def setUp(self):
@@ -260,7 +260,6 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
 
     def test_if_the_user_does_not_exist(self):
         '''If the given user does not exist it doesn't throw any errors'''
-
         call_command(
             'back_fill_writeit_popit_records',
             "i_dont_exist",
@@ -323,6 +322,28 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         self.assertEquals(records.count(), 1)
         # this means that it has persons related to it
         self.assertTrue(self.writeitinstance.persons.all())
+
+    @skip("This is very related to issue #411")
+    def test_post_to_the_url_shows_includes_something_about_the_result(self):
+        '''Posting to relate the popit and writetiinstances returns something abotu the result'''
+        self.client.login(username="fieraferoz", password="feroz")
+        url = reverse('relate-writeit-popit', kwargs={'pk': self.writeitinstance.pk})
+        data = self.data
+        data['popit_url'] = 'http://nonexistingurl.org'
+        response = self.client.post(url, data=data, follow=True)
+        messages = list(response.context['messages'])
+        self.assertTrue(messages)
+        self.assertEquals(messages[0].message, _('We could not connect with the URL'))
+
+    def test_insights_about_pulling_popit_even_if_everything_goes_ok(self):
+        '''Return some insights even if everything goes ok'''
+        self.client.login(username="fieraferoz", password="feroz")
+        url = reverse('relate-writeit-popit', kwargs={'pk': self.writeitinstance.pk})
+        data = self.data
+        response = self.client.post(url, data=data, follow=True)
+        messages = list(response.context['messages'])
+        self.assertTrue(messages)
+        self.assertEquals(messages[0].message, _("We are now getting the people from popit"))
 
     def test_get_the_url(self):
         self.client.login(username="fieraferoz", password="feroz")

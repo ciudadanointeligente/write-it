@@ -146,6 +146,7 @@ class RelatePopitInstanceWithWriteItInstance(Form):
         super(RelatePopitInstanceWithWriteItInstance, self).__init__(*args, **kwargs)
 
     def relate(self):
-        self.writeitinstance.load_persons_from_a_popit_api(
+        result = self.writeitinstance.load_persons_from_a_popit_api(
             self.cleaned_data['popit_url']
             )
+        return result

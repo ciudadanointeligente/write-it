@@ -276,6 +276,10 @@ CELERYBEAT_SCHEDULE = {
         'task': 'nuntium.tasks.send_mails_task',
         'schedule': crontab(minute='*/2'),
     },
+    'repsync-popit-apis-every-day': {
+        'task': 'nuntium.tasks.pull_from_popit',
+        'schedule': crontab(hour=5, minute=30, day_of_week=1),
+    },
 }
 # Logs every incoming email??
 INCOMING_EMAIL_LOGGING = 'None'
@@ -361,3 +365,7 @@ if 'SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL' in os.environ \
     #         'INDEX_NAME': 'haystack',
     #     },
     # }
+
+CELERY_TIMEZONE = 'UTC+3'
+CELERY_ENABLE_UTC = True
+CELERY_CREATE_MISSING_QUEUES = True

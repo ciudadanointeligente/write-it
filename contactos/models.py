@@ -25,6 +25,7 @@ class Contact(models.Model):
     value = models.CharField(max_length=512)
     is_bounced = models.BooleanField(default=False)
     owner = models.ForeignKey(User, related_name="contacts")
+    popit_identifier = models.CharField(max_length=512, null=True)
 
     def __unicode__(self):
         return _('%(contact)s (%(type)s) for %(person)s') % {
