@@ -56,7 +56,7 @@ class Contact(models.Model):
         owner = None
         try:
             owner = self.owner
-        except User.DoesNotExist, e:
+        except User.DoesNotExist:
             pass
         if owner is None and self.writeitinstance is not None:
             self.owner = self.writeitinstance.owner

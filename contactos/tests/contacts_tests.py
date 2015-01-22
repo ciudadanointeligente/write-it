@@ -18,6 +18,7 @@ from ..forms import SelectSinglePersonField
 import simplejson as json
 from nuntium.models import WriteItInstance
 
+
 class ContactTestCase(TestCase):
     def setUp(self):
         super(ContactTestCase, self).setUp()
