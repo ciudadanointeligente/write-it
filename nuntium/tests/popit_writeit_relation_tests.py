@@ -33,6 +33,7 @@ class PopitWriteitRelationRecord(TestCase):
         self.assertEquals(record.popitapiinstance, self.api_instance)
         self.assertTrue(record.updated)
         self.assertTrue(record.created)
+        self.assertTrue(record.autosync)
 
     def test_unicode(self):
         '''A WriteitInstancePopitInstanceRelation has a __unicode__ method'''
