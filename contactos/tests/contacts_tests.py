@@ -99,7 +99,6 @@ class ContactTestCase(TestCase):
         self.assertEquals(contact1.value, 'contact point')
         self.assertEquals(contact1.person, self.person)
 
-
     def test_contacts_reverse_name(self):
         # Yeah I did another test just to say that I have one more
         # I don't see anything wrong with that
