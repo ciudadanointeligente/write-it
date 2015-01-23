@@ -232,7 +232,6 @@ class TestMessages(TestCase):
         self.assertEquals(message3.slug, slugify(message3.subject) + "-3")
 
     def test_a_person_with_two_contacts_method_people(self):
-        user = User.objects.all()[0]
         Contact.objects.create(
             person=self.person1,
             value=u"another@contact.cl",
