@@ -118,14 +118,14 @@ class MailSendingTestCase(TestCase):
         self.contact_type2 = ContactType.objects.create(
             name='Uninvented one', label_name='bzbzbzb')
         self.user = User.objects.all()[0]
+        self.writeitinstance1 = WriteItInstance.objects.get(id=1)
+        self.writeitinstance2 = WriteItInstance.objects.get(id=2)
         self.contact3 = Contact.objects.create(
             person=self.person3,
             contact_type=self.channel.get_contact_type(),
             value='123456789',
-            owner=self.user,
+            writeitinstance=self.writeitinstance2,
             )
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
-        self.writeitinstance2 = WriteItInstance.objects.all()[1]
         self.message = Message.objects.all()[0]
         self.outbound_message1 = OutboundMessage.objects.filter(message=self.message)[0]
         self.message_to_another_contact = Message.objects.create(
@@ -221,7 +221,7 @@ class MailSendingTestCase(TestCase):
             person=self.person3,
             contact_type=self.contact_type2,
             value='person1@votainteligente.cl',
-            owner=self.user,
+            writeitinstance=self.writeitinstance2
             )
         message = Message.objects.create(
             content="The content",
@@ -244,7 +244,7 @@ class MailSendingTestCase(TestCase):
             person=self.person3,
             contact_type=self.channel.get_contact_type(),
             value='person1@votainteligente.cl',
-            owner=self.user,
+            writeitinstance=self.writeitinstance2,
             )
         message = Message.objects.create(
             content="The content",
