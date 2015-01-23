@@ -351,14 +351,18 @@ class TestMessages(TestCase):
 
         self.assertEquals(message.outboundmessage_set.count(), 0)
 
-    def test_outbound_message_is_not_created_if_the_contact_is_owned_by_some_other_user(self):
-        # test names are big but I think that's the way to indicate my intention
-        felipe = User.objects.create_user(username='felipe', password='lafieratienepulgas')
+    def test_outbound_message_is_not_created_if_the_contact_is_related_to_another_instance(self):
+        '''Send messages only to the contact related to its writeitinstance'''
+        another_instance = WriteItInstance.objects.create(
+            name=u"Another instance",
+            slug=u'another-instance',
+            owner=self.writeitinstance1.owner
+            )
         contact = Contact.objects.create(
             person=self.person1,
             value=u"another@contact.cl",
             contact_type=self.person1.contact_set.all()[0].contact_type,
-            owner=felipe,
+            writeitinstance=another_instance,
             )
 
         # this contact is for person 1 but it is owned by felipe
