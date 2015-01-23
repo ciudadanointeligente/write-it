@@ -237,7 +237,7 @@ class TestMessages(TestCase):
             person=self.person1,
             value=u"another@contact.cl",
             contact_type=self.person1.contact_set.all()[0].contact_type,
-            owner=user,
+            writeitinstance=self.writeitinstance1,
             )
 
         message = Message.objects.create(
