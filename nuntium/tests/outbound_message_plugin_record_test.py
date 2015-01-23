@@ -22,11 +22,12 @@ class OutboundMessageRecordTestCase(TestCase):
 
         self.person1 = Person.objects.all()[0]
         self.user = User.objects.all()[0]
+        self.writeitinstance1 = WriteItInstance.objects.get(id=1)
         self.mental_contact1 = Contact.objects.create(
             person=self.person1,
             contact_type=self.channel.get_contact_type(),
-            owner=self.user)
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+            writeitinstance=self.writeitinstance1
+        )
 
         self.fatal_error_message = Message.objects.create(
             content='Content 1',
