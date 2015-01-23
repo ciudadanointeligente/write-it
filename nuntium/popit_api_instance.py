@@ -8,7 +8,7 @@ class PopitPerson(Person):
         proxy = True
 
     @classmethod
-    def fetch_all_from_api(cls, instance, owner):
+    def fetch_all_from_api(cls, instance, writeitinstance):
         """
         Get all the documents from the API and save them locally.
         """
@@ -26,10 +26,10 @@ class PopitPerson(Person):
             doc['popit_url'] = url
 
             obj = cls.update_from_api_results(instance=instance, doc=doc)
-            PopitPerson.create_contact(obj, doc, owner)
+            PopitPerson.create_contact(obj, doc, writeitinstance)
 
     @classmethod
-    def create_contact(self, obj, doc, owner):
+    def create_contact(self, obj, doc, writeitinstance):
         # obj.__class__ == nuntium.popit_api_instance.PopitPerson'
 
         for contact_detail in doc['contact_details']:
@@ -37,7 +37,7 @@ class PopitPerson(Person):
                 contact_type = MailChannel().get_contact_type()
                 contact, created = Contact.objects.get_or_create(popit_identifier=contact_detail['id'],
                     contact_type=contact_type,
-                    owner=owner,
+                    writeitinstance=writeitinstance,
                     person=obj)
                 contact.value = contact_detail['value']
                 contact.save()
@@ -47,11 +47,11 @@ class PopitApiInstance(ApiInstance):
     class Meta:
         proxy = True
 
-    def fetch_all_from_api(self, owner):
+    def fetch_all_from_api(self, writeitinstance):
         """
         Update all the local data from the API. This method actually delegates
         to the other models.
         """
         models = [PopitPerson]
         for model in models:
-            model.fetch_all_from_api(instance=self, owner=owner)
+            model.fetch_all_from_api(instance=self, writeitinstance=writeitinstance)

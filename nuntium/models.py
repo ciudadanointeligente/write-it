@@ -66,7 +66,7 @@ class WriteItInstance(models.Model):
 
     def relate_with_persons_from_popit_api_instance(self, popit_api_instance):
         try:
-            popit_api_instance.fetch_all_from_api(owner=self.owner)
+            popit_api_instance.fetch_all_from_api(writeitinstance=self)
         except ConnectionError, e:
             self.do_something_with_a_vanished_popit_api_instance(popit_api_instance)
             e.message = _('We could not connect with the URL')
