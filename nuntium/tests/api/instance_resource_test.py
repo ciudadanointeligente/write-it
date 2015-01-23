@@ -145,6 +145,11 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
 
         # creating messages
         self.pedro = Person.objects.all()[0]
+        # Setting that the contact is related to self.writeitinstance rather than to the user
+        self.contact = self.pedro.contact_set.all()[0]
+        self.contact.writeitinstance = self.writeitinstance
+        self.contact.save()
+
         self.message1 = Message.objects.create(
             content='Content 1',
             author_name='Felipe',
