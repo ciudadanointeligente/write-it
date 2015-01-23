@@ -75,12 +75,14 @@ class UserViewTestCase(UserSectionTestCase):
 class YourContactsViewTestCase(UserSectionTestCase):
     def setUp(self):
         super(YourContactsViewTestCase, self).setUp()
-        self.contact = Contact.objects.all()[0]
-        self.contact.owner = self.user
+        self.contact = Contact.objects.get(id=1)
         # The user fiera and the password is feroz
         # but seriously I don't know how to make this more
         # explicit
         self.contact.save()
+        self.owner = self.contact.writeitinstance.owner
+        self.owner.set_password('feroz')
+        self.owner.save()
 
     def test_your_contacts_url_exist(self):
         url = reverse('your-contacts')
@@ -91,13 +93,14 @@ class YourContactsViewTestCase(UserSectionTestCase):
         url = reverse('your-contacts')
         c = Client()
 
-        c.login(username="fiera", password="feroz")
+        c.login(username=self.owner.username, password="feroz")
 
         response = c.get(url)
         self.assertEquals(response.status_code, 200)
         self.assertIn('object_list', response.context)
-        self.assertEquals(len(response.context['object_list']), 1)
-        self.assertEquals(response.context['object_list'][0], self.contact)
+        self.assertEquals(len(response.context['object_list']), 4)
+        contact_in_response = response.context['object_list'].get(id=self.contact.id)
+        self.assertTrue(contact_in_response)
         self.assertIn('form', response.context)
         form = response.context['form']
         self.assertIsInstance(form, ContactCreateForm)
@@ -210,7 +213,7 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
     def setUp(self):
         super(WriteitInstanceUpdateTestCase, self).setUp()
         self.factory = RequestFactory()
-        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.writeitinstance = WriteItInstance.objects.get(id=1)
         self.owner = self.writeitinstance.owner
         self.pedro = Person.objects.get(name="Pedro")
         self.marcel = Person.objects.get(name="Marcel")
