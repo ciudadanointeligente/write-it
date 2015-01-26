@@ -73,12 +73,24 @@ class ContactsPerWriteItInstanceTestCase(UserSectionTestCase):
     def setUp(self):
         super(ContactsPerWriteItInstanceTestCase, self).setUp()
         self.writeitinstance = WriteItInstance.objects.get(id=1)
+        self.writeitinstance.owner.set_password('feroz')
+        self.writeitinstance.owner.save()
 
     def test_the_url_exists(self):
         '''The list of contacts per writeit instance exists'''
         url = reverse('contacts-per-writeitinstance', kwargs={'pk': self.writeitinstance.id})
         self.assertTrue(url)
-        
+
+    def test_the_url_is_reachable(self):
+        '''The url is reachable'''
+        url = reverse('contacts-per-writeitinstance', kwargs={'pk': self.writeitinstance.id})
+        self.client.login(username=self.writeitinstance.owner, password="feroz")
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'nuntium/profiles/contacts/contacts-per-writeitinstance.html')
+
+
+
 
 class YourContactsViewTestCase(UserSectionTestCase):
     def setUp(self):
