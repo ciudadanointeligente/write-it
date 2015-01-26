@@ -513,7 +513,7 @@ def create_new_outbound_messages_for_newly_created_contact(sender, instance, cre
     contact = instance
     if not created:
         return
-    writeitinstances = WriteItInstance.objects.filter(owner=contact.owner)
+    writeitinstances = WriteItInstance.objects.filter(owner=contact.writeitinstance.owner)
     messages = Message.objects.filter(writeitinstance__in=writeitinstances)
     no_contact_oms = NoContactOM.objects.filter(
         message__in=messages,
