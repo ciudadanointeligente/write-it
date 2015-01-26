@@ -69,6 +69,17 @@ class UserViewTestCase(UserSectionTestCase):
         self.assertTemplateUsed(response, "base_edit.html")
 
 
+class ContactsPerWriteItInstanceTestCase(UserSectionTestCase):
+    def setUp(self):
+        super(ContactsPerWriteItInstanceTestCase, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.get(id=1)
+
+    def test_the_url_is_reachable(self):
+        '''The list of contacts per writeit instance is reachable'''
+        url = reverse('contacts-per-writeitinstance', kwargs={'pk': self.writeitinstance.id})
+        self.assertTrue(url)
+
+
 class YourContactsViewTestCase(UserSectionTestCase):
     def setUp(self):
         super(YourContactsViewTestCase, self).setUp()
