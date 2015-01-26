@@ -30,6 +30,11 @@ class UserAccountView(TemplateView):
         return super(UserAccountView, self).dispatch(*args, **kwargs)
 
 
+class WriteItInstanceContactDetailView(DetailView):
+    model = WriteItInstance
+    template_name = 'nuntium/profiles/contacts/contacts-per-writeitinstance.html'
+
+
 class WriteItInstanceTemplateUpdateView(DetailView):
     model = WriteItInstance
     template_name = 'nuntium/profiles/templates.html'

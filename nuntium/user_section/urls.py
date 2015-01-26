@@ -7,7 +7,7 @@ from .views import UserAccountView, WriteItInstanceUpdateView, \
     ConfirmationTemplateUpdateView, WriteItInstanceCreateView, \
     YourPopitApiInstances, WriteItPopitUpdateView, MessagesPerWriteItInstance, \
     MessageDetail, MessageDelete, AnswerCreateView, ModerationView, AnswerUpdateView, \
-    WriteitPopitRelatingView, WriteItDeleteView
+    WriteitPopitRelatingView, WriteItDeleteView, WriteItInstanceContactDetailView
 
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
@@ -25,7 +25,7 @@ urlpatterns = patterns('',
         MessagesPerWriteItInstance.as_view(),
         name='messages_per_writeitinstance'),
     url(r'^writeitinstance/(?P<pk>[-\d]+)/contacts/?$',
-        TemplateView.as_view(template_name="nuntium/profiles/contacts/contacts-per-writeitinstance.html"),
+        WriteItInstanceContactDetailView.as_view(),
         name='contacts-per-writeitinstance'),
     url(r'^message/(?P<pk>[-\d]+)/answers/?$',
         MessageDetail.as_view(),

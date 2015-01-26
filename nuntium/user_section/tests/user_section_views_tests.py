@@ -88,6 +88,7 @@ class ContactsPerWriteItInstanceTestCase(UserSectionTestCase):
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'nuntium/profiles/contacts/contacts-per-writeitinstance.html')
+        self.assertIn('writeitinstance', response.context)
 
 
 
