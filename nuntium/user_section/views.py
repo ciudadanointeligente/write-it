@@ -151,13 +151,8 @@ class YourContactsView(UserSectionListView):
     template_name = 'nuntium/profiles/your-contacts.html'
 
     def get_queryset(self):
-        queryset = super(YourContactsView, self).get_queryset().filter(writeitinstance__owner=self.request.user)
+        queryset = Contact.objects.filter(writeitinstance__owner=self.request.user)
         return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super(YourContactsView, self).get_context_data(**kwargs)
-        context['form'] = ContactCreateForm(owner=self.request.user)
-        return context
 
 
 class YourPopitApiInstances(ListView):
