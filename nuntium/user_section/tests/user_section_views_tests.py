@@ -101,9 +101,12 @@ class YourContactsViewTestCase(UserSectionTestCase):
         self.assertEquals(len(response.context['object_list']), 4)
         contact_in_response = response.context['object_list'].get(id=self.contact.id)
         self.assertTrue(contact_in_response)
-        self.assertIn('form', response.context)
-        form = response.context['form']
-        self.assertIsInstance(form, ContactCreateForm)
+        self.assertNotIn('form', response.context)
+        # Here I want to make sure that it has been removed the possibility for
+        # creating a new contact in this view
+        # only to display them
+        # form = response.context['form']
+        # self.assertIsInstance(form, ContactCreateForm)
         self.assertTemplateUsed(response, 'base_edit.html')
         self.assertTemplateUsed(response, 'nuntium/profiles/your-contacts.html')
 
