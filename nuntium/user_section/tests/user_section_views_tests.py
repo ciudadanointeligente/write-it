@@ -74,11 +74,11 @@ class ContactsPerWriteItInstanceTestCase(UserSectionTestCase):
         super(ContactsPerWriteItInstanceTestCase, self).setUp()
         self.writeitinstance = WriteItInstance.objects.get(id=1)
 
-    def test_the_url_is_reachable(self):
-        '''The list of contacts per writeit instance is reachable'''
+    def test_the_url_exists(self):
+        '''The list of contacts per writeit instance exists'''
         url = reverse('contacts-per-writeitinstance', kwargs={'pk': self.writeitinstance.id})
         self.assertTrue(url)
-
+        
 
 class YourContactsViewTestCase(UserSectionTestCase):
     def setUp(self):
