@@ -6,6 +6,7 @@ import simplejson as json
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
+from nuntium.models import WriteItInstance
 
 
 class ContactoUpdateView(UpdateView):
@@ -18,7 +19,7 @@ class ContactoUpdateView(UpdateView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        self.queryset = Contact.objects.filter(owner=self.request.user)
+        self.queryset = Contact.objects.filter(writeitinstance__owner=self.request.user)
         return super(ContactoUpdateView, self).dispatch(*args, **kwargs)
 
     def form_valid(self, form):
@@ -43,5 +44,6 @@ class ContactCreateView(CreateView):
 
     def get_form_kwargs(self):
         kwargs = super(ContactCreateView, self).get_form_kwargs()
-        kwargs['owner'] = self.request.user
+        writeitinstance = WriteItInstance.objects.get(id=self.kwargs['pk'])
+        kwargs['writeitinstance'] = writeitinstance
         return kwargs

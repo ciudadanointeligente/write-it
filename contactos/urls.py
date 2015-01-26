@@ -5,7 +5,7 @@ urlpatterns = patterns('',
     url(r'^contacto/update/(?P<pk>[-\d]+)/?$',
         ContactoUpdateView.as_view(),
         name='contact_value_update'),
-    url(r'^contacto/create/?$',
+    url(r'^(?P<pk>[-\d]+)/contacto/create/?$',
         ContactCreateView.as_view(),
         name='create-new-contact'),
 )

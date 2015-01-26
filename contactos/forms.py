@@ -19,12 +19,12 @@ class ContactCreateForm(ModelForm):
     person = SelectSinglePersonField(queryset=Person.objects.all())
 
     def __init__(self, *args, **kwargs):
-        self.owner = kwargs.pop('owner')
+        self.writeitinstance = kwargs.pop('writeitinstance')
         super(ContactCreateForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
         contact = super(ContactCreateForm, self).save(commit=False)
-        contact.owner = self.owner
+        contact.writeitinstance = self.writeitinstance
         if commit:
             contact.save()
         return contact
