@@ -30,15 +30,6 @@ class UserAccountView(TemplateView):
         return super(UserAccountView, self).dispatch(*args, **kwargs)
 
 
-class WriteItInstanceContactDetailView(DetailView):
-    model = WriteItInstance
-    template_name = 'nuntium/profiles/contacts/contacts-per-writeitinstance.html'
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(WriteItInstanceContactDetailView, self).dispatch(*args, **kwargs)
-
-
 class WriteItInstanceTemplateUpdateView(DetailView):
     model = WriteItInstance
     template_name = 'nuntium/profiles/templates.html'
@@ -123,14 +114,32 @@ class WriteItInstanceAdvancedUpdateView(UpdateView):
             )
 
 
-class UserSectionListView(ListView):
+class UserSectionView(View):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(UserSectionListView, self).dispatch(*args, **kwargs)
 
+
+class UserSectionListView(UserSectionView, ListView):
     def get_queryset(self):
         queryset = super(UserSectionListView, self).get_queryset().filter(owner=self.request.user)
         return queryset
+
+
+class WriteItInstanceContactDetailView(DetailView):
+    model = WriteItInstance
+    template_name = 'nuntium/profiles/contacts/contacts-per-writeitinstance.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(WriteItInstanceContactDetailView, self).dispatch(*args, **kwargs)
+
+    def get_object(self, queryset=None):
+        self.object = super(WriteItInstanceContactDetailView, self).get_object(queryset=queryset)
+        #OK I don't know if it is better to test by id
+        if not self.object.owner.__eq__(self.request.user):
+            raise Http404
+        return self.object
 
 
 class WriteItInstanceCreateView(CreateView):

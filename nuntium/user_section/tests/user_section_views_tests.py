@@ -97,7 +97,7 @@ class ContactsPerWriteItInstanceTestCase(UserSectionTestCase):
         url = reverse('contacts-per-writeitinstance', kwargs={'pk': writeitinstance.id})
         self.client.login(username=self.writeitinstance.owner, password="feroz")
         response = self.client.get(url)
-        self.assertNotEquals(response.status_code, 200)
+        self.assertEquals(response.status_code, 404)
 
 
 
