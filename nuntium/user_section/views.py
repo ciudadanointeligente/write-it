@@ -34,6 +34,10 @@ class WriteItInstanceContactDetailView(DetailView):
     model = WriteItInstance
     template_name = 'nuntium/profiles/contacts/contacts-per-writeitinstance.html'
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(WriteItInstanceContactDetailView, self).dispatch(*args, **kwargs)
+
 
 class WriteItInstanceTemplateUpdateView(DetailView):
     model = WriteItInstance

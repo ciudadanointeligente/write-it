@@ -90,6 +90,14 @@ class ContactsPerWriteItInstanceTestCase(UserSectionTestCase):
         self.assertTemplateUsed(response, 'nuntium/profiles/contacts/contacts-per-writeitinstance.html')
         self.assertIn('writeitinstance', response.context)
 
+    def test_only_owner_can_access_the_url(self):
+        '''Only owner can access the list of contacts per writeitinstance'''
+        other_user = User.objects.create_user(username='hello', password='password')
+        writeitinstance = WriteItInstance.objects.create(name=u"The name", owner=other_user)
+        url = reverse('contacts-per-writeitinstance', kwargs={'pk': writeitinstance.id})
+        self.client.login(username=self.writeitinstance.owner, password="feroz")
+        response = self.client.get(url)
+        self.assertNotEquals(response.status_code, 200)
 
 
 
