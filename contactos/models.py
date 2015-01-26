@@ -53,13 +53,6 @@ class Contact(models.Model):
         return False
 
     def save(self, *args, **kwargs):
-        owner = None
-        try:
-            owner = self.owner
-        except User.DoesNotExist:
-            pass
-        if owner is None and self.writeitinstance is not None:
-            self.owner = self.writeitinstance.owner
         super(Contact, self).save(*args, **kwargs)
 
 

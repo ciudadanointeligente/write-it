@@ -6,11 +6,8 @@ from django.db.models import Q
 from django.test.client import Client, RequestFactory
 from django.utils.translation import activate
 from django.utils.unittest import skipUnless
-
 from popit.models import Person
-
 from contactos.models import Contact
-from contactos.forms import ContactCreateForm
 from mailit.forms import MailitTemplateForm
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 

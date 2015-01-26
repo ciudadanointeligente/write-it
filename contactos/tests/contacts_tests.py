@@ -315,7 +315,7 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
         self.assertEquals(contact.value, data['value'])
 
     def test_can_create_a_new_contact_from_a_view(self):
-        url = reverse('create-new-contact', kwargs={'pk':self.writeitinstance.pk})
+        url = reverse('create-new-contact', kwargs={'pk': self.writeitinstance.pk})
         self.assertTrue(url)
 
         c = Client()

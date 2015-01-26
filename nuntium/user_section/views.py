@@ -8,7 +8,6 @@ from django.views.generic.edit import UpdateView, DeleteView, FormView
 from django.views.generic.detail import SingleObjectMixin
 
 from contactos.models import Contact
-from contactos.forms import ContactCreateForm
 from mailit.forms import MailitTemplateForm
 
 from ..models import WriteItInstance, Message, Membership,\
