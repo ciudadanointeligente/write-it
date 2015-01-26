@@ -24,7 +24,7 @@ class Contact(models.Model):
     person = models.ForeignKey(Person)
     value = models.CharField(max_length=512)
     is_bounced = models.BooleanField(default=False)
-    # owner = models.ForeignKey(User, related_name="contacts")
+    owner = models.ForeignKey(User, related_name="contacts", null=True)
     writeitinstance = models.ForeignKey('nuntium.WriteItInstance', related_name="contacts", null=True)
     popit_identifier = models.CharField(max_length=512, null=True)
 
@@ -53,13 +53,13 @@ class Contact(models.Model):
         return False
 
     def save(self, *args, **kwargs):
-        # owner = None
-        # try:
-        #     owner = self.owner
-        # except User.DoesNotExist:
-        #     pass
-        # if owner is None and self.writeitinstance is not None:
-        #     self.owner = self.writeitinstance.owner
+        owner = None
+        try:
+            owner = self.owner
+        except User.DoesNotExist:
+            pass
+        if owner is None and self.writeitinstance is not None:
+            self.owner = self.writeitinstance.owner
         super(Contact, self).save(*args, **kwargs)
 
 
