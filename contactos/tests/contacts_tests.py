@@ -17,6 +17,7 @@ from django.forms.widgets import Select
 from ..forms import SelectSinglePersonField
 import simplejson as json
 from nuntium.models import WriteItInstance
+from django.db.models import Q
 
 
 class ContactTestCase(TestCase):
@@ -68,11 +69,12 @@ class ContactTestCase(TestCase):
             name='mental message',
             label_name='mental address id',
             )
+        writeitinstance = WriteItInstance.objects.get(id=1)
         contact1 = Contact.objects.create(
             contact_type=contact_type,
             value='contact point',
             person=self.person,
-            owner=self.user,
+            writeitinstance=writeitinstance,
             popit_identifier='12345'
             )
         self.assertTrue(contact1)
@@ -88,7 +90,7 @@ class ContactTestCase(TestCase):
             name='mental message',
             label_name='mental address id',
             )
-        writeitinstance = WriteItInstance.objects.all()[0]
+        writeitinstance = WriteItInstance.objects.get(id=1)
         contact1 = Contact.objects.create(
             contact_type=contact_type,
             value='contact point',
@@ -110,11 +112,12 @@ class ContactTestCase(TestCase):
             name='mental message',
             label_name='mental address id',
             )
+        writeitinstance = WriteItInstance.objects.get(id=1)
         contact1 = Contact.objects.create(
             contact_type=contact_type,
             value='contact point',
             person=self.person,
-            owner=self.user,
+            writeitinstance=writeitinstance,
             )
         self.assertTrue(contact1)
         self.assertFalse(contact1.is_bounced)
@@ -125,6 +128,7 @@ class ContactTestCase(TestCase):
     def test_contacts_reverse_name(self):
         # Yeah I did another test just to say that I have one more
         # I don't see anything wrong with that
+        writeitinstance = WriteItInstance.objects.get(id=1)
         contact_type = ContactType.objects.create(
             name='mental message',
             label_name='mental address id',
@@ -133,21 +137,22 @@ class ContactTestCase(TestCase):
             contact_type=contact_type,
             value='contact point',
             person=self.person,
-            owner=self.user,
+            writeitinstance=writeitinstance,
             )
 
-        self.assertIn(contact1, self.user.contacts.all())
+        self.assertIn(contact1, writeitinstance.contacts.all())
 
     def test_contact_unicode(self):
         contact_type = ContactType.objects.create(
             name='mental message',
             label_name='mental address id',
             )
+        writeitinstance = WriteItInstance.objects.get(id=1)
         contact1 = Contact.objects.create(
             contact_type=contact_type,
             value='contact point',
             person=self.person,
-            owner=self.user,
+            writeitinstance=writeitinstance,
             )
         expected_unicode = _('%(contact)s (%(type)s) for %(person)s') % {
             'contact': contact1.value,
@@ -157,24 +162,25 @@ class ContactTestCase(TestCase):
 
         self.assertEquals(contact1.__unicode__(), expected_unicode)
 
+    #I'm wondering if this test can be removed?
     def test_contact_has_owner(self):
         contact_type = ContactType.objects.create(
             name='mental message',
             label_name='mental address id',
             )
-        user = User.objects.all()[0]
+        writeitinstance = WriteItInstance.objects.get(id=1)
         contact1 = Contact.objects.create(
             contact_type=contact_type,
             value='contact point',
             person=self.person,
-            owner=user,
+            writeitinstance=writeitinstance,
             )
 
-        self.assertEquals(contact1.owner, user)
+        self.assertEquals(contact1.writeitinstance, writeitinstance)
 
     def test_when_a_contact_is_set_to_bounced_it_sends_a_mail_to_its_owner(self):
         # yeah I know that i kind of like to write big test names
-
+        writeitinstance = WriteItInstance.objects.get(id=1)
         contact_type = ContactType.objects.create(
             name='mental message',
             label_name='mental address id',
@@ -183,7 +189,7 @@ class ContactTestCase(TestCase):
             contact_type=contact_type,
             value='contact point',
             person=self.person,
-            owner=self.user,
+            writeitinstance=writeitinstance,
             )
 
         contact1.is_bounced = True
@@ -192,18 +198,19 @@ class ContactTestCase(TestCase):
         self.assertTrue(contact1.value in mail.outbox[0].body)
         self.assertTrue(self.person.name in mail.outbox[0].body)
         self.assertEquals(len(mail.outbox[0].to), 1)
-        self.assertTrue(self.user.email in mail.outbox[0].to)
+        self.assertTrue(writeitinstance.owner.email in mail.outbox[0].to)
         self.assertEquals(mail.outbox[0].subject, _('The contact contact point for Pedro has bounced'))
         self.assertEquals(mail.outbox[0].from_email, settings.DEFAULT_FROM_EMAIL)
 
     def test_sends_a_notification_mail_only_once(self):
+        writeitinstance = WriteItInstance.objects.get(id=1)
         contact_type = ContactType.objects.create(
             name='mental message', label_name='mental address id')
         contact1 = Contact.objects.create(
             contact_type=contact_type,
             value='contact point',
             person=self.person,
-            owner=self.user,
+            writeitinstance=writeitinstance,
             )
         contact1.is_bounced = True
         contact1.save()
@@ -282,10 +289,12 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
     def setUp(self):
         super(ContactCreateFormAndViewTestCase, self).setUp()
         self.factory = RequestFactory()
-        self.user = User.objects.get(username="fiera")
+        self.user = User.objects.get(id=1)
+        self.writeitinstance = self.user.writeitinstances.get(id=2)
         # the password is already 'fiera' but I'm making this just
         # explicit
         self.user.set_password('fiera')
+        self.user.save()
         # making it explicit
         self.contact_type = ContactType.objects.all()[0]
         self.pedro = Person.objects.get(name="Pedro")
@@ -294,24 +303,23 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
         data = {
             'contact_type': self.contact_type.id,
             'value': 'mail@the-real-mail.com',
-            'person': self.pedro.id,
+            'person': self.pedro.id
         }
-        form = ContactCreateForm(data=data, owner=self.user)
+        form = ContactCreateForm(data=data, writeitinstance=self.writeitinstance)
         self.assertTrue(form.is_valid())
         form.save()
 
-        self.assertEquals(self.user.contacts.count(), 1)
-        contact = self.user.contacts.all()[0]
-        self.assertEquals(contact.owner, self.user)
+        self.assertEquals(self.writeitinstance.contacts.count(), 1)
+        contact = self.writeitinstance.contacts.all()[0]
         self.assertEquals(contact.contact_type, self.contact_type)
         self.assertEquals(contact.value, data['value'])
 
     def test_can_create_a_new_contact_from_a_view(self):
-        url = reverse('create-new-contact')
+        url = reverse('create-new-contact', kwargs={'pk':self.writeitinstance.pk})
         self.assertTrue(url)
 
         c = Client()
-        c.login(username="fiera", password="feroz")
+        c.login(username=self.user.username, password="fiera")
 
         data = {
             'contact_type': self.contact_type.id,
@@ -324,13 +332,13 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
         url_for_list_of_contacts = reverse('your-contacts')
         self.assertRedirects(response, url_for_list_of_contacts)
 
-        contact = Contact.objects.get(owner=self.user)
+        contact = Contact.objects.get(Q(writeitinstance__owner=self.user), Q(value='mail@the-real-mail.com'))
         self.assertEquals(contact.value, data['value'])
         self.assertEquals(contact.person, self.pedro)
         self.assertEquals(contact.contact_type, self.contact_type)
 
     def test_select_widget_contains_api_instance(self):
-        form = ContactCreateForm(owner=self.user)
+        form = ContactCreateForm(writeitinstance=self.writeitinstance)
         self.assertIsInstance(form.fields['person'], SelectSinglePersonField)
         self.assertIsInstance(form.fields['person'].widget, Select)
         rendered_field = form.fields['person'].widget.render(name='The name', value=None)
@@ -344,13 +352,17 @@ class ContactUpdateFormAndViewTestCase(UserSectionTestCase):
         super(ContactUpdateFormAndViewTestCase, self).setUp()
         self.factory = RequestFactory()
         self.user = User.objects.get(username="fiera")
+        self.writeitinstance = WriteItInstance.objects.create(
+            name='instance 1',
+            slug='instance-1',
+            owner=self.user)
         # the password is already fiera but I'm making this just
         # explicit
         self.user.set_password('fiera')
         # making it explicit
 
         self.contact = Contact.objects.all()[0]
-        self.contact.owner = self.user
+        self.contact.writeitinstance = self.writeitinstance
         self.contact.save()
 
     def test_create_form(self):
