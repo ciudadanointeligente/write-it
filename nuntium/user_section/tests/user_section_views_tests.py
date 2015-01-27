@@ -100,7 +100,6 @@ class ContactsPerWriteItInstanceTestCase(UserSectionTestCase):
         self.assertEquals(response.status_code, 404)
 
 
-
 class YourContactsViewTestCase(UserSectionTestCase):
     def setUp(self):
         super(YourContactsViewTestCase, self).setUp()
