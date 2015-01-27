@@ -117,7 +117,7 @@ class EmailCreationWhenPullingFromPopit(TestCase):
         contact_type = ContactType.objects.get(name="e-mail")
         self.assertEquals(contact.contact_type, contact_type)
         self.assertEquals(contact.value, "fiera@ciudadanointeligente.org")
-        self.assertEquals(contact.owner, self.instance.owner)
+        self.assertEquals(contact.writeitinstance, self.instance)
 
     def test_it_does_not_replicate_contacts(self):
         '''It does not replicate a contact several times'''

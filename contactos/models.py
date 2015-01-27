@@ -24,7 +24,8 @@ class Contact(models.Model):
     person = models.ForeignKey(Person)
     value = models.CharField(max_length=512)
     is_bounced = models.BooleanField(default=False)
-    owner = models.ForeignKey(User, related_name="contacts")
+    owner = models.ForeignKey(User, related_name="contacts", null=True)
+    writeitinstance = models.ForeignKey('nuntium.WriteItInstance', related_name="contacts", null=True)
     popit_identifier = models.CharField(max_length=512, null=True)
 
     def __unicode__(self):
@@ -50,6 +51,9 @@ class Contact(models.Model):
         if person.contact_set.exclude(is_bounced=True).exists():
             return True
         return False
+
+    def save(self, *args, **kwargs):
+        super(Contact, self).save(*args, **kwargs)
 
 
 def notify_bounce(sender, instance, update_fields, **kwargs):
@@ -77,7 +81,7 @@ def notify_bounce(sender, instance, update_fields, **kwargs):
                 subject,
                 text_content,  # content
                 settings.DEFAULT_FROM_EMAIL,  # From
-                [contact.owner.email],  # To
+                [contact.writeitinstance.owner.email],  # To
                 )
             msg.attach_alternative(html_content, "text/html")
             msg.send()

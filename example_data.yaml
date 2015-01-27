@@ -79,15 +79,15 @@
 - fields: {label_name: Electronic Mail, name: e-mail}
   model: contactos.contacttype
   pk: 1
-- fields: {contact_type: 1, person: 1, value: pdaire@ciudadanointeligente.org, owner: 1}
+- fields: {contact_type: 1, person: 1, value: pdaire@ciudadanointeligente.org, writeitinstance: 1}
   model: contactos.contact
   pk: 1
-- fields: {contact_type: 1, person: 2, value: maugsburger@ciudadanointeligente.org, owner: 1}
+- fields: {contact_type: 1, person: 2, value: maugsburger@ciudadanointeligente.org, writeitinstance: 1}
   model: contactos.contact
   pk: 2
-- fields: {contact_type: 1, person: 3, value: mailnoexistente@ciudadanointeligente.org, owner: 1}
+- fields: {contact_type: 1, person: 3, value: mailnoexistente@ciudadanointeligente.org, writeitinstance: 1}
   model: contactos.contact
   pk: 3
-- fields: {contact_type: 1, person: 3, value: falvarez@ciudadanointeligente.cl, owner: 1}
+- fields: {contact_type: 1, person: 3, value: falvarez@ciudadanointeligente.cl, writeitinstance: 1}
   model: contactos.contact
   pk: 4

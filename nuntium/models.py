@@ -66,7 +66,7 @@ class WriteItInstance(models.Model):
 
     def relate_with_persons_from_popit_api_instance(self, popit_api_instance):
         try:
-            popit_api_instance.fetch_all_from_api(owner=self.owner)
+            popit_api_instance.fetch_all_from_api(writeitinstance=self)
         except ConnectionError, e:
             self.do_something_with_a_vanished_popit_api_instance(popit_api_instance)
             e.message = _('We could not connect with the URL')
@@ -305,7 +305,7 @@ class Message(models.Model):
         if not person.contact_set.all():
             NoContactOM.objects.get_or_create(message=self, person=person)
             return
-        for contact in person.contact_set.filter(owner=self.writeitinstance.owner):
+        for contact in person.contact_set.filter(writeitinstance=self.writeitinstance):
             if not contact.is_bounced:
                 OutboundMessage.objects.get_or_create(
                     contact=contact, message=self)
@@ -513,7 +513,7 @@ def create_new_outbound_messages_for_newly_created_contact(sender, instance, cre
     contact = instance
     if not created:
         return
-    writeitinstances = WriteItInstance.objects.filter(owner=contact.owner)
+    writeitinstances = WriteItInstance.objects.filter(owner=contact.writeitinstance.owner)
     messages = Message.objects.filter(writeitinstance__in=writeitinstances)
     no_contact_oms = NoContactOM.objects.filter(
         message__in=messages,

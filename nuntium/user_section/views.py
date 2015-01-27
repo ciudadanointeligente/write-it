@@ -8,7 +8,6 @@ from django.views.generic.edit import UpdateView, DeleteView, FormView
 from django.views.generic.detail import SingleObjectMixin
 
 from contactos.models import Contact
-from contactos.forms import ContactCreateForm
 from mailit.forms import MailitTemplateForm
 
 from ..models import WriteItInstance, Message, Membership,\
@@ -29,6 +28,22 @@ class UserAccountView(TemplateView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(UserAccountView, self).dispatch(*args, **kwargs)
+
+
+class WriteItInstanceContactDetailView(DetailView):
+    model = WriteItInstance
+    template_name = 'nuntium/profiles/contacts/contacts-per-writeitinstance.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(WriteItInstanceContactDetailView, self).dispatch(*args, **kwargs)
+
+    def get_object(self, queryset=None):
+        self.object = super(WriteItInstanceContactDetailView, self).get_object(queryset=queryset)
+        #OK I don't know if it is better to test by id
+        if not self.object.owner.__eq__(self.request.user):
+            raise Http404
+        return self.object
 
 
 class WriteItInstanceTemplateUpdateView(DetailView):
@@ -150,10 +165,9 @@ class YourContactsView(UserSectionListView):
     model = Contact
     template_name = 'nuntium/profiles/your-contacts.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(YourContactsView, self).get_context_data(**kwargs)
-        context['form'] = ContactCreateForm(owner=self.request.user)
-        return context
+    def get_queryset(self):
+        queryset = Contact.objects.filter(writeitinstance__owner=self.request.user)
+        return queryset
 
 
 class YourPopitApiInstances(ListView):

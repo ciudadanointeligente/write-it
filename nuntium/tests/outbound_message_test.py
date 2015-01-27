@@ -157,14 +157,14 @@ class PluginMentalMessageTestCase(TestCase):
         self.outbound_message = OutboundMessage.objects.all()[0]
         self.message = Message.objects.all()[0]
         self.message_type = ContentType.objects.all()[0]
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.writeitinstance1 = WriteItInstance.objects.get(id=1)
         self.person1 = Person.objects.all()[0]
         self.channel = MentalMessage()
         self.user = User.objects.all()[0]
         self.mental_contact1 = Contact.objects.create(
             person=self.person1,
             contact_type=self.channel.get_contact_type(),
-            owner=self.user,
+            writeitinstance=self.writeitinstance1
             )
 
     def test_it_only_sends_messages_to_contacts_of_the_same_channel(self):
@@ -359,7 +359,7 @@ class MessagesToPersonWithoutContactsTestCase(TestCase):
             person=peter,
             value="peter@votainteligente.cl",
             contact_type=email,
-            owner=self.writeitinstance.owner,
+            writeitinstance=self.writeitinstance,
             )
 
         outbound_messages = OutboundMessage.objects.filter(message=message)
@@ -410,7 +410,7 @@ class MessagesToPersonWithoutContactsTestCase(TestCase):
             person=peter,
             value="peter@votainteligente.cl",
             contact_type=email,
-            owner=self.writeitinstance.owner,
+            writeitinstance=self.writeitinstance,
             )
 
         outbound_message = OutboundMessage.objects.get(

@@ -22,7 +22,10 @@ class ConfirmationTestCase(TestCase):
         felipe = Person.objects.all()[2]
         self.channel = MentalMessage()
         self.user = User.objects.all()[0]
-        self.mental_contact1 = Contact.objects.create(person=felipe, contact_type=self.channel.get_contact_type(), owner=self.user)
+        self.mental_contact1 = Contact.objects.create(
+            person=felipe,
+            contact_type=self.channel.get_contact_type(),
+            writeitinstance=self.writeitinstance1)
 
         self.message = Message.objects.create(
             content='hello there',
@@ -171,7 +174,9 @@ class EmailSendingErrorHandling(TestCase):
         felipe = Person.objects.all()[2]
         self.channel = MentalMessage()
         self.user = User.objects.all()[0]
-        self.mental_contact1 = Contact.objects.create(person=felipe, contact_type=self.channel.get_contact_type(), owner=self.user)
+        self.mental_contact1 = Contact.objects.create(person=felipe,
+            contact_type=self.channel.get_contact_type(),
+            writeitinstance=self.writeitinstance1)
         self.message = Message.objects.create(
             content='hello there',
             author_name='Felipe',

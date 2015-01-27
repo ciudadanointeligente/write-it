@@ -6,11 +6,8 @@ from django.db.models import Q
 from django.test.client import Client, RequestFactory
 from django.utils.translation import activate
 from django.utils.unittest import skipUnless
-
 from popit.models import Person
-
 from contactos.models import Contact
-from contactos.forms import ContactCreateForm
 from mailit.forms import MailitTemplateForm
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 
@@ -72,15 +69,49 @@ class UserViewTestCase(UserSectionTestCase):
         self.assertTemplateUsed(response, "base_edit.html")
 
 
+class ContactsPerWriteItInstanceTestCase(UserSectionTestCase):
+    def setUp(self):
+        super(ContactsPerWriteItInstanceTestCase, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.get(id=1)
+        self.writeitinstance.owner.set_password('feroz')
+        self.writeitinstance.owner.save()
+
+    def test_the_url_exists(self):
+        '''The list of contacts per writeit instance exists'''
+        url = reverse('contacts-per-writeitinstance', kwargs={'pk': self.writeitinstance.id})
+        self.assertTrue(url)
+
+    def test_the_url_is_reachable(self):
+        '''The url is reachable'''
+        url = reverse('contacts-per-writeitinstance', kwargs={'pk': self.writeitinstance.id})
+        self.client.login(username=self.writeitinstance.owner, password="feroz")
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'nuntium/profiles/contacts/contacts-per-writeitinstance.html')
+        self.assertIn('writeitinstance', response.context)
+
+    def test_only_owner_can_access_the_url(self):
+        '''Only owner can access the list of contacts per writeitinstance'''
+        other_user = User.objects.create_user(username='hello', password='password')
+        writeitinstance = WriteItInstance.objects.create(name=u"The name", owner=other_user)
+        url = reverse('contacts-per-writeitinstance', kwargs={'pk': writeitinstance.id})
+        self.client.login(username=self.writeitinstance.owner, password="feroz")
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 404)
+
+
+
 class YourContactsViewTestCase(UserSectionTestCase):
     def setUp(self):
         super(YourContactsViewTestCase, self).setUp()
-        self.contact = Contact.objects.all()[0]
-        self.contact.owner = self.user
+        self.contact = Contact.objects.get(id=1)
         # The user fiera and the password is feroz
         # but seriously I don't know how to make this more
         # explicit
         self.contact.save()
+        self.owner = self.contact.writeitinstance.owner
+        self.owner.set_password('feroz')
+        self.owner.save()
 
     def test_your_contacts_url_exist(self):
         url = reverse('your-contacts')
@@ -91,16 +122,20 @@ class YourContactsViewTestCase(UserSectionTestCase):
         url = reverse('your-contacts')
         c = Client()
 
-        c.login(username="fiera", password="feroz")
+        c.login(username=self.owner.username, password="feroz")
 
         response = c.get(url)
         self.assertEquals(response.status_code, 200)
         self.assertIn('object_list', response.context)
-        self.assertEquals(len(response.context['object_list']), 1)
-        self.assertEquals(response.context['object_list'][0], self.contact)
-        self.assertIn('form', response.context)
-        form = response.context['form']
-        self.assertIsInstance(form, ContactCreateForm)
+        self.assertEquals(len(response.context['object_list']), 4)
+        contact_in_response = response.context['object_list'].get(id=self.contact.id)
+        self.assertTrue(contact_in_response)
+        self.assertNotIn('form', response.context)
+        # Here I want to make sure that it has been removed the possibility for
+        # creating a new contact in this view
+        # only to display them
+        # form = response.context['form']
+        # self.assertIsInstance(form, ContactCreateForm)
         self.assertTemplateUsed(response, 'base_edit.html')
         self.assertTemplateUsed(response, 'nuntium/profiles/your-contacts.html')
 
@@ -210,7 +245,7 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
     def setUp(self):
         super(WriteitInstanceUpdateTestCase, self).setUp()
         self.factory = RequestFactory()
-        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.writeitinstance = WriteItInstance.objects.get(id=1)
         self.owner = self.writeitinstance.owner
         self.pedro = Person.objects.get(name="Pedro")
         self.marcel = Person.objects.get(name="Marcel")
