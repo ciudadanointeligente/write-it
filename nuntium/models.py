@@ -830,6 +830,7 @@ models.signals.post_save.connect(create_api_key, sender=User)
 class WriteitInstancePopitInstanceRecord(models.Model):
     writeitinstance = models.ForeignKey(WriteItInstance)
     popitapiinstance = models.ForeignKey(ApiInstance)
+    autosync = models.BooleanField(default=True)
     updated = models.DateTimeField(auto_now_add=True)
     created = models.DateTimeField(auto_now=True, editable=False)
 
