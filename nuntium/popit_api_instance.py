@@ -31,16 +31,16 @@ class PopitPerson(Person):
     @classmethod
     def create_contact(self, obj, doc, writeitinstance):
         # obj.__class__ == nuntium.popit_api_instance.PopitPerson'
-
-        for contact_detail in doc['contact_details']:
-            if contact_detail['type'] == 'email':
-                contact_type = MailChannel().get_contact_type()
-                contact, created = Contact.objects.get_or_create(popit_identifier=contact_detail['id'],
-                    contact_type=contact_type,
-                    writeitinstance=writeitinstance,
-                    person=obj)
-                contact.value = contact_detail['value']
-                contact.save()
+        if 'contact_details' in doc:
+            for contact_detail in doc['contact_details']:
+                if contact_detail['type'] == 'email':
+                    contact_type = MailChannel().get_contact_type()
+                    contact, created = Contact.objects.get_or_create(popit_identifier=contact_detail['id'],
+                        contact_type=contact_type,
+                        writeitinstance=writeitinstance,
+                        person=obj)
+                    contact.value = contact_detail['value']
+                    contact.save()
 
 
 class PopitApiInstance(ApiInstance):
