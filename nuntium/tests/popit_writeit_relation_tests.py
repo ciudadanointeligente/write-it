@@ -7,6 +7,7 @@ from django.utils.unittest import skipUnless, skip
 from django.contrib.auth.models import User
 from django.conf import settings
 from nuntium.popit_api_instance import PopitApiInstance
+from mock import patch
 
 
 class PopitWriteitRelationRecord(TestCase):
@@ -154,6 +155,7 @@ class PopitWriteitRelationRecord(TestCase):
         self.assertNotEqual(record.created, record.updated)
 
     def test_set_status(self):
+        '''Setting the record status'''
         record = WriteitInstancePopitInstanceRecord.objects.create(
             writeitinstance=self.writeitinstance,
             popitapiinstance=self.api_instance,
@@ -163,3 +165,16 @@ class PopitWriteitRelationRecord(TestCase):
         record = WriteitInstancePopitInstanceRecord.objects.get(id=record.id)
         self.assertEquals(record.status, 'error')
         self.assertEquals(record.status_explanation, 'Error 404')
+
+    def test_set_status_in_progress_called(self):
+        '''In progress status called'''
+        popit_load_data()
+        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+
+        with patch.object(WriteitInstancePopitInstanceRecord, 'set_status', return_value=None) as set_status:
+            writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+
+        set_status.assert_called_once_with('inprogress', '')
+
+
