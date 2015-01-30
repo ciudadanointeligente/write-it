@@ -41,12 +41,12 @@ class ContactCreateView(CreateView):
     form_class = ContactCreateForm
 
     def get_success_url(self):
-        return reverse('your-contacts')
+        return reverse('contacts-per-writeitinstance', kwargs={'pk': self.writeitinstance.id})
 
     def get_form_kwargs(self):
         kwargs = super(ContactCreateView, self).get_form_kwargs()
-        writeitinstance = WriteItInstance.objects.get(id=self.kwargs['pk'])
+        self.writeitinstance = WriteItInstance.objects.get(id=self.kwargs['pk'])
         person = Person.objects.get(id=self.kwargs['person_pk'])
-        kwargs['writeitinstance'] = writeitinstance
+        kwargs['writeitinstance'] = self.writeitinstance
         kwargs['person'] = person
         return kwargs
