@@ -263,12 +263,11 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
     def test_writeitinstance_basic_form(self):
         form = WriteItInstanceBasicForm()
         self.assertEquals(form._meta.model, WriteItInstance)
-        self.assertEquals(form._meta.fields, ['name', 'persons'])
+        self.assertEquals(form._meta.fields, ['name'])
 
     def test_writeitinstance_basic_form_save(self):
         data = {
-            'name': 'name 1',
-            'persons': [self.pedro.id, self.marcel.id],
+            'name': 'name 1'
             }
         url = reverse('writeitinstance_basic_update', kwargs={'pk': self.writeitinstance.pk})
         c = Client()
@@ -281,13 +280,10 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
 
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
         self.assertEquals(writeitinstance.name, data['name'])
-        self.assertIn(self.pedro, writeitinstance.persons.all())
-        self.assertIn(self.marcel, writeitinstance.persons.all())
 
     def test_removing_a_person_from_writeitinstance_basic_form_save(self):
         data = {
-            'name': 'name 1',
-            'persons': [self.marcel.id],
+            'name': 'new name 1'
             }
         url = reverse('writeitinstance_basic_update', kwargs={'pk': self.writeitinstance.pk})
         c = Client()
@@ -296,7 +292,7 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         c.post(url, data=data, follow=True)
 
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
-        self.assertNotIn(self.pedro, writeitinstance.persons.all())
+        self.assertEquals(writeitinstance.name, 'new name 1')
 
     def test_when_a_non_owner_saves_it_does_not_get_200_status_code(self):
         # I think that this test is unnecesary but
