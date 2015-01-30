@@ -94,7 +94,7 @@ class InstanceTestCase(TestCase):
         self.assertEquals(response.status_code, 404)
 
     def test_membership(self):
-        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+        writeitinstance = WriteItInstance.objects.create(name=u'instance 1', slug=u'instance-1', owner=self.owner)
 
         Membership.objects.create(writeitinstance=writeitinstance, person=self.person1)
         self.assertEquals(writeitinstance.persons.get(id=self.person1.id), self.person1)
