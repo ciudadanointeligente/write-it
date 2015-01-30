@@ -73,6 +73,10 @@ class PullFromPopitTask(TestCase):
         '''Actually do the pulling from popit in an asynchronous way'''
         Person.objects.all().delete()
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+        record = WriteitInstancePopitInstanceRecord.objects.create(
+            writeitinstance=writeitinstance,
+            popitapiinstance=self.api_instance1
+            )
         pull_from_popit.delay(writeitinstance, self.api_instance1)  # Returns result
         self.assertTrue(writeitinstance.persons.all())
 
@@ -89,7 +93,10 @@ class PeriodicallyPullFromPopitClass(TestCase):
         self.writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
 
         self.popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
-
+        record = WriteitInstancePopitInstanceRecord.objects.create(
+            writeitinstance=self.writeitinstance,
+            popitapiinstance=self.popit_api_instance
+            )
         #loading data from popit in a sync way
         self.writeitinstance._load_persons_from_a_popit_api(self.popit_api_instance)
         self.previously_created_persons = list(self.writeitinstance.persons.all())
