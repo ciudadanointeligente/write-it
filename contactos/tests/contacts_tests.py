@@ -299,6 +299,16 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
         self.contact_type = ContactType.objects.all()[0]
         self.pedro = Person.objects.get(name="Pedro")
 
+    def test_get_create_form(self):
+        '''Get the form to display'''
+        url = reverse('create-new-contact', kwargs={'pk': self.writeitinstance.pk, 'person_pk': self.pedro.id})
+        self.assertTrue(url)
+        c = Client()
+        c.login(username=self.user.username, password="fiera")
+        response = c.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'nuntium/profiles/contacts/create_new_contact_form.html')
+
     def test_create_a_new_contact_form(self):
         data = {
             'value': 'mail@the-real-mail.com'

@@ -1,25 +1,12 @@
-<!-- Modal -->
-<form method="POST" action="{% url 'create-new-contact' pk=writeitinstance.pk person_pk=person.pk %}">{% csrf_token %}
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">{% trans "Add a new contact" %}</h4>
-      </div>
-      <div class="modal-body">
-        {{ form.non_field_errors }}
-        <div class="fieldWrapper">
-            {{ form.value.errors }}
-            <label for="id_subject">{{ form.value.label_tag }}</label>
-            {{ form.value }}
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
-        <input type="submit" class='btn btn-primary' value="Create" />
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+{% load staticfiles %}
+{% load i18n %}
+
+<form method="POST" >{% csrf_token %}
+{{ form.non_field_errors }}
+<div class="fieldWrapper">
+    {{ form.value.errors }}
+    <label for="id_subject">Email</label>
+    {{ form.value }}
+</div>
+<input type="submit" class='btn btn-primary' value="Create" />
 </form>

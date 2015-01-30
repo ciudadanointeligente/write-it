@@ -37,7 +37,7 @@ class ContactoUpdateView(UpdateView):
 class ContactCreateView(CreateView):
     model = Contact
     # TODO update view to have a html for get does not make any sense now but may be in the future
-    template_name = "contactos/mails/bounce_notification.html"
+    template_name = "nuntium/profiles/contacts/create_new_contact_form.html"
     form_class = ContactCreateForm
 
     def get_success_url(self):
