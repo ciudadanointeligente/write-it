@@ -301,11 +301,9 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
 
     def test_create_a_new_contact_form(self):
         data = {
-            'contact_type': self.contact_type.id,
-            'value': 'mail@the-real-mail.com',
-            'person': self.pedro.id
+            'value': 'mail@the-real-mail.com'
         }
-        form = ContactCreateForm(data=data, writeitinstance=self.writeitinstance)
+        form = ContactCreateForm(data=data, writeitinstance=self.writeitinstance, person=self.pedro)
         self.assertTrue(form.is_valid())
         form.save()
 
