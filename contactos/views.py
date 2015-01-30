@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from nuntium.models import WriteItInstance
+from popit.models import Person
 
 
 class ContactoUpdateView(UpdateView):
@@ -45,5 +46,7 @@ class ContactCreateView(CreateView):
     def get_form_kwargs(self):
         kwargs = super(ContactCreateView, self).get_form_kwargs()
         writeitinstance = WriteItInstance.objects.get(id=self.kwargs['pk'])
+        person = Person.objects.get(id=self.kwargs['person_pk'])
         kwargs['writeitinstance'] = writeitinstance
+        kwargs['person'] = person
         return kwargs

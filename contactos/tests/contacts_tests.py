@@ -313,16 +313,14 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
         self.assertEquals(contact.value, data['value'])
 
     def test_can_create_a_new_contact_from_a_view(self):
-        url = reverse('create-new-contact', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('create-new-contact', kwargs={'pk': self.writeitinstance.pk, 'person_pk': self.pedro.id})
         self.assertTrue(url)
 
         c = Client()
         c.login(username=self.user.username, password="fiera")
 
         data = {
-            'contact_type': self.contact_type.id,
-            'value': 'mail@the-real-mail.com',
-            'person': self.pedro.id,
+            'value': 'mail@the-real-mail.com'
         }
 
         response = c.post(url, data=data)
@@ -336,13 +334,10 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
         self.assertEquals(contact.contact_type, self.contact_type)
 
     def test_select_widget_contains_api_instance(self):
-        form = ContactCreateForm(writeitinstance=self.writeitinstance)
-        self.assertIsInstance(form.fields['person'], SelectSinglePersonField)
-        self.assertIsInstance(form.fields['person'].widget, Select)
-        rendered_field = form.fields['person'].widget.render(name='The name', value=None)
-        self.assertIn("Pedro (http://popit.org/api/v1)", rendered_field)
-        self.assertIn("Marcel (http://popit.mysociety.org/api/v1/)", rendered_field)
-        self.assertIn("Felipe (http://popit.mysociety.org/api/v1/)", rendered_field)
+        form = ContactCreateForm(writeitinstance=self.writeitinstance, person=self.pedro)
+        self.assertTrue(form)
+        self.assertIn('value', form.fields)
+        self.assertEquals(len(form.fields), 1)
 
 
 class ContactUpdateFormAndViewTestCase(UserSectionTestCase):
