@@ -94,25 +94,6 @@ class WriteItInstanceUpdateView(UpdateView):
             kwargs={'pk': self.object.pk},
             )
 
-    def form_valid(self, form):
-        # I've been using this
-        # solution http://stackoverflow.com/questions/12224442/class-based-views-for-m2m-relationship-with-intermediate-model
-        # but I think this logic can be moved to the form instead
-        # and perhaps use the same form for creating and updating
-        # a writeit instance
-        self.object = form.save(commit=False)
-        Membership.objects.filter(writeitinstance=self.object).delete()
-        for person in form.cleaned_data['persons']:
-            Membership.objects.create(
-                writeitinstance=self.object, person=person)
-
-        del form.cleaned_data['persons']
-
-        form.save_m2m()
-        response = super(WriteItInstanceUpdateView, self).form_valid(form)
-
-        return response
-
 
 class WriteItInstanceAdvancedUpdateView(UpdateView):
     form_class = WriteItInstanceAdvancedUpdateForm
