@@ -13,8 +13,6 @@ from ..forms import ContactUpdateForm, ContactCreateForm
 from django.test.client import RequestFactory, Client
 from django.forms import ModelForm
 from django.core.urlresolvers import reverse
-from django.forms.widgets import Select
-from ..forms import SelectSinglePersonField
 import simplejson as json
 from nuntium.models import WriteItInstance
 from django.db.models import Q
@@ -299,13 +297,21 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
         self.contact_type = ContactType.objects.all()[0]
         self.pedro = Person.objects.get(name="Pedro")
 
+    def test_get_create_form(self):
+        '''Get the form to display'''
+        url = reverse('create-new-contact', kwargs={'pk': self.writeitinstance.pk, 'person_pk': self.pedro.id})
+        self.assertTrue(url)
+        c = Client()
+        c.login(username=self.user.username, password="fiera")
+        response = c.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, 'nuntium/profiles/contacts/create_new_contact_form.html')
+
     def test_create_a_new_contact_form(self):
         data = {
-            'contact_type': self.contact_type.id,
-            'value': 'mail@the-real-mail.com',
-            'person': self.pedro.id
+            'value': 'mail@the-real-mail.com'
         }
-        form = ContactCreateForm(data=data, writeitinstance=self.writeitinstance)
+        form = ContactCreateForm(data=data, writeitinstance=self.writeitinstance, person=self.pedro)
         self.assertTrue(form.is_valid())
         form.save()
 
@@ -315,21 +321,19 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
         self.assertEquals(contact.value, data['value'])
 
     def test_can_create_a_new_contact_from_a_view(self):
-        url = reverse('create-new-contact', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('create-new-contact', kwargs={'pk': self.writeitinstance.pk, 'person_pk': self.pedro.id})
         self.assertTrue(url)
 
         c = Client()
         c.login(username=self.user.username, password="fiera")
 
         data = {
-            'contact_type': self.contact_type.id,
-            'value': 'mail@the-real-mail.com',
-            'person': self.pedro.id,
+            'value': 'mail@the-real-mail.com'
         }
 
         response = c.post(url, data=data)
         self.assertEquals(response.status_code, 302)
-        url_for_list_of_contacts = reverse('your-contacts')
+        url_for_list_of_contacts = reverse('contacts-per-writeitinstance', kwargs={'pk': self.writeitinstance.id})
         self.assertRedirects(response, url_for_list_of_contacts)
 
         contact = Contact.objects.get(Q(writeitinstance__owner=self.user), Q(value='mail@the-real-mail.com'))
@@ -338,13 +342,10 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
         self.assertEquals(contact.contact_type, self.contact_type)
 
     def test_select_widget_contains_api_instance(self):
-        form = ContactCreateForm(writeitinstance=self.writeitinstance)
-        self.assertIsInstance(form.fields['person'], SelectSinglePersonField)
-        self.assertIsInstance(form.fields['person'].widget, Select)
-        rendered_field = form.fields['person'].widget.render(name='The name', value=None)
-        self.assertIn("Pedro (http://popit.org/api/v1)", rendered_field)
-        self.assertIn("Marcel (http://popit.mysociety.org/api/v1/)", rendered_field)
-        self.assertIn("Felipe (http://popit.mysociety.org/api/v1/)", rendered_field)
+        form = ContactCreateForm(writeitinstance=self.writeitinstance, person=self.pedro)
+        self.assertTrue(form)
+        self.assertIn('value', form.fields)
+        self.assertEquals(len(form.fields), 1)
 
 
 class ContactUpdateFormAndViewTestCase(UserSectionTestCase):

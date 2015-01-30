@@ -27,4 +27,3 @@ class ListContactsTemplateTag(TestCase):
             })
         rendered = t.render(c)
         self.assertIn(self.contact.value, rendered)
-        self.assertIn(self.contact.contact_type.name, rendered)

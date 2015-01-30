@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from nuntium.models import WriteItInstance
+from popit.models import Person
 
 
 class ContactoUpdateView(UpdateView):
@@ -36,14 +37,16 @@ class ContactoUpdateView(UpdateView):
 class ContactCreateView(CreateView):
     model = Contact
     # TODO update view to have a html for get does not make any sense now but may be in the future
-    template_name = "contactos/mails/bounce_notification.html"
+    template_name = "nuntium/profiles/contacts/create_new_contact_form.html"
     form_class = ContactCreateForm
 
     def get_success_url(self):
-        return reverse('your-contacts')
+        return reverse('contacts-per-writeitinstance', kwargs={'pk': self.writeitinstance.id})
 
     def get_form_kwargs(self):
         kwargs = super(ContactCreateView, self).get_form_kwargs()
-        writeitinstance = WriteItInstance.objects.get(id=self.kwargs['pk'])
-        kwargs['writeitinstance'] = writeitinstance
+        self.writeitinstance = WriteItInstance.objects.get(id=self.kwargs['pk'])
+        person = Person.objects.get(id=self.kwargs['person_pk'])
+        kwargs['writeitinstance'] = self.writeitinstance
+        kwargs['person'] = person
         return kwargs

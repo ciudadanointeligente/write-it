@@ -1,3 +1,6 @@
+{% load i18n %}
 {% for contact in contacts %}
-<span><strong>{{ contact.value }}</strong>{{ contact.contact_type.name }}</span>
+<span  data-toggle="tooltip" data-placement="top" title="{{ contact.contact_type.name }} : {{ contact.value }}"><i class="fa fa-envelope"></i><strong></strong></span>
 {% endfor %}
+
+<span class="glyphicon glyphicon-plus" style="cursor:pointer" aria-hidden="true" onclick='loadAddNewContactModal("{% url "create-new-contact" pk=writeitinstance.id person_pk=person.id %}", "{% blocktrans with person.name as name %}Adding a contact for {{name}}{% endblocktrans %}")'></span>
