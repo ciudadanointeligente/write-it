@@ -13,8 +13,6 @@ from ..forms import ContactUpdateForm, ContactCreateForm
 from django.test.client import RequestFactory, Client
 from django.forms import ModelForm
 from django.core.urlresolvers import reverse
-from django.forms.widgets import Select
-from ..forms import SelectSinglePersonField
 import simplejson as json
 from nuntium.models import WriteItInstance
 from django.db.models import Q

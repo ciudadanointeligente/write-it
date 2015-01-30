@@ -1,7 +1,6 @@
-from django.forms import ModelForm, Select
+from django.forms import ModelForm
 from django.forms.models import ModelChoiceField
 from contactos.models import Contact
-from popit.models import Person
 from mailit import MailChannel
 
 
