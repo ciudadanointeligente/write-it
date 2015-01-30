@@ -95,7 +95,7 @@ class WriteItInstance(models.Model):
             writeitinstance=self,
             popitapiinstance=popit_api_instance
         )
-        
+
         if success_relating_people:
             if not previous_records:
                 record = WriteitInstancePopitInstanceRecord\

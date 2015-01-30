@@ -7,7 +7,8 @@ from django.utils.unittest import skipUnless, skip
 from django.contrib.auth.models import User
 from django.conf import settings
 from nuntium.popit_api_instance import PopitApiInstance
-from datetime import timedelta, datetime
+from datetime import timedelta
+from django.utils import timezone
 
 
 class PopitWriteitRelationRecord(TestCase):
@@ -169,7 +170,7 @@ class PopitWriteitRelationRecord(TestCase):
             writeitinstance=writeitinstance,
             popitapiinstance=popit_instance,
             )
-        created_and_updated = datetime.today() - timedelta(days=2)
+        created_and_updated = timezone.now() - timedelta(days=2)
 
         record.updated = created_and_updated
         record.created = created_and_updated
