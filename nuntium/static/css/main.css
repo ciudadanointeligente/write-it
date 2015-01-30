@@ -184,3 +184,7 @@
 .profile-page-tab-content .page-header h3 {
   margin-top: 0;
 }
+
+.add-contact {
+  cursor:pointer
+}
