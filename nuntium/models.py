@@ -90,10 +90,10 @@ class WriteItInstance(models.Model):
         pass
 
     def _load_persons_from_a_popit_api(self, popit_api_instance):
-        record, created = WriteitInstancePopitInstanceRecord\
-                    .objects.get_or_create(
-                        writeitinstance=self,
-                        popitapiinstance=popit_api_instance)
+        record, created = WriteitInstancePopitInstanceRecord.objects.get_or_create(
+            writeitinstance=self,
+            popitapiinstance=popit_api_instance
+            )
         if not created:
             record.updated = datetime.datetime.today()
             record.save()
@@ -101,6 +101,11 @@ class WriteItInstance(models.Model):
         success_relating_people, error = self.relate_with_persons_from_popit_api_instance(popit_api_instance)
         if success_relating_people:
             record.set_status('success')
+        else:
+            if isinstance(error, ConnectionError):
+                record.set_status('error', _('We could not connect with the URL'))
+            else:
+                record.set_status('error', error.message)
         return (success_relating_people, error)
 
     def load_persons_from_a_popit_api(self, popit_url):

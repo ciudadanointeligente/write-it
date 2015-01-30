@@ -10,6 +10,7 @@ from nuntium.popit_api_instance import PopitApiInstance
 from datetime import timedelta
 from django.utils import timezone
 from mock import patch, call
+from django.utils.translation import ugettext_lazy as _
 
 
 class PopitWriteitRelationRecord(TestCase):
@@ -196,8 +197,8 @@ class PopitWriteitRelationRecord(TestCase):
         self.assertEquals(record.status, 'error')
         self.assertEquals(record.status_explanation, 'Error 404')
 
-    def test_set_status_in_called(self):
-        '''In progress status called'''
+    def test_set_status_in_called_success(self):
+        '''In progress and success status called'''
         popit_load_data()
         popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
@@ -206,5 +207,16 @@ class PopitWriteitRelationRecord(TestCase):
             writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
 
         calls = [call('inprogress'), call('success')]
+
+        set_status.assert_has_calls(calls)
+
+    def test_set_status_in_called_error(self):
+        '''In progress and fail status called'''
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+        non_existing_url = "http://nonexisting.url"
+        with patch.object(WriteitInstancePopitInstanceRecord, 'set_status', return_value=None) as set_status:
+            writeitinstance.load_persons_from_a_popit_api(non_existing_url)
+
+        calls = [call('inprogress'), call('error', _('We could not connect with the URL'))]
 
         set_status.assert_has_calls(calls)
