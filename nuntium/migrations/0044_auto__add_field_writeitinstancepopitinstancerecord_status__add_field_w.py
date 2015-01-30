@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'WriteitInstancePopitInstanceRecord.status'
         db.add_column(u'nuntium_writeitinstancepopitinstancerecord', 'status',
-                      self.gf('django.db.models.fields.CharField')(default='new', max_length='20'),
+                      self.gf('django.db.models.fields.CharField')(default='nothing', max_length='20'),
                       keep_default=False)
 
         # Adding field 'WriteitInstancePopitInstanceRecord.status_explanation'
