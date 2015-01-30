@@ -79,6 +79,12 @@ $(".chosen-person-select").chosen();
               {% trans 'When they were last updated' %}
             </th>
             <th>
+              {% trans 'Status' %}
+            </th>
+            <th>
+              {% trans 'Notes' %}
+            </th>
+            <th>
             </th>
           </tr>
         </thead>
@@ -88,6 +94,8 @@ $(".chosen-person-select").chosen();
               <td>{{ record }}</td>
               <td>{{ record.created }}</td>
               <td>{{ record.updated }}</td>
+              <td>{{ record.status }}</td>
+              <td>{{ record.status_explanation }}</td>
             </tr>
           {% endfor %}
         </table>
