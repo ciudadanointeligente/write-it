@@ -34,7 +34,7 @@ class PopitWriteitRelationRecord(TestCase):
         self.assertTrue(record.updated)
         self.assertTrue(record.created)
         self.assertTrue(record.autosync)
-        self.assertEquals(record.status, 'new')
+        self.assertEquals(record.status, 'nothing')
         self.assertFalse(record.status_explanation)
 
     def test_unicode(self):
@@ -152,3 +152,14 @@ class PopitWriteitRelationRecord(TestCase):
             )
 
         self.assertNotEqual(record.created, record.updated)
+
+    def test_set_status(self):
+        record = WriteitInstancePopitInstanceRecord.objects.create(
+            writeitinstance=self.writeitinstance,
+            popitapiinstance=self.api_instance,
+            )
+
+        record.set_status('error','Error 404')
+        record = WriteitInstancePopitInstanceRecord.objects.get(id=record.id)
+        self.assertEquals(record.status, 'error')
+        self.assertEquals(record.status_explanation, 'Error 404')

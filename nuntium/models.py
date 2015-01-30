@@ -829,7 +829,7 @@ models.signals.post_save.connect(create_api_key, sender=User)
 
 class WriteitInstancePopitInstanceRecord(models.Model):
     STATUS_CHOICES = (
-        ("new", _("Newly")),
+        ("nothing", _("Not doing anything now")),
         ("error", _("Error")),
         ("success", _("Success")),
         ("waiting", _("Waiting")),
@@ -839,11 +839,11 @@ class WriteitInstancePopitInstanceRecord(models.Model):
     popitapiinstance = models.ForeignKey(ApiInstance)
     autosync = models.BooleanField(default=True)
     status = models.CharField(
-        max_length="10",
+        max_length="20",
         choices=STATUS_CHOICES,
         default="new",
         )
-    status_explanation = models.TextField()
+    status_explanation = models.TextField(default='')
     updated = models.DateTimeField(auto_now_add=True)
     created = models.DateTimeField(auto_now=True, editable=False)
 
@@ -852,3 +852,8 @@ class WriteitInstancePopitInstanceRecord(models.Model):
             url=self.popitapiinstance.url,
             instance=self.writeitinstance.__unicode__(),
             )
+
+    def set_status(self, status, explanation):
+        self.status = status
+        self.status_explanation = explanation
+        self.save()
