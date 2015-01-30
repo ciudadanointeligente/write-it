@@ -90,23 +90,14 @@ class WriteItInstance(models.Model):
         pass
 
     def _load_persons_from_a_popit_api(self, popit_api_instance):
-        success_relating_people, error = self.relate_with_persons_from_popit_api_instance(popit_api_instance)
-        previous_records = WriteitInstancePopitInstanceRecord.objects.filter(
-            writeitinstance=self,
-            popitapiinstance=popit_api_instance
-        )
-
-        if success_relating_people:
-            if not previous_records:
-                record = WriteitInstancePopitInstanceRecord\
-                    .objects.create(
+        record, created = WriteitInstancePopitInstanceRecord\
+                    .objects.get_or_create(
                         writeitinstance=self,
                         popitapiinstance=popit_api_instance)
-            else:
-                record = previous_records[0]
-                record.updated = datetime.datetime.today()
-                record.save()
-
+        if not created:
+            record.updated = datetime.datetime.today()
+            record.save()
+        success_relating_people, error = self.relate_with_persons_from_popit_api_instance(popit_api_instance)
         return (success_relating_people, error)
 
     def load_persons_from_a_popit_api(self, popit_url):
@@ -851,7 +842,7 @@ class WriteitInstancePopitInstanceRecord(models.Model):
     status = models.CharField(
         max_length="20",
         choices=STATUS_CHOICES,
-        default="new",
+        default="nothing",
         )
     status_explanation = models.TextField(default='')
     updated = models.DateTimeField(auto_now_add=True)
