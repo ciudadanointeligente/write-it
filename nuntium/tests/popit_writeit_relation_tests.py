@@ -7,6 +7,8 @@ from django.utils.unittest import skipUnless, skip
 from django.contrib.auth.models import User
 from django.conf import settings
 from nuntium.popit_api_instance import PopitApiInstance
+from datetime import timedelta
+from django.utils import timezone
 from mock import patch
 
 
@@ -154,6 +156,34 @@ class PopitWriteitRelationRecord(TestCase):
 
         self.assertNotEqual(record.created, record.updated)
 
+    def test_it_should_update_the_date_every_time_it_is_updated(self):
+        '''As described in http://github.com/ciudadanointeligente/write-it/issues/412 the updated date is not updated'''
+
+        popit_load_data()
+        # loading data into the popit-api
+        writeitinstance = WriteItInstance.objects.create(
+            name='instance 1',
+            slug='instance-1',
+            owner=self.owner,
+            )
+
+        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        popit_instance = ApiInstance.objects.get(url=settings.TEST_POPIT_API_URL)
+        record = WriteitInstancePopitInstanceRecord.objects.get(
+            writeitinstance=writeitinstance,
+            popitapiinstance=popit_instance,
+            )
+        created_and_updated = timezone.now() - timedelta(days=2)
+
+        record.updated = created_and_updated
+        record.created = created_and_updated
+        record.save()
+
+        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        record_again = WriteitInstancePopitInstanceRecord.objects.get(id=record.id)
+        self.assertNotEqual(record_again.updated, created_and_updated)
+        self.assertEquals(record_again.created, created_and_updated)
+
     def test_set_status(self):
         '''Setting the record status'''
         record = WriteitInstancePopitInstanceRecord.objects.create(
@@ -161,7 +191,7 @@ class PopitWriteitRelationRecord(TestCase):
             popitapiinstance=self.api_instance,
             )
 
-        record.set_status('error','Error 404')
+        record.set_status('error', 'Error 404')
         record = WriteitInstancePopitInstanceRecord.objects.get(id=record.id)
         self.assertEquals(record.status, 'error')
         self.assertEquals(record.status_explanation, 'Error 404')
@@ -176,5 +206,3 @@ class PopitWriteitRelationRecord(TestCase):
             writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
 
         set_status.assert_called_once_with('inprogress', '')
-
-
