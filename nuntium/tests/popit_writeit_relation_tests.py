@@ -7,6 +7,7 @@ from django.utils.unittest import skipUnless, skip
 from django.contrib.auth.models import User
 from django.conf import settings
 from nuntium.popit_api_instance import PopitApiInstance
+from datetime import timedelta, datetime
 
 
 class PopitWriteitRelationRecord(TestCase):
@@ -150,3 +151,31 @@ class PopitWriteitRelationRecord(TestCase):
             )
 
         self.assertNotEqual(record.created, record.updated)
+
+    def test_it_should_update_the_date_every_time_it_is_updated(self):
+        '''As described in http://github.com/ciudadanointeligente/write-it/issues/412 the updated date is not updated'''
+
+        popit_load_data()
+        # loading data into the popit-api
+        writeitinstance = WriteItInstance.objects.create(
+            name='instance 1',
+            slug='instance-1',
+            owner=self.owner,
+            )
+
+        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        popit_instance = ApiInstance.objects.get(url=settings.TEST_POPIT_API_URL)
+        record = WriteitInstancePopitInstanceRecord.objects.get(
+            writeitinstance=writeitinstance,
+            popitapiinstance=popit_instance,
+            )
+        created_and_updated = datetime.today() - timedelta(days=2)
+
+        record.updated = created_and_updated
+        record.created = created_and_updated
+        record.save()
+
+        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        record_again = WriteitInstancePopitInstanceRecord.objects.get(id=record.id)
+        self.assertNotEqual(record_again.updated, created_and_updated)
+        self.assertEquals(record_again.created, created_and_updated)
