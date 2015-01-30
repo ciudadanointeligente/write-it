@@ -9,7 +9,7 @@ from django.conf import settings
 from nuntium.popit_api_instance import PopitApiInstance
 from datetime import timedelta
 from django.utils import timezone
-from mock import patch
+from mock import patch, call
 
 
 class PopitWriteitRelationRecord(TestCase):
@@ -196,7 +196,7 @@ class PopitWriteitRelationRecord(TestCase):
         self.assertEquals(record.status, 'error')
         self.assertEquals(record.status_explanation, 'Error 404')
 
-    def atest_set_status_in_progress_called(self):
+    def test_set_status_in_called(self):
         '''In progress status called'''
         popit_load_data()
         popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
@@ -205,4 +205,6 @@ class PopitWriteitRelationRecord(TestCase):
         with patch.object(WriteitInstancePopitInstanceRecord, 'set_status', return_value=None) as set_status:
             writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
 
-        set_status.assert_called_once_with('inprogress', '')
+        calls = [call('inprogress'), call('success')]
+
+        set_status.assert_has_calls(calls)

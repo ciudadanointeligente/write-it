@@ -97,7 +97,10 @@ class WriteItInstance(models.Model):
         if not created:
             record.updated = datetime.datetime.today()
             record.save()
+        record.set_status('inprogress')
         success_relating_people, error = self.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        if success_relating_people:
+            record.set_status('success')
         return (success_relating_people, error)
 
     def load_persons_from_a_popit_api(self, popit_url):
@@ -854,7 +857,7 @@ class WriteitInstancePopitInstanceRecord(models.Model):
             instance=self.writeitinstance.__unicode__(),
             )
 
-    def set_status(self, status, explanation):
+    def set_status(self, status, explanation=''):
         self.status = status
         self.status_explanation = explanation
         self.save()
