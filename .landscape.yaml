@@ -4,3 +4,5 @@ uses:
     - django
     - celery
 autodetect: yes
+ignore-patterns:
+    - (^|/)migrations(/|$)
