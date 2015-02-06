@@ -10,7 +10,7 @@ from django.views.generic.detail import SingleObjectMixin
 from contactos.models import Contact
 from mailit.forms import MailitTemplateForm
 
-from ..models import WriteItInstance, Message, Membership,\
+from ..models import WriteItInstance, Message,\
     NewAnswerNotificationTemplate, ConfirmationTemplate, \
     WriteitInstancePopitInstanceRecord, Answer
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
