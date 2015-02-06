@@ -51,7 +51,7 @@ class MessageCreateForm(ModelForm):
         except:
             raise ValidationError(_('Instance not present'))
         self.writeitinstance = writeitinstance
-        persons = Person.objects.filter(writeit_instances=writeitinstance)
+        persons = writeitinstance.persons.all()
         super(MessageCreateForm, self).__init__(*args, **kwargs)
         self.instance.writeitinstance = self.writeitinstance
         self.fields['persons'].queryset = persons

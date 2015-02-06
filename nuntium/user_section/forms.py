@@ -1,5 +1,5 @@
 # coding=utf-8
-from django.forms import ModelForm, SelectMultiple, TextInput, Textarea, \
+from django.forms import ModelForm, TextInput, Textarea, \
     CheckboxInput, NumberInput
 
 from ..models import WriteItInstance, \
