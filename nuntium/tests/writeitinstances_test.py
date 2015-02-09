@@ -94,7 +94,7 @@ class InstanceTestCase(TestCase):
         self.assertEquals(response.status_code, 404)
 
     def test_membership(self):
-        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+        writeitinstance = WriteItInstance.objects.create(name=u'instance 1', slug=u'instance-1', owner=self.owner)
 
         Membership.objects.create(writeitinstance=writeitinstance, person=self.person1)
         self.assertEquals(writeitinstance.persons.get(id=self.person1.id), self.person1)
@@ -130,6 +130,16 @@ class InstanceTestCase(TestCase):
         with patch('nuntium.tasks.pull_from_popit.delay') as async_pulling_from_popit:
             writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
             async_pulling_from_popit.assert_called_with(writeitinstance, popit_api_instance)
+
+    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    def test_it_has_a_pulling_from_popit_status(self):
+        '''It has a pulling from popit status'''
+        writeitinstance = WriteItInstance.objects.create(name=u'instance 1', slug=u'instance-1', owner=self.owner)
+        self.assertEquals(writeitinstance.pulling_from_popit_status, {'nothing':0, 'inprogress':0, 'success': 0, 'error':0})
+        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        self.assertEquals(writeitinstance.pulling_from_popit_status, {'nothing':0, 'inprogress':0, 'success': 1, 'error':0})
+
+        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
 
 
 @skipUnless(settings.LOCAL_POPIT, "No local popit running")

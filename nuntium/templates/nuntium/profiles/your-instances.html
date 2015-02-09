@@ -56,21 +56,21 @@
             <th width="50%">
               {% trans 'Name' %}
             </th>
-            <th>Instance API path</th>
-            <th>See all the messages</th>
-            <th>Edit</th>
-            <th>Delete</th>
+            <th>{% trans 'Instance API path' %}</th>
+            <th>{% trans 'See all the messages' %}</th>
+            <th>{% trans 'Edit' %}</th>
+            <th>{% trans 'Delete' %}</th>
           </tr>
         </thead>
         <tbody>
           {% for writeitinstance in object_list %}
           <tr>
-            <td>{{ writeitinstance }}</td>
+            <td>{{ writeitinstance }} {% if writeitinstance.pulling_from_popit_status.inprogress > 0 %}<i class="fa fa-spinner fa-pulse" data-toggle="tooltip" data-placement="left" title="{% trans 'We are currently getting information from popit' %}"></i>{% endif %}</td>
             <td>{% url 'api_dispatch_detail' api_name='v1' resource_name='instance' pk=writeitinstance.id %}</td>
             <td><a href="{% url 'messages_per_writeitinstance' pk=writeitinstance.pk %}"><i class="fa fa-envelope-o"></i></a></td>
             <td><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}"><i class="fa fa-pencil"></i></a></td>
             <td><a href="{% url 'delete_an_instance' pk=writeitinstance.pk %}"><i class="fa fa-times"></i></a></td>
-
+            
           </tr>
           {% empty %}
           <tr><td colspan="3" class="text-center">You have no instances</td></tr>
@@ -82,4 +82,10 @@
   </div>
   <div class="tab-pane" id="nothing"><a href="http://github.com/ciudadanointeligente/write-it" data-toggle="tab">{% trans "please don't go any further" %}</a></div>
 </div>
+<script type="text/javascript">
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
 {% endblock content%}
+

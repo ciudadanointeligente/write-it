@@ -127,3 +127,10 @@ class SearchIndexTestCase(GlobalTestCase):
     def setUp(self):
         super(SearchIndexTestCase, self).setUp()
         call_command('rebuild_index', verbosity=0, interactive=False)
+
+from djcelery.contrib.test_runner import CeleryTestSuiteRunner
+from django_nose import NoseTestSuiteRunner
+
+
+class WriteItTestRunner(CeleryTestSuiteRunner, NoseTestSuiteRunner):
+    pass

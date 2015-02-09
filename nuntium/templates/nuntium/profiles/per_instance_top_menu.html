@@ -9,3 +9,13 @@
   <li class="{% if section == 'messages_per_writeitinstance' %}active{% endif %}"><a href="{% url 'messages_per_writeitinstance' pk=writeitinstance.pk %}">{% trans "Messages" %}</a></li>
   <li class="{% if section == 'relate-writeit-popit' %}active{% endif %}"><a href="{% url 'relate-writeit-popit' pk=writeitinstance.pk %}">{% trans "Popit instances" %}</a></li>
 </ul>
+
+{% for rec in writeitinstance.writeitinstancepopitinstancerecord_set.all %}
+    {% if rec.status == 'inprogress' %}
+        <div class="alert alert-warning" role="alert">
+            {% blocktrans with url=rec.popitapiinstance.url %}
+            Currently we are pulling people from {{ url }}
+            {% endblocktrans %}
+        </div>
+    {% endif %}
+{% endfor %}

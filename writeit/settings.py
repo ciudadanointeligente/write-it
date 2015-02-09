@@ -192,7 +192,7 @@ else:
     }
 
 #Testing with django
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+TEST_RUNNER = 'global_test_case.WriteItTestRunner'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

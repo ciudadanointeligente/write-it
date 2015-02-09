@@ -90,34 +90,46 @@ class WriteItInstance(models.Model):
         pass
 
     def _load_persons_from_a_popit_api(self, popit_api_instance):
+        
         success_relating_people, error = self.relate_with_persons_from_popit_api_instance(popit_api_instance)
-        previous_records = WriteitInstancePopitInstanceRecord.objects.filter(
+        record = WriteitInstancePopitInstanceRecord.objects.get(
             writeitinstance=self,
             popitapiinstance=popit_api_instance
-        )
-
+            )
         if success_relating_people:
-            if not previous_records:
-                record = WriteitInstancePopitInstanceRecord\
-                    .objects.create(
-                        writeitinstance=self,
-                        popitapiinstance=popit_api_instance)
+            record.set_status('success')
+        else:
+            if isinstance(error, ConnectionError):
+                record.set_status('error', _('We could not connect with the URL'))
             else:
-                record = previous_records[0]
-                record.updated = datetime.datetime.today()
-                record.save()
-
+                record.set_status('error', error.message)
         return (success_relating_people, error)
 
     def load_persons_from_a_popit_api(self, popit_url):
         '''This is an async wrapper for getting people from the api'''
-        api_instance, created = PopitApiInstance.objects.get_or_create(url=popit_url)
+        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=popit_url)
+        record, created = WriteitInstancePopitInstanceRecord.objects.get_or_create(
+            writeitinstance=self,
+            popitapiinstance=popit_api_instance
+            )
+        if not created:
+            record.updated = datetime.datetime.today()
+            record.save()
+        record.set_status('inprogress')
         from nuntium.tasks import pull_from_popit
-        return pull_from_popit.delay(self, api_instance)
+        return pull_from_popit.delay(self, popit_api_instance)
 
     def get_absolute_url(self):
         return reverse('instance_detail', kwargs={
             'slug': self.slug})
+
+    @property
+    def pulling_from_popit_status(self):
+        records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=self)
+        result = {'nothing':0, 'inprogress':0, 'success': 0, 'error':0}
+        for record in records:
+            result[record.status] += 1
+        return result
 
     def __unicode__(self):
         return self.name
@@ -838,9 +850,22 @@ models.signals.post_save.connect(create_api_key, sender=User)
 
 
 class WriteitInstancePopitInstanceRecord(models.Model):
+    STATUS_CHOICES = (
+        ("nothing", _("Not doing anything now")),
+        ("error", _("Error")),
+        ("success", _("Success")),
+        ("waiting", _("Waiting")),
+        ("inprogress", _("In Progress")),
+        )
     writeitinstance = models.ForeignKey(WriteItInstance)
     popitapiinstance = models.ForeignKey(ApiInstance)
     autosync = models.BooleanField(default=True)
+    status = models.CharField(
+        max_length="20",
+        choices=STATUS_CHOICES,
+        default="nothing",
+        )
+    status_explanation = models.TextField(default='')
     updated = models.DateTimeField(auto_now_add=True)
     created = models.DateTimeField(auto_now_add=True, editable=False)
 
@@ -849,3 +874,8 @@ class WriteitInstancePopitInstanceRecord(models.Model):
             url=self.popitapiinstance.url,
             instance=self.writeitinstance.__unicode__(),
             )
+
+    def set_status(self, status, explanation=''):
+        self.status = status
+        self.status_explanation = explanation
+        self.save()
