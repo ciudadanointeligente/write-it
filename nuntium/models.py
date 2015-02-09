@@ -90,7 +90,6 @@ class WriteItInstance(models.Model):
         pass
 
     def _load_persons_from_a_popit_api(self, popit_api_instance):
-        
         success_relating_people, error = self.relate_with_persons_from_popit_api_instance(popit_api_instance)
         record = WriteitInstancePopitInstanceRecord.objects.get(
             writeitinstance=self,
@@ -126,7 +125,7 @@ class WriteItInstance(models.Model):
     @property
     def pulling_from_popit_status(self):
         records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=self)
-        result = {'nothing':0, 'inprogress':0, 'success': 0, 'error':0}
+        result = {'nothing': 0, 'inprogress': 0, 'success': 0, 'error': 0}
         for record in records:
             result[record.status] += 1
         return result

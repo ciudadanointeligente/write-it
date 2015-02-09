@@ -135,9 +135,18 @@ class InstanceTestCase(TestCase):
     def test_it_has_a_pulling_from_popit_status(self):
         '''It has a pulling from popit status'''
         writeitinstance = WriteItInstance.objects.create(name=u'instance 1', slug=u'instance-1', owner=self.owner)
-        self.assertEquals(writeitinstance.pulling_from_popit_status, {'nothing':0, 'inprogress':0, 'success': 0, 'error':0})
+        self.assertEquals(writeitinstance.pulling_from_popit_status, {'nothing': 0,
+            'inprogress': 0,
+            'success': 0,
+            'error': 0})
         writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
-        self.assertEquals(writeitinstance.pulling_from_popit_status, {'nothing':0, 'inprogress':0, 'success': 1, 'error':0})
+        self.assertEquals(writeitinstance.pulling_from_popit_status,
+            {
+                'nothing': 0,
+                'inprogress': 0,
+                'success': 1,
+                'error': 0
+            })
 
         popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
 
