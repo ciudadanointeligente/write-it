@@ -1,6 +1,7 @@
 {% extends "base_edit.html" %}
 {% load i18n %}
 {% load staticfiles %}
+{% load pagination_tags %}
 
 
 {% block extrascripts %}
@@ -66,6 +67,8 @@ $(".chosen-person-select").chosen();
       </button>
     </div>
     <div class="col-md-8">
+      {% autopaginate relations %}
+      {% paginate %}
       <table>
         <thead>
           <tr>
@@ -89,7 +92,7 @@ $(".chosen-person-select").chosen();
           </tr>
         </thead>
         <tbody>
-          {% for record in writeitinstance.writeitinstancepopitinstancerecord_set.all %}
+          {% for record in relations %}
             <tr>
               <td>{{ record }}</td>
               <td>{{ record.created }}</td>
@@ -99,6 +102,7 @@ $(".chosen-person-select").chosen();
             </tr>
           {% endfor %}
         </table>
+        {% paginate %}
       </tbody>
     </div>
   </div>

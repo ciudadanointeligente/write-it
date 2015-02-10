@@ -99,6 +99,15 @@ class ContactsPerWriteItInstanceTestCase(UserSectionTestCase):
         response = self.client.get(url)
         self.assertEquals(response.status_code, 404)
 
+    def test_get_the_list_of_people_in_context(self):
+        '''The list of people is in context'''
+        url = reverse('contacts-per-writeitinstance', kwargs={'pk': self.writeitinstance.id})
+        self.client.login(username=self.writeitinstance.owner, password="feroz")
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertIn('people', response.context)
+        self.assertIsInstance(response.context['people'][0], Person)
+
 
 class YourContactsViewTestCase(UserSectionTestCase):
     def setUp(self):

@@ -1,5 +1,6 @@
 {% extends "base_edit.html" %}
 {% load i18n %}
+{% load pagination_tags %}
 {% load nuntium_tags %}
 {% load staticfiles %}
 
@@ -28,6 +29,8 @@
   <div class="tab-pane active row">
 
     <div class="col-md-12">
+      {% autopaginate people %}
+      {% paginate %}
       <table class="table table-striped">
         <thead>
           <tr>
@@ -36,7 +39,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for person in writeitinstance.persons.all %}
+          {% for person in people %}
           <tr>
             <td>{{ person.name }}</td>
             <td>{% show_contacts_for person writeitinstance %}</td>            
@@ -46,6 +49,7 @@
           {% endfor %}
         </tbody>
       </table>
+      {% paginate %}
     </div>
 
   </div>

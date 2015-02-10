@@ -346,8 +346,16 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         self.assertEquals(messages[0].message, _("We are now getting the people from popit"))
 
     def test_get_the_url(self):
+
+        form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
+        form.is_valid()
+        form.relate()
+
         self.client.login(username="fieraferoz", password="feroz")
         url = reverse('relate-writeit-popit', kwargs={'pk': self.writeitinstance.pk})
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
+        self.assertIn('relations', response.context)
+        self.assertEquals(len(response.context['relations']), self.writeitinstance.writeitinstancepopitinstancerecord_set.count())
         self.assertTemplateUsed(response, 'nuntium/profiles/writeitinstance_and_popit_relations.html')
+        self.assertEquals(response.context['relations'][0], self.writeitinstance.writeitinstancepopitinstancerecord_set.all()[0])

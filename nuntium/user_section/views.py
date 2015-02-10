@@ -45,6 +45,11 @@ class WriteItInstanceContactDetailView(DetailView):
             raise Http404
         return self.object
 
+    def get_context_data(self, **kwargs):
+        context = super(WriteItInstanceContactDetailView, self).get_context_data(**kwargs)
+        context['people'] = self.object.persons.all()
+        return context
+
 
 class WriteItInstanceTemplateUpdateView(DetailView):
     model = WriteItInstance
@@ -250,6 +255,11 @@ class MessagesPerWriteItInstance(DetailView, LoginRequiredMixin, WriteItInstance
     model = WriteItInstance
     template_name = 'nuntium/profiles/messages_per_instance.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(MessagesPerWriteItInstance, self).get_context_data(**kwargs)
+        context['writeit_messages'] = self.object.message_set.all()
+        return context
+
 
 class MessageDetail(WriteItRelatedModelMixin, DetailView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
     model = Message
@@ -357,6 +367,11 @@ class WriteitPopitRelatingView(WriteItInstanceOwnerMixin, FormView):
         view_messages.add_message(self.request, view_messages.INFO, _("We are now getting the people from popit"))
         response = super(WriteitPopitRelatingView, self).form_valid(form)
         return response
+
+    def get_context_data(self, **kwargs):
+        context = super(WriteitPopitRelatingView, self).get_context_data(**kwargs)
+        context['relations'] = self.object.writeitinstancepopitinstancerecord_set.all()
+        return context
 
 
 class WriteItDeleteView(WriteItInstanceOwnerMixin, DeleteView):
