@@ -1,7 +1,7 @@
 {% extends "base_edit.html" %}
 {% load i18n %}
 {% load staticfiles %}
-
+{% load pagination_tags %}
 {% block extrajs %}
 {% endblock extrajs %}
 
@@ -27,8 +27,10 @@
 <!-- Tab panes -->
 <div class="tab-content profile-page-tab-content">
   <div class="tab-pane active row">
-
+    {% autopaginate writeit_messages %}
+    
     <div class="col-md-12">
+      {% paginate %}
       <table class="table table-striped">
         <thead>
           <tr>
@@ -47,7 +49,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for message in writeitinstance.message_set.all %}
+          {% for message in writeit_messages %}
           <tr>
             <td>{{ message.subject }}</td>
             <td>{{ message.content|truncatechars:50|linebreaksbr }}</td>
@@ -77,6 +79,7 @@
           {% endfor %}
         </tbody>
       </table>
+      {% paginate %}
     </div>
 
   </div>

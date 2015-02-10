@@ -255,6 +255,11 @@ class MessagesPerWriteItInstance(DetailView, LoginRequiredMixin, WriteItInstance
     model = WriteItInstance
     template_name = 'nuntium/profiles/messages_per_instance.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(MessagesPerWriteItInstance, self).get_context_data(**kwargs)
+        context['writeit_messages'] = self.object.message_set.all()
+        return context
+
 
 class MessageDetail(WriteItRelatedModelMixin, DetailView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
     model = Message
