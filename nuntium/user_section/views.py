@@ -368,6 +368,11 @@ class WriteitPopitRelatingView(WriteItInstanceOwnerMixin, FormView):
         response = super(WriteitPopitRelatingView, self).form_valid(form)
         return response
 
+    def get_context_data(self, **kwargs):
+        context = super(WriteitPopitRelatingView, self).get_context_data(**kwargs)
+        context['relations'] = self.object.writeitinstancepopitinstancerecord_set.all()
+        return context
+
 
 class WriteItDeleteView(WriteItInstanceOwnerMixin, DeleteView):
     model = WriteItInstance
