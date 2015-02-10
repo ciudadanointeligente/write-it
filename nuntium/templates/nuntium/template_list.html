@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
-
+{% load pagination_tags %}
 {% block extrajs %}
 {% include "home.js" %}
 {% endblock extrajs %}
@@ -10,13 +10,16 @@
 {% endblock menu-list-active %}
 
 {% block content %}
-<div class="jumbotron">
+<div class="tab-content profile-page-tab-content">
 
   <h2>{% trans "Current instances of write it" %}</h2>
+  {% autopaginate object_list %}
+  {% paginate %}
   <ul>
   {% for instance in object_list %}
   <li><a href="{% url 'instance_detail' slug=instance.slug %}">{{ instance.name }}</a></li>
   {% endfor %}
   </ul>
+  {% paginate %}
 </div>
 {% endblock content%}
