@@ -45,6 +45,11 @@ class WriteItInstanceContactDetailView(DetailView):
             raise Http404
         return self.object
 
+    def get_context_data(self, **kwargs):
+        context = super(WriteItInstanceContactDetailView, self).get_context_data(**kwargs)
+        context['people'] = self.object.persons.all()
+        return context
+
 
 class WriteItInstanceTemplateUpdateView(DetailView):
     model = WriteItInstance

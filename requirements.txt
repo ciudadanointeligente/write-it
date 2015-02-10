@@ -35,3 +35,4 @@ billiard==3.3.0.19
 pyOpenSSL
 ndg-httpsclient
 pyasn1
+django-pagination
