@@ -154,3 +154,33 @@ class EmailCreationWhenPullingFromPopit(TestCase):
         fiera = self.instance.persons.filter(name="Fiera Feroz")
         contacts = Contact.objects.filter(person=fiera)
         self.assertEquals(contacts.count(), 1)
+
+    def test_get_emails_in_the_popolo_format(self):
+        '''Get emails contact if it comes in the popolo format'''
+
+        popit_load_data(fixture_name='other_people_with_popolo_emails')
+
+        self.instance.load_persons_from_a_popit_api(
+            settings.TEST_POPIT_API_URL
+        )
+        fiera = self.instance.persons.filter(name="Fiera Feroz")
+        # fiera should have at least one contact commig from popit
+        contacts = Contact.objects.filter(person=fiera)
+        self.assertTrue(contacts)
+        contact = contacts[0]
+        contact_type = ContactType.objects.get(name="e-mail")
+        self.assertEquals(contact.contact_type, contact_type)
+        self.assertEquals(contact.value, "fiera-popolo@ciudadanointeligente.org")
+
+    def test_get_twice_from_popit_does_not_repeat_the_email(self):
+        popit_load_data(fixture_name='other_people_with_popolo_emails')
+
+        self.instance.load_persons_from_a_popit_api(
+            settings.TEST_POPIT_API_URL
+        )
+        self.instance.load_persons_from_a_popit_api(
+            settings.TEST_POPIT_API_URL
+        )
+        fiera = self.instance.persons.filter(name="Fiera Feroz")
+        contacts = Contact.objects.filter(person=fiera)
+        self.assertEquals(contacts.count(), 1)
