@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load staticfiles %}
+{% load pagination_tags %}
 
 {% block extrascripts %}
 <link rel="stylesheet" href="{% static 'css/chosen.css' %}">
@@ -85,11 +86,13 @@ $(".chosen-person-select").chosen();
 {% else %}
 
     <h2>{% trans "Messages" %}</h2>
-
+    {% autopaginate public_messages %}
+    {% paginate %}
 
     {% for message in public_messages %}
         {% include "nuntium/message/message_in_list.html" with message=message %}
     {% endfor %}
+    {% paginate %}
 {% endif %}
 
 {% endblock content%}
