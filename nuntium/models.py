@@ -150,6 +150,37 @@ post_save.connect(new_write_it_instance, sender=WriteItInstance)
 class WriteItInstanceConfig(models.Model):
     writeitinstance = AutoOneToOneField(WriteItInstance, related_name='config')
     testing_mode = models.BooleanField(default=True)
+    allow_messages_using_form = models.BooleanField(
+        help_text=_("Allow the creation of new messages \
+        using the web"), default=True)
+    rate_limiter = models.IntegerField(default=0)
+    notify_owner_when_new_answer = models.BooleanField(
+        help_text=_("The owner of this instance \
+        should be notified \
+        when a new answer comes in"), default=False)
+    autoconfirm_api_messages = models.BooleanField(
+        help_text=_("Messages pushed to the api should \
+            be confirmed automatically"), default=True)
+
+    # @property
+    # def moderation_needed_in_all_messages(self):
+    #     return self.writeitinstance.moderation_needed_in_all_messages
+
+    # @property
+    # def allow_messages_using_form(self):
+    #     return self.writeitinstance.allow_messages_using_form
+
+    # @property
+    # def rate_limiter(self):
+    #     return self.writeitinstance.rate_limiter
+
+    # @property
+    # def notify_owner_when_new_answer(self):
+    #     return self.writeitinstance.notify_owner_when_new_answer
+
+    # @property
+    # def autoconfirm_api_messages(self):
+    #     return self.writeitinstance.autoconfirm_api_messages
 
 
 class Membership(models.Model):

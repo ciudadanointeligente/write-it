@@ -29,6 +29,10 @@ class WriteItInstanceConfigTestCase(TestCase):
             )
         self.assertTrue(config)
         self.assertTrue(config.testing_mode)
+        self.assertTrue(config.allow_messages_using_form)
+        self.assertEquals(config.rate_limiter, 0)
+        self.assertFalse(config.notify_owner_when_new_answer)
+        self.assertTrue(config.autoconfirm_api_messages)
 
     def test_a_writeitinstance_has_a_config_model(self):
         '''A WriteItInstance has a config'''

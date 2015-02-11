@@ -2,9 +2,9 @@
 from django.forms import ModelForm, TextInput, Textarea, \
     CheckboxInput, NumberInput
 
-from ..models import WriteItInstance, \
+from nuntium.models import WriteItInstance, \
     NewAnswerNotificationTemplate, \
-    ConfirmationTemplate, Answer
+    ConfirmationTemplate, Answer, WriteItInstanceConfig
 
 from django.forms import ValidationError, ModelChoiceField, Form, URLField
 
