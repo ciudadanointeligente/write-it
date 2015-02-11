@@ -107,8 +107,8 @@ class MessageFormTestCase(TestCase):
             'author_email': u"falvarez@votainteligente.cl",
             'persons': [self.person1.id],
             }
-        self.writeitinstance1.allow_messages_using_form = False
-        self.writeitinstance1.save()
+        self.writeitinstance1.config.allow_messages_using_form = False
+        self.writeitinstance1.config.save()
 
         form = MessageCreateForm(data, writeitinstance=self.writeitinstance1)
         self.assertTrue(form)

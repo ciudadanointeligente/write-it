@@ -32,7 +32,6 @@ class InstanceTestCase(TestCase):
         self.assertEquals(writeitinstance.name, 'instance 1')
         self.assertEquals(writeitinstance.slug, 'instance-1')
         self.assertEquals(writeitinstance.owner, self.owner)
-        self.assertTrue(writeitinstance.allow_messages_using_form)
         self.assertFalse(writeitinstance.notify_owner_when_new_answer)
         self.assertTrue(writeitinstance.autoconfirm_api_messages)
 
