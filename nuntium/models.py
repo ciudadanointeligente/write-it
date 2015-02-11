@@ -150,6 +150,9 @@ post_save.connect(new_write_it_instance, sender=WriteItInstance)
 class WriteItInstanceConfig(models.Model):
     writeitinstance = AutoOneToOneField(WriteItInstance, related_name='config')
     testing_mode = models.BooleanField(default=True)
+    moderation_needed_in_all_messages = models.BooleanField(
+        help_text=_("Every message is going to \
+        have a moderation mail"), default=False)
     allow_messages_using_form = models.BooleanField(
         help_text=_("Allow the creation of new messages \
         using the web"), default=True)

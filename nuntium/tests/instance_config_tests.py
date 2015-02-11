@@ -29,6 +29,7 @@ class WriteItInstanceConfigTestCase(TestCase):
             )
         self.assertTrue(config)
         self.assertTrue(config.testing_mode)
+        self.assertFalse(config.moderation_needed_in_all_messages)
         self.assertTrue(config.allow_messages_using_form)
         self.assertEquals(config.rate_limiter, 0)
         self.assertFalse(config.notify_owner_when_new_answer)
