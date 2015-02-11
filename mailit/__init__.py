@@ -61,7 +61,11 @@ class MailChannel(OutputPlugin):
         # for errors and stuff
         from django.core.mail.message import EmailMultiAlternatives
         try:
-            msg = EmailMultiAlternatives(subject, content, from_email, [outbound_message.contact.value])
+            if outbound_message.message.writeitinstance.config.testing_mode:
+                to_email = outbound_message.message.writeitinstance.owner.email
+            else:
+                to_email = outbound_message.contact.value
+            msg = EmailMultiAlternatives(subject, content, from_email, [to_email])
             msg.attach_alternative(html_content, "text/html")
             msg.send(fail_silently=False)
             log = "Mail sent from %(from)s to %(to)s"
