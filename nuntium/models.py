@@ -149,6 +149,7 @@ post_save.connect(new_write_it_instance, sender=WriteItInstance)
 
 class WriteItInstanceConfig(models.Model):
     writeitinstance = AutoOneToOneField(WriteItInstance, related_name='config')
+    testing_mode = models.BooleanField(default=True)
 
 
 class Membership(models.Model):

@@ -19,6 +19,13 @@ class WriteItInstanceConfigTestCase(TestCase):
             slug='instance-1',
             owner=self.owner)
 
+    def test_instanciate_and_have_properties(self):
+        config = WriteItInstanceConfig.objects.create(
+            writeitinstance=self.writeitinstance
+            )
+        self.assertTrue(config)
+        self.assertTrue(config.testing_mode)
+
     def test_a_writeitinstance_has_a_config_model(self):
         '''A WriteItInstance has a config'''
         self.assertTrue(self.writeitinstance.config)
