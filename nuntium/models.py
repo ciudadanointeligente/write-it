@@ -50,10 +50,6 @@ class WriteItInstance(models.Model):
         related_name='writeit_instances',
         through='Membership')
     owner = models.ForeignKey(User, related_name="writeitinstances")
-    notify_owner_when_new_answer = models.BooleanField(
-        help_text=_("The owner of this instance \
-        should be notified \
-        when a new answer comes in"), default=False)
     autoconfirm_api_messages = models.BooleanField(
         help_text=_("Messages pushed to the api should \
             be confirmed automatically"), default=True)
@@ -149,6 +145,7 @@ class WriteItInstanceConfig(models.Model):
     allow_messages_using_form = models.BooleanField(
         help_text=_("Allow the creation of new messages \
         using the web"), default=True)
+    rate_limiter = models.IntegerField(default=0)
     notify_owner_when_new_answer = models.BooleanField(
         help_text=_("The owner of this instance \
         should be notified \
@@ -472,7 +469,7 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
-        if answer.message.writeitinstance.notify_owner_when_new_answer:
+        if answer.message.writeitinstance.config.notify_owner_when_new_answer:
             d = Context({
                 'user': answer.message.writeitinstance.owner,
                 'person': answer.person,

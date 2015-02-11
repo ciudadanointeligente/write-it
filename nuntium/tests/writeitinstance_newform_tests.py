@@ -66,7 +66,7 @@ class InstanceCreateFormTestCase(TestCase):
         self.assertIn("owner", form.fields)
         self.assertNotIn("allow_messages_using_form", form.fields)
         self.assertNotIn("rate_limiter", form.fields)
-        self.assertIn("notify_owner_when_new_answer", form.fields)
+        self.assertNotIn("notify_owner_when_new_answer", form.fields)
         self.assertIn("autoconfirm_api_messages", form.fields)
 
 
