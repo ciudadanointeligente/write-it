@@ -45,16 +45,6 @@ class InstanceTestCase(TestCase):
 
         self.assertIn(writeitinstance, self.owner.writeitinstances.all())
 
-    def test_moderation_needed_in_all_messages(self):
-        writeitinstance = WriteItInstance.objects.create(
-            name='instance 1',
-            slug='instance-1',
-            moderation_needed_in_all_messages=False,
-            owner=self.owner,
-            )
-
-        self.assertTrue(writeitinstance)
-
     def test_instance_unicode(self):
         writeitinstance = WriteItInstance.objects.all()[0]
         self.assertEquals(writeitinstance.__unicode__(), writeitinstance.name)
