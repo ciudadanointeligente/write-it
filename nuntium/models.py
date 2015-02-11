@@ -29,6 +29,7 @@ from django.utils.timezone import now
 import os
 from popit_api_instance import PopitApiInstance
 from requests.exceptions import ConnectionError
+from annoying.fields import AutoOneToOneField
 
 
 def read_template_as_string(path, file_source_path=__file__):
@@ -144,6 +145,10 @@ def new_write_it_instance(sender, instance, created, **kwargs):
         )
 
 post_save.connect(new_write_it_instance, sender=WriteItInstance)
+
+
+class WriteItInstanceConfig(models.Model):
+    writeitinstance = AutoOneToOneField(WriteItInstance, related_name='config')
 
 
 class Membership(models.Model):
