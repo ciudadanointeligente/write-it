@@ -165,26 +165,6 @@ class WriteItInstanceConfig(models.Model):
         help_text=_("Messages pushed to the api should \
             be confirmed automatically"), default=True)
 
-    # @property
-    # def moderation_needed_in_all_messages(self):
-    #     return self.writeitinstance.moderation_needed_in_all_messages
-
-    # @property
-    # def allow_messages_using_form(self):
-    #     return self.writeitinstance.allow_messages_using_form
-
-    # @property
-    # def rate_limiter(self):
-    #     return self.writeitinstance.rate_limiter
-
-    # @property
-    # def notify_owner_when_new_answer(self):
-    #     return self.writeitinstance.notify_owner_when_new_answer
-
-    # @property
-    # def autoconfirm_api_messages(self):
-    #     return self.writeitinstance.autoconfirm_api_messages
-
 
 class Membership(models.Model):
     person = models.ForeignKey(Person)
