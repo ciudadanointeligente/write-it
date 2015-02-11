@@ -45,7 +45,7 @@ class WriteItInstanceDetailView(CreateView):
     def form_valid(self, form):
         response = super(WriteItInstanceDetailView, self).form_valid(form)
         moderations = Moderation.objects.filter(message=self.object)
-        if moderations.count() > 0 or self.object.writeitinstance.moderation_needed_in_all_messages:
+        if moderations.count() > 0 or self.object.writeitinstance.config.moderation_needed_in_all_messages:
             messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation"))
         else:
             messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link"))

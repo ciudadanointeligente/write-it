@@ -102,8 +102,8 @@ class ModerationMessagesTestCase(TestCase):
 
     def test_send_mails_only_once(self):
         with patch('nuntium.models.Message.send_moderation_mail') as send_moderation_mail:
-            self.writeitinstance1.moderation_needed_in_all_messages = True
-            self.writeitinstance1.save()
+            self.writeitinstance1.config.moderation_needed_in_all_messages = True
+            self.writeitinstance1.config.save()
 
             send_moderation_mail.return_value = None
             message = Message.objects.create(
@@ -271,8 +271,8 @@ class ModerationMessagesTestCase(TestCase):
 
     # this test is for the issue https://github.com/ciudadanointeligente/write-it/issues/186
     def test_confirmated_but_not_moderated_message_in_a_moderable_instance_is_in_needs_moderation_status(self):
-        self.writeitinstance1.moderation_needed_in_all_messages = True
-        self.writeitinstance1.save()
+        self.writeitinstance1.config.moderation_needed_in_all_messages = True
+        self.writeitinstance1.config.save()
 
         data = {
             'author_email': u'falvarez@votainteligente.cl',

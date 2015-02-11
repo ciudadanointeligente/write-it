@@ -229,9 +229,9 @@ class InstanceDetailView(TestCase):
         self.assertTrue(private_message not in response.context['public_messages'])
 
     def test_in_moderation_needed_instances_does_not_show_a_confirmated_but_not_moderated(self):
-        self.writeitinstance1.moderation_needed_in_all_messages = True
+        self.writeitinstance1.config.moderation_needed_in_all_messages = True
 
-        self.writeitinstance1.save()
+        self.writeitinstance1.config.save()
         message = Message.objects.create(
             content='Content 3',
             subject='Subject 3',
@@ -341,8 +341,8 @@ class InstanceDetailView(TestCase):
         self.assertRedirects(response, url)
 
     def test_if_the_instance_needs_moderation_in_all_messages(self):
-        self.writeitinstance1.moderation_needed_in_all_messages = True
-        self.writeitinstance1.save()
+        self.writeitinstance1.config.moderation_needed_in_all_messages = True
+        self.writeitinstance1.config.save()
         data = {
             'subject': u'Fiera no está',
             'content': u'¿Dónde está Fiera Feroz? en la playa?',

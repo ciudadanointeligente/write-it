@@ -25,7 +25,7 @@ class WriteItInstanceBasicForm(ModelForm):
 
 class WriteItInstanceAdvancedUpdateForm(ModelForm):
     class Meta:
-        model = WriteItInstance
+        model = WriteItInstanceConfig
         fields = [
             'moderation_needed_in_all_messages',
             'allow_messages_using_form',

@@ -49,9 +49,6 @@ class WriteItInstance(models.Model):
     persons = models.ManyToManyField(Person,
         related_name='writeit_instances',
         through='Membership')
-    moderation_needed_in_all_messages = models.BooleanField(
-        help_text=_("Every message is going to \
-        have a moderation mail"), default=False)
     owner = models.ForeignKey(User, related_name="writeitinstances")
     allow_messages_using_form = models.BooleanField(
         help_text=_("Allow the creation of new messages \
@@ -269,7 +266,7 @@ class Message(models.Model):
     def recently_confirmated(self):
         status = 'ready'
         if not self.public or \
-                self.writeitinstance.moderation_needed_in_all_messages:
+                self.writeitinstance.config.moderation_needed_in_all_messages:
             moderation, created = Moderation.objects.get_or_create(message=self)
             self.send_moderation_mail()
             status = 'needmodera'
@@ -353,7 +350,7 @@ class Message(models.Model):
 
     def save(self, *args, **kwargs):
         created = self.id is None
-        if created and self.writeitinstance.moderation_needed_in_all_messages:
+        if created and self.writeitinstance.config.moderation_needed_in_all_messages:
             self.moderated = False
         super(Message, self).save(*args, **kwargs)
         if created and not self.public:

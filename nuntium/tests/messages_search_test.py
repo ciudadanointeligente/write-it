@@ -87,7 +87,7 @@ class MessagesSearchTestCase(TestCase):
         self.assertNotIn(non_message, self.index.index_queryset())
 
     def test_it_does_not_search_within_non_moderated_messages(self):
-        self.writeitinstance1.moderation_needed_in_all_messages = True
+        self.writeitinstance1.config.moderation_needed_in_all_messages = True
         self.writeitinstance1.save()
         message = Message.objects.create(
             content='Content 1',

@@ -62,7 +62,7 @@ class InstanceCreateFormTestCase(TestCase):
         self.assertIn("name", form.fields)
         self.assertNotIn("slug", form.fields)
         self.assertNotIn("persons", form.fields)
-        self.assertIn("moderation_needed_in_all_messages", form.fields)
+        self.assertNotIn("moderation_needed_in_all_messages", form.fields)
         self.assertIn("owner", form.fields)
         self.assertIn("allow_messages_using_form", form.fields)
         self.assertIn("rate_limiter", form.fields)
