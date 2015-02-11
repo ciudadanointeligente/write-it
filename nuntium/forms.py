@@ -102,8 +102,7 @@ class WriteItInstanceCreateFormPopitUrl(ModelForm):
 
     class Meta:
         model = WriteItInstance
-        fields = ('owner', 'name', 'popit_url',
-            "autoconfirm_api_messages")
+        fields = ('owner', 'name', 'popit_url')
 
     def relate_with_people(self):
         if self.cleaned_data['popit_url']:

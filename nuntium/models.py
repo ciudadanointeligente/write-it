@@ -50,9 +50,6 @@ class WriteItInstance(models.Model):
         related_name='writeit_instances',
         through='Membership')
     owner = models.ForeignKey(User, related_name="writeitinstances")
-    autoconfirm_api_messages = models.BooleanField(
-        help_text=_("Messages pushed to the api should \
-            be confirmed automatically"), default=True)
 
     def relate_with_persons_from_popit_api_instance(self, popit_api_instance):
         try:

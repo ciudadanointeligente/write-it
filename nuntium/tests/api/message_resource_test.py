@@ -187,8 +187,8 @@ class MessageResourceTestCase(ResourceTestCase):
     def test_not_confirming_automatically_a_message(self):
         """Push a new message to an instance with no autoconfirm message"""
         writeitinstance = WriteItInstance.objects.all()[0]
-        writeitinstance.autoconfirm_api_messages = False
-        writeitinstance.save()
+        writeitinstance.config.autoconfirm_api_messages = False
+        writeitinstance.config.save()
 
         message_data = {
             'author_name': 'Felipipoo',
@@ -214,8 +214,8 @@ class MessageResourceTestCase(ResourceTestCase):
     def test_not_including_email_in_non_auto_confrim_message(self):
         """Not Including email causes error 403 in a non auto confirm message"""
         writeitinstance = WriteItInstance.objects.all()[0]
-        writeitinstance.autoconfirm_api_messages = False
-        writeitinstance.save()
+        writeitinstance.config.autoconfirm_api_messages = False
+        writeitinstance.config.save()
 
         message_data = {
             'author_name': 'Felipipoo',
