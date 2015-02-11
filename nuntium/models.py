@@ -50,7 +50,6 @@ class WriteItInstance(models.Model):
         related_name='writeit_instances',
         through='Membership')
     owner = models.ForeignKey(User, related_name="writeitinstances")
-    rate_limiter = models.IntegerField(default=0)
     notify_owner_when_new_answer = models.BooleanField(
         help_text=_("The owner of this instance \
         should be notified \
@@ -150,7 +149,6 @@ class WriteItInstanceConfig(models.Model):
     allow_messages_using_form = models.BooleanField(
         help_text=_("Allow the creation of new messages \
         using the web"), default=True)
-    rate_limiter = models.IntegerField(default=0)
     notify_owner_when_new_answer = models.BooleanField(
         help_text=_("The owner of this instance \
         should be notified \
@@ -251,8 +249,8 @@ class Message(models.Model):
                 email=self.author_email,
                 day=datetime.date.today()
                 )
-            if self.writeitinstance.rate_limiter > 0 and \
-                    rate_limiter.count >= self.writeitinstance.rate_limiter:
+            if self.writeitinstance.config.rate_limiter > 0 and \
+                    rate_limiter.count >= self.writeitinstance.config.rate_limiter:
                 raise ValidationError(_('You have reached '
                     + 'your limit for today please try again tomorrow'))
         except ObjectDoesNotExist:

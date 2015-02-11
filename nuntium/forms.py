@@ -103,7 +103,6 @@ class WriteItInstanceCreateFormPopitUrl(ModelForm):
     class Meta:
         model = WriteItInstance
         fields = ('owner', 'name', 'popit_url',
-            "rate_limiter",
             "notify_owner_when_new_answer",
             "autoconfirm_api_messages")
 

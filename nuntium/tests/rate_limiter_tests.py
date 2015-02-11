@@ -19,7 +19,7 @@ class RateLimiterTestCase(TestCase):
     def test_a_writeit_instance_has_a_rate_limiter_by_default_0(self):
         instance = WriteItInstance.objects.create(name='instance 234', slug='instance-234', owner=self.owner)
 
-        self.assertEquals(instance.rate_limiter, 0)
+        self.assertEquals(instance.config.rate_limiter, 0)
 
     def test_create_a_rate_limiter_instance(self):
         rate_limiter = RateLimiter.objects.create(writeitinstance=self.writeitinstance1, email='falvarez@ciudadanointeligente.org')
@@ -118,8 +118,8 @@ class RateLimiterTestCase(TestCase):
         self.assertEquals(rate_limiter_for_today.count, 1)
 
     def test_maximum_rate_exceded(self):
-        self.writeitinstance1.rate_limiter = 1
-        self.writeitinstance1.save()
+        self.writeitinstance1.config.rate_limiter = 1
+        self.writeitinstance1.config.save()
 
         Message.objects.create(
             content='Content 1',
