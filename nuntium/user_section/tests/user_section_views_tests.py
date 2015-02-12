@@ -211,6 +211,7 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         self.assertIn("rate_limiter", form.fields)
         self.assertIn("notify_owner_when_new_answer", form.fields)
         self.assertIn("autoconfirm_api_messages", form.fields)
+        self.assertIn("testing_mode", form.fields)
 
     def test_writeitinstance_advanced_form_save(self):
         url = reverse('writeitinstance_advanced_update', kwargs={'pk': self.writeitinstance.config.pk})

@@ -35,6 +35,10 @@ $(".chosen-person-select").chosen();
 
     <form role="form" action="" method="post">
       <div class="form-group">
+        {{form.testing_mode.label_tag}}
+        {{form.testing_mode}}
+      </div>
+      <div class="form-group">
         {{form.moderation_needed_in_all_messages.label_tag}}
         {{form.moderation_needed_in_all_messages}}
       </div>
