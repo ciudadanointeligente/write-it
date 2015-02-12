@@ -17,9 +17,20 @@
   {% paginate %}
   <ul>
   {% for instance in object_list %}
-  <li><a href="{% url 'instance_detail' slug=instance.slug %}">{{ instance.name }}</a></li>
+    <li><a href="{% url 'instance_detail' slug=instance.slug %}">{{ instance.name }}</a>
+    {% if instance.config.testing_mode %}
+        <i class="fa fa-info-circle extra-info" data-toggle="tooltip" data-placement="left"
+        title="{% trans 'This instance can only be seen by you and all the messages will go to your email.' %}"></i> <span class="label label-info">{% trans 'Testing mode' %}</span>
+    {% endif %}
+    </li>
   {% endfor %}
   </ul>
   {% paginate %}
 </div>
+
+<script type="text/javascript">
+    $(function(){
+        $('.extra-info').tooltip({})
+    })
+</script>
 {% endblock content%}

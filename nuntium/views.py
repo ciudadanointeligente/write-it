@@ -7,9 +7,9 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 
 from haystack.views import SearchView
-
+from itertools import chain
 from popit.models import Person
-
+from django.db.models import Q
 from .models import WriteItInstance, Confirmation, Message, Moderation
 from .forms import MessageCreateForm, MessageSearchForm, PerInstanceSearchForm
 
@@ -27,9 +27,17 @@ class WriteItInstanceListView(ListView):
     model = WriteItInstance
 
     def get_queryset(self, *args, **kwargs):
-        queryset = super(WriteItInstanceListView, self).get_queryset(*args, **kwargs)
-        # user = self.request.user
-        queryset = queryset.filter(config__testing_mode=False)
+        original_queryset = super(WriteItInstanceListView, self).get_queryset(*args, **kwargs)
+        for ins in original_queryset:
+            if ins.config is None:
+                ins.config
+        user = self.request.user
+        queryset = original_queryset.filter(Q(config__testing_mode=False))
+        if user.id:
+            instances_owned_by_user = original_queryset.filter(Q(config__testing_mode=True)).filter(Q(owner=user))
+        else:
+            instances_owned_by_user = queryset.none()
+        queryset = list(chain(instances_owned_by_user, queryset))
         return queryset
 
 

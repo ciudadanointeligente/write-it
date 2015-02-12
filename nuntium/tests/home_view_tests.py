@@ -66,3 +66,38 @@ class HomeViewTestCase(TestCase):
         response = c.get(reverse('instance_list'))
         self.assertEquals(response.status_code, 200)
         self.assertNotIn(w, response.context['object_list'])
+
+    def test_owners_can_see_their_testing_mode_instances(self):
+        '''Only the owner can see her/his instances in testing_mode'''
+        fiera = User.objects.create_user(username='fiera',
+            password="feroz",
+            email="fiera@ciudadanointeligente.org")
+        benito = User.objects.create_user(username='benito',
+            password="feroz",
+            email="benito@ciudadanointeligente.org")
+
+        fieras_instance = WriteItInstance.objects.create(name='test_mode_instance',
+            owner=fiera)
+        benito_instance = WriteItInstance.objects.create(name='test_mode_instance_benito',
+            owner=benito)
+
+        c = Client()
+        c.login(username='fiera', password="feroz")
+        response = c.get(reverse('instance_list'))
+        self.assertEquals(response.status_code, 200)
+        self.assertIn(fieras_instance, response.context['object_list'])
+        self.assertNotIn(benito_instance, response.context['object_list'])
+
+    def test_it_does_not_repeat_instances(self):
+        '''It does not repeat instances'''
+        fiera = User.objects.create_user(username='fiera',
+            password="feroz",
+            email="fiera@ciudadanointeligente.org")
+        fieras_instance = WriteItInstance.objects.create(name='test_mode_instance',
+            owner=fiera)
+        fieras_instance.config.testing_mode = False
+        fieras_instance.config.save()
+        c = Client()
+        c.login(username='fiera', password="feroz")
+        response = c.get(reverse('instance_list'))
+        self.assertEquals(response.context['object_list'].count(fieras_instance), 1)
