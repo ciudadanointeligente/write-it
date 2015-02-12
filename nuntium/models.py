@@ -50,20 +50,6 @@ class WriteItInstance(models.Model):
         related_name='writeit_instances',
         through='Membership')
     owner = models.ForeignKey(User, related_name="writeitinstances")
-    moderation_needed_in_all_messages = models.BooleanField(
-        help_text=_("Every message is going to \
-        have a moderation mail"), default=False)
-    allow_messages_using_form = models.BooleanField(
-        help_text=_("Allow the creation of new messages \
-        using the web"), default=True)
-    rate_limiter = models.IntegerField(default=0)
-    notify_owner_when_new_answer = models.BooleanField(
-        help_text=_("The owner of this instance \
-        should be notified \
-        when a new answer comes in"), default=False)
-    autoconfirm_api_messages = models.BooleanField(
-        help_text=_("Messages pushed to the api should \
-            be confirmed automatically"), default=True)
 
     def relate_with_persons_from_popit_api_instance(self, popit_api_instance):
         try:
