@@ -27,6 +27,11 @@ class WriteItInstanceListView(ListView):
     model = WriteItInstance
 
     def get_queryset(self, *args, **kwargs):
+        '''
+        This filters the instances that are
+        in testing_mode = True only if you are logged in
+        and you own the instance
+        '''
         original_queryset = super(WriteItInstanceListView, self).get_queryset(*args, **kwargs)
         for ins in original_queryset:
             if ins.config is None:
@@ -34,10 +39,15 @@ class WriteItInstanceListView(ListView):
         user = self.request.user
         queryset = original_queryset.filter(Q(config__testing_mode=False))
         if user.id:
-            instances_owned_by_user = original_queryset.filter(Q(config__testing_mode=True)).filter(Q(owner=user))
+            instances_owned_by_user = original_queryset.filter(
+                Q(config__testing_mode=True)).filter(Q(owner=user))
         else:
             instances_owned_by_user = queryset.none()
         queryset = list(chain(instances_owned_by_user, queryset))
+
+        '''
+        The tests for this code can be found at nuntium/tests/home_view_tests.py
+        '''
         return queryset
 
 
