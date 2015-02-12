@@ -34,7 +34,7 @@
 	  <dd>{{ message.author_name }}</dd>
 	  <dt>{% trans "Confirmed" %}</dt>
 	  <dd><i class="fa {% if message.confirmated %}fa-check{% else %}fa-times{% endif %}"></i></dd>
-	  {% if writeitinstance.moderation_needed_in_all_messages %}
+	  {% if writeitinstance.config.moderation_needed_in_all_messages %}
 	  	<dt>{% trans "Moderated" %}</dt>
         <dd><i class="fa {% if message.moderated %}fa-check{% else %}fa-times{% endif %}"></i></dd>
       {% endif %}

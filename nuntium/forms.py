@@ -73,7 +73,7 @@ class MessageCreateForm(ModelForm):
     def clean(self):
         cleaned_data = super(MessageCreateForm, self).clean()
 
-        if not self.writeitinstance.allow_messages_using_form:
+        if not self.writeitinstance.config.allow_messages_using_form:
             raise ValidationError("")
         return cleaned_data
 
@@ -102,12 +102,7 @@ class WriteItInstanceCreateFormPopitUrl(ModelForm):
 
     class Meta:
         model = WriteItInstance
-        fields = ('owner', 'name', 'popit_url',
-            "moderation_needed_in_all_messages",
-            "allow_messages_using_form",
-            "rate_limiter",
-            "notify_owner_when_new_answer",
-            "autoconfirm_api_messages")
+        fields = ('owner', 'name', 'popit_url')
 
     def relate_with_people(self):
         if self.cleaned_data['popit_url']:

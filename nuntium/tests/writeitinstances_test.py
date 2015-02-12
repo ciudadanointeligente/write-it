@@ -32,9 +32,8 @@ class InstanceTestCase(TestCase):
         self.assertEquals(writeitinstance.name, 'instance 1')
         self.assertEquals(writeitinstance.slug, 'instance-1')
         self.assertEquals(writeitinstance.owner, self.owner)
-        self.assertTrue(writeitinstance.allow_messages_using_form)
-        self.assertFalse(writeitinstance.notify_owner_when_new_answer)
-        self.assertTrue(writeitinstance.autoconfirm_api_messages)
+        self.assertFalse(writeitinstance.config.notify_owner_when_new_answer)
+        self.assertTrue(writeitinstance.config.autoconfirm_api_messages)
 
     def test_owner_related_name(self):
         writeitinstance = WriteItInstance.objects.create(
@@ -44,16 +43,6 @@ class InstanceTestCase(TestCase):
             owner=self.owner)
 
         self.assertIn(writeitinstance, self.owner.writeitinstances.all())
-
-    def test_moderation_needed_in_all_messages(self):
-        writeitinstance = WriteItInstance.objects.create(
-            name='instance 1',
-            slug='instance-1',
-            moderation_needed_in_all_messages=False,
-            owner=self.owner,
-            )
-
-        self.assertTrue(writeitinstance)
 
     def test_instance_unicode(self):
         writeitinstance = WriteItInstance.objects.all()[0]
@@ -239,9 +228,9 @@ class InstanceDetailView(TestCase):
         self.assertTrue(private_message not in response.context['public_messages'])
 
     def test_in_moderation_needed_instances_does_not_show_a_confirmated_but_not_moderated(self):
-        self.writeitinstance1.moderation_needed_in_all_messages = True
+        self.writeitinstance1.config.moderation_needed_in_all_messages = True
 
-        self.writeitinstance1.save()
+        self.writeitinstance1.config.save()
         message = Message.objects.create(
             content='Content 3',
             subject='Subject 3',
@@ -351,8 +340,8 @@ class InstanceDetailView(TestCase):
         self.assertRedirects(response, url)
 
     def test_if_the_instance_needs_moderation_in_all_messages(self):
-        self.writeitinstance1.moderation_needed_in_all_messages = True
-        self.writeitinstance1.save()
+        self.writeitinstance1.config.moderation_needed_in_all_messages = True
+        self.writeitinstance1.config.save()
         data = {
             'subject': u'Fiera no está',
             'content': u'¿Dónde está Fiera Feroz? en la playa?',

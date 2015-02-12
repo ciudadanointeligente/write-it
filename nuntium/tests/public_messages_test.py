@@ -13,9 +13,9 @@ class NonModeratedMessagesManagerTestCase(TestCase):
         self.moderation_not_needed_instance = WriteItInstance.objects.all()[0]
         self.person1 = Person.objects.all()[0]
         self.moderable_instance = WriteItInstance.objects.all()[1]
-        self.moderable_instance.moderation_needed_in_all_messages = True
+        self.moderable_instance.config.moderation_needed_in_all_messages = True
 
-        self.moderable_instance.save()
+        self.moderable_instance.config.save()
 
     def test_it_has_a_manager_for_needing_moderation_messages(self):
         """There is a manager for the Message model that shows only the messages that need moderation"""
@@ -41,9 +41,9 @@ class PublicMessagesManager(TestCase):
         self.moderation_not_needed_instance = WriteItInstance.objects.all()[0]
         self.person1 = Person.objects.all()[0]
         self.moderable_instance = WriteItInstance.objects.all()[1]
-        self.moderable_instance.moderation_needed_in_all_messages = True
+        self.moderable_instance.config.moderation_needed_in_all_messages = True
 
-        self.moderable_instance.save()
+        self.moderable_instance.config.save()
 
     def test_public_non_confirmated_message_is_not_in_the_public(self):
         message = Message.objects.create(
@@ -86,8 +86,8 @@ class PublicMessagesInAPI(ResourceTestCase):
         call_command('loaddata', 'example_data', verbosity=0)
         self.user = User.objects.all()[0]
         self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
-        self.writeitinstance.moderation_needed_in_all_messages = True
-        self.writeitinstance.save()
+        self.writeitinstance.config.moderation_needed_in_all_messages = True
+        self.writeitinstance.config.save()
         self.person1 = Person.objects.all()[0]
         self.api_client = TestApiClient()
         self.data = {'format': 'json', 'username': self.user.username, 'api_key': self.user.api_key.key}

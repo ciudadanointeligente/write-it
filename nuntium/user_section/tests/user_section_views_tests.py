@@ -11,9 +11,9 @@ from contactos.models import Contact
 from mailit.forms import MailitTemplateForm
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 
-from ...models import WriteItInstance
-from ..views import WriteItInstanceUpdateView
-from ..forms import WriteItInstanceBasicForm, \
+from nuntium.models import WriteItInstance, WriteItInstanceConfig
+from nuntium.user_section.views import WriteItInstanceUpdateView
+from nuntium.user_section.forms import WriteItInstanceBasicForm, \
     WriteItInstanceAdvancedUpdateForm, WriteItInstanceCreateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
 
@@ -201,7 +201,7 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
 
     def test_writeitinstance_basic_form(self):
         form = WriteItInstanceAdvancedUpdateForm()
-        self.assertEquals(form._meta.model, WriteItInstance)
+        self.assertEquals(form._meta.model, WriteItInstanceConfig)
         self.assertNotIn("name", form.fields)
         self.assertNotIn("slug", form.fields)
         self.assertNotIn("persons", form.fields)
@@ -211,19 +211,20 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         self.assertIn("rate_limiter", form.fields)
         self.assertIn("notify_owner_when_new_answer", form.fields)
         self.assertIn("autoconfirm_api_messages", form.fields)
+        self.assertIn("testing_mode", form.fields)
 
     def test_writeitinstance_advanced_form_save(self):
-        url = reverse('writeitinstance_advanced_update', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('writeitinstance_advanced_update', kwargs={'pk': self.writeitinstance.config.pk})
         c = Client()
         c.login(username=self.owner.username, password='admin')
         response = c.post(url, data=self.data, follow=True)
         self.assertRedirects(response, url)
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
-        self.assertEquals(writeitinstance.moderation_needed_in_all_messages, True)
-        self.assertEquals(writeitinstance.allow_messages_using_form, 1)
-        self.assertEquals(writeitinstance.rate_limiter, 3)
-        self.assertEquals(writeitinstance.notify_owner_when_new_answer, 1)
-        self.assertEquals(writeitinstance.autoconfirm_api_messages, 1)
+        self.assertTrue(writeitinstance.config.moderation_needed_in_all_messages)
+        self.assertEquals(writeitinstance.config.allow_messages_using_form, 1)
+        self.assertEquals(writeitinstance.config.rate_limiter, 3)
+        self.assertEquals(writeitinstance.config.notify_owner_when_new_answer, 1)
+        self.assertEquals(writeitinstance.config.autoconfirm_api_messages, 1)
 
     def test_update_view_is_not_reachable_by_a_non_user(self):
         url = reverse('writeitinstance_advanced_update', kwargs={'pk': self.writeitinstance.pk})

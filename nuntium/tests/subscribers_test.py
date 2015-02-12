@@ -200,8 +200,8 @@ class NewAnswerNotificationToSubscribers(TestCase):
         self.assertEquals(mail.outbox[0].from_email, settings.DEFAULT_FROM_EMAIL)
 
     def test_owner_of_the_instance_is_notified_when_a_new_answer_comes_in(self):
-        self.instance.notify_owner_when_new_answer = True
-        self.instance.save()
+        self.instance.config.notify_owner_when_new_answer = True
+        self.instance.config.save()
         self.create_a_new_answer()
         user = User.objects.get(email="admin@admines.cl")
         d = Context(

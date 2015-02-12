@@ -29,6 +29,7 @@ from django.utils.timezone import now
 import os
 from popit_api_instance import PopitApiInstance
 from requests.exceptions import ConnectionError
+from annoying.fields import AutoOneToOneField
 
 
 def read_template_as_string(path, file_source_path=__file__):
@@ -48,10 +49,10 @@ class WriteItInstance(models.Model):
     persons = models.ManyToManyField(Person,
         related_name='writeit_instances',
         through='Membership')
+    owner = models.ForeignKey(User, related_name="writeitinstances")
     moderation_needed_in_all_messages = models.BooleanField(
         help_text=_("Every message is going to \
         have a moderation mail"), default=False)
-    owner = models.ForeignKey(User, related_name="writeitinstances")
     allow_messages_using_form = models.BooleanField(
         help_text=_("Allow the creation of new messages \
         using the web"), default=True)
@@ -146,6 +147,25 @@ def new_write_it_instance(sender, instance, created, **kwargs):
 post_save.connect(new_write_it_instance, sender=WriteItInstance)
 
 
+class WriteItInstanceConfig(models.Model):
+    writeitinstance = AutoOneToOneField(WriteItInstance, related_name='config')
+    testing_mode = models.BooleanField(default=True)
+    moderation_needed_in_all_messages = models.BooleanField(
+        help_text=_("Every message is going to \
+        have a moderation mail"), default=False)
+    allow_messages_using_form = models.BooleanField(
+        help_text=_("Allow the creation of new messages \
+        using the web"), default=True)
+    rate_limiter = models.IntegerField(default=0)
+    notify_owner_when_new_answer = models.BooleanField(
+        help_text=_("The owner of this instance \
+        should be notified \
+        when a new answer comes in"), default=False)
+    autoconfirm_api_messages = models.BooleanField(
+        help_text=_("Messages pushed to the api should \
+            be confirmed automatically"), default=True)
+
+
 class Membership(models.Model):
     person = models.ForeignKey(Person)
     writeitinstance = models.ForeignKey(WriteItInstance)
@@ -237,8 +257,8 @@ class Message(models.Model):
                 email=self.author_email,
                 day=datetime.date.today()
                 )
-            if self.writeitinstance.rate_limiter > 0 and \
-                    rate_limiter.count >= self.writeitinstance.rate_limiter:
+            if self.writeitinstance.config.rate_limiter > 0 and \
+                    rate_limiter.count >= self.writeitinstance.config.rate_limiter:
                 raise ValidationError(_('You have reached '
                     + 'your limit for today please try again tomorrow'))
         except ObjectDoesNotExist:
@@ -249,7 +269,7 @@ class Message(models.Model):
     def recently_confirmated(self):
         status = 'ready'
         if not self.public or \
-                self.writeitinstance.moderation_needed_in_all_messages:
+                self.writeitinstance.config.moderation_needed_in_all_messages:
             moderation, created = Moderation.objects.get_or_create(message=self)
             self.send_moderation_mail()
             status = 'needmodera'
@@ -333,7 +353,7 @@ class Message(models.Model):
 
     def save(self, *args, **kwargs):
         created = self.id is None
-        if created and self.writeitinstance.moderation_needed_in_all_messages:
+        if created and self.writeitinstance.config.moderation_needed_in_all_messages:
             self.moderated = False
         super(Message, self).save(*args, **kwargs)
         if created and not self.public:
@@ -460,7 +480,7 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
-        if answer.message.writeitinstance.notify_owner_when_new_answer:
+        if answer.message.writeitinstance.config.notify_owner_when_new_answer:
             d = Context({
                 'user': answer.message.writeitinstance.owner,
                 'person': answer.person,

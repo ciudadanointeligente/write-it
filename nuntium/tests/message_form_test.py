@@ -107,8 +107,8 @@ class MessageFormTestCase(TestCase):
             'author_email': u"falvarez@votainteligente.cl",
             'persons': [self.person1.id],
             }
-        self.writeitinstance1.allow_messages_using_form = False
-        self.writeitinstance1.save()
+        self.writeitinstance1.config.allow_messages_using_form = False
+        self.writeitinstance1.config.save()
 
         form = MessageCreateForm(data, writeitinstance=self.writeitinstance1)
         self.assertTrue(form)
@@ -186,8 +186,8 @@ class RateLimitingInForm(TestCase):
         super(RateLimitingInForm, self).setUp()
         self.owner = User.objects.all()[0]
         self.writeitinstance1 = WriteItInstance.objects.all()[0]
-        self.writeitinstance1.rate_limiter = 1
-        self.writeitinstance1.save()
+        self.writeitinstance1.config.rate_limiter = 1
+        self.writeitinstance1.config.save()
         self.person1 = Person.objects.all()[0]
         self.person2 = Person.objects.all()[1]
         self.message = Message.objects.all()[0]

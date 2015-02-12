@@ -180,7 +180,7 @@ class MessageResource(ModelResource):
         instance = WriteItInstanceResource().get_via_uri(
             bundle.data["writeitinstance"]
             )
-        if not instance.autoconfirm_api_messages:
+        if not instance.config.autoconfirm_api_messages:
             if 'author_email' not in bundle.data:
                 raise ImmediateHttpResponse(response=HttpResponseBadRequest("The author has no email"))
         if 'author_email' in bundle.data:
@@ -212,7 +212,7 @@ class MessageResource(ModelResource):
 
     def obj_create(self, bundle, **kwargs):
         bundle = super(MessageResource, self).obj_create(bundle, **kwargs)
-        if bundle.obj.writeitinstance.autoconfirm_api_messages:
+        if bundle.obj.writeitinstance.config.autoconfirm_api_messages:
             bundle.obj.recently_confirmated()
         else:
             bundle.obj.confirmated = False

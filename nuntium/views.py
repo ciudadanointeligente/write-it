@@ -7,9 +7,9 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 
 from haystack.views import SearchView
-
+from itertools import chain
 from popit.models import Person
-
+from django.db.models import Q
 from .models import WriteItInstance, Confirmation, Message, Moderation
 from .forms import MessageCreateForm, MessageSearchForm, PerInstanceSearchForm
 
@@ -25,6 +25,30 @@ class HomeTemplateView(TemplateView):
 
 class WriteItInstanceListView(ListView):
     model = WriteItInstance
+
+    def get_queryset(self, *args, **kwargs):
+        '''
+        This filters the instances that are
+        in testing_mode = True only if you are logged in
+        and you own the instance
+        '''
+        original_queryset = super(WriteItInstanceListView, self).get_queryset(*args, **kwargs)
+        for ins in original_queryset:
+            if ins.config is None:
+                ins.config
+        user = self.request.user
+        queryset = original_queryset.filter(Q(config__testing_mode=False))
+        if user.id:
+            instances_owned_by_user = original_queryset.filter(
+                Q(config__testing_mode=True)).filter(Q(owner=user))
+        else:
+            instances_owned_by_user = queryset.none()
+        queryset = list(chain(instances_owned_by_user, queryset))
+
+        '''
+        The tests for this code can be found at nuntium/tests/home_view_tests.py
+        '''
+        return queryset
 
 
 class WriteItInstanceDetailView(CreateView):
@@ -45,7 +69,7 @@ class WriteItInstanceDetailView(CreateView):
     def form_valid(self, form):
         response = super(WriteItInstanceDetailView, self).form_valid(form)
         moderations = Moderation.objects.filter(message=self.object)
-        if moderations.count() > 0 or self.object.writeitinstance.moderation_needed_in_all_messages:
+        if moderations.count() > 0 or self.object.writeitinstance.config.moderation_needed_in_all_messages:
             messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation"))
         else:
             messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link"))

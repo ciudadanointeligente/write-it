@@ -12,7 +12,7 @@ from mailit.forms import MailitTemplateForm
 
 from ..models import WriteItInstance, Message,\
     NewAnswerNotificationTemplate, ConfirmationTemplate, \
-    WriteitInstancePopitInstanceRecord, Answer
+    WriteitInstancePopitInstanceRecord, Answer, WriteItInstanceConfig
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
     WriteItInstanceCreateForm, AnswerForm, \
@@ -102,12 +102,17 @@ class WriteItInstanceUpdateView(UpdateView):
 
 class WriteItInstanceAdvancedUpdateView(UpdateView):
     form_class = WriteItInstanceAdvancedUpdateForm
-    template_name_suffix = '_advanced_update_form'
+    template_name = 'nuntium/writeitinstance_advanced_update_form.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        self.queryset = WriteItInstance.objects.filter(owner=self.request.user)
+        self.queryset = WriteItInstanceConfig.objects.filter(writeitinstance__owner=self.request.user)
         return super(WriteItInstanceAdvancedUpdateView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(WriteItInstanceAdvancedUpdateView, self).get_context_data(**kwargs)
+        context['writeitinstance'] = self.object.writeitinstance
+        return context
 
     def get_success_url(self):
         return reverse(

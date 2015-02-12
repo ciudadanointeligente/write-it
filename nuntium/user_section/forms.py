@@ -2,9 +2,9 @@
 from django.forms import ModelForm, TextInput, Textarea, \
     CheckboxInput, NumberInput
 
-from ..models import WriteItInstance, \
+from nuntium.models import WriteItInstance, \
     NewAnswerNotificationTemplate, \
-    ConfirmationTemplate, Answer
+    ConfirmationTemplate, Answer, WriteItInstanceConfig
 
 from django.forms import ValidationError, ModelChoiceField, Form, URLField
 
@@ -25,13 +25,14 @@ class WriteItInstanceBasicForm(ModelForm):
 
 class WriteItInstanceAdvancedUpdateForm(ModelForm):
     class Meta:
-        model = WriteItInstance
+        model = WriteItInstanceConfig
         fields = [
             'moderation_needed_in_all_messages',
             'allow_messages_using_form',
             'rate_limiter',
             'notify_owner_when_new_answer',
             'autoconfirm_api_messages',
+            'testing_mode',
             ]
         widgets = {
             'moderation_needed_in_all_messages': CheckboxInput(attrs={'class': 'form-control'}),
@@ -39,6 +40,7 @@ class WriteItInstanceAdvancedUpdateForm(ModelForm):
             'rate_limiter': NumberInput(attrs={'class': 'form-control'}),
             'notify_owner_when_new_answer': CheckboxInput(attrs={'class': 'form-control'}),
             'autoconfirm_api_messages': CheckboxInput(attrs={'class': 'form-control'}),
+            'testing_mode': CheckboxInput(attrs={'class': 'form-control'}),
         }
 
 
