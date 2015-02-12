@@ -3,7 +3,7 @@
 
 <ul class="nav nav-tabs">
   <li class="{% if section == 'writeitinstance_basic_update' %}active{% endif %}"><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Basic Update" %}</a></li>
-  <li class="{% if section == 'writeitinstance_advanced_update' %}active{% endif %}"><a href="{% url 'writeitinstance_advanced_update' pk=writeitinstance.pk %}">{% trans "Advanced Update" %}</a></li>
+  <li class="{% if section == 'writeitinstance_advanced_update' %}active{% endif %}"><a href="{% url 'writeitinstance_advanced_update' pk=writeitinstance.config.pk %}">{% trans "Advanced Update" %}</a></li>
   <li class="{% if section == 'contacts-per-writeitinstance' %}active{% endif %}"><a href="{% url 'contacts-per-writeitinstance' pk=writeitinstance.pk %}">{% trans "Contacts in this Instance" %}</a></li>
   <li class="{% if section == 'writeitinstance_template_update' %}active{% endif %}"><a href="{% url 'writeitinstance_template_update' pk=writeitinstance.pk %}">{% trans "Templates" %}</a></li>
   <li class="{% if section == 'messages_per_writeitinstance' %}active{% endif %}"><a href="{% url 'messages_per_writeitinstance' pk=writeitinstance.pk %}">{% trans "Messages" %}</a></li>
@@ -19,3 +19,11 @@
         </div>
     {% endif %}
 {% endfor %}
+{% if writeitinstance.config.testing_mode %}
+  <div class="alert alert-info" role="alert">
+      
+      {% blocktrans %}
+      <i class="fa fa-info-circle"></i> This instance is in testing mode which means that all mails will go to you.
+      {% endblocktrans %}
+  </div>
+{% endif %}

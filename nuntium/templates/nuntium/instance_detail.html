@@ -23,6 +23,16 @@ $(".chosen-person-select").chosen();
   </ul>
 {% endif %}
 
+
+{% if writeitinstance.config.testing_mode %}
+  <div class="alert alert-info" role="alert">
+      
+      {% blocktrans %}
+      <i class="fa fa-info-circle"></i> This instance is in testing mode which means that all mails will go to the owner and not to the person that you are writing to.
+      {% endblocktrans %}
+  </div>
+{% endif %}
+
 {% if writeitinstance.config.allow_messages_using_form %}
 <div class="panel panel-default writing-panel">
     <div class="panel-heading">
