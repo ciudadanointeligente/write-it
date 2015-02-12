@@ -26,6 +26,12 @@ class HomeTemplateView(TemplateView):
 class WriteItInstanceListView(ListView):
     model = WriteItInstance
 
+    def get_queryset(self, *args, **kwargs):
+        queryset = super(WriteItInstanceListView, self).get_queryset(*args, **kwargs)
+        # user = self.request.user
+        queryset = queryset.filter(config__testing_mode=False)
+        return queryset
+
 
 class WriteItInstanceDetailView(CreateView):
     form_class = MessageCreateForm

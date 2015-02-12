@@ -2,7 +2,7 @@ from global_test_case import GlobalTestCase as TestCase
 from django.core.urlresolvers import reverse
 from django.utils.translation import activate
 from ..models import WriteItInstance
-
+from django.contrib.auth.models import User
 from django.test.client import Client
 
 
@@ -39,14 +39,30 @@ class HomeViewTestCase(TestCase):
         self.assertEquals(response.context['writeitinstances'][0], instance1)
 
     def test_list_instances_view(self):
+        '''All instances are displayed in home'''
+        for instance in WriteItInstance.objects.all():
+            instance.config.testing_mode = False
+            instance.config.save()
         url = reverse('instance_list')
         self.assertTrue(url)
         c = Client()
         response = c.get(url)
-        self.assertTrue(response.status_code, 200)
+        self.assertEquals(response.status_code, 200)
         self.assertIn('object_list', response.context)
         self.assertIsInstance(response.context['object_list'][0], WriteItInstance)
         self.assertEquals(len(response.context['object_list']), WriteItInstance.objects.count())
 
         self.assertTemplateUsed(response, 'nuntium/template_list.html')
         self.assertTemplateUsed(response, 'base.html')
+
+    def test_testing_mode_instances_not_displayed(self):
+        '''Test Mode instances are not displayed if a user is not logged in'''
+        fiera = User.objects.create_user(username='fiera',
+            password="feroz",
+            email="fiera@ciudadanointeligente.org")
+        w = WriteItInstance.objects.create(name='test_mode_instance', owner=fiera)
+
+        c = Client()
+        response = c.get(reverse('instance_list'))
+        self.assertEquals(response.status_code, 200)
+        self.assertNotIn(w, response.context['object_list'])
