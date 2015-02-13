@@ -30,24 +30,25 @@ class PopitPerson(Person):
 
     @classmethod
     def create_contact(cls, obj, doc, writeitinstance):
-        if 'email' in doc:
-            contact_type = MailChannel().get_contact_type()
-            contact, created = Contact.objects.get_or_create(
-                contact_type=contact_type,
-                writeitinstance=writeitinstance,
-                person=obj)
-            contact.value = doc['email']
-            contact.save()
+        contact_type = MailChannel().get_contact_type()
+        created_emails = []
         if 'contact_details' in doc:
             for contact_detail in doc['contact_details']:
                 if contact_detail['type'] == 'email':
-                    contact_type = MailChannel().get_contact_type()
                     contact, created = Contact.objects.get_or_create(popit_identifier=contact_detail['id'],
                         contact_type=contact_type,
                         writeitinstance=writeitinstance,
                         person=obj)
                     contact.value = contact_detail['value']
                     contact.save()
+                    created_emails.append(contact.value)
+        if 'email' in doc and doc['email'] not in created_emails:
+            contact, created = Contact.objects.get_or_create(
+                contact_type=contact_type,
+                writeitinstance=writeitinstance,
+                person=obj)
+            contact.value = doc['email']
+            contact.save()
 
 
 class PopitApiInstance(ApiInstance):
