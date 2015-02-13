@@ -99,7 +99,7 @@ class EmailCreationWhenPullingFromPopit(TestCase):
         contacts = Contact.objects.filter(person=fiera)
         self.assertEquals(contacts.count(), 1)
 
-    def atest_bug_506(self):
+    def test_bug_506(self):
         '''If the same email is in preferred email and
         in the list of contact_details it creates a single one'''
         popit_load_data(fixture_name='person_with_preferred_email_and_contact_detail')
