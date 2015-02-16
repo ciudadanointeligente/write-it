@@ -54,6 +54,10 @@ class ContactCreateView(CreateView):
 
 
 class ToggleContactEnabledView(View):
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ToggleContactEnabledView, self).dispatch(*args, **kwargs)
+
     def post(self, *args, **kwargs):
         contact_pk = self.kwargs['pk']
         contact = Contact.objects.get(id=contact_pk)

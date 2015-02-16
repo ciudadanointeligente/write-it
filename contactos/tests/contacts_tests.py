@@ -391,6 +391,13 @@ class TogleEnableDisableContact(UserSectionTestCase):
         self.assertEquals(json_answer['contact']['id'], self.contact.pk)
         self.assertFalse(json_answer['contact']['enabled'])
 
+    def test_only_owner_of_instance_can_change_status(self):
+        '''Only the owner of the instances contact can toggle enabled'''
+        url = reverse('toggle-enabled', kwargs={'pk': self.contact.pk})
+        response = self.client.post(url)
+
+        self.assertRedirectToLogin(response)
+
 
 class ContactUpdateFormAndViewTestCase(UserSectionTestCase):
     def setUp(self):
