@@ -387,8 +387,9 @@ class TogleEnableDisableContact(UserSectionTestCase):
         response = self.client.post(url)
 
         json_answer = json.loads(response.content)
-        self.assertIn(str(self.contact.pk), json_answer.keys())
-        self.assertFalse(json_answer[str(self.contact.pk)])
+        self.assertIn('contact', json_answer.keys())
+        self.assertEquals(json_answer['contact']['id'], self.contact.pk)
+        self.assertFalse(json_answer['contact']['enabled'])
 
 
 class ContactUpdateFormAndViewTestCase(UserSectionTestCase):
