@@ -81,6 +81,7 @@ class ContactTestCase(TestCase):
         self.assertEquals(contact1.value, 'contact point')
         self.assertEquals(contact1.person, self.person)
         self.assertEquals(contact1.popit_identifier, '12345')
+        self.assertTrue(contact1.enabled)
 
     def test_contact_with_writeitinstance(self):
         '''A contact is related to a writeit instance'''

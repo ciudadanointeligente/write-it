@@ -27,6 +27,7 @@ class Contact(models.Model):
     owner = models.ForeignKey(User, related_name="contacts", null=True)
     writeitinstance = models.ForeignKey('nuntium.WriteItInstance', related_name="contacts", null=True)
     popit_identifier = models.CharField(max_length=512, null=True)
+    enabled = models.BooleanField(default=True)
 
     def __unicode__(self):
         return _('%(contact)s (%(type)s) for %(person)s') % {
