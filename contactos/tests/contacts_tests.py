@@ -380,6 +380,16 @@ class TogleEnableDisableContact(UserSectionTestCase):
         contact = Contact.objects.get(id=self.contact.id)
         self.assertFalse(contact.enabled)
 
+    def test_post_result_content(self):
+        '''When posting we the response contains the contact id and the status'''
+        url = reverse('toggle-enabled', kwargs={'pk': self.contact.pk})
+        self.client.login(username=self.user.username, password='fiera')
+        response = self.client.post(url)
+
+        json_answer = json.loads(response.content)
+        self.assertIn(str(self.contact.pk), json_answer.keys())
+        self.assertFalse(json_answer[str(self.contact.pk)])
+
 
 class ContactUpdateFormAndViewTestCase(UserSectionTestCase):
     def setUp(self):

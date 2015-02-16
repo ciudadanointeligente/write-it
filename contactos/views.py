@@ -59,4 +59,7 @@ class ToggleContactEnabledView(View):
         contact = Contact.objects.get(id=contact_pk)
         contact.enabled = not contact.enabled
         contact.save()
-        return HttpResponse({}, content_type='application/json')
+        data = json.dumps({
+            contact.id: contact.enabled
+            })
+        return HttpResponse(data, content_type='application/json')
