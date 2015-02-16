@@ -349,6 +349,38 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
         self.assertEquals(len(form.fields), 1)
 
 
+class TogleEnableDisableContact(UserSectionTestCase):
+    def setUp(self):
+        super(TogleEnableDisableContact, self).setUp()
+        self.user = User.objects.get(id=1)
+        self.writeitinstance = self.user.writeitinstances.get(id=2)
+        self.user.set_password('fiera')
+        self.user.save()
+
+        self.contact = Contact.objects.get(id=1)
+        self.contact.writeitinstance = self.writeitinstance
+        self.contact.save()
+
+    def test_get_the_url(self):
+        '''Getting a url for toggle enabled a contact'''
+        url = reverse('toggle-enabled', kwargs={'pk': self.contact.pk})
+
+        self.assertTrue(url)
+
+    def test_post_to_the_url(self):
+        '''
+        By posting to toggle-enabled you
+        can toggle enabled or disabled a contact
+        '''
+
+        url = reverse('toggle-enabled', kwargs={'pk': self.contact.pk})
+        self.client.login(username=self.user.username, password='fiera')
+        response = self.client.post(url)
+        self.assertEquals(response.status_code, 200)
+        contact = Contact.objects.get(id=self.contact.id)
+        self.assertFalse(contact.enabled)
+
+
 class ContactUpdateFormAndViewTestCase(UserSectionTestCase):
     def setUp(self):
         super(ContactUpdateFormAndViewTestCase, self).setUp()
@@ -363,7 +395,7 @@ class ContactUpdateFormAndViewTestCase(UserSectionTestCase):
         self.user.set_password('fiera')
         # making it explicit
 
-        self.contact = Contact.objects.all()[0]
+        self.contact = Contact.objects.get(id=1)
         self.contact.writeitinstance = self.writeitinstance
         self.contact.save()
 
