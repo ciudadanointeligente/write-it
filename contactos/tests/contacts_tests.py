@@ -398,6 +398,14 @@ class TogleEnableDisableContact(UserSectionTestCase):
 
         self.assertRedirectToLogin(response)
 
+    def test_if_not_user_it_returns_404(self):
+        '''If a user that is not owner tries to post returns 404'''
+        url = reverse('toggle-enabled', kwargs={'pk': self.contact.pk})
+        User.objects.create_user(username="not_owner", password="123456")
+        self.client.login(username="not_owner", password="123456")
+        response = self.client.post(url)
+        self.assertEquals(response.status_code, 404)
+
 
 class ContactUpdateFormAndViewTestCase(UserSectionTestCase):
     def setUp(self):

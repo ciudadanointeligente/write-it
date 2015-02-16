@@ -8,7 +8,6 @@ from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from nuntium.models import WriteItInstance
 from popit.models import Person
-from django.views.generic.base import View
 
 
 class ContactoUpdateView(UpdateView):
@@ -53,20 +52,23 @@ class ContactCreateView(CreateView):
         return kwargs
 
 
-class ToggleContactEnabledView(View):
+class ToggleContactEnabledView(UpdateView):
+    http_method_names = ['post', ]
+    fields = ['enabled', ]
+
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
+        self.queryset = Contact.objects.filter(writeitinstance__owner=self.request.user)
         return super(ToggleContactEnabledView, self).dispatch(*args, **kwargs)
 
-    def post(self, *args, **kwargs):
-        contact_pk = self.kwargs['pk']
-        contact = Contact.objects.get(id=contact_pk)
-        contact.enabled = not contact.enabled
-        contact.save()
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.is_bounced = not self.object.enabled
+        self.object.save()
         data = json.dumps({
             'contact': {
-                'id': contact.id,
-                'enabled': contact.enabled
+                'id': self.object.id,
+                'enabled': self.object.enabled
             }
             })
         return HttpResponse(data, content_type='application/json')
