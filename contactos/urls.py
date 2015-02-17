@@ -8,7 +8,7 @@ urlpatterns = patterns('',
     url(r'^(?P<pk>[-\d]+)/(?P<person_pk>[-\d]+)/contacto/create/?$',
         ContactCreateView.as_view(),
         name='create-new-contact'),
-    url(r'^contacto/toggle-enabled/(?P<pk>[-\d]+)/?$',
+    url(r'^contacto/toggle-enabled/?$',
         ToggleContactEnabledView.as_view(),
         name='toggle-enabled'),
 

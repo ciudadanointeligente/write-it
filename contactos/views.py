@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from nuntium.models import WriteItInstance
 from popit.models import Person
+from django.http import Http404
 
 
 class ContactoUpdateView(UpdateView):
@@ -54,16 +55,25 @@ class ContactCreateView(CreateView):
 
 class ToggleContactEnabledView(UpdateView):
     http_method_names = ['post', ]
-    fields = ['enabled', ]
+    model = Contact
+    fields = ['enabled']
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         self.queryset = Contact.objects.filter(writeitinstance__owner=self.request.user)
         return super(ToggleContactEnabledView, self).dispatch(*args, **kwargs)
 
+    def get_object(self, queryset=None):
+        id_ = self.request.POST['id']
+        try:
+            contact = self.queryset.get(id=id_)
+        except Contact.DoesNotExist:
+            raise Http404
+        return contact
+
     def form_valid(self, form):
         self.object = form.save()
-        self.object.is_bounced = not self.object.enabled
+        self.object.enabled = not self.object.enabled
         self.object.save()
         data = json.dumps({
             'contact': {

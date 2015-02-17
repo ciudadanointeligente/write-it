@@ -5,12 +5,27 @@
 {% load staticfiles %}
 
 {% block extrajs %}
+$(function() { 
+  $('.toggle-enable').change(function() { 
+    
+    var csrftoken = $.cookie('csrftoken');
+    $.post("{% url 'toggle-enabled' %}",{
+      "csrfmiddlewaretoken":csrftoken,
+      'id': $(this).attr('contact-id')
+    }, function(data){
+      console.log(data)
+    })
+  }) 
+})
 {% endblock extrajs %}
 
+{% block extracss %}
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
+{% endblock extracss %}
 
-
-
-
+{% block extrascripts %}
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
+{% endblock extrascripts %}
 
 {% block header %}
 <ul class="breadcrumb">
