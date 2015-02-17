@@ -67,13 +67,13 @@ class ToggleContactEnabledView(UpdateView):
         id_ = self.request.POST['id']
         try:
             contact = self.queryset.get(id=id_)
+            self.original_enabled = contact.enabled
         except Contact.DoesNotExist:
             raise Http404
         return contact
 
     def form_valid(self, form):
-        self.object = form.save()
-        self.object.enabled = not self.object.enabled
+        self.object.enabled = not self.original_enabled
         self.object.save()
         data = json.dumps({
             'contact': {
