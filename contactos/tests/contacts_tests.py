@@ -1,6 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
 from nuntium.user_section.tests.user_section_views_tests import UserSectionTestCase
-from ..models import ContactType, Contact
+from contactos.models import ContactType, Contact
 from popit.models import Person
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
@@ -81,6 +81,7 @@ class ContactTestCase(TestCase):
         self.assertEquals(contact1.value, 'contact point')
         self.assertEquals(contact1.person, self.person)
         self.assertEquals(contact1.popit_identifier, '12345')
+        self.assertTrue(contact1.enabled)
 
     def test_contact_with_writeitinstance(self):
         '''A contact is related to a writeit instance'''
@@ -362,7 +363,7 @@ class ContactUpdateFormAndViewTestCase(UserSectionTestCase):
         self.user.set_password('fiera')
         # making it explicit
 
-        self.contact = Contact.objects.all()[0]
+        self.contact = Contact.objects.get(id=1)
         self.contact.writeitinstance = self.writeitinstance
         self.contact.save()
 
