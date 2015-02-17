@@ -5,7 +5,7 @@ from .models import Message, WriteItInstance, OutboundMessage, MessageRecord, \
 from popit.models import ApiInstance, Person
 from mailit.models import MailItTemplate
 from django_object_actions import DjangoObjectActions
-from .forms import WriteItInstanceCreateFormPopitUrl
+from nuntium.forms import WriteItInstanceCreateFormPopitUrl
 
 
 class PersonInline(admin.TabularInline):
