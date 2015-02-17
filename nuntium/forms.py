@@ -106,8 +106,11 @@ class WriteItInstanceCreateFormPopitUrl(ModelForm):
 
     def get_popit_url_parsed(self, popit_url):
         import re
+        popit_url = popit_url.strip("/")
         if re.compile(r'^https?://(.*)\.popit.mysociety.org/?$').match(popit_url):
-            popit_url += 'api/v0.1'
+            return popit_url + '/api/v0.1'
+        if re.compile(r'^https?://(.*)\.popit.mysociety.org/api/?$').match(popit_url):
+            return popit_url + '/v0.1'
         return popit_url
 
     def relate_with_people(self):

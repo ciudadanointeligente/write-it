@@ -82,6 +82,33 @@ class InstanceCreateFormTestCase(TestCase):
             method_load.assert_called_with('https://kenyan-politicians.popit.mysociety.org/api/v0.1')
 
 
+class PopitUrlParserTestCase(TestCase):
+    def setUp(self):
+        super(PopitUrlParserTestCase, self).setUp()
+        self.user = User.objects.first()
+        data = {
+            'owner': self.user.id,
+            'popit_url': settings.TEST_POPIT_API_URL,
+            'name': "instance",
+            "rate_limiter": 0,
+            }
+        self.form = WriteItInstanceCreateFormPopitUrl(data)
+
+    def test_it_parses_a_simple_url(self):
+        '''It parses a proper popit url'''
+        popit_url = self.form.get_popit_url_parsed('https://the-instance.popit.mysociety.org/api/v0.1')
+        self.assertEquals(popit_url, 'https://the-instance.popit.mysociety.org/api/v0.1')
+        popit_url = self.form.get_popit_url_parsed('https://the-instance.popit.mysociety.org/api/v0.1/')
+        self.assertEquals(popit_url, 'https://the-instance.popit.mysociety.org/api/v0.1')
+
+    def test_it_parses_a_url_without_version(self):
+        '''It parses a popit url without version'''
+        popit_url = self.form.get_popit_url_parsed('https://the-instance.popit.mysociety.org/api/')
+        self.assertEquals(popit_url, 'https://the-instance.popit.mysociety.org/api/v0.1')
+        popit_url = self.form.get_popit_url_parsed('https://the-instance.popit.mysociety.org/api')
+        self.assertEquals(popit_url, 'https://the-instance.popit.mysociety.org/api/v0.1')
+
+
 class BasicInstanceCreateFormTestCase(TestCase):
     def setUp(self):
         super(BasicInstanceCreateFormTestCase, self).setUp()
