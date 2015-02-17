@@ -92,6 +92,17 @@ class PerInstanceSearchForm(SearchForm):
         super(PerInstanceSearchForm, self).__init__(*args, **kwargs)
         self.searchqueryset = self.searchqueryset.filter(writeitinstance=self.writeitinstance.id)
 
+popit_urls_completer = [
+    {
+        'regexp': r'^https?://(.*)\.popit.mysociety.org$',
+        'complete_with': '/api/v0.1'
+    },
+    {
+        'regexp': r'^https?://(.*)\.popit.mysociety.org/api$',
+        'complete_with': '/v0.1'
+    }
+]
+
 
 class WriteItInstanceCreateFormPopitUrl(ModelForm):
     popit_url = URLField(
@@ -104,10 +115,19 @@ class WriteItInstanceCreateFormPopitUrl(ModelForm):
         model = WriteItInstance
         fields = ('owner', 'name', 'popit_url')
 
+    def get_popit_url_parsed(self, popit_url):
+        import re
+        popit_url = popit_url.strip("/")
+        for completer in popit_urls_completer:
+            if re.compile(completer['regexp']).match(popit_url):
+                return popit_url + completer['complete_with']
+        return popit_url
+
     def relate_with_people(self):
         if self.cleaned_data['popit_url']:
+            popit_url = self.get_popit_url_parsed(self.cleaned_data['popit_url'])
             self.instance.load_persons_from_a_popit_api(
-                self.cleaned_data['popit_url']
+                popit_url
                 )
 
     def save(self, commit=True):
