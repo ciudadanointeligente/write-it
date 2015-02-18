@@ -70,7 +70,20 @@
           </div>
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-              <li{% block menu-home-active %}{% endblock menu-home-active %}><a href="{% url 'home' %}"><span class="glyphicon glyphicon-home"></span> {% trans "Home" %}</a></li>
+
+              <li{% block menu-home-active %}{% endblock menu-home-active %}>
+              {% block home-link %}
+                {% if writeitinstance %}
+                  <a href="{% url 'instance_detail' slug=writeitinstance.slug %}">
+                    <span class="glyphicon glyphicon-home"></span> {% trans "Home" %}
+                  </a>
+                {% else %}
+                  <a href="{% url 'home' %}">
+                    <span class="glyphicon glyphicon-home"></span> {% trans "Home" %}
+                  </a>
+                {% endif %}
+              {% endblock home-link %}
+              </li>
               <li{% block menu-list-active %}{% endblock menu-list-active %}><a href="{% url 'instance_list' %}"><span class="glyphicon glyphicon-send"></span> {% trans 'Instances' %}</a></li>
             </ul>
 
@@ -82,6 +95,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ user }} <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <li><a href="{% url 'account' %}"><span class="glyphicon glyphicon-cog"></span> {% trans "Your Profile" %}</a></li>
+                  <li><a href="{% url 'your-instances' %}"><span class="glyphicon glyphicon-tasks"></span> {% trans "Your Instances" %}</a></li>
                   <li><a href="{% url 'django.contrib.auth.views.logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                 </ul>
               </li>
