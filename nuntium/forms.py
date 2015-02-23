@@ -115,13 +115,19 @@ class WriteItInstanceCreateFormPopitUrl(ModelForm):
         model = WriteItInstance
         fields = ('owner', 'name', 'popit_url')
 
+    def other_possible_popit_url_parsings(self, popit_url):
+        if popit_url.startswith('https://'):
+            popit_url = popit_url.replace('https://', 'http://', 1)
+        return popit_url
+
     def get_popit_url_parsed(self, popit_url):
         import re
         popit_url = popit_url.strip("/")
         for completer in popit_urls_completer:
             if re.compile(completer['regexp']).match(popit_url):
-                return popit_url + completer['complete_with']
-        return popit_url
+                popit_url = popit_url + completer['complete_with']
+
+        return self.other_possible_popit_url_parsings(popit_url)
 
     def relate_with_people(self):
         if self.cleaned_data['popit_url']:
