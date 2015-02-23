@@ -79,7 +79,7 @@ class InstanceCreateFormTestCase(TestCase):
             }
             form = WriteItInstanceCreateFormPopitUrl(data)
             form.save()
-            method_load.assert_called_with('https://kenyan-politicians.popit.mysociety.org/api/v0.1')
+            method_load.assert_called_with('http://kenyan-politicians.popit.mysociety.org/api/v0.1')
 
 
 class PopitUrlParserTestCase(TestCase):
