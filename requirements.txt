@@ -9,8 +9,8 @@ flufl.bounce
 django-markdown-deux
 requests
 django-extensions
-django-haystack==2.1.0
-elasticsearch==1.2.0
+django-haystack
+elasticsearch
 celery
 pyyaml
 django-celery
@@ -30,7 +30,7 @@ dj-static==0.0.5
 psycopg2==2.5.1
 static==0.4
 wsgiref==0.1.2
-kombu==2.5.12
+kombu
 billiard==3.3.0.19
 pyOpenSSL
 ndg-httpsclient
