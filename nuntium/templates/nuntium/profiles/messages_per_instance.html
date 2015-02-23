@@ -28,7 +28,7 @@
 <div class="tab-content profile-page-tab-content">
   <div class="tab-pane active row">
     {% autopaginate writeit_messages %}
-    
+
     <div class="col-md-12">
       {% paginate %}
       <table class="table table-striped">
@@ -61,18 +61,25 @@
               {% else %}
               <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated and you can moderate it by clicking here' %}"><i class="fa fa-times-circle-o"></i> <a class="moderate" href="{% url 'moderate_message' pk=message.pk %}">{% trans "Moderate"%}</a></div></td>
               {% endif %}
-            	
+
             {% endif %}
             <td><a href="{% url 'message_detail' pk=message.pk %}"><i class="fa fa-cogs"></i></a></td>
-            
+
             <td>
               {% if message.public %}
               <a target="_blank" href="{% url 'message_detail' slug=message.slug instance_slug=writeitinstance.slug %}"><i class="fa fa-link"></i></a>
               {% endif %}
             </td>
-            <td>{% blocktrans with answer_count=message.answers.count %}{{ answer_count }} answers{% endblocktrans %} <a data-toggle="modal" data-target="#modal" href="{% url 'create_answer' pk=message.pk %}" alt="{% trans "Add"%}"><i class="fa fa-plus"></i></a></td>
+            <td>
+              {% blocktrans count answer_count=message.answers.count %}
+                {{ answer_count }} answer
+              {% plural %}
+                {{ answer_count }} answers
+              {% endblocktrans %}
+              <a data-toggle="modal" data-target="#modal" href="{% url 'create_answer' pk=message.pk %}" alt="{% trans "Add"%}"><i class="fa fa-plus"></i></a>
+            </td>
             <td><a data-toggle="modal" data-target="#modal" class="deleteMessage" href="{% url 'message_delete' pk=message.pk %}"><i class="fa fa-times"></i></a></td>
-            
+
           </tr>
           {% empty %}
           <tr><td colspan="3" class="text-center">{% trans "You have no messages" %}</td></tr>
@@ -100,7 +107,7 @@ $(function(){
       location.reload();
     })
 
-  })  
+  })
 })
 
 </script>
