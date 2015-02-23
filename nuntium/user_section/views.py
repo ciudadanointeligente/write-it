@@ -20,6 +20,7 @@ from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, 
 from nuntium.popit_api_instance import PopitApiInstance
 from django.contrib import messages as view_messages
 from django.utils.translation import ugettext as _
+import json
 
 
 class UserAccountView(TemplateView):
@@ -49,6 +50,18 @@ class WriteItInstanceContactDetailView(DetailView):
         context = super(WriteItInstanceContactDetailView, self).get_context_data(**kwargs)
         context['people'] = self.object.persons.all()
         return context
+
+
+class WriteItInstanceStatusView(DetailView):
+    model = WriteItInstance
+
+    def render_to_response(self, context, **response_kwargs):
+        status = self.object.pulling_from_popit_status
+        return HttpResponse(
+            json.dumps(status),
+            content_type='application/json',
+            **response_kwargs
+        )
 
 
 class WriteItInstanceTemplateUpdateView(DetailView):
