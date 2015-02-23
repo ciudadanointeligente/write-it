@@ -302,6 +302,10 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     )
 
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_ENABLE_UTC = True
+CELERY_CREATE_MISSING_QUEUES = True
+
 if TESTING:
     from testing_settings import *  # noqa
 
@@ -370,6 +374,3 @@ if 'SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL' in os.environ \
     #     },
     # }
 
-CELERY_TIMEZONE = 'UTC+3'
-CELERY_ENABLE_UTC = True
-CELERY_CREATE_MISSING_QUEUES = True
