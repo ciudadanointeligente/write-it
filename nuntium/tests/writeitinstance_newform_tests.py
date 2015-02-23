@@ -79,7 +79,7 @@ class InstanceCreateFormTestCase(TestCase):
             }
             form = WriteItInstanceCreateFormPopitUrl(data)
             form.save()
-            method_load.assert_called_with('https://kenyan-politicians.popit.mysociety.org/api/v0.1')
+            method_load.assert_called_with('http://kenyan-politicians.popit.mysociety.org/api/v0.1')
 
 
 class PopitUrlParserTestCase(TestCase):
@@ -96,17 +96,28 @@ class PopitUrlParserTestCase(TestCase):
 
     def test_it_parses_a_simple_url(self):
         '''It parses a proper popit url'''
-        popit_url = self.form.get_popit_url_parsed('https://the-instance.popit.mysociety.org/api/v0.1')
-        self.assertEquals(popit_url, 'https://the-instance.popit.mysociety.org/api/v0.1')
-        popit_url = self.form.get_popit_url_parsed('https://the-instance.popit.mysociety.org/api/v0.1/')
-        self.assertEquals(popit_url, 'https://the-instance.popit.mysociety.org/api/v0.1')
+        popit_url = self.form.get_popit_url_parsed('http://the-instance.popit.mysociety.org/api/v0.1')
+        self.assertEquals(popit_url, 'http://the-instance.popit.mysociety.org/api/v0.1')
+        popit_url = self.form.get_popit_url_parsed('http://the-instance.popit.mysociety.org/api/v0.1/')
+        self.assertEquals(popit_url, 'http://the-instance.popit.mysociety.org/api/v0.1')
 
     def test_it_parses_a_url_without_version(self):
         '''It parses a popit url without version'''
+        popit_url = self.form.get_popit_url_parsed('http://the-instance.popit.mysociety.org/api/')
+        self.assertEquals(popit_url, 'http://the-instance.popit.mysociety.org/api/v0.1')
+        popit_url = self.form.get_popit_url_parsed('http://the-instance.popit.mysociety.org/api')
+        self.assertEquals(popit_url, 'http://the-instance.popit.mysociety.org/api/v0.1')
+
+    def test_using_http_instead_of_http(self):
+        '''It uses http if an https is given this should be removed ASAP
+        or when we find out why it is failing'''
         popit_url = self.form.get_popit_url_parsed('https://the-instance.popit.mysociety.org/api/')
-        self.assertEquals(popit_url, 'https://the-instance.popit.mysociety.org/api/v0.1')
+        self.assertEquals(popit_url, 'http://the-instance.popit.mysociety.org/api/v0.1')
         popit_url = self.form.get_popit_url_parsed('https://the-instance.popit.mysociety.org/api')
-        self.assertEquals(popit_url, 'https://the-instance.popit.mysociety.org/api/v0.1')
+        self.assertEquals(popit_url, 'http://the-instance.popit.mysociety.org/api/v0.1')
+
+        popit_url = self.form.get_popit_url_parsed('https://the-instance.popit.mysociety.org/api/v0.1')
+        self.assertEquals(popit_url, 'http://the-instance.popit.mysociety.org/api/v0.1')
 
 
 class BasicInstanceCreateFormTestCase(TestCase):
