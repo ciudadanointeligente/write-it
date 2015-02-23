@@ -31,6 +31,21 @@ class UserAccountView(TemplateView):
         return super(UserAccountView, self).dispatch(*args, **kwargs)
 
 
+class WriteItInstanceDetailMixin(DetailView):
+    model = WriteItInstance
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(DetailView, self).dispatch(*args, **kwargs)
+
+    def get_object(self, queryset=None):
+        self.object = super(DetailView, self).get_object(queryset=queryset)
+        #OK I don't know if it is better to test by id
+        if not self.object.owner.__eq__(self.request.user):
+            raise Http404
+        return self.object
+
+
 class WriteItInstanceContactDetailView(DetailView):
     model = WriteItInstance
     template_name = 'nuntium/profiles/contacts/contacts-per-writeitinstance.html'
@@ -52,9 +67,7 @@ class WriteItInstanceContactDetailView(DetailView):
         return context
 
 
-class WriteItInstanceStatusView(DetailView):
-    model = WriteItInstance
-
+class WriteItInstanceStatusView(WriteItInstanceDetailMixin):
     def render_to_response(self, context, **response_kwargs):
         status = self.object.pulling_from_popit_status
         return HttpResponse(

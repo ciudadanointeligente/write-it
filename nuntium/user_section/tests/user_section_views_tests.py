@@ -277,6 +277,28 @@ class WriteItInstancePullingDetailViewTestCase(UserSectionTestCase):
         current_status = json.loads(response.content)
         self.assertEquals(current_status, {'nothing': 1, 'inprogress': 0, 'success': 0, 'error': 0})
 
+    def test_it_can_only_be_accessed_by_the_owner(self):
+        '''It can only be accessed by the owner'''
+        url = reverse('pulling_status', kwargs={'pk': self.writeitinstance.pk})
+        c = Client()
+        fiera = User.objects.create_user(
+            username="fierita",
+            email="fiera@votainteligente.cl",
+            password="feroz",
+            )
+        c.login(username=fiera.username, password='feroz')
+
+        response = c.get(url)
+
+        self.assertEquals(response.status_code, 404)
+
+    def test_cannot_be_accessed_by_a_non_user(self):
+        '''It cannot be accessed by a non user'''
+        url = reverse('pulling_status', kwargs={'pk': self.writeitinstance.pk})
+        c = Client()
+        response = c.get(url)
+        self.assertRedirectToLogin(response)
+
 
 class WriteitInstanceUpdateTestCase(UserSectionTestCase):
     def setUp(self):
