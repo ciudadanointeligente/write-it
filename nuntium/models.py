@@ -735,9 +735,11 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = settings.DEFAULT_FROM_EMAIL
         else:
+            from_domain = confirmation.message.writeitinstance.config.custom_from_domain\
+                or settings.DEFAULT_FROM_DOMAIN
             from_email = "%s@%s" % (
                 confirmation.message.writeitinstance.slug,
-                settings.DEFAULT_FROM_DOMAIN,
+                from_domain,
                 )
 
         msg = EmailMultiAlternatives(

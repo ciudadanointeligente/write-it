@@ -95,6 +95,16 @@ class ConfirmationTestCase(TestCase):
         expected_from_email = self.message.writeitinstance.slug + "@" + settings.DEFAULT_FROM_DOMAIN
         self.assertEquals(mail.outbox[0].from_email, expected_from_email)
 
+    def test_sends_confirmation_from_a_custom_domain_if_specified(self):
+        '''Sending confirmation from a custom domain if specified'''
+        config = self.message.writeitinstance.config
+        config.custom_from_domain = "custom.domain.cl"
+        config.save()
+        Confirmation.objects.create(message=self.message)
+        self.assertEquals(len(mail.outbox), 1)
+        expected_from_email = self.message.writeitinstance.slug + "@" + config.custom_from_domain
+        self.assertEquals(mail.outbox[0].from_email, expected_from_email)
+
     @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
     def test_send_confirmation_from_a_single_email_address(self):
         '''
