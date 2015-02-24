@@ -152,13 +152,13 @@ class WriteItInstanceConfig(models.Model):
         help_text=_("Messages pushed to the api should \
             be confirmed automatically"), default=True)
 
-    custom_from_domain = models.CharField(max_length=512, null=True, blank=True, default=None)
-    email_host = models.CharField(max_length=512, null=True, blank=True, default=None)
-    email_host_password = models.CharField(max_length=512, null=True, blank=True, default=None)
-    email_host_user = models.CharField(max_length=512, null=True, blank=True, default=None)
-    email_port = models.IntegerField(null=True, blank=True, default=None)
-    email_use_tls = models.NullBooleanField(default=None)
-    email_use_ssl = models.NullBooleanField(default=None)
+    custom_from_domain = models.CharField(max_length=512, null=True, blank=True)
+    email_host = models.CharField(max_length=512, null=True, blank=True)
+    email_host_password = models.CharField(max_length=512, null=True, blank=True)
+    email_host_user = models.CharField(max_length=512, null=True, blank=True)
+    email_port = models.IntegerField(null=True, blank=True)
+    email_use_tls = models.NullBooleanField()
+    email_use_ssl = models.NullBooleanField()
 
     def get_mail_connection(self):
         connection = mail.get_connection()
