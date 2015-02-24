@@ -66,7 +66,13 @@
         <tbody>
           {% for writeitinstance in object_list %}
           <tr>
-            <td>{{ writeitinstance }} {% if writeitinstance.pulling_from_popit_status.inprogress > 0 %}<i class="fa fa-spinner fa-pulse" data-toggle="tooltip" data-placement="left" title="{% trans 'We are currently getting information from popit' %}"></i>{% endif %}</td>
+            <td>{{ writeitinstance }} {% if writeitinstance.pulling_from_popit_status.inprogress > 0 %}<i class="fa fa-spinner fa-pulse spinner_{{ writeitinstance.pk }}" data-toggle="tooltip" data-placement="left" title="{% trans 'We are currently getting information from popit' %}"></i>
+              <script type="text/javascript">
+              $(function(){
+                go_and_check_status_of_instance("{% url 'pulling_status' pk=writeitinstance.pk %}", "spinner_{{ writeitinstance.pk }}")
+              })
+              </script>
+              {% endif %}</td>
             <td>{% url 'api_dispatch_detail' api_name='v1' resource_name='instance' pk=writeitinstance.id %}</td>
             <td><a href="{% url 'messages_per_writeitinstance' pk=writeitinstance.pk %}"><i class="fa fa-envelope-o"></i></a></td>
             <td><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}"><i class="fa fa-pencil"></i></a></td>
@@ -84,9 +90,21 @@
   <div class="tab-pane" id="nothing"><a href="http://github.com/ciudadanointeligente/write-it" data-toggle="tab">{% trans "please don't go any further" %}</a></div>
 </div>
 <script type="text/javascript">
+  var go_and_check_status_of_instance = function(url, class_){
+    $.get(url, function(status){
+
+      if (status.inprogress >= 1){
+        setTimeout( go_and_check_status_of_instance, 2000, url, class_)
+      }
+      else {
+        $('.'+class_).remove()
+      }
+    })
+  }
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
   })
+
 </script>
 {% endblock content%}
 

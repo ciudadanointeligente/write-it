@@ -11,7 +11,7 @@ from contactos.models import Contact
 from mailit.forms import MailitTemplateForm
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 
-from nuntium.models import WriteItInstance, WriteItInstanceConfig
+from nuntium.models import WriteItInstance, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord
 from nuntium.user_section.views import WriteItInstanceUpdateView
 from nuntium.user_section.forms import WriteItInstanceBasicForm, \
     WriteItInstanceAdvancedUpdateForm, WriteItInstanceCreateForm, \
@@ -248,6 +248,56 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         response = c.post(url, data=self.data, follow=True)
 
         self.assertEquals(response.status_code, 404)
+
+from nuntium.popit_api_instance import PopitApiInstance
+import json
+
+
+class WriteItInstancePullingDetailViewTestCase(UserSectionTestCase):
+    def setUp(self):
+        super(WriteItInstancePullingDetailViewTestCase, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.get(id=1)
+        self.owner = self.writeitinstance.owner
+        self.popit_api_instance = PopitApiInstance.objects.get(id=1)
+        self.record = WriteitInstancePopitInstanceRecord.objects.get_or_create(
+            writeitinstance=self.writeitinstance,
+            popitapiinstance=self.popit_api_instance)
+
+    def test_theres_a_url_to_check_whats_happening(self):
+        '''There is a url to let the user know what's happening with her/his instance'''
+        url = reverse('pulling_status', kwargs={'pk': self.writeitinstance.pk})
+        self.assertTrue(url)
+
+    def test_get_content(self):
+        '''The content should be a JSON containing the current status of the procedure'''
+        url = reverse('pulling_status', kwargs={'pk': self.writeitinstance.pk})
+        c = Client()
+        c.login(username=self.owner.username, password='admin')
+        response = c.get(url)
+        current_status = json.loads(response.content)
+        self.assertEquals(current_status, {'nothing': 1, 'inprogress': 0, 'success': 0, 'error': 0})
+
+    def test_it_can_only_be_accessed_by_the_owner(self):
+        '''It can only be accessed by the owner'''
+        url = reverse('pulling_status', kwargs={'pk': self.writeitinstance.pk})
+        c = Client()
+        fiera = User.objects.create_user(
+            username="fierita",
+            email="fiera@votainteligente.cl",
+            password="feroz",
+            )
+        c.login(username=fiera.username, password='feroz')
+
+        response = c.get(url)
+
+        self.assertEquals(response.status_code, 404)
+
+    def test_cannot_be_accessed_by_a_non_user(self):
+        '''It cannot be accessed by a non user'''
+        url = reverse('pulling_status', kwargs={'pk': self.writeitinstance.pk})
+        c = Client()
+        response = c.get(url)
+        self.assertRedirectToLogin(response)
 
 
 class WriteitInstanceUpdateTestCase(UserSectionTestCase):

@@ -20,6 +20,7 @@ from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, 
 from nuntium.popit_api_instance import PopitApiInstance
 from django.contrib import messages as view_messages
 from django.utils.translation import ugettext as _
+import json
 
 
 class UserAccountView(TemplateView):
@@ -30,25 +31,38 @@ class UserAccountView(TemplateView):
         return super(UserAccountView, self).dispatch(*args, **kwargs)
 
 
-class WriteItInstanceContactDetailView(DetailView):
+class WriteItInstanceDetailMixin(DetailView):
     model = WriteItInstance
-    template_name = 'nuntium/profiles/contacts/contacts-per-writeitinstance.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        return super(WriteItInstanceContactDetailView, self).dispatch(*args, **kwargs)
+        return super(DetailView, self).dispatch(*args, **kwargs)
 
     def get_object(self, queryset=None):
-        self.object = super(WriteItInstanceContactDetailView, self).get_object(queryset=queryset)
+        self.object = super(DetailView, self).get_object(queryset=queryset)
         #OK I don't know if it is better to test by id
         if not self.object.owner.__eq__(self.request.user):
             raise Http404
         return self.object
 
+
+class WriteItInstanceContactDetailView(WriteItInstanceDetailMixin):
+    template_name = 'nuntium/profiles/contacts/contacts-per-writeitinstance.html'
+
     def get_context_data(self, **kwargs):
         context = super(WriteItInstanceContactDetailView, self).get_context_data(**kwargs)
         context['people'] = self.object.persons.all()
         return context
+
+
+class WriteItInstanceStatusView(WriteItInstanceDetailMixin):
+    def render_to_response(self, context, **response_kwargs):
+        status = self.object.pulling_from_popit_status
+        return HttpResponse(
+            json.dumps(status),
+            content_type='application/json',
+            **response_kwargs
+        )
 
 
 class WriteItInstanceTemplateUpdateView(DetailView):
