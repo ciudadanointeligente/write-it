@@ -34,6 +34,13 @@ class WriteItInstanceConfigTestCase(TestCase):
         self.assertEquals(config.rate_limiter, 0)
         self.assertFalse(config.notify_owner_when_new_answer)
         self.assertTrue(config.autoconfirm_api_messages)
+        self.assertIsNone(config.custom_from_domain)
+        self.assertIsNone(config.email_host)
+        self.assertIsNone(config.email_host_password)
+        self.assertIsNone(config.email_host_user)
+        self.assertIsNone(config.email_port)
+        self.assertIsNone(config.email_use_tls)
+        self.assertIsNone(config.email_use_ssl)
 
     def test_a_writeitinstance_has_a_config_model(self):
         '''A WriteItInstance has a config'''

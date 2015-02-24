@@ -151,6 +151,14 @@ class WriteItInstanceConfig(models.Model):
         help_text=_("Messages pushed to the api should \
             be confirmed automatically"), default=True)
 
+    custom_from_domain = models.CharField(max_length=512, null=True, blank=True, default=None)
+    email_host = models.CharField(max_length=512, null=True, blank=True, default=None)
+    email_host_password = models.CharField(max_length=512, null=True, blank=True, default=None)
+    email_host_user = models.CharField(max_length=512, null=True, blank=True, default=None)
+    email_port = models.CharField(max_length=512, null=True, blank=True, default=None)
+    email_use_tls = models.CharField(max_length=512, null=True, blank=True, default=None)
+    email_use_ssl = models.CharField(max_length=512, null=True, blank=True, default=None)
+
 
 class Membership(models.Model):
     person = models.ForeignKey(Person)
