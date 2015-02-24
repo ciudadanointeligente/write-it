@@ -752,15 +752,7 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
                 confirmation.message.writeitinstance.slug,
                 from_domain,
                 )
-        from django.core import mail
-        connection = mail.get_connection()
-        if confirmation.message.writeitinstance.config.custom_from_domain:
-            config = confirmation.message.writeitinstance.config
-            connection.host = config.email_host
-            connection.password = config.email_host_password
-            connection.username = config.email_host_user
-            connection.port = config.email_port
-            connection.use_tls = config.email_use_tls
+        connection = confirmation.message.writeitinstance.config.get_mail_connection()
 
         msg = EmailMultiAlternatives(
             subject,
