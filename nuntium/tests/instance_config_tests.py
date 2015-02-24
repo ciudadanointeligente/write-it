@@ -47,6 +47,28 @@ class WriteItInstanceConfigTestCase(TestCase):
         self.assertTrue(self.writeitinstance.config)
         self.assertIsInstance(self.writeitinstance.config, WriteItInstanceConfig)
 
+    def test_get_mail_connection(self):
+        '''If it is configured the mail connection is different per instance'''
+        config = self.writeitinstance.config
+        connection = config.get_mail_connection()
+        self.assertFalse(hasattr(connection, 'host'))
+        self.assertFalse(hasattr(connection, 'password'))
+        self.assertFalse(hasattr(connection, 'username'))
+        self.assertFalse(hasattr(connection, 'port'))
+        self.assertFalse(hasattr(connection, 'use_tls'))
+
+    def test_get_custom_mail_connection(self):
+        '''Get a custom mail sending connection if custom_from_domain is defined'''
+        config = self.writeitinstance.config
+        config.custom_from_domain = 'custom.fci.cl'
+        config.save()
+        connection = config.get_mail_connection()
+        self.assertTrue(hasattr(connection, 'host'))
+        self.assertTrue(hasattr(connection, 'password'))
+        self.assertTrue(hasattr(connection, 'username'))
+        self.assertTrue(hasattr(connection, 'port'))
+        self.assertTrue(hasattr(connection, 'use_tls'))
+
 
 class TestingModeTestCase(TestCase):
     def setUp(self):

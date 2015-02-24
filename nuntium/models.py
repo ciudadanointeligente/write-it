@@ -30,6 +30,7 @@ import os
 from popit_api_instance import PopitApiInstance
 from requests.exceptions import ConnectionError
 from annoying.fields import AutoOneToOneField
+from django.core import mail
 
 
 def read_template_as_string(path, file_source_path=__file__):
@@ -155,9 +156,19 @@ class WriteItInstanceConfig(models.Model):
     email_host = models.CharField(max_length=512, null=True, blank=True, default=None)
     email_host_password = models.CharField(max_length=512, null=True, blank=True, default=None)
     email_host_user = models.CharField(max_length=512, null=True, blank=True, default=None)
-    email_port = models.CharField(max_length=512, null=True, blank=True, default=None)
-    email_use_tls = models.CharField(max_length=512, null=True, blank=True, default=None)
-    email_use_ssl = models.CharField(max_length=512, null=True, blank=True, default=None)
+    email_port = models.IntegerField(null=True, blank=True, default=None)
+    email_use_tls = models.NullBooleanField(default=None)
+    email_use_ssl = models.NullBooleanField(default=None)
+
+    def get_mail_connection(self):
+        connection = mail.get_connection()
+        if self.custom_from_domain:
+            connection.host = self.email_host
+            connection.password = self.email_host_password
+            connection.username = self.email_host_user
+            connection.port = self.email_port
+            connection.use_tls = self.email_use_tls
+        return connection
 
 
 class Membership(models.Model):
@@ -741,12 +752,22 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
                 confirmation.message.writeitinstance.slug,
                 from_domain,
                 )
+        from django.core import mail
+        connection = mail.get_connection()
+        if confirmation.message.writeitinstance.config.custom_from_domain:
+            config = confirmation.message.writeitinstance.config
+            connection.host = config.email_host
+            connection.password = config.email_host_password
+            connection.username = config.email_host_user
+            connection.port = config.email_port
+            connection.use_tls = config.email_use_tls
 
         msg = EmailMultiAlternatives(
             subject,
             text_content,  # content
             from_email,  # From
             [confirmation.message.author_email],  # To
+            connection=connection,
             )
         msg.attach_alternative(html_content, "text/html")
         try:
