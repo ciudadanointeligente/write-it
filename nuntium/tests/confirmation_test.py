@@ -116,6 +116,16 @@ class ConfirmationTestCase(TestCase):
         self.assertEquals(connection.username, config.email_host_user)
         self.assertEquals(connection.port, config.email_port)
         self.assertEquals(connection.use_tls, config.email_use_tls)
+        '''
+        I'm moving all the site to use cuttlefish but in the meantime
+        in order to test I'm using this specific config per instance
+
+        EMAIL_HOST = 'cuttlefish.oaf.org.au'
+        EMAIL_PORT = 2525
+        EMAIL_HOST_USER = 'writeit'
+        EMAIL_HOST_PASSWORD = 'FieraFerozEsElMejorPerroDelMundo'
+        EMAIL_USE_TLS = True
+        '''
 
     @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
     def test_send_confirmation_from_a_single_email_address(self):
