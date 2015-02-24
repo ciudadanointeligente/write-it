@@ -373,4 +373,3 @@ if 'SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL' in os.environ \
     #         'INDEX_NAME': 'haystack',
     #     },
     # }
-
