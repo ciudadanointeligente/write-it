@@ -546,15 +546,14 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
     @skipUnless(settings.LOCAL_POPIT, "No local popit running")
     def test_post_to_create_an_instance(self):
         popit_load_data()
-        your_instances_url = reverse('your-instances')
         c = Client()
         c.login(username=self.user.username, password='admin')
         url = reverse('create_writeit_instance')
         self.assertTrue(url)
 
         response = c.post(url, data=self.data)
-        self.assertRedirects(response, your_instances_url)
         instance = WriteItInstance.objects.get(Q(name='instance'), Q(owner=self.user))
+        self.assertRedirects(response, reverse('writeitinstance_basic_update', kwargs={'pk': instance.pk}))
         self.assertTrue(instance.persons.all())
 
     def test_create_an_instance_get_not_logged(self):

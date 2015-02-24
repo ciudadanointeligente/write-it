@@ -146,6 +146,7 @@ class UserSectionListView(ListView):
 
 
 class WriteItInstanceCreateView(CreateView):
+    model = WriteItInstance
     form_class = WriteItInstanceCreateForm
     template_name = 'nuntium/profiles/your-instances.html'
 
@@ -154,7 +155,10 @@ class WriteItInstanceCreateView(CreateView):
         return super(WriteItInstanceCreateView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        return reverse('your-instances')
+        return reverse(
+            'writeitinstance_basic_update',
+            kwargs={'pk': self.object.pk},
+            )
 
     def get_form_kwargs(self):
         kwargs = super(WriteItInstanceCreateView, self).get_form_kwargs()
