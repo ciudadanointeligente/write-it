@@ -46,20 +46,8 @@ class WriteItInstanceDetailMixin(DetailView):
         return self.object
 
 
-class WriteItInstanceContactDetailView(DetailView):
-    model = WriteItInstance
+class WriteItInstanceContactDetailView(WriteItInstanceDetailMixin):
     template_name = 'nuntium/profiles/contacts/contacts-per-writeitinstance.html'
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(WriteItInstanceContactDetailView, self).dispatch(*args, **kwargs)
-
-    def get_object(self, queryset=None):
-        self.object = super(WriteItInstanceContactDetailView, self).get_object(queryset=queryset)
-        #OK I don't know if it is better to test by id
-        if not self.object.owner.__eq__(self.request.user):
-            raise Http404
-        return self.object
 
     def get_context_data(self, **kwargs):
         context = super(WriteItInstanceContactDetailView, self).get_context_data(**kwargs)
