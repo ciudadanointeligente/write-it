@@ -65,6 +65,16 @@ class WriteItInstanceStatusView(WriteItInstanceDetailBaseView):
         )
 
 
+class WriteItInstanceApiDocsView(WriteItInstanceDetailBaseView):
+    template_name = 'nuntium/writeitinstance_api_docs.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(WriteItInstanceApiDocsView, self).get_context_data(*args, **kwargs)
+
+        context['api_base_url'] = self.request.build_absolute_uri('/api/v1/')
+        return context
+
+
 class WriteItInstanceTemplateUpdateView(DetailView):
     model = WriteItInstance
     template_name = 'nuntium/profiles/templates.html'

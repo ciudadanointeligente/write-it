@@ -12,7 +12,7 @@ from mailit.forms import MailitTemplateForm
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 
 from nuntium.models import WriteItInstance, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord
-from nuntium.user_section.views import WriteItInstanceUpdateView
+from nuntium.user_section.views import WriteItInstanceUpdateView, WriteItInstanceApiDocsView
 from nuntium.user_section.forms import WriteItInstanceBasicForm, \
     WriteItInstanceAdvancedUpdateForm, WriteItInstanceCreateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
@@ -429,6 +429,21 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
 
         response = fiera_client.get(url)
         self.assertEquals(response.status_code, 404)
+
+
+class WriteItInstanceApiDocsTestCase(UserSectionTestCase):
+    def setUp(self):
+        super(WriteItInstanceApiDocsTestCase, self).setUp()
+        self.factory = RequestFactory()
+        self.writeitinstance = WriteItInstance.objects.get(id=1)
+
+    def test_per_instance_api_docs(self):
+        url = reverse('writeitinstance_api_docs', kwargs={'pk': self.writeitinstance.pk})
+        request = self.factory.get(url)
+        request.user = self.writeitinstance.owner
+
+        response = WriteItInstanceApiDocsView.as_view()(request, pk=self.writeitinstance.pk)
+        self.assertContains(response, 'http://testserver/api/v1/message/?format=json&username=admin&api_key=')
 
 
 class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
