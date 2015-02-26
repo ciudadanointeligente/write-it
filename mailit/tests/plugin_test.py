@@ -314,6 +314,35 @@ class MailSendingTestCase(TestCase):
         self.assertEquals(connection.port, config.email_port)
         self.assertEquals(connection.use_tls, config.email_use_tls)
 
+    def test_custom_domain_not_given(self):
+        '''If a custom domain and smtp config is not provided the mails
+        are sent from default domain'''
+        contact3 = Contact.objects.create(
+            person=self.person3,
+            contact_type=self.channel.get_contact_type(),
+            value='person1@votainteligente.cl',
+            writeitinstance=self.writeitinstance2,
+            )
+        message = Message.objects.create(
+            content="The content",
+            subject="the subject",
+            writeitinstance=self.writeitinstance2,
+            persons=[self.person3],
+            author_name="Felipe",
+            author_email="falvarez@votainteligente.cl",
+            )
+        outbound_message = OutboundMessage.objects.get(
+            message=message,
+            contact=contact3,
+            )
+        outbound_message.send()
+        connection = mail.outbox[0].connection
+        self.assertFalse(hasattr(connection, 'host'))
+        self.assertFalse(hasattr(connection, 'password'))
+        self.assertFalse(hasattr(connection, 'username'))
+        self.assertFalse(hasattr(connection, 'port'))
+        self.assertFalse(hasattr(connection, 'use_tls'))
+
 
 class SmtpErrorHandling(TestCase):
     def setUp(self):
