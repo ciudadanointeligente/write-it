@@ -264,6 +264,45 @@ class MailSendingTestCase(TestCase):
         self.assertTrue(message.author_email not in mail.outbox[0].body)
         self.assertIn(self.writeitinstance2.get_absolute_url(), mail.outbox[0].body)
 
+    def test_it_sends_an_email_from_a_custom_domain(self):
+        '''
+        If defined a custom domain and smtp it sends this message
+        using this config
+        '''
+        config = self.writeitinstance2.config
+        config.custom_from_domain = "custom.domain.cl"
+        config.save()
+        contact3 = Contact.objects.create(
+            person=self.person3,
+            contact_type=self.channel.get_contact_type(),
+            value='person1@votainteligente.cl',
+            writeitinstance=self.writeitinstance2,
+            )
+        message = Message.objects.create(
+            content="The content",
+            subject="the subject",
+            writeitinstance=self.writeitinstance2,
+            persons=[self.person3],
+            author_name="Felipe",
+            author_email="falvarez@votainteligente.cl",
+            )
+        outbound_message = OutboundMessage.objects.get(
+            message=message,
+            contact=contact3,
+            )
+        outbound_message.send()
+
+        sent_mail = mail.outbox[0]
+        expected_from_email = message.author_name + " <" + settings.DEFAULT_FROM_EMAIL + ">"
+        expected_from_email = (
+            message.author_name +
+            " <" +
+            message.writeitinstance.slug +
+            "+" + outbound_message.outboundmessageidentifier.key +
+            '@' + config.custom_from_domain + ">"
+            )
+        self.assertEquals(sent_mail.from_email, expected_from_email)
+
 
 class SmtpErrorHandling(TestCase):
     def setUp(self):
