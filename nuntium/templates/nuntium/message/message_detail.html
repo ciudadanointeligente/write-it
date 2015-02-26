@@ -12,7 +12,7 @@
         {% trans 'This message was sent to' %}
         <br />
             {% for person in message.people %}
-            <span class="label label-default">{{ person.name }}</span>
+              <a class="label label-default" title="{% blocktrans with person_name=person.name %}See all messages sent to {{ person_name }}{% endblocktrans %}" href='{% url 'messages_per_person' slug=message.writeitinstance.slug pk=person.id %}'>{{ person.name }}</a>
             {% endfor %}
     </div>
   </div>
@@ -22,7 +22,7 @@
             {% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}
         </small>
     </span>
-    
+
   </div>
 </div>
 
