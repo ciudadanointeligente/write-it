@@ -399,11 +399,13 @@ class Message(models.Model):
                 or settings.DEFAULT_FROM_DOMAIN
             from_email = self.writeitinstance.slug + "@" + from_domain
 
+        connection = self.writeitinstance.config.get_mail_connection()
         msg = EmailMultiAlternatives(_('Moderation required for\
          a message in WriteIt'),
             text_content,  # content
             from_email,  # From
-            [self.writeitinstance.owner.email]  # To
+            [self.writeitinstance.owner.email],  # To
+            connection=connection,
             )
         msg.attach_alternative(html_content, "text/html")
         msg.send()

@@ -92,6 +92,12 @@ class ModerationMessagesTestCase(TestCase):
         expected_from_email = self.private_message.writeitinstance.slug + "@" + config.custom_from_domain
 
         self.assertEquals(moderation_mail.from_email, expected_from_email)
+        connection = moderation_mail.connection
+        self.assertEquals(connection.host, config.email_host)
+        self.assertEquals(connection.password, config.email_host_password)
+        self.assertEquals(connection.username, config.email_host_user)
+        self.assertEquals(connection.port, config.email_port)
+        self.assertEquals(connection.use_tls, config.email_use_tls)
 
     @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
     def test_moderation_sent_from_default_from_email(self):
