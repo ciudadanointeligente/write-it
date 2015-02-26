@@ -67,7 +67,14 @@ class MailChannel(OutputPlugin):
                 to_email = outbound_message.message.writeitinstance.owner.email
             else:
                 to_email = outbound_message.contact.value
-            msg = EmailMultiAlternatives(subject, content, from_email, [to_email])
+            connection = outbound_message.message.writeitinstance.config.get_mail_connection()
+            msg = EmailMultiAlternatives(
+                subject,
+                content,
+                from_email,
+                [to_email],
+                connection=connection,
+                )
             msg.attach_alternative(html_content, "text/html")
             msg.send(fail_silently=False)
             log = "Mail sent from %(from)s to %(to)s"
