@@ -288,11 +288,6 @@ class MessageDetail(WriteItRelatedModelMixin, DetailView, LoginRequiredMixin, Wr
     model = Message
     template_name = "nuntium/profiles/message_detail.html"
 
-    def get_context_data(self, **kwargs):
-        context = super(MessageDetail, self).get_context_data(**kwargs)
-        context['writeitinstance'] = self.object.writeitinstance
-        return context
-
 
 class MessageDelete(WriteItRelatedModelMixin, DeleteView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
     model = Message

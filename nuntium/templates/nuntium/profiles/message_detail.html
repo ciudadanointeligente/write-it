@@ -15,8 +15,8 @@
     <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
     <li><a href="{% url 'account' %}">{% trans "Your profile" %}</a></li>
     <li><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
-    <li><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{{ writeitinstance }}</a></li>
-    <li><a href="{% url 'messages_per_writeitinstance' pk=writeitinstance.pk %}">{% trans "Messages" %}</a></li>
+    <li><a href="{% url 'writeitinstance_basic_update' pk=message.writeitinstance.pk %}">{{ message.writeitinstance }}</a></li>
+    <li><a href="{% url 'messages_per_writeitinstance' pk=message.writeitinstance.pk %}">{% trans "Messages" %}</a></li>
     <li class="active">{{ message }}</li>
 </ul>
 {% endblock header %}
@@ -34,7 +34,7 @@
 	  <dd>{{ message.author_name }}</dd>
 	  <dt>{% trans "Confirmed" %}</dt>
 	  <dd><i class="fa {% if message.confirmated %}fa-check{% else %}fa-times{% endif %}"></i></dd>
-	  {% if writeitinstance.config.moderation_needed_in_all_messages %}
+	  {% if message.writeitinstance.config.moderation_needed_in_all_messages %}
 	  	<dt>{% trans "Moderated" %}</dt>
         <dd><i class="fa {% if message.moderated %}fa-check{% else %}fa-times{% endif %}"></i></dd>
       {% endif %}
@@ -47,7 +47,7 @@
 	  <dt>{% trans "Creation Date" %}</dt>
 	  <dd>{{ message.created|date }}</dd>
 	</dl>
-	
+
 	<div class="col-md-4">
 		<button class="btn btn-primary"  data-toggle="modal" data-target="#editAnswer" class="editAnswer" href="{% url 'create_answer' pk=message.pk %}"><i class="fa fa-plus"></i> {% trans "Create an answer" %}</button>
 	</div>
