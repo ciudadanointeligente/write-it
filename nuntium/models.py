@@ -468,8 +468,10 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = settings.DEFAULT_FROM_EMAIL
         else:
+            from_domain = answer.message.writeitinstance.config.custom_from_domain\
+                or settings.DEFAULT_FROM_DOMAIN
             from_email = "%s@%s" % (
-                answer.message.writeitinstance.slug, settings.DEFAULT_FROM_DOMAIN)
+                answer.message.writeitinstance.slug, from_domain)
         subject_template = new_answer_template.subject_template
         for subscriber in answer.message.subscribers.all():
             d = Context({
@@ -485,7 +487,11 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
                 'message': answer.message.subject,
                 }
             msg = EmailMultiAlternatives(
-                subject, txt_content, from_email, [subscriber.email])
+                subject,
+                txt_content,
+                from_email,
+                [subscriber.email],
+                )
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 

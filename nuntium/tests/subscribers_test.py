@@ -230,3 +230,15 @@ class NewAnswerNotificationToSubscribers(TestCase):
             mail.outbox[0].from_email,
             self.instance.slug + "@" + settings.DEFAULT_FROM_DOMAIN,
             )
+
+    def test_send_subscriber_mail_from_custom_domain(self):
+        '''The mail to the subscriber if new answer exists from a custom domain'''
+        config = self.instance.config
+        config.custom_from_domain = "custom.domain.cl"
+        config.save()
+
+        self.create_a_new_answer()
+        self.assertEquals(
+            mail.outbox[0].from_email,
+            self.instance.slug + "@" + config.custom_from_domain,
+            )
