@@ -99,6 +99,21 @@ class ModerationMessagesTestCase(TestCase):
         self.assertEquals(connection.port, config.email_port)
         self.assertEquals(connection.use_tls, config.email_use_tls)
 
+    def test_not_using_any_custom_config(self):
+        '''If not using any custom config the moderation
+        mail does not use that connection'''
+        moderation, created = Moderation.objects.get_or_create(message=self.private_message)
+        self.private_message.send_moderation_mail()
+
+        self.assertEquals(len(mail.outbox), 2)
+        moderation_mail = mail.outbox[1]
+        connection = moderation_mail.connection
+        self.assertFalse(hasattr(connection, 'host'))
+        self.assertFalse(hasattr(connection, 'password'))
+        self.assertFalse(hasattr(connection, 'username'))
+        self.assertFalse(hasattr(connection, 'port'))
+        self.assertFalse(hasattr(connection, 'use_tls'))
+
     @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
     def test_moderation_sent_from_default_from_email(self):
         '''Moderation is sent from default from email if specified'''
