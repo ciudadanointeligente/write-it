@@ -219,23 +219,28 @@ class WriteItInstanceOwnerMixin(SingleObjectMixin):
             raise Http404
 
     def get_object(self):
-        self.check_ownership()
         self.object = super(WriteItInstanceOwnerMixin, self).get_object()
+        self.check_ownership()
         return self.object
 
 
 class WriteItRelatedModelMixin(SingleObjectMixin):
-    def get_writeitinstance(self):
-        obj = get_object_or_404(self.model, writeitinstance__pk=self.kwargs['pk'])
-        return obj.writeitinstance
+    """This mixin is to handle the case where we have a SingleObjectMixin
+    based view, but we get from the URL the primary key of a WriteItInstance
+    which has a one-to-one relationship with the object rather than the
+    primary key of the object itself. For example, there is a
+    single NewAnswerNotificationTemplate for each WriteItInstance.
 
-
-class UpdateTemplateWithWriteitMixin(WriteItRelatedModelMixin, UpdateView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
+    It's not appropriate for anything for which there can be more
+    than one per instance, for example Messages.
+    """
     def get_object(self):
+        self.object = get_object_or_404(self.model, writeitinstance__pk=self.kwargs['pk'])
         self.check_ownership()
-        self.object = self.model.objects.get(writeitinstance=self.writeitinstance)
         return self.object
 
+
+class UpdateTemplateWithWriteitMixin(LoginRequiredMixin, WriteItRelatedModelMixin, WriteItInstanceOwnerMixin, UpdateView):
     def get_form_kwargs(self):
         kwargs = super(UpdateTemplateWithWriteitMixin, self).get_form_kwargs()
         kwargs['writeitinstance'] = self.writeitinstance
@@ -274,7 +279,7 @@ class WriteItPopitUpdateView(View):
         return HttpResponse('result')
 
 
-class MessagesPerWriteItInstance(DetailView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
+class MessagesPerWriteItInstance(LoginRequiredMixin, WriteItInstanceOwnerMixin, DetailView):
     model = WriteItInstance
     template_name = 'nuntium/profiles/messages_per_instance.html'
 
@@ -284,12 +289,12 @@ class MessagesPerWriteItInstance(DetailView, LoginRequiredMixin, WriteItInstance
         return context
 
 
-class MessageDetail(WriteItRelatedModelMixin, DetailView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
+class MessageDetail(LoginRequiredMixin, WriteItInstanceOwnerMixin, DetailView):
     model = Message
     template_name = "nuntium/profiles/message_detail.html"
 
 
-class MessageDelete(WriteItRelatedModelMixin, DeleteView, LoginRequiredMixin, WriteItInstanceOwnerMixin):
+class MessageDelete(LoginRequiredMixin, WriteItInstanceOwnerMixin, DeleteView):
     model = Message
     template_name = "nuntium/profiles/message_delete_confirm.html"
 
