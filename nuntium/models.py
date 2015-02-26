@@ -462,6 +462,7 @@ class Answer(models.Model):
 def send_new_answer_payload(sender, instance, created, **kwargs):
     answer = instance
     if created:
+        connection = answer.message.writeitinstance.config.get_mail_connection()
         new_answer_template = answer.message.writeitinstance.new_answer_notification_template
         htmly = get_template_from_string(new_answer_template.template_html)
         texty = get_template_from_string(new_answer_template.template_text)
@@ -486,7 +487,6 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
                 'person': answer.person.name,
                 'message': answer.message.subject,
                 }
-            connection = answer.message.writeitinstance.config.get_mail_connection()
             msg = EmailMultiAlternatives(
                 subject,
                 txt_content,
@@ -515,6 +515,7 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
                 txt_content,
                 from_email,
                 [answer.message.writeitinstance.owner.email],
+                connection=connection,
                 )
             msg.attach_alternative(html_content, "text/html")
             msg.send()

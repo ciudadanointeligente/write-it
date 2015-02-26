@@ -231,6 +231,34 @@ class NewAnswerNotificationToSubscribers(TestCase):
             self.instance.slug + "@" + settings.DEFAULT_FROM_DOMAIN,
             )
 
+    def test_notify_the_owner_using_custom_domain(self):
+        '''Using custom domain to notify the owner of an instance if custom config is provided'''
+        config = self.instance.config
+        config.custom_from_domain = "custom.domain.cl"
+        config.email_host = 'cuttlefish.au.org'
+        config.email_host_password = 'f13r4'
+        config.email_host_user = 'fiera'
+        config.email_port = 25
+        config.email_use_tls = True
+        config.save()
+        self.instance.config.notify_owner_when_new_answer = True
+        self.instance.config.save()
+        self.create_a_new_answer()
+
+        sent_mail = mail.outbox[1]
+        self.assertEquals(
+            sent_mail.from_email,
+            self.instance.slug + "@" + config.custom_from_domain,
+            )
+        connection = sent_mail.connection
+        self.assertEquals(connection.host, config.email_host)
+        self.assertEquals(connection.password, config.email_host_password)
+        self.assertEquals(connection.username, config.email_host_user)
+        self.assertEquals(connection.port, config.email_port)
+        self.assertEquals(connection.use_tls, config.email_use_tls)
+
+        #I didn't have to change anything =/
+
     def test_send_subscriber_mail_from_custom_domain(self):
         '''The mail to the subscriber if new answer exists from a custom domain'''
         config = self.instance.config
