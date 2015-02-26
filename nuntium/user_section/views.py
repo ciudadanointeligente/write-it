@@ -370,13 +370,11 @@ class WriteitPopitRelatingView(WriteItInstanceOwnerMixin, FormView):
 
     def get_form_kwargs(self):
         kwargs = super(WriteitPopitRelatingView, self).get_form_kwargs()
-        kwargs['writeitinstance'] = self.get_writeitinstance()
+        kwargs['writeitinstance'] = self.object
         return kwargs
 
     def get_success_url(self):
-        writeitinstance = self.get_writeitinstance()
-        url = reverse('writeitinstance_basic_update', kwargs={'pk': writeitinstance.pk})
-        return url
+        return reverse('writeitinstance_basic_update', kwargs={'pk': self.object.pk})
 
     def form_valid(self, form):
         form.relate()
