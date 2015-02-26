@@ -31,7 +31,7 @@ class UserAccountView(TemplateView):
         return super(UserAccountView, self).dispatch(*args, **kwargs)
 
 
-class WriteItInstanceDetailMixin(DetailView):
+class WriteItInstanceDetailBaseView(DetailView):
     model = WriteItInstance
 
     @method_decorator(login_required)
@@ -46,7 +46,7 @@ class WriteItInstanceDetailMixin(DetailView):
         return self.object
 
 
-class WriteItInstanceContactDetailView(WriteItInstanceDetailMixin):
+class WriteItInstanceContactDetailView(WriteItInstanceDetailBaseView):
     template_name = 'nuntium/profiles/contacts/contacts-per-writeitinstance.html'
 
     def get_context_data(self, **kwargs):
@@ -55,7 +55,7 @@ class WriteItInstanceContactDetailView(WriteItInstanceDetailMixin):
         return context
 
 
-class WriteItInstanceStatusView(WriteItInstanceDetailMixin):
+class WriteItInstanceStatusView(WriteItInstanceDetailBaseView):
     def render_to_response(self, context, **response_kwargs):
         status = self.object.pulling_from_popit_status
         return HttpResponse(
@@ -63,6 +63,16 @@ class WriteItInstanceStatusView(WriteItInstanceDetailMixin):
             content_type='application/json',
             **response_kwargs
         )
+
+
+class WriteItInstanceApiDocsView(WriteItInstanceDetailBaseView):
+    template_name = 'nuntium/writeitinstance_api_docs.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(WriteItInstanceApiDocsView, self).get_context_data(*args, **kwargs)
+
+        context['api_base_url'] = self.request.build_absolute_uri('/api/v1/')
+        return context
 
 
 class WriteItInstanceTemplateUpdateView(DetailView):

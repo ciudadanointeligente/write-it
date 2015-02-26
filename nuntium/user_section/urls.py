@@ -8,7 +8,7 @@ from .views import UserAccountView, WriteItInstanceUpdateView, \
     YourPopitApiInstances, WriteItPopitUpdateView, MessagesPerWriteItInstance, \
     MessageDetail, MessageDelete, AnswerCreateView, ModerationView, AnswerUpdateView, \
     WriteitPopitRelatingView, WriteItDeleteView, WriteItInstanceContactDetailView, \
-    WriteItInstanceStatusView
+    WriteItInstanceStatusView, WriteItInstanceApiDocsView
 
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
@@ -28,6 +28,9 @@ urlpatterns = patterns('',
     url(r'^writeitinstance/(?P<pk>[-\d]+)/contacts/?$',
         WriteItInstanceContactDetailView.as_view(),
         name='contacts-per-writeitinstance'),
+    url(r'^writeitinstance/(?P<pk>[-\d]+)/api_docs/?$',
+        WriteItInstanceApiDocsView.as_view(),
+        name='writeitinstance_api_docs'),
     url(r'^message/(?P<pk>[-\d]+)/answers/?$',
         MessageDetail.as_view(),
         name='message_detail'),

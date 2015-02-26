@@ -1,0 +1,44 @@
+{% extends "base_edit.html" %}
+{% load i18n %}
+
+{% block header %}
+  <ul class="breadcrumb">
+    <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+    <li><a href="{% url 'account' %}">{% trans "Your profile" %}</a></li>
+    <li><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
+    <li class="active">{{ writeitinstance }}</li>
+  </ul>
+
+  {% include 'nuntium/profiles/per_instance_top_menu.html' with section='writeitinstance_api_docs' %}
+{% endblock header %}
+
+{% block content %}
+  <div class="tab-content profile-page-tab-content">
+    <div class="tab-pane active row" id="instances">
+      <div class="tab-content">
+        <div class="tab-pane active" id="basic-update">
+          <div class="page-header">
+            <h2>{% trans "Creating a message using the API" %}</h2>
+            <p>{% trans "To create a message using the API, send a POST request to" %}<br>
+            <code>{{ api_base_url }}message/?format=json&username={{ user.username }}&api_key={{ user.api_key.key }}</code><br>
+            {% trans "with payload data like" %}<br>
+            <code>
+              {<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;'content': '{% trans "Message content here" %}', <br>
+              &nbsp;&nbsp;&nbsp;&nbsp;'writeitinstance': '/api/v1/instance/{{ writeitinstance.id }}/', <br>
+              &nbsp;&nbsp;&nbsp;&nbsp;'persons': [<br>
+              {% for person in writeitinstance.persons.all %}
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'{{ person.popit_url }}'{% if not forloop.last %},{% endif %}</code> ## For {{ person }}<br><code>
+              {% endfor %}
+              &nbsp;&nbsp;&nbsp;&nbsp;], <br>
+              &nbsp;&nbsp;&nbsp;&nbsp;'author_name': '{% trans "Name of sender" %}', <br>
+              &nbsp;&nbsp;&nbsp;&nbsp;'subject': '{% trans "Message subject here" %}'<br>
+            }
+            </code>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
