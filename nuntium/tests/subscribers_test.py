@@ -235,10 +235,22 @@ class NewAnswerNotificationToSubscribers(TestCase):
         '''The mail to the subscriber if new answer exists from a custom domain'''
         config = self.instance.config
         config.custom_from_domain = "custom.domain.cl"
+        config.email_host = 'cuttlefish.au.org'
+        config.email_host_password = 'f13r4'
+        config.email_host_user = 'fiera'
+        config.email_port = 25
+        config.email_use_tls = True
         config.save()
 
         self.create_a_new_answer()
+        sent_mail = mail.outbox[0]
         self.assertEquals(
-            mail.outbox[0].from_email,
+            sent_mail.from_email,
             self.instance.slug + "@" + config.custom_from_domain,
             )
+        connection = sent_mail.connection
+        self.assertEquals(connection.host, config.email_host)
+        self.assertEquals(connection.password, config.email_host_password)
+        self.assertEquals(connection.username, config.email_host_user)
+        self.assertEquals(connection.port, config.email_port)
+        self.assertEquals(connection.use_tls, config.email_use_tls)

@@ -486,11 +486,13 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
                 'person': answer.person.name,
                 'message': answer.message.subject,
                 }
+            connection = answer.message.writeitinstance.config.get_mail_connection()
             msg = EmailMultiAlternatives(
                 subject,
                 txt_content,
                 from_email,
                 [subscriber.email],
+                connection=connection,
                 )
             msg.attach_alternative(html_content, "text/html")
             msg.send()
