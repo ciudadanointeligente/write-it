@@ -71,6 +71,49 @@ class ModerationMessagesTestCase(TestCase):
         expected_from_email = self.private_message.writeitinstance.slug + "@" + settings.DEFAULT_FROM_DOMAIN
         self.assertEquals(moderation_mail.from_email, expected_from_email)
 
+    def test_send_moderation_message_from_custom_connection(self):
+        '''If given a custom smtp config for its instance then
+        it sends the moderation mail with this custom config '''
+        config = self.private_message.writeitinstance.config
+        config.custom_from_domain = "custom.domain.cl"
+        config.email_host = 'cuttlefish.au.org'
+        config.email_host_password = 'f13r4'
+        config.email_host_user = 'fiera'
+        config.email_port = 25
+        config.email_use_tls = True
+        config.save()
+
+        moderation, created = Moderation.objects.get_or_create(message=self.private_message)
+        self.private_message.send_moderation_mail()
+        self.assertEquals(len(mail.outbox), 2)
+        moderation_mail = mail.outbox[1]
+
+        self.assertModerationMailSent(self.private_message, moderation_mail)
+        expected_from_email = self.private_message.writeitinstance.slug + "@" + config.custom_from_domain
+
+        self.assertEquals(moderation_mail.from_email, expected_from_email)
+        connection = moderation_mail.connection
+        self.assertEquals(connection.host, config.email_host)
+        self.assertEquals(connection.password, config.email_host_password)
+        self.assertEquals(connection.username, config.email_host_user)
+        self.assertEquals(connection.port, config.email_port)
+        self.assertEquals(connection.use_tls, config.email_use_tls)
+
+    def test_not_using_any_custom_config(self):
+        '''If not using any custom config the moderation
+        mail does not use that connection'''
+        moderation, created = Moderation.objects.get_or_create(message=self.private_message)
+        self.private_message.send_moderation_mail()
+
+        self.assertEquals(len(mail.outbox), 2)
+        moderation_mail = mail.outbox[1]
+        connection = moderation_mail.connection
+        self.assertFalse(hasattr(connection, 'host'))
+        self.assertFalse(hasattr(connection, 'password'))
+        self.assertFalse(hasattr(connection, 'username'))
+        self.assertFalse(hasattr(connection, 'port'))
+        self.assertFalse(hasattr(connection, 'use_tls'))
+
     @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
     def test_moderation_sent_from_default_from_email(self):
         '''Moderation is sent from default from email if specified'''

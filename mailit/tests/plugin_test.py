@@ -264,6 +264,85 @@ class MailSendingTestCase(TestCase):
         self.assertTrue(message.author_email not in mail.outbox[0].body)
         self.assertIn(self.writeitinstance2.get_absolute_url(), mail.outbox[0].body)
 
+    def test_it_sends_an_email_from_a_custom_domain(self):
+        '''
+        If defined a custom domain and smtp, it sends this message
+        using this config
+        '''
+        config = self.writeitinstance2.config
+        config.custom_from_domain = "custom.domain.cl"
+        config.email_host = 'cuttlefish.au.org'
+        config.email_host_password = 'f13r4'
+        config.email_host_user = 'fiera'
+        config.email_port = 25
+        config.email_use_tls = True
+        config.save()
+        contact3 = Contact.objects.create(
+            person=self.person3,
+            contact_type=self.channel.get_contact_type(),
+            value='person1@votainteligente.cl',
+            writeitinstance=self.writeitinstance2,
+            )
+        message = Message.objects.create(
+            content="The content",
+            subject="the subject",
+            writeitinstance=self.writeitinstance2,
+            persons=[self.person3],
+            author_name="Felipe",
+            author_email="falvarez@votainteligente.cl",
+            )
+        outbound_message = OutboundMessage.objects.get(
+            message=message,
+            contact=contact3,
+            )
+        outbound_message.send()
+
+        sent_mail = mail.outbox[0]
+        expected_from_email = message.author_name + " <" + settings.DEFAULT_FROM_EMAIL + ">"
+        expected_from_email = (
+            message.author_name +
+            " <" +
+            message.writeitinstance.slug +
+            "+" + outbound_message.outboundmessageidentifier.key +
+            '@' + config.custom_from_domain + ">"
+            )
+        self.assertEquals(sent_mail.from_email, expected_from_email)
+        connection = sent_mail.connection
+        self.assertEquals(connection.host, config.email_host)
+        self.assertEquals(connection.password, config.email_host_password)
+        self.assertEquals(connection.username, config.email_host_user)
+        self.assertEquals(connection.port, config.email_port)
+        self.assertEquals(connection.use_tls, config.email_use_tls)
+
+    def test_custom_domain_not_given(self):
+        '''If a custom domain and smtp config is not provided the mails
+        are sent from default domain'''
+        contact3 = Contact.objects.create(
+            person=self.person3,
+            contact_type=self.channel.get_contact_type(),
+            value='person1@votainteligente.cl',
+            writeitinstance=self.writeitinstance2,
+            )
+        message = Message.objects.create(
+            content="The content",
+            subject="the subject",
+            writeitinstance=self.writeitinstance2,
+            persons=[self.person3],
+            author_name="Felipe",
+            author_email="falvarez@votainteligente.cl",
+            )
+        outbound_message = OutboundMessage.objects.get(
+            message=message,
+            contact=contact3,
+            )
+        outbound_message.send()
+        connection = mail.outbox[0].connection
+        self.assertFalse(hasattr(connection, 'host'))
+        self.assertFalse(hasattr(connection, 'password'))
+        self.assertFalse(hasattr(connection, 'username'))
+        self.assertFalse(hasattr(connection, 'port'))
+        self.assertFalse(hasattr(connection, 'use_tls'))
+
 
 class SmtpErrorHandling(TestCase):
     def setUp(self):

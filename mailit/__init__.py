@@ -51,10 +51,12 @@ class MailChannel(OutputPlugin):
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = author_name + " <" + settings.DEFAULT_FROM_EMAIL + ">"
         else:
+            from_domain = outbound_message.message.writeitinstance.config.custom_from_domain\
+                or settings.DEFAULT_FROM_DOMAIN
             from_email = (
                 author_name + " <" + outbound_message.message.writeitinstance.slug +
                 "+" + outbound_message.outboundmessageidentifier.key +
-                '@' + settings.DEFAULT_FROM_DOMAIN + ">"
+                '@' + from_domain + ">"
                 )
 
         # There there should be a try and except looking
@@ -65,7 +67,14 @@ class MailChannel(OutputPlugin):
                 to_email = outbound_message.message.writeitinstance.owner.email
             else:
                 to_email = outbound_message.contact.value
-            msg = EmailMultiAlternatives(subject, content, from_email, [to_email])
+            connection = outbound_message.message.writeitinstance.config.get_mail_connection()
+            msg = EmailMultiAlternatives(
+                subject,
+                content,
+                from_email,
+                [to_email],
+                connection=connection,
+                )
             msg.attach_alternative(html_content, "text/html")
             msg.send(fail_silently=False)
             log = "Mail sent from %(from)s to %(to)s"

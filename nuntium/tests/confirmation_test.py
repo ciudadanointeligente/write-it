@@ -95,6 +95,38 @@ class ConfirmationTestCase(TestCase):
         expected_from_email = self.message.writeitinstance.slug + "@" + settings.DEFAULT_FROM_DOMAIN
         self.assertEquals(mail.outbox[0].from_email, expected_from_email)
 
+    def test_sends_confirmation_from_a_custom_domain_if_specified(self):
+        '''Sending confirmation from a custom domain if specified'''
+        config = self.message.writeitinstance.config
+        config.custom_from_domain = "custom.domain.cl"
+        config.email_host = 'cuttlefish.au.org'
+        config.email_host_password = 'f13r4'
+        config.email_host_user = 'fiera'
+        config.email_port = 25
+        config.email_use_tls = True
+        config.save()
+        Confirmation.objects.create(message=self.message)
+        self.assertEquals(len(mail.outbox), 1)
+        expected_from_email = self.message.writeitinstance.slug + "@" + config.custom_from_domain
+        confirmation_mail = mail.outbox[0]
+        self.assertEquals(confirmation_mail.from_email, expected_from_email)
+        connection = confirmation_mail.connection
+        self.assertEquals(connection.host, config.email_host)
+        self.assertEquals(connection.password, config.email_host_password)
+        self.assertEquals(connection.username, config.email_host_user)
+        self.assertEquals(connection.port, config.email_port)
+        self.assertEquals(connection.use_tls, config.email_use_tls)
+        '''
+        I'm moving all the site to use cuttlefish but in the meantime
+        in order to test I'm using this specific config per instance
+
+        EMAIL_HOST = 'cuttlefish.oaf.org.au'
+        EMAIL_PORT = 2525
+        EMAIL_HOST_USER = 'writeit'
+        EMAIL_HOST_PASSWORD = 'FieraFerozEsElMejorPerroDelMundo'
+        EMAIL_USE_TLS = True
+        '''
+
     @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
     def test_send_confirmation_from_a_single_email_address(self):
         '''

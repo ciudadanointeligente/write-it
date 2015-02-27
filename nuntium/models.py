@@ -30,6 +30,7 @@ import os
 from popit_api_instance import PopitApiInstance
 from requests.exceptions import ConnectionError
 from annoying.fields import AutoOneToOneField
+from django.core import mail
 
 
 def read_template_as_string(path, file_source_path=__file__):
@@ -150,6 +151,24 @@ class WriteItInstanceConfig(models.Model):
     autoconfirm_api_messages = models.BooleanField(
         help_text=_("Messages pushed to the api should \
             be confirmed automatically"), default=True)
+
+    custom_from_domain = models.CharField(max_length=512, null=True, blank=True)
+    email_host = models.CharField(max_length=512, null=True, blank=True)
+    email_host_password = models.CharField(max_length=512, null=True, blank=True)
+    email_host_user = models.CharField(max_length=512, null=True, blank=True)
+    email_port = models.IntegerField(null=True, blank=True)
+    email_use_tls = models.NullBooleanField()
+    email_use_ssl = models.NullBooleanField()
+
+    def get_mail_connection(self):
+        connection = mail.get_connection()
+        if self.custom_from_domain:
+            connection.host = self.email_host
+            connection.password = self.email_host_password
+            connection.username = self.email_host_user
+            connection.port = self.email_port
+            connection.use_tls = self.email_use_tls
+        return connection
 
 
 class Membership(models.Model):
@@ -376,13 +395,17 @@ class Message(models.Model):
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = settings.DEFAULT_FROM_EMAIL
         else:
-            from_email = self.writeitinstance.slug + "@" + settings.DEFAULT_FROM_DOMAIN
+            from_domain = self.writeitinstance.config.custom_from_domain\
+                or settings.DEFAULT_FROM_DOMAIN
+            from_email = self.writeitinstance.slug + "@" + from_domain
 
+        connection = self.writeitinstance.config.get_mail_connection()
         msg = EmailMultiAlternatives(_('Moderation required for\
          a message in WriteIt'),
             text_content,  # content
             from_email,  # From
-            [self.writeitinstance.owner.email]  # To
+            [self.writeitinstance.owner.email],  # To
+            connection=connection,
             )
         msg.attach_alternative(html_content, "text/html")
         msg.send()
@@ -439,14 +462,17 @@ class Answer(models.Model):
 def send_new_answer_payload(sender, instance, created, **kwargs):
     answer = instance
     if created:
+        connection = answer.message.writeitinstance.config.get_mail_connection()
         new_answer_template = answer.message.writeitinstance.new_answer_notification_template
         htmly = get_template_from_string(new_answer_template.template_html)
         texty = get_template_from_string(new_answer_template.template_text)
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = settings.DEFAULT_FROM_EMAIL
         else:
+            from_domain = answer.message.writeitinstance.config.custom_from_domain\
+                or settings.DEFAULT_FROM_DOMAIN
             from_email = "%s@%s" % (
-                answer.message.writeitinstance.slug, settings.DEFAULT_FROM_DOMAIN)
+                answer.message.writeitinstance.slug, from_domain)
         subject_template = new_answer_template.subject_template
         for subscriber in answer.message.subscribers.all():
             d = Context({
@@ -462,7 +488,12 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
                 'message': answer.message.subject,
                 }
             msg = EmailMultiAlternatives(
-                subject, txt_content, from_email, [subscriber.email])
+                subject,
+                txt_content,
+                from_email,
+                [subscriber.email],
+                connection=connection,
+                )
             msg.attach_alternative(html_content, "text/html")
             msg.send()
 
@@ -484,6 +515,7 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
                 txt_content,
                 from_email,
                 [answer.message.writeitinstance.owner.email],
+                connection=connection,
                 )
             msg.attach_alternative(html_content, "text/html")
             msg.send()
@@ -702,6 +734,7 @@ class Confirmation(models.Model):
         return reverse('confirm', kwargs={'slug': self.key})
 
 
+#this should be named to "send_confirmation_email"
 def send_an_email_to_the_author(sender, instance, created, **kwargs):
     confirmation = instance
     if created:
@@ -727,16 +760,20 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = settings.DEFAULT_FROM_EMAIL
         else:
+            from_domain = confirmation.message.writeitinstance.config.custom_from_domain\
+                or settings.DEFAULT_FROM_DOMAIN
             from_email = "%s@%s" % (
                 confirmation.message.writeitinstance.slug,
-                settings.DEFAULT_FROM_DOMAIN,
+                from_domain,
                 )
+        connection = confirmation.message.writeitinstance.config.get_mail_connection()
 
         msg = EmailMultiAlternatives(
             subject,
             text_content,  # content
             from_email,  # From
             [confirmation.message.author_email],  # To
+            connection=connection,
             )
         msg.attach_alternative(html_content, "text/html")
         try:
