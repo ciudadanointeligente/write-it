@@ -2,11 +2,11 @@
 {% load i18n %}
 {% block content %}
 {% load markdown_deux_tags %}
-<div class="panel panel-default">
-  <div class="panel-heading">
+<div class="panel panel-default container-fluid">
+  <div class="panel-heading row">
     <h1 class="panel-title">{{ message.subject }}</h1>
   </div>
-  <div class="panel-body">
+  <div class="panel-body row">
     <p class="lead">{{ message.content|linebreaks }}</p>
     <div class="sent_to">
         {% trans 'This message was sent to' %}
@@ -16,12 +16,12 @@
             {% endfor %}
     </div>
   </div>
-  <div class="panel-footer">
-    <span class="author_name">
-        <small>
-            {% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}
-        </small>
-    </span>
+  <div class="panel-footer row">
+    <span class="author_name col-md-4"><small>{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}</small></span>
+    <div class='col-md-4 col-md-offset-4'>
+      {% if message.created %}
+      {{ message.created }}
+      {% endif %}</div>
 
   </div>
 </div>
