@@ -12,12 +12,7 @@ $(".chosen-person-select").chosen();
 {% endblock extrajs %}
 
 {% block header %}
-<ul class="breadcrumb">
-    <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
-    <li><a href="{% url 'account' %}">{% trans "Your profile" %}</a></li>
-    <li><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
-    <li class="active">{{ writeitinstance }}</li>
-</ul>
+{% include 'nuntium/profiles/breadcrumbs.html' with writeitinstance=writeitinstance %}
 
 {% include 'nuntium/profiles/per_instance_top_menu.html' with section='writeitinstance_basic_update' %}
 

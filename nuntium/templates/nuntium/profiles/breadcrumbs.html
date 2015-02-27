@@ -1,0 +1,7 @@
+{% load i18n %}
+<ul class="breadcrumb">
+    <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+    <li><a href="{% url 'account' %}">{% trans "Your profile" %}</a></li>
+    <li><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
+    <li class="active">{{ writeitinstance }}</li>  <a target='_blank' href="{% url 'instance_detail' slug=writeitinstance.slug %}"><i class="fa fa-external-link"></i></a>
+</ul>

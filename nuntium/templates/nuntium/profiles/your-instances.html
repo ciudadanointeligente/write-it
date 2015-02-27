@@ -57,6 +57,7 @@
             <th width="50%">
               {% trans 'Name' %}
             </th>
+            <th>{% trans 'Link' %}</th>
             <th>{% trans 'Instance API path' %}</th>
             <th>{% trans 'See all the messages' %}</th>
             <th>{% trans 'Edit' %}</th>
@@ -72,7 +73,9 @@
                 go_and_check_status_of_instance("{% url 'pulling_status' pk=writeitinstance.pk %}", "spinner_{{ writeitinstance.pk }}")
               })
               </script>
-              {% endif %}</td>
+              {% endif %}
+            </td>
+            <td> <a target='_blank' href="{% url 'instance_detail' slug=writeitinstance.slug %}"><i class="fa fa-external-link"></i></a></td>
             <td>{% url 'api_dispatch_detail' api_name='v1' resource_name='instance' pk=writeitinstance.id %}</td>
             <td><a href="{% url 'messages_per_writeitinstance' pk=writeitinstance.pk %}"><i class="fa fa-envelope-o"></i></a></td>
             <td><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}"><i class="fa fa-pencil"></i></a></td>
