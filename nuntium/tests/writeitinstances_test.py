@@ -300,7 +300,6 @@ class InstanceDetailView(TestCase):
         self.assertEquals(response.status_code, 200)
         new_messages = Message.objects.filter(subject='Fiera no está')
         self.assertTrue(new_messages.count() > 0)
-        self.assertEquals(len(response.context["form"].errors), 0)
 
     def test_adds_a_post_submission_page(self):
         '''It uses a different template for post submission a message'''
