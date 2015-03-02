@@ -314,27 +314,6 @@ class InstanceDetailView(TestCase):
         response = self.client.post(self.url, data, follow=True)
         self.assertTemplateUsed(response, 'frontend/post_submission.html')
 
-    def test_I_get_an_acknoledgement_for_creating_a_message(self):
-        data = {
-            'subject': u'Fiera no está',
-            'author_email': u'falvarez@votainteligente.cl',
-            'author_name': u'feli',
-            'public': True,
-            'content': u'¿Dónde está Fiera Feroz? en la playa?',
-            'persons': [self.person1.id],
-        }
-
-        response = self.client.post(self.url, data, follow=True)
-        self.assertEquals(response.status_code, 200)
-        expected_acknoledgments = _("Thanks for submitting your message, please check your email and click on the confirmation link")
-
-        self.assertContains(response, expected_acknoledgments)
-
-        all_messages, all_retrieved = response.context["messages"]._get()
-
-        self.assertEquals(len(all_messages), 1)
-        self.assertEquals(all_messages[0].__str__(), expected_acknoledgments)
-
     def test_after_the_creation_of_a_message_it_brings_the_instance_and_the_message(self):
         data = {
             'subject': u'Fiera no está',
