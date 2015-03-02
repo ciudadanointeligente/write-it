@@ -74,12 +74,29 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
         response = c.get(url)
-        self.assertIn("writeitinstance", response.context)
-        self.assertEquals(response.context['writeitinstance'], self.writeitinstance)
         self.assertIn("message", response.context)
+        self.assertEquals(response.context['message'].writeitinstance, self.writeitinstance)
         self.assertEquals(response.context['message'], self.message)
         self.assertTemplateUsed(response, "base_edit.html")
         self.assertTemplateUsed(response, "nuntium/profiles/message_detail.html")
+
+    def test_get_answers_different_ids(self):
+        """I think there's a problem with the message detail view
+        looking up the message using the writeitinstance_id where
+        it should be using the message_id.
+        """
+
+        # Create a new instance, owned by the admin user
+        WriteItInstance.objects.create(id=6060842, name='Test 6060842', owner_id=1)
+        Message.objects.create(id=1001, author_name='Test Author', author_email='test@example.com', subject='Test Subject', slug='test-slug1', content='Test content', writeitinstance_id=6060842, confirmated=True)
+        Message.objects.create(id=1002, author_name='Test Author', author_email='test@example.com', subject='Test Subject1', slug='test-slug2', content='Test content1', writeitinstance_id=6060842, confirmated=True)
+
+        url = reverse('message_detail', kwargs={'pk': 1001})
+        c = Client()
+        c.login(username=self.writeitinstance.owner.username, password='admin')
+        response = c.get(url)
+
+        self.assertEqual(response.status_code, 200)
 
     def test_get_answers_per_messages_is_not_reachable_by_non_user(self):
         """
