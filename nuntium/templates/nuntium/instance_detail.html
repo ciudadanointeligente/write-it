@@ -26,7 +26,7 @@ $(".chosen-person-select").chosen();
 
 {% if writeitinstance.config.testing_mode %}
   <div class="alert alert-info" role="alert">
-      
+
       {% blocktrans %}
       <i class="fa fa-info-circle"></i> This instance is in testing mode which means that all mails will go to the owner and not to the person that you are writing to.
       {% endblocktrans %}
@@ -36,8 +36,20 @@ $(".chosen-person-select").chosen();
   </div>
 {% endif %}
 
-{% if writeitinstance.config.allow_messages_using_form %}
-<div class="panel panel-default writing-panel">
+{% if not writeitinstance.config.allow_messages_using_form %}
+  <div class="panel panel-default">
+      <div class="panel-heading">
+          <h2 class="panel-title">{% trans "Sorry, currently you can not create new messages using this web" %}</h2>
+      </div>
+  </div>
+{% elif not writeitinstance.persons.exists %}
+  <div class="panel panel-default">
+      <div class="panel-heading">
+          <h2 class="panel-title">{% trans "Sorry, there is no-one to write to yet. Please check back soon." %}</h2>
+      </div>
+  </div>
+{% else %}
+  <div class="panel panel-default writing-panel">
     <div class="panel-heading">
         <h2 class="panel-title">{% trans "You can now write your question" %}</h2>
     </div>
@@ -86,13 +98,7 @@ $(".chosen-person-select").chosen();
             </div>
         </form>
     </div>
-</div>
-{% else %}
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h2 class="panel-title">{% trans "Sorry, currently you can not create new messages using this web" %}</h2>
-    </div>
-</div>
+  </div>
 {% endif %}
 {% if writeitinstance.message_set.count == 0 %}
     <h2>{% trans "There are no messages" %}</h2>
