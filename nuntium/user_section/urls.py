@@ -9,6 +9,7 @@ from .views import UserAccountView, WriteItInstanceUpdateView, \
     MessageDetail, MessageDelete, AnswerCreateView, ModerationView, AnswerUpdateView, \
     WriteitPopitRelatingView, WriteItDeleteView, WriteItInstanceContactDetailView, \
     WriteItInstanceStatusView, WriteItInstanceApiDocsView
+from nuntium.user_section.stats import StatsView
 
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
@@ -72,4 +73,7 @@ urlpatterns = patterns('',
     url(r'^writeitinstance/pulling_status/(?P<pk>[-\d]+)/?$',
         WriteItInstanceStatusView.as_view(),
         name='pulling_status'),
+    url(r'^writeitinstance/stats/(?P<pk>[-\d]+)/?$',
+        StatsView.as_view(),
+        name='stats'),
 )
