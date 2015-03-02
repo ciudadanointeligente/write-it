@@ -293,6 +293,9 @@ class MessageDetail(LoginRequiredMixin, WriteItInstanceOwnerMixin, DetailView):
     model = Message
     template_name = "nuntium/profiles/message_detail.html"
 
+    def get_writeitinstance(self):
+        return self.object.writeitinstance
+
 
 class MessageDelete(LoginRequiredMixin, WriteItInstanceOwnerMixin, DeleteView):
     model = Message
