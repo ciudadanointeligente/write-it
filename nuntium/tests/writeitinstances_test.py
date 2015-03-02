@@ -302,8 +302,19 @@ class InstanceDetailView(TestCase):
         self.assertTrue(new_messages.count() > 0)
         self.assertEquals(len(response.context["form"].errors), 0)
 
+    def test_adds_a_post_submission_page(self):
+        '''It uses a different template for post submission a message'''
+        data = {
+            'author_email': u'falvarez@votainteligente.cl',
+            'author_name': u'feli',
+            'subject': u'Fiera no está',
+            'content': u'¿Dónde está Fiera Feroz? en la playa?',
+            'persons': [self.person1.id],
+            }
+        response = self.client.post(self.url, data, follow=True)
+        self.assertTemplateUsed(response, 'frontend/post_submission.html')
+
     def test_I_get_an_acknoledgement_for_creating_a_message(self):
-        # Spanish
         data = {
             'subject': u'Fiera no está',
             'author_email': u'falvarez@votainteligente.cl',
