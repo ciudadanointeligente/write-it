@@ -32,6 +32,12 @@
 	  <dd>{{ message.content|linebreaksbr }}</dd>
 	  <dt>{% trans "Author" %}</dt>
 	  <dd>{{ message.author_name }}</dd>
+          <dt>{% trans "Recipients" %}</dt>
+          <dd>
+            {% for person in message.people %}
+              <a class="label label-default" title="{% blocktrans with person_name=person.name %}See all messages sent to {{ person_name }}{% endblocktrans %}" href='{% url 'messages_per_person' slug=message.writeitinstance.slug pk=person.id %}'>{{ person.name }}</a>
+            {% endfor %}
+          </dd>
 	  <dt>{% trans "Confirmed" %}</dt>
 	  <dd><i class="fa {% if message.confirmated %}fa-check{% else %}fa-times{% endif %}"></i></dd>
 	  {% if message.writeitinstance.config.moderation_needed_in_all_messages %}

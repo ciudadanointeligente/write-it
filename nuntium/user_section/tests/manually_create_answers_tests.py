@@ -79,6 +79,9 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         self.assertEquals(response.context['message'], self.message)
         self.assertTemplateUsed(response, "base_edit.html")
         self.assertTemplateUsed(response, "nuntium/profiles/message_detail.html")
+        for person in self.message.people:
+            # Decoding response.content to UTF-8 because of accented characters.
+            self.assertIn(person.name, response.content.decode('utf-8'))
 
     def test_get_answers_different_ids(self):
         """I think there's a problem with the message detail view
