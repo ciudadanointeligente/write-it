@@ -335,7 +335,7 @@ class InstanceDetailView(TestCase):
         self.assertEquals(len(all_messages), 1)
         self.assertEquals(all_messages[0].__str__(), expected_acknoledgments)
 
-    def test_after_the_creation_of_a_message_it_redirects(self):
+    def test_after_the_creation_of_a_message_it_brings_the_instance_and_the_message(self):
         data = {
             'subject': u'Fiera no está',
             'content': u'¿Dónde está Fiera Feroz? en la playa?',
@@ -343,10 +343,12 @@ class InstanceDetailView(TestCase):
             'author_email': u"falvarez@votainteligente.cl",
             'persons': [self.person1.id],
             }
-        url = self.writeitinstance1.get_absolute_url()
         response = self.client.post(self.url, data)
-
-        self.assertRedirects(response, url)
+        self.assertEquals(response.status_code, 200)
+        self.assertIn('writeitinstance', response.context)
+        self.assertEquals(response.context['writeitinstance'], self.writeitinstance1)
+        self.assertIn('message', response.context)
+        self.assertEquals(response.context['message'].subject, data['subject'])
 
     def test_if_the_instance_needs_moderation_in_all_messages(self):
         self.writeitinstance1.config.moderation_needed_in_all_messages = True

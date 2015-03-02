@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <h1>{% trans "Your message has been created!" %}</h1>
+        {% if message_to_user %}
+            <p>{{ message_to_user }}</p>
+        {% endif%}
+        <p><a href="{% url 'instance_detail' slug=writeitinstance.slug %}" class="btn btn-primary btn-lg">{% blocktrans with writeitinstance.name as name %}More messages at {{name}} <i class="icon-double-angle-right"></i>{% endblocktrans %}</a></p>
+    </div>
+</div>
+{% endblock content%}
