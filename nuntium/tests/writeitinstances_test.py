@@ -196,8 +196,6 @@ class InstanceDetailView(TestCase):
         self.url = self.writeitinstance1.get_absolute_url()
 
     def test_detail_instance_view(self):
-        #I'm removing this because it has been already tested
-        #self.assertTrue(url)
         response = self.client.get(self.url)
         self.assertTemplateUsed(response, 'nuntium/instance_detail.html')
         self.assertEquals(response.context['writeitinstance'], self.writeitinstance1)
