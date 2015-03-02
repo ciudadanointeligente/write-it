@@ -1,0 +1,36 @@
+{% extends "base_edit.html" %}
+{% load i18n %}
+{% load pagination_tags %}
+{% load nuntium_tags %}
+{% load staticfiles %}
+
+{% block extracss %}
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
+{% endblock extracss %}
+
+{% block extrascripts %}
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js"></script>
+{% endblock extrascripts %}
+
+{% block header %}
+{% include 'nuntium/profiles/breadcrumbs.html' with writeitinstance=writeitinstance %}
+
+{% include 'nuntium/profiles/per_instance_top_menu.html' with section='stats' %}
+
+{% endblock header %}
+
+{% block content %}
+<div class="tab-content profile-page-tab-content edit-profile-tab-content">
+  <div class="tab-pane active">
+    <table class="table">
+      {% for stat_name, stat_value in stats.get_stats %}
+      <tr>
+        <td>{{ stat_name }}</td>
+        <td>{{ stat_value }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+  </div>
+</div>
+{% endblock content %}
