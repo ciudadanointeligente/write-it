@@ -357,3 +357,18 @@ class InstanceDetailView(TestCase):
         expected_acknoledgments = _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation")
 
         self.assertContains(response, expected_acknoledgments)
+
+    def test_no_form_on_homepage_of_empty_instance(self):
+        owner = User.objects.create(
+            username='test-instance-owner',
+            password='foo',
+            )
+        instance = WriteItInstance.objects.create(
+            name="Instance Without Contacts",
+            owner=owner,
+            )
+
+        url = instance.get_absolute_url()
+        response = self.client.get(url)
+
+        self.assertIn('there is no-one to write to', response.content)
