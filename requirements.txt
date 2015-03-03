@@ -37,3 +37,4 @@ ndg-httpsclient
 pyasn1
 django-pagination
 django-annoying
+django-downloadview==1.6
