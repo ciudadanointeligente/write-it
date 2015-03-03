@@ -4,14 +4,13 @@ from django.views.generic import TemplateView, CreateView, DetailView, RedirectV
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.utils.translation import ugettext as _
-from django.contrib import messages
-
 from haystack.views import SearchView
 from itertools import chain
 from popit.models import Person
 from django.db.models import Q
 from .models import WriteItInstance, Confirmation, Message, Moderation
 from .forms import MessageCreateForm, MessageSearchForm, PerInstanceSearchForm
+from django.template.response import SimpleTemplateResponse
 
 
 class HomeTemplateView(TemplateView):
@@ -67,13 +66,17 @@ class WriteItInstanceDetailView(CreateView):
         return self.object
 
     def form_valid(self, form):
-        response = super(WriteItInstanceDetailView, self).form_valid(form)
+        super(WriteItInstanceDetailView, self).form_valid(form)
         moderations = Moderation.objects.filter(message=self.object)
+        message_to_user = None
         if moderations.count() > 0 or self.object.writeitinstance.config.moderation_needed_in_all_messages:
-            messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation"))
+            message_to_user = _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation")
         else:
-            messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link"))
-        return response
+            message_to_user = _("Thanks for submitting your message, please check your email and click on the confirmation link")
+        context = self.get_context_data()
+        context['writeitinstance'] = self.object.writeitinstance
+        context['message_to_user'] = message_to_user
+        return SimpleTemplateResponse('frontend/post_submission.html', context=context)
 
     def get_success_url(self):
         return self.object.writeitinstance.get_absolute_url()

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <h1>{% trans "Your message has been created!" %}</h1>
+        {% if message_to_user %}
+            <p>{{ message_to_user }}</p>
+        {% endif%}
+        <p>{% blocktrans with writeitinstance.name as name %}You will soon be redirected to  {{name}}{% endblocktrans %}</p>
+        <p><a href="{% url 'instance_detail' slug=writeitinstance.slug %}" class="btn btn-primary btn-lg">{% blocktrans with writeitinstance.name as name %}More messages at {{name}} <i class="icon-double-angle-right"></i>{% endblocktrans %}</a></p>
+    </div>
+</div>
+<script type="text/javascript">
+    setTimeout(function(){ 
+        window.location.replace("{% url 'instance_detail' slug=writeitinstance.slug %}");
+    }, 15000);
+</script>
+{% endblock content%}
