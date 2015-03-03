@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from global_test_case import GlobalTestCase as TestCase
 from mailit.bin import config
 from mailit.bin.handleemail import EmailAnswer
+from django.core.files import File
 
 
 class AnswerHandlerTestCase(TestCase):
@@ -15,6 +16,8 @@ class AnswerHandlerTestCase(TestCase):
         config.WRITEIT_API_ANSWER_CREATION = self.where_to_post_creation_of_the_answer
         config.WRITEIT_API_KEY = self.user.api_key.key
         config.WRITEIT_USERNAME = self.user.username
+        self.photo_fiera = File(open("nuntium/tests/fixtures/fiera_parque.jpg", 'rb'))
+        self.pdf_file = File(open("nuntium/tests/fixtures/hello.pd.pdf", 'rb'))
 
     def test_class_answer(self):
 
@@ -45,3 +48,14 @@ class AnswerHandlerTestCase(TestCase):
 
         self.assertFalse(email_answer.outbound_message_identifier in email_answer.content_text)
         self.assertNotIn("devteam+@chile.com", email_answer.content_text)
+
+    def test_the_email_answer_can_have_attachments(self):
+        '''An email answer can have attachments'''
+        email_answer = EmailAnswer()
+        email_answer.subject = 'prueba4'
+        email_answer.content_text = 'prueba4lafieritaespeluda'
+        email_answer.add_attachment(self.photo_fiera)
+        email_answer.add_attachment(self.pdf_file)
+        self.assertTrue(email_answer.attachments)
+        self.assertIn(self.photo_fiera, email_answer.attachments)
+        self.assertIn(self.pdf_file, email_answer.attachments)

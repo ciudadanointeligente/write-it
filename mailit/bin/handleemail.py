@@ -76,6 +76,7 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
         apikey = config.WRITEIT_API_KEY
         self.requests_session.auth = ApiKeyAuth(username, apikey)
         self.is_bounced = False
+        self.attachments = []
 
     def get_content_text(self):
         cleaned_content = self._content_text
@@ -103,6 +104,9 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
                 raw_email = RawIncomingEmail.objects.get(message_id=self.message_id)
                 raw_email.answer = answer
                 raw_email.save()
+
+    def add_attachment(self, attachment):
+        self.attachments.append(attachment)
 
 
 class EmailHandler():
