@@ -381,3 +381,16 @@ class InstanceDetailView(TestCase):
             'slug': message.slug,
             })
         self.assertTrue(url)
+
+    def test_get_post_submission_url(self):
+        '''Get a post submission url'''
+        message = self.writeitinstance1.message_set.get(id=1)
+        url = reverse('post_submission', kwargs={
+            'instance_slug': self.writeitinstance1.slug,
+            'slug': message.slug,
+            })
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertIn('message', response.context)
+        self.assertEquals(response.context['message'], message)
+        self.assertTemplateUsed(response, 'nuntium/message/post_submission.html')

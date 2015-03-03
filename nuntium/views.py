@@ -92,13 +92,20 @@ class WriteItInstanceDetailView(CreateView):
         return context
 
 
-class MessageDetailView(DetailView):
-    template_name = 'nuntium/message/message_detail.html'
+class MessageDetailViewMixin(DetailView):
     model = Message
 
     def get_queryset(self):
         qs = Message.objects.filter(slug__iexact=self.kwargs['slug'])
         return qs
+
+
+class PostSubmissionView(MessageDetailViewMixin):
+    template_name = 'nuntium/message/post_submission.html'
+
+
+class MessageDetailView(MessageDetailViewMixin):
+    template_name = 'nuntium/message/message_detail.html'
 
     def get_object(self):
         the_message = super(MessageDetailView, self).get_object()
