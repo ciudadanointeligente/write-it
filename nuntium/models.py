@@ -537,6 +537,12 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
 post_save.connect(send_new_answer_payload, sender=Answer)
 
 
+class AnswerAttachment(models.Model):
+    answer = models.ForeignKey(Answer, related_name="attachments")
+    content = models.FileField(upload_to="attachments/%Y/%m/%d")
+    name = models.CharField(max_length=512, default="")
+
+
 class OutboundMessageManager(models.Manager):
     def to_send(self, *args, **kwargs):
         query = super(OutboundMessageManager, self).filter(*args, **kwargs)
