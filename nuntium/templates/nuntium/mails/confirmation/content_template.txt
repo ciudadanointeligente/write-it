@@ -1,5 +1,5 @@
 Hello {{ confirmation.message.author_name }}:
-We have received a message written by you in {{ site.current_site.domain }}.
+We have received a message written by you in {{ confirmation.message.writeitinstance.name }}.
 The message was:
 Subject:  {{ confirmation.message.subject }} 
 Content:  {{ confirmation.message.content|linebreaks }}
