@@ -8,6 +8,11 @@ from django.contrib.auth.models import User
 from django.forms import ValidationError
 from django.template import Context, Template
 from django.test.client import Client
+from django.test.utils import override_settings
+
+from contactos.models import Contact, ContactType
+from popit.models import Person
+
 import os
 script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
 
@@ -92,6 +97,77 @@ class ConfirmationTemplateTestCase(TestCase):
         self.assertEquals(mail.outbox[0].body, expected_body)
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue(message.author_email in mail.outbox[0].to)
+
+    @override_settings(TEMPLATE_STRING_IF_INVALID='!!INVALID!!')
+    def test_rendering_templates(self):
+        """Render the default confirmation templates and check for errors.
+
+        Set the TEMPLATE_STRING_IF_INVALID setting to something we can find,
+        render templates with sensible context, and check that we don't see
+        any invalid variable strings.
+        """
+
+        owner = User.objects.create(
+            username="Test User",
+            )
+        writeitinstance = WriteItInstance.objects.create(
+            name="Test WriteIt Instance",
+            owner=owner,
+            )
+        recipient = Person.objects.create(
+            name='Test Person',
+            api_instance_id=1,
+            )
+        contact_type = ContactType.objects.create(
+            name='Contact Type Name',
+            label_name='Contact Type Label',
+            )
+        Contact.objects.create(
+            contact_type=contact_type,
+            person=recipient,
+            value='Test Value',  # What is the value for?
+            writeitinstance=writeitinstance,
+            )
+        message = Message(
+            author_name='Message Author',
+            author_email='test@example.com',
+            subject='Test Message',
+            content='Test Content',
+            writeitinstance=writeitinstance,
+            persons=[recipient],
+            )
+
+        # We can't use .create here because we need .save() to
+        # create outboundmessage objects.
+        message.save()
+
+        # Saving the message with people rather than using create
+        # because we need people for the veryfy_people call.
+        message.save()
+
+        confirmation = Confirmation.objects.create(
+            message=message,
+            )
+
+        confirmation_full_url = 'http://example.com/confirmation'
+        message_full_url = 'http://example.com/message'
+
+        context = Context(
+            {'confirmation': confirmation,
+             'confirmation_full_url': confirmation_full_url,
+             'message_full_url': message_full_url,
+             },
+            )
+
+        # HTML version
+        template = Template(self.default_template)
+        rendered = template.render(context)
+        self.assertNotIn('!!INVALID!!', rendered)
+
+        # Text version
+        template = Template(self.default_template_text)
+        rendered = template.render(context)
+        self.assertNotIn('!!INVALID!!', rendered)
 
 
 class ConfirmationTemplateFormTestCase(TestCase):
