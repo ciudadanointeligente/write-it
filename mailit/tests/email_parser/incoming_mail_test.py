@@ -11,10 +11,10 @@ from contactos.models import Contact
 
 from global_test_case import GlobalTestCase as TestCase
 from global_test_case import ResourceGlobalTestCase as ResourceTestCase
-from ..management.commands.handleemail import AnswerForManageCommand
-from ..bin import config
-from ..bin.handleemail import EmailHandler, EmailAnswer, ApiKeyAuth
-from ..models import BouncedMessageRecord
+from mailit.management.commands.handleemail import AnswerForManageCommand
+from mailit.bin import config
+from mailit.bin.handleemail import EmailHandler, EmailAnswer, ApiKeyAuth
+from mailit.models import BouncedMessageRecord
 
 
 class PostMock():
