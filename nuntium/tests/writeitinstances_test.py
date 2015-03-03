@@ -304,7 +304,7 @@ class InstanceDetailView(TestCase):
         self.assertTrue(new_messages.count() > 0)
         self.assertEquals(len(response.context["form"].errors), 0)
 
-    def test_I_get_an_acknoledgement_for_creating_a_message(self):
+    def test_get_an_acknowledgement_for_creating_a_message(self):
         # Spanish
         data = {
             'subject': u'Fiera no está',
@@ -317,14 +317,14 @@ class InstanceDetailView(TestCase):
 
         response = self.client.post(self.url, data, follow=True)
         self.assertEquals(response.status_code, 200)
-        expected_acknoledgments = _("Thanks for submitting your message, please check your email and click on the confirmation link")
+        expected_acknowledgement = _("Thanks for submitting your message, please check your email and click on the confirmation link")
 
-        self.assertContains(response, expected_acknoledgments)
+        self.assertContains(response, expected_acknowledgement)
 
         all_messages, all_retrieved = response.context["messages"]._get()
 
         self.assertEquals(len(all_messages), 1)
-        self.assertEquals(all_messages[0].__str__(), expected_acknoledgments)
+        self.assertEquals(all_messages[0].__str__(), expected_acknowledgement)
 
     def test_after_the_creation_of_a_message_it_redirects(self):
         data = {
