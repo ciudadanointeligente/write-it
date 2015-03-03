@@ -302,7 +302,6 @@ class InstanceDetailView(TestCase):
         self.assertEquals(response.status_code, 200)
         new_messages = Message.objects.filter(subject='Fiera no está')
         self.assertTrue(new_messages.count() > 0)
-        self.assertEquals(len(response.context["form"].errors), 0)
 
     def test_get_an_acknowledgement_for_creating_a_message(self):
         # Spanish
