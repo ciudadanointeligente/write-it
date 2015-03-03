@@ -76,7 +76,11 @@ class WriteItInstanceDetailView(CreateView):
         return response
 
     def get_success_url(self):
-        return self.object.writeitinstance.get_absolute_url()
+        url = reverse('post_submission', kwargs={
+            'instance_slug': self.object.writeitinstance.slug,
+            'slug': self.object.slug,
+            })
+        return url
 
     def get_form_kwargs(self):
         kwargs = super(WriteItInstanceDetailView, self).get_form_kwargs()

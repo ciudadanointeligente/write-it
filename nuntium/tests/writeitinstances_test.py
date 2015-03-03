@@ -334,8 +334,15 @@ class InstanceDetailView(TestCase):
             'author_email': u"falvarez@votainteligente.cl",
             'persons': [self.person1.id],
             }
-        url = self.writeitinstance1.get_absolute_url()
+        # url = self.writeitinstance1.get_absolute_url()
         response = self.client.post(self.url, data)
+        message = Message.objects.get(
+            subject=data['subject'],
+            writeitinstance=self.writeitinstance1)
+        url = reverse('post_submission', kwargs={
+            'instance_slug': self.writeitinstance1.slug,
+            'slug': message.slug,
+            })
 
         self.assertRedirects(response, url)
 
