@@ -372,3 +372,12 @@ class InstanceDetailView(TestCase):
         response = self.client.get(url)
 
         self.assertIn('there is no-one to write to', response.content)
+
+    def test_there_is_a_post_submission_url(self):
+        '''There is a post submission URL'''
+        message = self.writeitinstance1.message_set.get(id=1)
+        url = reverse('post_submission', kwargs={
+            'instance_slug': self.writeitinstance1.slug,
+            'slug': message.slug,
+            })
+        self.assertTrue(url)

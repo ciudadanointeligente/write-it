@@ -14,4 +14,5 @@ urlpatterns = patterns('',
     url(r'^(?P<instance_slug>[-\w]+)/messages/(?P<slug>[-\w]+)/?$', MessageDetailView.as_view(), name='message_detail'),
     url(r'^(?P<slug>[-\w]+)/search/?$', PerInstanceSearchView(), name='instance_search'),
     url(r'^(?P<slug>[-\w]+)/per_person/(?P<pk>[-\d]+)/?$', MessagesPerPersonView.as_view(), name='messages_per_person'),
+    url(r'^(?P<instance_slug>[-\w]+)/post_submission/(?P<slug>[-\w]+)/?$', MessageDetailView.as_view(), name='post_submission'),
 )
