@@ -355,9 +355,9 @@ class InstanceDetailView(TestCase):
         url = self.writeitinstance1.get_absolute_url()
         response = self.client.post(url, data, follow=True)
 
-        expected_acknoledgments = _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation")
+        expected_follow_up_message = _("After you confirm your message will be waiting form moderation")
 
-        self.assertContains(response, expected_acknoledgments)
+        self.assertContains(response, expected_follow_up_message)
 
     def test_no_form_on_homepage_of_empty_instance(self):
         owner = User.objects.create(

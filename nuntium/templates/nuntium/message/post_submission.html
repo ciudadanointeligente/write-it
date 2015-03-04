@@ -5,10 +5,8 @@
 <div class="jumbotron">
     <div class="container">
         <h1>{% trans "Please check your email for a confirmation link" %}</h1>
-        {% if messages %}
-            {% for message in messages %}
-              <p>{{ message }}</p>
-            {% endfor %}
+        {% if moderation_follows %}
+          <p>{% trans "After you confirm your message will be waiting form moderation" %}</p>
         {% endif %}
         <p><a href="{% url 'instance_detail' slug=message.writeitinstance.slug %}" class="btn btn-primary btn-lg">{% blocktrans %}Create another message and view messages and replies{% endblocktrans %}<i class="icon-double-angle-right"></i></a></p>
     </div>
