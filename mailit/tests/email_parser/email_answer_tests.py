@@ -6,6 +6,8 @@ from global_test_case import GlobalTestCase as TestCase
 from mailit.bin import config
 from mailit.bin.handleemail import EmailAnswer
 from django.core.files import File
+from mock import patch
+from mailit.tests.email_parser.incoming_mail_tests import PostMock
 
 
 class AnswerHandlerTestCase(TestCase):
@@ -59,3 +61,18 @@ class AnswerHandlerTestCase(TestCase):
         self.assertTrue(email_answer.attachments)
         self.assertIn(self.photo_fiera, email_answer.attachments)
         self.assertIn(self.pdf_file, email_answer.attachments)
+
+    def test_save_attachments_on_save(self):
+        '''When saving it also calls the save an attachment'''
+        email_answer = EmailAnswer()
+        email_answer.subject = 'prueba4'
+        email_answer.content_text = 'prueba4lafieritaespeluda'
+        email_answer.add_attachment(self.photo_fiera)
+        email_answer.add_attachment(self.pdf_file)
+
+        with patch('requests.Session.post') as post:
+            post.return_value = PostMock()
+            with patch('mailit.bin.handleemail.EmailAnswer.save_attachment') as save_attachment:
+                email_answer.send_back()
+                save_attachment.assert_any_call(self.photo_fiera)
+                save_attachment.assert_any_call(self.pdf_file)

@@ -104,9 +104,14 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
                 raw_email = RawIncomingEmail.objects.get(message_id=self.message_id)
                 raw_email.answer = answer
                 raw_email.save()
+            for attachment in self.attachments:
+                self.save_attachment(attachment)
 
     def add_attachment(self, attachment):
         self.attachments.append(attachment)
+
+    def save_attachment(self, attachment):
+        pass
 
 
 class EmailHandler():
