@@ -100,8 +100,14 @@ class MessageDetailViewMixin(DetailView):
     model = Message
 
     def get_queryset(self):
-        qs = Message.objects.filter(slug__iexact=self.kwargs['slug'])
+        qs = Message.objects.filter(writeitinstance__slug__iexact=self.kwargs['instance_slug'])
         return qs
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+        message = queryset.get(slug__iexact=self.kwargs['slug'])
+        return message
 
 
 class PostSubmissionView(MessageDetailViewMixin):
