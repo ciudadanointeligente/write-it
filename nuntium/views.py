@@ -3,9 +3,6 @@ from datetime import datetime
 from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, ListView
 from django.core.urlresolvers import reverse
 from django.http import Http404
-from django.utils.translation import ugettext as _
-from django.contrib import messages
-
 from haystack.views import SearchView
 from itertools import chain
 from popit.models import Person
@@ -68,11 +65,6 @@ class WriteItInstanceDetailView(CreateView):
 
     def form_valid(self, form):
         response = super(WriteItInstanceDetailView, self).form_valid(form)
-        moderations = Moderation.objects.filter(message=self.object)
-        if moderations.count() > 0 or self.object.writeitinstance.config.moderation_needed_in_all_messages:
-            messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation"))
-        else:
-            messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link"))
         return response
 
     def get_success_url(self):
@@ -112,6 +104,14 @@ class MessageDetailViewMixin(DetailView):
 
 class PostSubmissionView(MessageDetailViewMixin):
     template_name = 'nuntium/message/post_submission.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PostSubmissionView, self).get_context_data(**kwargs)
+        moderations = Moderation.objects.filter(message=self.object)
+        moderation_follows = moderations.count() > 0 or \
+            self.object.writeitinstance.config.moderation_needed_in_all_messages
+        context['moderation_follows'] = moderation_follows
+        return context
 
 
 class MessageDetailView(MessageDetailViewMixin):

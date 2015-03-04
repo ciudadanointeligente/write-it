@@ -316,14 +316,9 @@ class InstanceDetailView(TestCase):
 
         response = self.client.post(self.url, data, follow=True)
         self.assertEquals(response.status_code, 200)
-        expected_acknowledgement = _("Thanks for submitting your message, please check your email and click on the confirmation link")
 
-        self.assertContains(response, expected_acknowledgement)
-
-        all_messages, all_retrieved = response.context["messages"]._get()
-
-        self.assertEquals(len(all_messages), 1)
-        self.assertEquals(all_messages[0].__str__(), expected_acknowledgement)
+        self.assertIn('moderation_follows', response.context)
+        self.assertFalse(response.context['moderation_follows'])
 
     def test_after_the_creation_of_a_message_it_redirects(self):
         data = {
