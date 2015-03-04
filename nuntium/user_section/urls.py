@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 
 from .views import UserAccountView, WriteItInstanceUpdateView, \
-    YourContactsView, YourInstancesView, WriteItInstanceAdvancedUpdateView, \
+    YourInstancesView, WriteItInstanceAdvancedUpdateView, \
     WriteItInstanceTemplateUpdateView, NewAnswerNotificationTemplateUpdateView, \
     ConfirmationTemplateUpdateView, WriteItInstanceCreateView, \
     MessagesPerWriteItInstance, \
@@ -12,7 +12,6 @@ from .views import UserAccountView, WriteItInstanceUpdateView, \
 
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
-    url(r'^accounts/your_contacts/?$', YourContactsView.as_view(), name='your-contacts'),
     url(r'^accounts/your_instances/?$', YourInstancesView.as_view(), name='your-instances'),
     url(r'^writeitinstance/edit/(?P<pk>[-\d]+)/?$', WriteItInstanceUpdateView.as_view(),
         name='writeitinstance_basic_update'),

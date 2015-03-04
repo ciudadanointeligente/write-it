@@ -7,7 +7,6 @@ from django.views.generic import TemplateView, CreateView, DetailView, View, Lis
 from django.views.generic.edit import UpdateView, DeleteView, FormView
 from django.views.generic.detail import SingleObjectMixin
 
-from contactos.models import Contact
 from mailit.forms import MailitTemplateForm
 
 from ..models import WriteItInstance, Message,\
@@ -177,15 +176,6 @@ class WriteItInstanceCreateView(CreateView):
     def get(self, request, *args, **kwargs):
         url = reverse('your-instances')
         return redirect(url)
-
-
-class YourContactsView(UserSectionListView):
-    model = Contact
-    template_name = 'nuntium/profiles/your-contacts.html'
-
-    def get_queryset(self):
-        queryset = Contact.objects.filter(writeitinstance__owner=self.request.user)
-        return queryset
 
 
 class YourInstancesView(UserSectionListView):
