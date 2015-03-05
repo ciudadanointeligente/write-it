@@ -112,7 +112,7 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
     def add_attachment(self, attachment):
         self.attachments.append(attachment)
 
-    def save_attachment(self, attachment):
+    def save_attachment(self, answer, attachment):
         pass
 
 
