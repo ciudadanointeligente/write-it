@@ -19,7 +19,9 @@ class AnswerForManageCommand(EmailAnswer):
 
     def save_attachment(self, answer, attachment):
         the_file = File(attachment)
-        answer_attachment = AnswerAttachment(answer=answer, content=the_file)
+        answer_attachment = AnswerAttachment(answer=answer,
+                                content=the_file,
+                                name=attachment.name)
         answer_attachment.save()
 
     def report_bounce(self):

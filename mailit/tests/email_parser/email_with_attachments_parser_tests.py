@@ -25,3 +25,12 @@ class ParsingMailsWithAttachments(TestCase):
 
         self.assertTrue(email_answer.attachments)
         self.assertTrue(answer.attachments.all())
+
+    def test_attachments_with_names(self):
+        '''When I get an attachment it should have names'''
+        email_answer = self.handler.handle(self.mail_with_attachments)
+        answer = email_answer.send_back()
+
+        self.assertTrue(answer.attachments.filter(name="fiera_parque.jpg"))
+        self.assertTrue(answer.attachments.filter(name="hello.pd.pdf"))
+        self.assertTrue(answer.attachments.filter(name="hello.docx"))
