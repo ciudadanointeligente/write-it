@@ -121,6 +121,9 @@ class EmailHandler(FroideEmailParser):
     def __init__(self, answer_class=EmailAnswer):
         self.message = None
         self.answer_class = answer_class
+        self.content_types_parsers = {
+            'text/plain': self.parse_text_plain
+        }
 
     def save_raw_email(self, lines):
         raw_email = RawIncomingEmail.objects.create(content=lines)
@@ -152,8 +155,8 @@ class EmailHandler(FroideEmailParser):
         logging.info("Reading the parts")
         for part in msg.walk():
             logging.info("Part of type " + part.get_content_type())
-            if part.get_content_type() == 'text/plain':
-                answer = self.parse_text_plain(answer, part)
+            if part.get_content_type() in self.content_types_parsers.keys():
+                answer = self.content_types_parsers[part.get_content_type()](answer, part)
             attachment = self.parse_attachment(part)
             if attachment:
                 answer.add_attachment(attachment)
