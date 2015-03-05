@@ -8,6 +8,7 @@ from mailit.bin.handleemail import EmailAnswer
 from django.core.files import File
 from mock import patch
 from mailit.tests.email_parser.incoming_mail_tests import PostMock
+from nuntium.models import Answer
 
 
 class AnswerHandlerTestCase(TestCase):
@@ -69,10 +70,13 @@ class AnswerHandlerTestCase(TestCase):
         email_answer.content_text = 'prueba4lafieritaespeluda'
         email_answer.add_attachment(self.photo_fiera)
         email_answer.add_attachment(self.pdf_file)
+        any_answer = Answer.objects.first()
 
         with patch('requests.Session.post') as post:
             post.return_value = PostMock()
             with patch('mailit.bin.handleemail.EmailAnswer.save_attachment') as save_attachment:
-                email_answer.send_back()
-                save_attachment.assert_any_call(self.photo_fiera)
-                save_attachment.assert_any_call(self.pdf_file)
+                with patch('mailit.bin.handleemail.EmailAnswer.save') as save_answer:
+                    save_answer.return_value = any_answer
+                    email_answer.send_back()
+                    save_attachment.assert_any_call(any_answer, self.photo_fiera)
+                    save_attachment.assert_any_call(any_answer, self.pdf_file)

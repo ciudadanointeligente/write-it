@@ -99,13 +99,14 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
         else:
             answer = self.save()
             raw_answers = RawIncomingEmail.objects.filter(message_id=self.message_id)
-            if answer is not None and raw_answers:
-                raw_email = raw_answers[0]
-                raw_email = RawIncomingEmail.objects.get(message_id=self.message_id)
-                raw_email.answer = answer
-                raw_email.save()
-            for attachment in self.attachments:
-                self.save_attachment(attachment)
+            if answer is not None:
+                for attachment in self.attachments:
+                    self.save_attachment(answer, attachment)
+                if raw_answers:
+                    raw_email = raw_answers[0]
+                    raw_email = RawIncomingEmail.objects.get(message_id=self.message_id)
+                    raw_email.answer = answer
+                    raw_email.save()
 
     def add_attachment(self, attachment):
         self.attachments.append(attachment)
