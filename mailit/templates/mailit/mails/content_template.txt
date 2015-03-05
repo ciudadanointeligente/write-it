@@ -1,10 +1,30 @@
-Hello {{ person }}:
-You have a new message:
-subject: {{ subject }} 
-content: {{ content }}
+Dear {person}
+
+You’ve received a message via WriteIt, the online service that allows
+anyone to write to politicians and other prominent people.
 
 
-If you want to see all the other messages please visit {{ writeit_url }}.
-Seeya
---
-You writeIt and we deliverit.
+The message is as follows:
+Subject: {subject}
+From: {author}
+Message body:
+{content}
+
+
+You can respond to {author}
+simply by replying to this email.
+
+** IMPORTANT ** Note that, as well as being sent to
+{author},
+your response will be added to the
+{writeit_name} website at {writeit_url},
+where it will be public and visible to anyone.
+
+
+If there’s a better email address for you, please let us know at
+{owner_email},
+where we’ll also be happy to answer any questions or problems.
+
+
+All the best,
+The WriteIt team

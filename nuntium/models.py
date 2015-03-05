@@ -12,8 +12,8 @@ from django.contrib.sites.models import Site
 import datetime
 from djangoplugins.models import Plugin
 from django.core.mail import EmailMultiAlternatives
-from django.template.loader import get_template, get_template_from_string
-from django.template import Context, Template
+from django.template.loader import get_template
+from django.template import Context
 from django.conf import settings
 from django.core.urlresolvers import reverse
 import uuid
@@ -21,15 +21,17 @@ from django.template.defaultfilters import slugify
 import re
 from django.db.models import Q
 import requests
+from django.utils.timezone import now
+
+from annoying.fields import AutoOneToOneField
+
 from autoslug import AutoSlugField
 from unidecode import unidecode
 from django.db.models.query import QuerySet
 from itertools import chain
-from django.utils.timezone import now
 import os
 from popit_api_instance import PopitApiInstance
 from requests.exceptions import ConnectionError
-from annoying.fields import AutoOneToOneField
 from django.core import mail
 
 
@@ -456,42 +458,48 @@ class Answer(models.Model):
             }
 
 
-# Possible values are: \n {{ user }} is the name of who
-# created the message, \n {{ person }}
-# is the person who this message was written to
-# {{ message }} is the message that {{ person }} got
-# in the first place, and {{ answer }} is what {{ person }} wrote back
 def send_new_answer_payload(sender, instance, created, **kwargs):
     answer = instance
+    writeitinstance = answer.message.writeitinstance
+
     if created:
-        connection = answer.message.writeitinstance.config.get_mail_connection()
-        new_answer_template = answer.message.writeitinstance.new_answer_notification_template
-        htmly = get_template_from_string(new_answer_template.template_html)
-        texty = get_template_from_string(new_answer_template.template_text)
+        connection = writeitinstance.config.get_mail_connection()
+        new_answer_template = writeitinstance.new_answer_notification_template
+
+        current_site = Site.objects.get_current()
+        message_url = 'http://' + current_site.domain + reverse('message_detail', kwargs={'pk': answer.message.pk})
+
+        context = {
+            'author_name': answer.message.author_name,
+            'person': answer.person.name,
+            'subject': answer.message.subject,
+            'content': answer.content,
+            'message_url': message_url,
+            'writeit_name': answer.message.writeitinstance.name,
+            }
+
+        subject = new_answer_template.subject_template.format(**context)
+        text_content = new_answer_template.template_text.format(**context)
+        html_content = new_answer_template.template_html.format(**context)
+
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = settings.DEFAULT_FROM_EMAIL
         else:
-            from_domain = answer.message.writeitinstance.config.custom_from_domain\
-                or settings.DEFAULT_FROM_DOMAIN
+            from_domain = writeitinstance.config.custom_from_domain or settings.DEFAULT_FROM_DOMAIN
             from_email = "%s@%s" % (
-                answer.message.writeitinstance.slug, from_domain)
-        subject_template = new_answer_template.subject_template
-        for subscriber in answer.message.subscribers.all():
-            d = Context({
-                'user': answer.message.author_name,
-                'person': answer.person,
-                'message': answer.message,
-                'answer': answer,
-            })
-            html_content = htmly.render(d)
-            txt_content = texty.render(d)
-            subject = subject_template % {
-                'person': answer.person.name,
-                'message': answer.message.subject,
-                }
+                writeitinstance.slug,
+                from_domain,
+                )
+
+        subscribers = answer.message.subscribers.all()
+
+        if writeitinstance.config.notify_owner_when_new_answer:
+            subscribers = chain(subscribers, (writeitinstance.owner,))
+
+        for subscriber in subscribers:
             msg = EmailMultiAlternatives(
                 subject,
-                txt_content,
+                text_content,
                 from_email,
                 [subscriber.email],
                 connection=connection,
@@ -500,37 +508,15 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
                 msg.attach_alternative(html_content, "text/html")
             msg.send()
 
-        if answer.message.writeitinstance.config.notify_owner_when_new_answer:
-            d = Context({
-                'user': answer.message.writeitinstance.owner,
-                'person': answer.person,
-                'message': answer.message,
-                'answer': answer,
-                })
-            html_content = htmly.render(d)
-            txt_content = texty.render(d)
-            subject = subject_template % {
-                'person': answer.message.writeitinstance.owner.username,
-                'message': answer.message.subject,
-                }
-            msg = EmailMultiAlternatives(
-                subject,
-                txt_content,
-                from_email,
-                [answer.message.writeitinstance.owner.email],
-                connection=connection,
-                )
-            if html_content:
-                msg.attach_alternative(html_content, "text/html")
-            msg.send()
+        # Webhooks
+        payload = {
+            'message_id': '/api/v1/message/{0}/'.format(answer.message.id),
+            'content': answer.content,
+            'person': answer.person.name,
+            'person_id': answer.person.popit_url,
+            }
 
-        for webhook in answer.message.writeitinstance.answer_webhooks.all():
-            payload = {
-                'message_id': '/api/v1/message/{0}/'.format(answer.message.id),
-                'content': answer.content,
-                'person': answer.person.name,
-                'person_id': answer.person.popit_url,
-                }
+        for webhook in writeitinstance.answer_webhooks.all():
             requests.post(webhook.url, data=payload)
 
 
@@ -716,9 +702,19 @@ default_confirmation_template_subject = read_template_as_string('templates/nunti
 
 class ConfirmationTemplate(models.Model):
     writeitinstance = models.OneToOneField(WriteItInstance)
-    content_html = models.TextField(blank=True)
-    content_text = models.TextField(default=default_confirmation_template_content_text)
-    subject = models.CharField(max_length=512, default=default_confirmation_template_subject)
+    content_html = models.TextField(
+        blank=True,
+        help_text=_('You can use {author_name}, {writeit_name}, {subject}, {content}, {recipients}, {confirmation_url}, and {message_url}'),
+        )
+    content_text = models.TextField(
+        default=default_confirmation_template_content_text,
+        help_text=_('You can use {author_name}, {writeit_name}, {subject}, {content}, {recipients}, {confirmation_url}, and {message_url}'),
+        )
+    subject = models.CharField(
+        max_length=512,
+        default=default_confirmation_template_subject,
+        help_text=_('You can use {author_name}, {writeit_name}, {subject}, {content}, {recipients}, {confirmation_url}, and {message_url}'),
+        )
 
 
 class Confirmation(models.Model):
@@ -744,8 +740,7 @@ class Confirmation(models.Model):
         return reverse('confirm', kwargs={'slug': self.key})
 
 
-#this should be named to "send_confirmation_email"
-def send_an_email_to_the_author(sender, instance, created, **kwargs):
+def send_confirmation_email(sender, instance, created, **kwargs):
     confirmation = instance
     if created:
         url = reverse('confirm', kwargs={
@@ -754,19 +749,25 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
         current_site = Site.objects.get_current()
         confirmation_full_url = "http://" + current_site.domain + url
         message_full_url = "http://" + current_site.domain + confirmation.message.get_absolute_url()
-        plaintext = Template(confirmation.message.writeitinstance.confirmationtemplate.content_text)
-        htmly = Template(confirmation.message.writeitinstance.confirmationtemplate.content_html)
+        plaintext = confirmation.message.writeitinstance.confirmationtemplate.content_text
+        htmly = confirmation.message.writeitinstance.confirmationtemplate.content_html
         subject = confirmation.message.writeitinstance.confirmationtemplate.subject
         subject = subject.rstrip()
 
-        d = Context(
-            {'confirmation': confirmation,
-             'confirmation_full_url': confirmation_full_url,
-             'message_full_url': message_full_url,
-             })
+        context = {
+            'author_name': confirmation.message.author_name,
+            'writeit_name': confirmation.message.writeitinstance.name,
+            'subject': confirmation.message.subject,
+            'content': confirmation.message.content,
+            'recipients': u', '.join([x.name for x in confirmation.message.people]),
+            'confirmation_url': confirmation_full_url,
+            'message_url': message_full_url,
+            }
 
-        text_content = plaintext.render(d)
-        html_content = htmly.render(d)
+        text_content = plaintext.format(**context)
+        html_content = htmly.format(**context)
+        subject = subject.format(**context)
+
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = settings.DEFAULT_FROM_EMAIL
         else:
@@ -780,9 +781,9 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
 
         msg = EmailMultiAlternatives(
             subject,
-            text_content,  # content
-            from_email,  # From
-            [confirmation.message.author_email],  # To
+            text_content,
+            from_email,
+            [confirmation.message.author_email],
             connection=connection,
             )
 
@@ -795,7 +796,7 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
             pass
 
 
-post_save.connect(send_an_email_to_the_author, sender=Confirmation)
+post_save.connect(send_confirmation_email, sender=Confirmation)
 
 
 class Moderation(models.Model):
@@ -853,18 +854,16 @@ class NewAnswerNotificationTemplate(models.Model):
         )
     template_html = models.TextField(
         blank=True,
-        help_text=_('You can use {{ user }}, {{ person }}, \
-            {{ message.subject }} and {{ answer.content }}'),
+        help_text=_('You can use {author_name}, {person}, {subject}, {content}, {message_url}, and {writeit_name}'),
         )
     template_text = models.TextField(
         default=nant_txt,
-        help_text=_('You can use {{ user }}, {{ person }}, \
-            {{ message.subject }} and {{ answer.content }}'),
+        help_text=_('You can use {author_name}, {person}, {subject}, {content}, {message_url}, and {writeit_name}'),
         )
     subject_template = models.CharField(
         max_length=255,
         default=nant_subject,
-        help_text=_('You can use %(message)s and %(person)s'),
+        help_text=_('You can use {author_name}, {person}, {subject}, {content}, {message_url}, and {writeit_name}'),
         )
 
     def __unicode__(self):
