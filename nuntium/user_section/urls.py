@@ -2,20 +2,16 @@ from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 
 from .views import UserAccountView, WriteItInstanceUpdateView, \
-    YourContactsView, YourInstancesView, WriteItInstanceAdvancedUpdateView, \
+    YourInstancesView, WriteItInstanceAdvancedUpdateView, \
     WriteItInstanceTemplateUpdateView, NewAnswerNotificationTemplateUpdateView, \
     ConfirmationTemplateUpdateView, WriteItInstanceCreateView, \
-    YourPopitApiInstances, WriteItPopitUpdateView, MessagesPerWriteItInstance, \
+    MessagesPerWriteItInstance, \
     MessageDetail, MessageDelete, AnswerCreateView, ModerationView, AnswerUpdateView, \
     WriteitPopitRelatingView, WriteItDeleteView, WriteItInstanceContactDetailView, \
     WriteItInstanceStatusView, WriteItInstanceApiDocsView
 
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
-    url(r'^accounts/your_contacts/?$', YourContactsView.as_view(), name='your-contacts'),
-    url(r'^accounts/my_popit_instances/?$', YourPopitApiInstances.as_view(), name='my-popit-instances'),
-    url(r'^accounts/my_popit_instances/(?P<pk>[-\d]+)/update/?$',
-        WriteItPopitUpdateView.as_view(), name='rerelate-writeit-popit'),
     url(r'^accounts/your_instances/?$', YourInstancesView.as_view(), name='your-instances'),
     url(r'^writeitinstance/edit/(?P<pk>[-\d]+)/?$', WriteItInstanceUpdateView.as_view(),
         name='writeitinstance_basic_update'),

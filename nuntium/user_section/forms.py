@@ -138,7 +138,7 @@ class AnswerForm(ModelForm):
 
 class RelatePopitInstanceWithWriteItInstance(Form):
     popit_url = URLField(
-        label=_('Url of the popit instance api'),
+        label=_('PopIt API URL'),
         help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"),
         )
 

@@ -47,7 +47,7 @@ class PopitWriteitRelationRecord(TestCase):
             writeitinstance=self.writeitinstance,
             popitapiinstance=self.api_instance,
             )
-        expected_unicode = "The people from http://popit.org/api/v1 was loaded into instance 1"
+        expected_unicode = "The people from http://popit.org/api/v1 were loaded into instance 1"
         self.assertEquals(record.__unicode__(), expected_unicode)
 
     @skipUnless(settings.LOCAL_POPIT, "No local popit running")

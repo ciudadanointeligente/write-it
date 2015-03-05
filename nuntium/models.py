@@ -912,7 +912,7 @@ class WriteitInstancePopitInstanceRecord(models.Model):
     created = models.DateTimeField(auto_now_add=True, editable=False)
 
     def __unicode__(self):
-        return "The people from {url} was loaded into {instance}".format(
+        return "The people from {url} were loaded into {instance}".format(
             url=self.popitapiinstance.url,
             instance=self.writeitinstance.__unicode__(),
             )

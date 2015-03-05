@@ -28,7 +28,7 @@ $(".chosen-person-select").chosen();
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">{% trans 'Relate a new popit api to this Instance' %}</h4>
+        <h4 class="modal-title">{% trans 'Relate a new PopIt' %}</h4>
       </div>
       <div class="modal-body">
         <form action="{% url 'relate-writeit-popit' pk=writeitinstance.pk %}" method="POST" role="form">
@@ -58,7 +58,7 @@ $(".chosen-person-select").chosen();
 
     <div class="col-md-4">
       <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#relate">
-        {% trans 'Relate a new popit api to this Instance' %}
+        {% trans 'Relate a new PopIt' %}
       </button>
     </div>
     <div class="col-md-8">
@@ -68,19 +68,19 @@ $(".chosen-person-select").chosen();
         <thead>
           <tr>
             <th>
-              {% trans 'Your popit apis and the writeit instances they are related to' %}
+              {% trans 'PopIt' %}
             </th>
             <th>
-              {% trans 'When they were created' %}
+              {% trans 'created' %}
             </th>
             <th>
-              {% trans 'When they were last updated' %}
+              {% trans 'updated' %}
             </th>
             <th>
-              {% trans 'Status' %}
+              {% trans 'status' %}
             </th>
             <th>
-              {% trans 'Notes' %}
+              {% trans 'notes' %}
             </th>
             <th>
             </th>
@@ -89,7 +89,7 @@ $(".chosen-person-select").chosen();
         <tbody>
           {% for record in relations %}
             <tr>
-              <td>{{ record }}</td>
+              <td>{{ record.popitapiinstance.url }}</td>
               <td>{{ record.created }}</td>
               <td>{{ record.updated }}</td>
               <td>{{ record.status }}</td>

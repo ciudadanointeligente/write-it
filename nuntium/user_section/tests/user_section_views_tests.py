@@ -7,7 +7,6 @@ from django.test.client import Client, RequestFactory
 from django.utils.translation import activate
 from django.utils.unittest import skipUnless
 from popit.models import Person
-from contactos.models import Contact
 from mailit.forms import MailitTemplateForm
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 
@@ -107,51 +106,6 @@ class ContactsPerWriteItInstanceTestCase(UserSectionTestCase):
         self.assertEquals(response.status_code, 200)
         self.assertIn('people', response.context)
         self.assertIsInstance(response.context['people'][0], Person)
-
-
-class YourContactsViewTestCase(UserSectionTestCase):
-    def setUp(self):
-        super(YourContactsViewTestCase, self).setUp()
-        self.contact = Contact.objects.get(id=1)
-        # The user fiera and the password is feroz
-        # but seriously I don't know how to make this more
-        # explicit
-        self.contact.save()
-        self.owner = self.contact.writeitinstance.owner
-        self.owner.set_password('feroz')
-        self.owner.save()
-
-    def test_your_contacts_url_exist(self):
-        url = reverse('your-contacts')
-
-        self.assertTrue(url)
-
-    def test_it_is_reachable(self):
-        url = reverse('your-contacts')
-        c = Client()
-
-        c.login(username=self.owner.username, password="feroz")
-
-        response = c.get(url)
-        self.assertEquals(response.status_code, 200)
-        self.assertIn('object_list', response.context)
-        self.assertEquals(len(response.context['object_list']), 4)
-        contact_in_response = response.context['object_list'].get(id=self.contact.id)
-        self.assertTrue(contact_in_response)
-        self.assertNotIn('form', response.context)
-        # Here I want to make sure that it has been removed the possibility for
-        # creating a new contact in this view
-        # only to display them
-        # form = response.context['form']
-        # self.assertIsInstance(form, ContactCreateForm)
-        self.assertTemplateUsed(response, 'base_edit.html')
-        self.assertTemplateUsed(response, 'nuntium/profiles/your-contacts.html')
-
-    def test_it_is_not_reachable_by_a_non_user(self):
-        url = reverse('your-contacts')
-        client = Client()
-        response = client.get(url)
-        self.assertRedirectToLogin(response, next_url=url)
 
 
 class YourInstancesViewTestCase(UserSectionTestCase):
