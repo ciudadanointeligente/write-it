@@ -151,6 +151,7 @@ INSTALLED_APPS = (
     'social.apps.django_app.default',
     'pagination',
     'annoying',
+    'celery_haystack',
 
     'nuntium',
     'djangoplugins',
@@ -177,7 +178,8 @@ if TESTING:
         'django_nose',
         )
 
-#SEARCH INDEX WITH SOLR
+#SEARCH INDEX WITH ELASTICSEARCH
+HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 if TESTING:
     HAYSTACK_CONNECTIONS = {
         'default': {

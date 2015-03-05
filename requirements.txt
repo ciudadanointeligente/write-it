@@ -37,3 +37,4 @@ ndg-httpsclient
 pyasn1
 django-pagination
 django-annoying
+celery-haystack==0.8
