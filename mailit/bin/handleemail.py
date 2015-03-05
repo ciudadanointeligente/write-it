@@ -155,11 +155,17 @@ class EmailHandler(FroideEmailParser):
         logging.info("Reading the parts")
         for part in msg.walk():
             logging.info("Part of type " + part.get_content_type())
+            attachment = self.parse_attachment(part)
+            processed = False
             if part.get_content_type() in self.content_types_parsers.keys():
                 answer = self.content_types_parsers[part.get_content_type()](answer, part)
-            attachment = self.parse_attachment(part)
+                processed = True
             if attachment:
                 answer.add_attachment(attachment)
+                processed = True
+
+            if not processed:
+                self.handle_not_processed_part(part)
         #logging stuff
 
         log = 'New incoming email from %(from)s sent on %(date)s with subject %(subject)s and content %(content)s'
@@ -171,6 +177,9 @@ class EmailHandler(FroideEmailParser):
             }
         logging.info(log)
         return answer
+
+    def handle_not_processed_part(self, part):
+        pass
 
     def parse_text_plain(self, answer, part):
         charset = part.get_content_charset()
