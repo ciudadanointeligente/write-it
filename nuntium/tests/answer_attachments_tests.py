@@ -20,7 +20,9 @@ class AnswerAttachmentsTest(TestCase):
 
     def test_instantiate_an_attachment(self):
         '''I can instantiate an attachment'''
-        attachment = AnswerAttachment.objects.create(answer=self.answer, content=self.photo_fiera)
+        attachment = AnswerAttachment.objects.create(answer=self.answer,
+                        content=self.photo_fiera,
+                        name="fiera_parque.jpg")
         self.assertTrue(attachment)
         self.assertEquals(attachment.answer, self.answer)
         self.assertIn(attachment, self.answer.attachments.all())

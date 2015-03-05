@@ -535,6 +535,7 @@ post_save.connect(send_new_answer_payload, sender=Answer)
 
 class AnswerAttachment(models.Model):
     answer = models.ForeignKey(Answer, related_name="attachments")
+    name = models.CharField(max_length=512, default="")
     content = models.FileField(upload_to="attachments")
 
 
