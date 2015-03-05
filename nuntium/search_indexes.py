@@ -1,9 +1,10 @@
 # coding=utf-8
 from haystack import indexes
+from celery_haystack.indexes import CelerySearchIndex
 from .models import Message, Answer
 
 
-class MessageIndex(indexes.SearchIndex, indexes.Indexable):
+class MessageIndex(CelerySearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     writeitinstance = indexes.IntegerField(model_attr='writeitinstance__id')
 
@@ -14,7 +15,7 @@ class MessageIndex(indexes.SearchIndex, indexes.Indexable):
         return self.get_model().public_objects.all()
 
 
-class AnswerIndex(indexes.SearchIndex, indexes.Indexable):
+class AnswerIndex(CelerySearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     writeitinstance = indexes.IntegerField(model_attr='message__writeitinstance__id')
 
