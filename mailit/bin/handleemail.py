@@ -10,6 +10,7 @@ from email_reply_parser import EmailReplyParser
 from flufl.bounce import all_failures, scan_message
 from mailit.models import RawIncomingEmail
 from nuntium.models import Answer
+from mailit.bin.froide_email_utils import FroideEmailParser
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
@@ -116,7 +117,7 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
         pass
 
 
-class EmailHandler():
+class EmailHandler(FroideEmailParser):
     def __init__(self, answer_class=EmailAnswer):
         self.message = None
         self.answer_class = answer_class
@@ -160,6 +161,9 @@ class EmailHandler():
                 text = EmailReplyParser.parse_reply(data)
                 text.strip()
                 answer.content_text = text
+            attachment = self.parse_attachment(part)
+            if attachment:
+                answer.add_attachment(attachment)
         #logging stuff
 
         log = 'New incoming email from %(from)s sent on %(date)s with subject %(subject)s and content %(content)s'

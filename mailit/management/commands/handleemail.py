@@ -1,12 +1,13 @@
 from mailit.bin.handleemail import EmailAnswer, EmailHandler
 from mailit.models import BouncedMessageRecord
 import logging
-from nuntium.models import OutboundMessageIdentifier, OutboundMessage, OutboundMessagePluginRecord
+from nuntium.models import OutboundMessageIdentifier, OutboundMessage, OutboundMessagePluginRecord, AnswerAttachment
 from django.core.management.base import BaseCommand
 import sys
 from django.conf import settings
 from django.core.mail.message import EmailMultiAlternatives
 import traceback
+from django.core.files import File
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
@@ -15,6 +16,11 @@ class AnswerForManageCommand(EmailAnswer):
     def save(self):
         answer = OutboundMessageIdentifier.create_answer(self.outbound_message_identifier, self.content_text)
         return answer
+
+    def save_attachment(self, answer, attachment):
+        the_file = File(attachment)
+        answer_attachment = AnswerAttachment(answer=answer, content=the_file)
+        answer_attachment.save()
 
     def report_bounce(self):
         logging.info("Reporting bounce using a management command")
