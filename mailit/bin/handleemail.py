@@ -149,18 +149,11 @@ class EmailHandler(FroideEmailParser):
         regex = re.compile(r".*[\+\-](.*)@.*")
 
         answer.outbound_message_identifier = regex.match(the_recipient).groups()[0]
-        charset = msg.get_charset()
         logging.info("Reading the parts")
         for part in msg.walk():
             logging.info("Part of type " + part.get_content_type())
             if part.get_content_type() == 'text/plain':
-                charset = part.get_content_charset()
-                if not charset:
-                    charset = "ISO-8859-1"
-                data = part.get_payload(decode=True).decode(charset)
-                text = EmailReplyParser.parse_reply(data)
-                text.strip()
-                answer.content_text = text
+                answer = self.parse_text_plain(answer, part)
             attachment = self.parse_attachment(part)
             if attachment:
                 answer.add_attachment(attachment)
@@ -174,6 +167,16 @@ class EmailHandler(FroideEmailParser):
             'content': answer.content_text,
             }
         logging.info(log)
+        return answer
+
+    def parse_text_plain(self, answer, part):
+        charset = part.get_content_charset()
+        if not charset:
+            charset = "ISO-8859-1"
+        data = part.get_payload(decode=True).decode(charset)
+        text = EmailReplyParser.parse_reply(data)
+        text.strip()
+        answer.content_text = text
         return answer
 
     def set_raw_email_with_processed_email(self, raw_email, email_answer):
