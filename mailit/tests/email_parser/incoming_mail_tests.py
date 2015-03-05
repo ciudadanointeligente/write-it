@@ -6,7 +6,7 @@ from requests.models import Request
 from django.utils.unittest import skip
 from django.contrib.auth.models import User
 
-from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Message, OutboundMessagePluginRecord
+from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Message, OutboundMessagePluginRecord, Answer
 from contactos.models import Contact
 
 from global_test_case import GlobalTestCase as TestCase
@@ -223,6 +223,25 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
         '''The answer gets the message id'''
         self.answer = self.handler.handle(self.email)
         self.assertEquals(self.answer.message_id, '<CAA5PczfGfdhf29wgK=8t6j7hm8HYsBy8Qg87iTU2pF42Ez3VcQ@mail.gmail.com>')
+
+    def test_send_back_also_returns_an_answer(self):
+        '''the method EmailAnswer.send_back returns an answer'''
+        email_answer = EmailAnswer()
+        email_answer.subject = 'prueba4'
+        email_answer.content_text = 'prueba4lafieritaespeluda'
+        email_answer.outbound_message_identifier = '8974aabsdsfierapulgosa'
+        email_answer.email_from = 'falvarez@votainteligente.cl'
+        email_answer.when = 'Wed Jun 26 21:05:33 2013'
+        # so when I execute email_answer.save, it will return
+        # the first answer that we have in our fixtures
+        # it doesn't really matter as long as it returns an answer
+        answer = Answer.objects.first()
+        with patch('requests.Session.post') as post:
+            post.return_value = PostMock()
+            with patch('mailit.bin.handleemail.EmailAnswer.save') as save_answer:
+                save_answer.return_value = answer
+                result = email_answer.send_back()
+                self.assertEquals(result, answer)
 
 
 class HandleBounces(TestCase):
