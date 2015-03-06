@@ -111,7 +111,8 @@ class EmailHandler():
         self.message = None
         self.answer_class = answer_class
         self.content_types_parsers = {
-            'text/plain': self.parse_text_plain
+            'text/plain': self.parse_text_plain,
+            'text/html': self.parse_text_html,
         }
 
     def save_raw_email(self, lines):
@@ -171,6 +172,11 @@ class EmailHandler():
         text = EmailReplyParser.parse_reply(data)
         text.strip()
         answer.content_text = text
+        return answer
+
+    def parse_text_html(self, answer, part):
+        charset = part.get_content_charset() or "ISO-8859-1"
+        answer.content_html = part.get_payload(decode=True).decode(charset)
         return answer
 
     def handle_not_processed_part(self, part):

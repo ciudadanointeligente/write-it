@@ -168,7 +168,7 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
     def test_get_html_content(self):
         '''Getting the html content out of a mail'''
         self.answer = self.handler.handle(self.email)
-        self.assertTrue(self.answer.content_html.contains('prueba4lafieri'))
+        self.assertIn('prueba4lafieri', self.answer.content_html)
 
     def test_gets_the_outbound_message_identifier_to_which_relate_it(self):
         #make a regexp
