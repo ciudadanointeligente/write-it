@@ -67,6 +67,7 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
     def __init__(self):
         self.subject = ''
         self._content_text = ''
+        self.content_html = ''
         self.outbound_message_identifier = ''
         self.email_from = ''
         self.when = ''
