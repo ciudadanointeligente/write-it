@@ -13,12 +13,16 @@ class AnswerTestCase(TestCase):
         self.person_not_in_the_instance = Person.objects.get(id=2)
 
     def test_create_an_answer(self):
-        answer = Answer.objects.create(message=self.message, person=self.person, content="the answer to that is ...")
+        answer = Answer.objects.create(message=self.message,
+            person=self.person,
+            content=u"the answer to that is ...",
+            content_html=u"<p>the answer to that is ...</p>")
 
         self.assertTrue(answer.id)
         self.assertEquals(answer.message, self.message)
         self.assertEquals(answer.person, self.person)
-        self.assertEquals(answer.content, "the answer to that is ...")
+        self.assertEquals(answer.content, u"the answer to that is ...")
+        self.assertEquals(answer.content_html, u"<p>the answer to that is ...</p>")
         self.assertTrue(answer.created is not None)
 
     def test_answer_has_unicode(self):

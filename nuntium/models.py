@@ -436,6 +436,7 @@ pre_save.connect(slugify_message, sender=Message)
 
 class Answer(models.Model):
     content = models.TextField()
+    content_html = models.TextField()
     person = models.ForeignKey(Person)
     message = models.ForeignKey(Message, related_name='answers')
     created = models.DateTimeField(auto_now=True, null=True)
@@ -667,11 +668,14 @@ class OutboundMessageIdentifier(models.Model):
     key = models.CharField(max_length=255)
 
     @classmethod
-    def create_answer(cls, identifier_key, content):
+    def create_answer(cls, identifier_key, content, content_html=""):
         identifier = cls.objects.get(key=identifier_key)
         message = identifier.outbound_message.message
         person = identifier.outbound_message.contact.person
-        the_created_answer = Answer.objects.create(message=message, person=person, content=content)
+        the_created_answer = Answer.objects.create(message=message,
+            person=person,
+            content=content,
+            content_html=content_html)
         return the_created_answer
 
     def save(self, *args, **kwargs):
