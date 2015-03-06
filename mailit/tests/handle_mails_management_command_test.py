@@ -122,7 +122,7 @@ class HandleIncomingEmailCommand(TestCase):
 
             the_answers = Answer.objects.filter(message=identifier.outbound_message.message)
             self.assertEquals(the_answers.count(), 1)
-            self.assertEquals(the_answers[0].content, 'prueba4lafieri\n')
+            self.assertEquals(the_answers[0].content, 'prueba4lafieri')
 
     def test_call_command_does_not_include_identifier_in_content(self):
         identifier = OutboundMessageIdentifier.objects.all()[0]

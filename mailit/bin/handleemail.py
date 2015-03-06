@@ -67,6 +67,7 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
     def __init__(self):
         self.subject = ''
         self._content_text = ''
+        self.content_html = ''
         self.outbound_message_identifier = ''
         self.email_from = ''
         self.when = ''
@@ -109,10 +110,13 @@ class EmailHandler():
     def __init__(self, answer_class=EmailAnswer):
         self.message = None
         self.answer_class = answer_class
+        self.content_types_attrs = {
+            'text/plain': 'content_text',
+            'text/html': 'content_html',
+        }
 
     def save_raw_email(self, lines):
-        raw_email = RawIncomingEmail.objects.create(content=lines)
-        return raw_email
+        return RawIncomingEmail.objects.create(content=lines)
 
     def instanciate_answer(self, lines):
         answer = self.answer_class()
@@ -137,19 +141,22 @@ class EmailHandler():
         regex = re.compile(r".*[\+\-](.*)@.*")
 
         answer.outbound_message_identifier = regex.match(the_recipient).groups()[0]
-        charset = msg.get_charset()
         logging.info("Reading the parts")
         for part in msg.walk():
             logging.info("Part of type " + part.get_content_type())
-            if part.get_content_type() == 'text/plain':
-                charset = part.get_content_charset()
-                if not charset:
-                    charset = "ISO-8859-1"
+
+            content_type_attr = self.content_types_attrs.get(part.get_content_type())
+            if content_type_attr:
+                charset = part.get_content_charset() or "ISO-8859-1"
                 data = part.get_payload(decode=True).decode(charset)
-                text = EmailReplyParser.parse_reply(data)
-                text.strip()
-                answer.content_text = text
-        #logging stuff
+
+                setattr(
+                    answer,
+                    content_type_attr,
+                    EmailReplyParser.parse_reply(data).strip(),
+                    )
+            else:
+                self.handle_not_processed_part(part)
 
         log = 'New incoming email from %(from)s sent on %(date)s with subject %(subject)s and content %(content)s'
         log = log % {
@@ -160,6 +167,9 @@ class EmailHandler():
             }
         logging.info(log)
         return answer
+
+    def handle_not_processed_part(self, part):
+        pass
 
     def set_raw_email_with_processed_email(self, raw_email, email_answer):
         raw_email.message_id = email_answer.message_id

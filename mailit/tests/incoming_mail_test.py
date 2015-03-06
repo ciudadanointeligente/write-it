@@ -55,9 +55,16 @@ class AnswerHandlerTestCase(TestCase):
     def test_class_answer(self):
 
         email_answer = EmailAnswer()
-        self.assertIsNone(email_answer.message_id)
+        self.assertTrue(hasattr(email_answer, 'subject'))
+        self.assertTrue(hasattr(email_answer, 'content_text'))
+        self.assertTrue(hasattr(email_answer, 'content_html'))
+        self.assertTrue(hasattr(email_answer, 'outbound_message_identifier'))
+        self.assertTrue(hasattr(email_answer, 'email_from'))
+        self.assertTrue(hasattr(email_answer, 'when'))
+        self.assertTrue(hasattr(email_answer, 'message_id'))
         email_answer.subject = 'prueba4'
         email_answer.content_text = 'prueba4lafieritaespeluda'
+        email_answer.content_html = '<p>prueba4lafieritaespeluda</p>'
         email_answer.outbound_message_identifier = '8974aabsdsfierapulgosa'
         email_answer.email_from = 'falvarez@votainteligente.cl'
         email_answer.when = 'Wed Jun 26 21:05:33 2013'
@@ -70,6 +77,7 @@ class AnswerHandlerTestCase(TestCase):
         self.assertEquals(email_answer.email_from, 'falvarez@votainteligente.cl')
         self.assertEquals(email_answer.when, 'Wed Jun 26 21:05:33 2013')
         self.assertEquals(email_answer.message_id, '<CAA5PczfGfdhf29wgK=8t6j7hm8HYsBy8Qg87iTU2pF42Ez3VcQ@mail.gmail.com>')
+        self.assertEquals(email_answer.content_html, '<p>prueba4lafieritaespeluda</p>')
         self.assertFalse(email_answer.is_bounced)
 
     @skip("not yet I'm going to do something")
@@ -97,8 +105,8 @@ class ReplyHandlerTestCase(ResourceTestCase):
         self.handler = EmailHandler()
 
     def test_get_only_new_content_and_not_original(self):
-        self.answer = self.handler.handle(self.email)
-        self.assertEquals(self.answer.content_text, u"aass áéíóúñ")
+        answer = self.handler.handle(self.email)
+        self.assertEquals(answer.content_text, u"aass áéíóúñ")
 
 
 class DoesNotIncludeTheIdentifierInTheContent(TestCase):
@@ -156,6 +164,11 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
     def test_gets_the_content(self):
         self.answer = self.handler.handle(self.email)
         self.assertTrue(self.answer.content_text.startswith('prueba4lafieri'))
+
+    def test_get_html_content(self):
+        '''Getting the html content out of a mail'''
+        self.answer = self.handler.handle(self.email)
+        self.assertIn('prueba4lafieri', self.answer.content_html)
 
     def test_gets_the_outbound_message_identifier_to_which_relate_it(self):
         #make a regexp
@@ -416,6 +429,7 @@ class EmailReadingExamplesTestCase(TestCase):
 
         answer = self.handler.handle(email)
         self.assertEquals(answer.content_text, u"si prueba no más")
+        self.assertIn(u"si prueba no más", answer.content_html)
 
     @skip("this fails because it still has some parts from the origina email, probably this is not easy taken away")
     def test_example2_gmail(self):
