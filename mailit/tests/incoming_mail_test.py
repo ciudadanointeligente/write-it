@@ -105,8 +105,8 @@ class ReplyHandlerTestCase(ResourceTestCase):
         self.handler = EmailHandler()
 
     def test_get_only_new_content_and_not_original(self):
-        self.answer = self.handler.handle(self.email)
-        self.assertEquals(self.answer.content_text, u"aass áéíóúñ")
+        answer = self.handler.handle(self.email)
+        self.assertEquals(answer.content_text, u"aass áéíóúñ")
 
 
 class DoesNotIncludeTheIdentifierInTheContent(TestCase):
