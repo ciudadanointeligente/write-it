@@ -55,7 +55,12 @@ class AnswerHandlerTestCase(TestCase):
     def test_class_answer(self):
 
         email_answer = EmailAnswer()
-        self.assertIsNone(email_answer.message_id)
+        self.assertTrue(hasattr(email_answer, 'subject'))
+        self.assertTrue(hasattr(email_answer, 'content_text'))
+        self.assertTrue(hasattr(email_answer, 'outbound_message_identifier'))
+        self.assertTrue(hasattr(email_answer, 'email_from'))
+        self.assertTrue(hasattr(email_answer, 'when'))
+        self.assertTrue(hasattr(email_answer, 'message_id'))
         email_answer.subject = 'prueba4'
         email_answer.content_text = 'prueba4lafieritaespeluda'
         email_answer.outbound_message_identifier = '8974aabsdsfierapulgosa'
