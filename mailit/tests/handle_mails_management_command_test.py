@@ -6,6 +6,7 @@ from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Answer
 from mock import patch
 from django.core import mail
 from django.test.utils import override_settings
+from django.utils.unittest import skip
 
 
 class ManagementCommandAnswer(TestCase):
@@ -127,6 +128,21 @@ class HandleIncomingEmailCommand(TestCase):
 
             self.assertTrue(the_answer.content_html)
             self.assertIn('prueba4lafieri', the_answer.content_html)
+
+    @skip("I cant' figure out how to parse only the important part of an html response, #571")
+    def test_get_the_right_html_part_of_the_email(self):
+        '''Get the content of the email without the signature'''
+        identifier = OutboundMessageIdentifier.objects.all()[0]
+        identifier.key = '4aaaabbb'
+        identifier.save()
+        with patch('sys.stdin') as stdin:
+            stdin.attach_mock(readlines1_mock, 'readlines')
+
+            call_command('handleemail', 'mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+
+            the_answer = Answer.objects.get(message=identifier.outbound_message.message)
+
+            self.assertEquals(the_answer.content_html, '<div dir="ltr">prueba4lafieri<br clear="all"><div><br>')
 
     def test_call_command_does_not_include_identifier_in_content(self):
         identifier = OutboundMessageIdentifier.objects.all()[0]
