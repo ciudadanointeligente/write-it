@@ -665,11 +665,14 @@ class OutboundMessageIdentifier(models.Model):
     key = models.CharField(max_length=255)
 
     @classmethod
-    def create_answer(cls, identifier_key, content):
+    def create_answer(cls, identifier_key, content, content_html=""):
         identifier = cls.objects.get(key=identifier_key)
         message = identifier.outbound_message.message
         person = identifier.outbound_message.contact.person
-        the_created_answer = Answer.objects.create(message=message, person=person, content=content)
+        the_created_answer = Answer.objects.create(message=message,
+            person=person,
+            content=content,
+            content_html=content_html)
         return the_created_answer
 
     def save(self, *args, **kwargs):
