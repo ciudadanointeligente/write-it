@@ -112,8 +112,29 @@ class EmailParserMixin(object):
         self.content_types_parsers = {
             'text/plain': self.parse_text_plain,
             'text/html': self.parse_text_html,
+            'multipart/alternative': self.parse_multipart_alternative,
+            'multipart/report': self.parse_multipart_report,
+            'message/delivery-status': self.parse_delivery_status,
+            'message/rfc822': self.parse_message_rfc822,
         }
         self.contains_unhandled_parts = False
+
+    def parse_message_rfc822(self, answer, part):
+        # This is usually the quoted part of the original mail
+        return answer
+
+    def parse_delivery_status(self, answer, part):
+        # This usually represents the data regarding
+        # what happened to an email, for example a bounce
+        return answer
+
+    def parse_multipart_report(self, answer, part):
+        # This is usually the information about why an email was bounced
+        return answer
+
+    def parse_multipart_alternative(self, answer, part):
+        # Parses Multipart Alternative
+        return answer
 
     def parse_text_plain(self, answer, part):
         charset = part.get_content_charset()
