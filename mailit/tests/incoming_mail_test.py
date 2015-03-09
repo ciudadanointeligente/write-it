@@ -429,6 +429,7 @@ class EmailReadingExamplesTestCase(TestCase):
 
         answer = self.handler.handle(email)
         self.assertEquals(answer.content_text, u"si prueba no más")
+        self.assertIn(u"si prueba no más", answer.content_html)
 
     @skip("this fails because it still has some parts from the origina email, probably this is not easy taken away")
     def test_example2_gmail(self):

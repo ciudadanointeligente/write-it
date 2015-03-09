@@ -176,7 +176,10 @@ class EmailHandler():
 
     def parse_text_html(self, answer, part):
         charset = part.get_content_charset() or "ISO-8859-1"
-        answer.content_html = part.get_payload(decode=True).decode(charset)
+        data = part.get_payload(decode=True).decode(charset)
+        text = EmailReplyParser.parse_reply(data)
+        text.strip()
+        answer.content_html = text
         return answer
 
     def handle_not_processed_part(self, part):
