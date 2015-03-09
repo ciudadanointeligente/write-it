@@ -10,6 +10,7 @@ from email_reply_parser import EmailReplyParser
 from flufl.bounce import all_failures, scan_message
 from mailit.models import RawIncomingEmail
 from nuntium.models import Answer
+from django.core.mail import mail_admins
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
@@ -67,6 +68,7 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
     def __init__(self):
         self.subject = ''
         self._content_text = ''
+        self.content_html = ''
         self.outbound_message_identifier = ''
         self.email_from = ''
         self.when = ''
@@ -105,10 +107,62 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
                 raw_email.save()
 
 
-class EmailHandler():
+class EmailParserMixin(object):
+    def __init__(self):
+        self.content_types_parsers = {
+            'text/plain': self.parse_text_plain,
+            'text/html': self.parse_text_html,
+            'multipart/alternative': self.parse_multipart_alternative,
+            'multipart/report': self.parse_multipart_report,
+            'message/delivery-status': self.parse_delivery_status,
+            'message/rfc822': self.parse_message_rfc822,
+        }
+        self.contains_unhandled_parts = False
+
+    def parse_message_rfc822(self, answer, part):
+        # This is usually the quoted part of the original mail
+        return answer
+
+    def parse_delivery_status(self, answer, part):
+        # This usually represents the data regarding
+        # what happened to an email, for example a bounce
+        return answer
+
+    def parse_multipart_report(self, answer, part):
+        # This is usually the information about why an email was bounced
+        return answer
+
+    def parse_multipart_alternative(self, answer, part):
+        # Parses Multipart Alternative
+        return answer
+
+    def parse_text_plain(self, answer, part):
+        charset = part.get_content_charset()
+        if not charset:
+            charset = "ISO-8859-1"
+        data = part.get_payload(decode=True).decode(charset)
+        text = EmailReplyParser.parse_reply(data)
+        text.strip()
+        answer.content_text = text
+        return answer
+
+    def parse_text_html(self, answer, part):
+        charset = part.get_content_charset() or "ISO-8859-1"
+        data = part.get_payload(decode=True).decode(charset)
+        text = EmailReplyParser.parse_reply(data)
+        text.strip()
+        answer.content_html = text
+        return answer
+
+    def handle_not_processed_part(self, part):
+        self.contains_unhandled_parts = True
+
+
+class EmailHandler(EmailParserMixin):
     def __init__(self, answer_class=EmailAnswer):
         self.message = None
         self.answer_class = answer_class
+        super(EmailHandler, self).__init__()
 
     def save_raw_email(self, lines):
         raw_email = RawIncomingEmail.objects.create(content=lines)
@@ -137,18 +191,16 @@ class EmailHandler():
         regex = re.compile(r".*[\+\-](.*)@.*")
 
         answer.outbound_message_identifier = regex.match(the_recipient).groups()[0]
-        charset = msg.get_charset()
         logging.info("Reading the parts")
         for part in msg.walk():
             logging.info("Part of type " + part.get_content_type())
-            if part.get_content_type() == 'text/plain':
-                charset = part.get_content_charset()
-                if not charset:
-                    charset = "ISO-8859-1"
-                data = part.get_payload(decode=True).decode(charset)
-                text = EmailReplyParser.parse_reply(data)
-                text.strip()
-                answer.content_text = text
+            processed = False
+            if part.get_content_type() in self.content_types_parsers.keys():
+                answer = self.content_types_parsers[part.get_content_type()](answer, part)
+                processed = True
+
+            if not processed:
+                self.handle_not_processed_part(part)
         #logging stuff
 
         log = 'New incoming email from %(from)s sent on %(date)s with subject %(subject)s and content %(content)s'
@@ -159,6 +211,9 @@ class EmailHandler():
             'content': answer.content_text,
             }
         logging.info(log)
+
+        if self.contains_unhandled_parts:
+            mail_admins("Could not parse parts", str(lines))
         return answer
 
     def set_raw_email_with_processed_email(self, raw_email, email_answer):

@@ -13,7 +13,10 @@ logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
 class AnswerForManageCommand(EmailAnswer):
     def save(self):
-        answer = OutboundMessageIdentifier.create_answer(self.outbound_message_identifier, self.content_text)
+        answer = OutboundMessageIdentifier.create_answer(
+            self.outbound_message_identifier,
+            self.content_text,
+            content_html=self.content_html)
         return answer
 
     def report_bounce(self):

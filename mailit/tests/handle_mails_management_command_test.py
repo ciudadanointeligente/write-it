@@ -6,6 +6,7 @@ from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Answer
 from mock import patch
 from django.core import mail
 from django.test.utils import override_settings
+from django.utils.unittest import skip
 
 
 class ManagementCommandAnswer(TestCase):
@@ -106,6 +107,14 @@ def readlines3_mock():
     return lines
 
 
+def readlines4_mock():
+    file_name = 'mailit/tests/fixture/mail_with_unknown_content_type.txt'
+    f = open(file_name)
+    lines = f.readlines()
+    f.close()
+    return lines
+
+
 class HandleIncomingEmailCommand(TestCase):
     def setUp(self):
         super(HandleIncomingEmailCommand, self).setUp()
@@ -122,7 +131,43 @@ class HandleIncomingEmailCommand(TestCase):
 
             the_answers = Answer.objects.filter(message=identifier.outbound_message.message)
             self.assertEquals(the_answers.count(), 1)
-            self.assertEquals(the_answers[0].content, 'prueba4lafieri\n')
+            the_answer = the_answers[0]
+            self.assertEquals(the_answer.content, 'prueba4lafieri\n')
+
+            self.assertTrue(the_answer.content_html)
+            self.assertIn('prueba4lafieri', the_answer.content_html)
+
+    @override_settings(ADMINS=(('Felipe', 'falvarez@admins.org'),))
+    def test_content_type_not_handed_email_admins(self):
+        '''Email the admins if there is an email with a part that could not be handled'''
+        identifier = OutboundMessageIdentifier.objects.all()[0]
+        identifier.key = '4aaaabbb'
+        identifier.save()
+
+        with patch('sys.stdin') as stdin:
+            stdin.attach_mock(readlines4_mock, 'readlines')
+            call_command('handleemail', 'mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+
+            self.assertTrue(len(mail.outbox) > 0)
+            email = mail.outbox[0]
+            self.assertEquals(email.to, ['falvarez@admins.org'])
+            self.assertIn("prueba4lafieri", email.body)
+            self.assertIn("Content-Type: text/non-standard", email.body)
+
+    @skip("I cant' figure out how to parse only the important part of an html response, #571")
+    def test_get_the_right_html_part_of_the_email(self):
+        '''Get the content of the email without the signature'''
+        identifier = OutboundMessageIdentifier.objects.all()[0]
+        identifier.key = '4aaaabbb'
+        identifier.save()
+        with patch('sys.stdin') as stdin:
+            stdin.attach_mock(readlines1_mock, 'readlines')
+
+            call_command('handleemail', 'mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+
+            the_answer = Answer.objects.get(message=identifier.outbound_message.message)
+
+            self.assertEquals(the_answer.content_html, '<div dir="ltr">prueba4lafieri<br clear="all"><div><br>')
 
     def test_call_command_does_not_include_identifier_in_content(self):
         identifier = OutboundMessageIdentifier.objects.all()[0]

@@ -145,6 +145,18 @@ class OutboundMessageIdentifierTestCase(TestCase):
 
         self.assertEquals(returned_answer, the_answer)
 
+    def test_create_an_answer_with_content_html(self):
+        '''OutboundMessageIdentifier.create_answer can receive a content_html field'''
+        identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
+        answer_content = u"La fiera no tiene pulgas."
+        answer_content_html = u'<p>La fiera no tiene pulgas.</p>'
+
+        returned_answer = OutboundMessageIdentifier.create_answer(identifier.key,
+            answer_content,
+            content_html=answer_content_html)
+
+        self.assertEquals(returned_answer.content_html, answer_content_html)
+
 
 class PluginMentalMessageTestCase(TestCase):
     '''
