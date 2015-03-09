@@ -107,6 +107,14 @@ def readlines3_mock():
     return lines
 
 
+def readlines4_mock():
+    file_name = 'mailit/tests/fixture/mail_with_unknown_content_type.txt'
+    f = open(file_name)
+    lines = f.readlines()
+    f.close()
+    return lines
+
+
 class HandleIncomingEmailCommand(TestCase):
     def setUp(self):
         super(HandleIncomingEmailCommand, self).setUp()
@@ -128,6 +136,23 @@ class HandleIncomingEmailCommand(TestCase):
 
             self.assertTrue(the_answer.content_html)
             self.assertIn('prueba4lafieri', the_answer.content_html)
+
+    @override_settings(ADMINS=(('Felipe', 'falvarez@admins.org'),))
+    def test_content_type_not_handed_email_admins(self):
+        '''Email the admins if there is an email with a part that could not be handled'''
+        identifier = OutboundMessageIdentifier.objects.all()[0]
+        identifier.key = '4aaaabbb'
+        identifier.save()
+
+        with patch('sys.stdin') as stdin:
+            stdin.attach_mock(readlines4_mock, 'readlines')
+            call_command('handleemail', 'mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+
+            self.assertTrue(len(mail.outbox) > 0)
+            email = mail.outbox[0]
+            self.assertEquals(email.to, ['falvarez@admins.org'])
+            self.assertIn("prueba4lafieri", email.body)
+            self.assertIn("Content-Type: text/non-standard", email.body)
 
     @skip("I cant' figure out how to parse only the important part of an html response, #571")
     def test_get_the_right_html_part_of_the_email(self):
