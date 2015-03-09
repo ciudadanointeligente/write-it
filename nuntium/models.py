@@ -435,6 +435,7 @@ pre_save.connect(slugify_message, sender=Message)
 
 class Answer(models.Model):
     content = models.TextField()
+    content_html = models.TextField()
     person = models.ForeignKey(Person)
     message = models.ForeignKey(Message, related_name='answers')
     created = models.DateTimeField(auto_now=True, null=True)
