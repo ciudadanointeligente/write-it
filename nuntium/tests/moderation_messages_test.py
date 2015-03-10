@@ -17,8 +17,8 @@ from django.test.utils import override_settings
 class ModerationMessagesTestCase(TestCase):
     def setUp(self):
         super(ModerationMessagesTestCase, self).setUp()
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
-        self.person1 = Person.objects.all()[0]
+        self.writeitinstance1 = WriteItInstance.objects.get(id=1)
+        self.person1 = Person.objects.get(id=1)
         self.private_message = Message.objects.create(
             content='Content 1',
             author_name='Felipe',
