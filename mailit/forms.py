@@ -23,10 +23,9 @@ class MailitTemplateForm(ModelForm):
 
     class Meta:
         model = MailItTemplate
-        fields = ("subject_template", "content_template", "content_html_template")
+        fields = ["subject_template", "content_template"]
 
         widgets = {
             'subject_template': TextInput(attrs={'class': 'form-control'}),
             'content_template': Textarea(attrs={'class': 'form-control'}),
-            'content_html_template': Textarea(attrs={'class': 'form-control'}),
         }
