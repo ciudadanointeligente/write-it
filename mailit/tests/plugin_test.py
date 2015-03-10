@@ -58,10 +58,6 @@ class MailTemplateTestCase(TestCase):
         with open('mailit/templates/mailit/mails/content_template.txt', 'r') as f:
             self.content_template += f.read()
 
-        self.content_html_template = ''
-        with open('mailit/templates/mailit/mails/content_html_template.txt', 'r') as f:
-            self.content_html_template += f.read()
-
     def test_it_has_a_template(self):
         self.writeitinstance2.mailit_template.delete()
         template = MailItTemplate.objects.create(
@@ -94,7 +90,7 @@ class MailTemplateTestCase(TestCase):
         self.assertTrue(instance.mailit_template)
         self.assertEquals(instance.mailit_template.subject_template, "[WriteIT] Message: %(subject)s")
         self.assertEquals(instance.mailit_template.content_template, self.content_template)
-        self.assertEquals(instance.mailit_template.content_html_template, self.content_html_template)
+        self.assertEquals(instance.mailit_template.content_html_template, '')
 
     def test_it_only_creates_templates_when_creating_not_when_updating(self):
         instance = WriteItInstance.objects.create(

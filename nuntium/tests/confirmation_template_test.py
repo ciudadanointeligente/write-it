@@ -25,9 +25,6 @@ class ConfirmationTemplateTestCase(TestCase):
         script_dir = os.path.dirname(__file__)
 
         self.writeitinstance = WriteItInstance.objects.all()[0]
-        self.default_template = ''
-        with open(os.path.join(script_dir, '../templates/nuntium/mails/confirmation/content_template.html'), 'r') as f:
-            self.default_template = f.read()
 
         self.default_template_text = ''
         with open(os.path.join(script_dir, '../templates/nuntium/mails/confirmation/content_template.txt'), 'r') as f:
@@ -44,7 +41,6 @@ class ConfirmationTemplateTestCase(TestCase):
         confirmation_template = ConfirmationTemplate(writeitinstance=self.writeitinstance)
         self.assertTrue(confirmation_template)
         self.assertEquals(confirmation_template.writeitinstance, self.writeitinstance)
-        self.assertEquals(confirmation_template.content_html, self.default_template)
         self.assertEquals(confirmation_template.content_text, self.default_template_text)
         self.assertEquals(confirmation_template.subject, self.default_subject)
 
@@ -57,7 +53,7 @@ class ConfirmationTemplateTestCase(TestCase):
             )
 
         self.assertTrue(writeitinstance.confirmationtemplate)
-        self.assertEquals(writeitinstance.confirmationtemplate.content_html, self.default_template)
+        self.assertEquals(writeitinstance.confirmationtemplate.content_html, '')
         self.assertEquals(writeitinstance.confirmationtemplate.content_text, self.default_template_text)
         self.assertEquals(writeitinstance.confirmationtemplate.subject, self.default_subject)
 
@@ -158,11 +154,6 @@ class ConfirmationTemplateTestCase(TestCase):
              'message_full_url': message_full_url,
              },
             )
-
-        # HTML version
-        template = Template(self.default_template)
-        rendered = template.render(context)
-        self.assertNotIn('!!INVALID!!', rendered)
 
         # Text version
         template = Template(self.default_template_text)
