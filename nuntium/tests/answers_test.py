@@ -7,8 +7,8 @@ from django.utils.translation import ugettext as _
 class AnswerTestCase(TestCase):
     def setUp(self):
         super(AnswerTestCase, self).setUp()
-        self.message = Message.objects.all()[0]
-        self.person = Person.objects.all()[0]
+        self.message = Message.objects.get(id=1)
+        self.person = Person.objects.get(id=1)
         #There is no membership for this guy to any writeitInstance
         self.person_not_in_the_instance = Person.objects.all()[1]
 
