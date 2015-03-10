@@ -494,7 +494,8 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
                 [subscriber.email],
                 connection=connection,
                 )
-            msg.attach_alternative(html_content, "text/html")
+            if html_content:
+                msg.attach_alternative(html_content, "text/html")
             msg.send()
 
         if answer.message.writeitinstance.config.notify_owner_when_new_answer:
@@ -517,7 +518,8 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
                 [answer.message.writeitinstance.owner.email],
                 connection=connection,
                 )
-            msg.attach_alternative(html_content, "text/html")
+            if html_content:
+                msg.attach_alternative(html_content, "text/html")
             msg.send()
 
         for webhook in answer.message.writeitinstance.answer_webhooks.all():
@@ -697,16 +699,13 @@ class OutboundMessagePluginRecord(models.Model):
     try_again = models.BooleanField(default=True)
 
 
-default_confirmation_template_content = read_template_as_string('templates/nuntium/mails/confirmation/content_template.html')
-
 default_confirmation_template_content_text = read_template_as_string('templates/nuntium/mails/confirmation/content_template.txt')
-
 default_confirmation_template_subject = read_template_as_string('templates/nuntium/mails/confirmation/subject_template.txt')
 
 
 class ConfirmationTemplate(models.Model):
     writeitinstance = models.OneToOneField(WriteItInstance)
-    content_html = models.TextField(default=default_confirmation_template_content)
+    content_html = models.TextField(blank=True)
     content_text = models.TextField(default=default_confirmation_template_content_text)
     subject = models.CharField(max_length=512, default=default_confirmation_template_subject)
 
@@ -828,10 +827,8 @@ class Subscriber(models.Model):
     message = models.ForeignKey(Message, related_name='subscribers')
     email = models.EmailField()
 
-nant_html = read_template_as_string('templates/nuntium/mails/new_answer.html')
 
 nant_txt = read_template_as_string('templates/nuntium/mails/new_answer.txt')
-
 nant_subject = read_template_as_string('templates/nuntium/mails/nant_subject.txt')
 
 
@@ -841,7 +838,7 @@ class NewAnswerNotificationTemplate(models.Model):
         related_name='new_answer_notification_template',
         )
     template_html = models.TextField(
-        default=nant_html,
+        blank=True,
         help_text=_('You can use {{ user }}, {{ person }}, \
             {{ message.subject }} and {{ answer.content }}'),
         )

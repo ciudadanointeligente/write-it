@@ -75,7 +75,8 @@ class MailChannel(OutputPlugin):
                 [to_email],
                 connection=connection,
                 )
-            msg.attach_alternative(html_content, "text/html")
+            if html_content:
+                msg.attach_alternative(html_content, "text/html")
             msg.send(fail_silently=False)
             log = "Mail sent from %(from)s to %(to)s"
 

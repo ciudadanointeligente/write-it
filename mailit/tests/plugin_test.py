@@ -58,10 +58,6 @@ class MailTemplateTestCase(TestCase):
         with open('mailit/templates/mailit/mails/content_template.txt', 'r') as f:
             self.content_template += f.read()
 
-        self.content_html_template = ''
-        with open('mailit/templates/mailit/mails/content_html_template.txt', 'r') as f:
-            self.content_html_template += f.read()
-
     def test_it_has_a_template(self):
         self.writeitinstance2.mailit_template.delete()
         template = MailItTemplate.objects.create(
@@ -94,7 +90,7 @@ class MailTemplateTestCase(TestCase):
         self.assertTrue(instance.mailit_template)
         self.assertEquals(instance.mailit_template.subject_template, "[WriteIT] Message: %(subject)s")
         self.assertEquals(instance.mailit_template.content_template, self.content_template)
-        self.assertEquals(instance.mailit_template.content_html_template, self.content_html_template)
+        self.assertEquals(instance.mailit_template.content_html_template, '')
 
     def test_it_only_creates_templates_when_creating_not_when_updating(self):
         instance = WriteItInstance.objects.create(
@@ -126,15 +122,15 @@ class MailSendingTestCase(TestCase):
             value='123456789',
             writeitinstance=self.writeitinstance2,
             )
-        self.message = Message.objects.all()[0]
-        self.outbound_message1 = OutboundMessage.objects.filter(message=self.message)[0]
+        self.message = Message.objects.get(pk=1)
+        self.outbound_message1 = self.message.outboundmessage_set.get(contact__value=u'pdaire@ciudadanointeligente.org')
         self.message_to_another_contact = Message.objects.create(
             content='Content 1',
             subject='Subject 1',
             writeitinstance=self.writeitinstance2,
             persons=[self.person3],
             )
-        self.outbound_message2 = OutboundMessage.objects.filter(message=self.message_to_another_contact)[0]
+        self.outbound_message2 = OutboundMessage.objects.get(message=self.message_to_another_contact)
 
         self.template1 = MailItTemplate.objects.all()[0]
 
@@ -146,13 +142,32 @@ class MailSendingTestCase(TestCase):
         self.assertTrue(result_of_sending)
         self.assertTrue(fatal_error is None)
         self.assertEquals(len(mail.outbox), 1)  # it is sent to one person pointed in the contact
-        self.assertTrue(mail.outbox[0].alternatives)
-        self.assertEquals(mail.outbox[0].alternatives[0][1], 'text/html')
-        self.assertIsInstance(mail.outbox[0], EmailMultiAlternatives)
-        self.assertEquals(mail.outbox[0].subject, '[WriteIT] Message: Subject 1')
-        self.assertEquals(mail.outbox[0].body, u'Hello Pedro:\nYou have a new message:\nsubject: Subject 1 \ncontent: Content 1\n\n\nIf you want to see all the other messages please visit http://127.0.0.1.xip.io:8000/en/writeit_instances/instance1.\nSeeya\n--\nYou writeIt and we deliverit.')
-        self.assertEquals(len(mail.outbox[0].to), 1)
-        self.assertIn("pdaire@ciudadanointeligente.org", mail.outbox[0].to)
+        message = mail.outbox[0]
+        self.assertFalse(message.alternatives)
+        self.assertIsInstance(message, EmailMultiAlternatives)
+        self.assertEquals(message.subject, '[WriteIT] Message: Subject 1')
+        self.assertEquals(message.body, u'Hello Pedro:\nYou have a new message:\nsubject: Subject 1 \ncontent: Content 1\n\n\nIf you want to see all the other messages please visit http://127.0.0.1.xip.io:8000/en/writeit_instances/instance1.\nSeeya\n--\nYou writeIt and we deliverit.')
+        self.assertEquals(len(message.to), 1)
+        self.assertIn("pdaire@ciudadanointeligente.org", message.to)
+
+    @override_settings(EMAIL_SUBJECT_PREFIX='[WriteIT]')
+    def test_sending_email_with_html(self):
+        activate('en')
+
+        self.outbound_message1.message.writeitinstance.mailit_template.content_html_template = "<b>HTML here</b>"
+
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+
+        self.assertTrue(result_of_sending)
+        self.assertTrue(fatal_error is None)
+        self.assertEquals(len(mail.outbox), 1)  # it is sent to one person pointed in the contact
+        message = mail.outbox[0]
+        self.assertEquals(message.alternatives, [(u'<b>HTML here</b>', 'text/html')])
+        self.assertIsInstance(message, EmailMultiAlternatives)
+        self.assertEquals(message.subject, '[WriteIT] Message: Subject 1')
+        self.assertEquals(message.body, u'Hello Pedro:\nYou have a new message:\nsubject: Subject 1 \ncontent: Content 1\n\n\nIf you want to see all the other messages please visit http://127.0.0.1.xip.io:8000/en/writeit_instances/instance1.\nSeeya\n--\nYou writeIt and we deliverit.')
+        self.assertEquals(len(message.to), 1)
+        self.assertIn("pdaire@ciudadanointeligente.org", message.to)
 
     def test_sending_from_email_expected_from_email(self):
         result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
@@ -482,7 +497,6 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
         data = {
             'subject_template': 'Hello there you have a new mail this is subject',
             'content_template': 'hello there this is the content and you got this message',
-            'content_html_template': '<tag>hello there this is the content and you got this message</tag>',
         }
         form = MailitTemplateForm(
             data=data,
@@ -494,7 +508,6 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
 
         self.assertEquals(template.subject_template, data['subject_template'])
         self.assertEquals(template.content_template, data['content_template'])
-        self.assertEquals(template.content_html_template, data['content_html_template'])
 
     def test_raises_error_when_no_instance_is_provided(self):
         data = {

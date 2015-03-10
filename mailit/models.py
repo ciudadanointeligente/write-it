@@ -9,11 +9,6 @@ content_template = read_template_as_string(
     file_source_path=__file__,
     )
 
-content_html_template = read_template_as_string(
-    'templates/mailit/mails/content_html_template.txt',
-    file_source_path=__file__,
-    )
-
 
 class MailItTemplate(models.Model):
     subject_template = models.CharField(
@@ -26,7 +21,7 @@ class MailItTemplate(models.Model):
         help_text=_("You can use {{ subject }}, {{ content }}, {{ person }} and {{ author }}"),
         )
     content_html_template = models.TextField(
-        default=content_html_template,
+        blank=True,
         help_text=_("You can use {{ subject }}, {{ content }}, {{ person }} and {{ author }}"),
         )
     writeitinstance = models.OneToOneField(WriteItInstance, related_name='mailit_template')

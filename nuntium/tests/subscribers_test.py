@@ -2,15 +2,13 @@ from global_test_case import GlobalTestCase as TestCase
 from ..models import Subscriber, Message, WriteItInstance, \
     Confirmation, Answer, NewAnswerNotificationTemplate
 from popit.models import Person
-from django.template.loader import get_template
-from django.template import Context
 from django.contrib.auth.models import User
 from django.core import mail
 from django.conf import settings
 from django.template.loader import get_template_from_string
 import os
 from django.test.utils import override_settings
-
+from django.template import Context
 
 subject_template = '%(person)s has answered to your message %(message)s'
 script_dir = os.path.dirname(__file__)
@@ -67,9 +65,6 @@ class SubscribersTestCase(TestCase):
 
 class NewAnswerToSubscribersMessageTemplate(TestCase):
     def setUp(self):
-        self.new_answer_html = ''
-        with open(os.path.join(script_dir, '../templates/nuntium/mails/new_answer.html'), 'r') as f:
-            self.new_answer_html += f.read()
         super(NewAnswerToSubscribersMessageTemplate, self).setUp()
         self.instance = WriteItInstance.objects.all()[0]
 
@@ -81,21 +76,9 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
             person=self.pedro,
             message=self.message
             )
-        template_str = get_template('nuntium/mails/new_answer.html')
-        d = Context(
-            {'user': self.message.author_name,
-             'person': self.pedro,
-             'message': self.message,
-             'answer': self.answer,
-             })
-        self.template_str = template_str.render(d)
         self.instance.new_answer_notification_template.delete()
 
     def test_creation_of_one(self):
-        # content_template = ''
-        # with open('nuntium/mails/new_answer.html', 'r') as f:
-        #     content_template += f.read()
-        # print content_template
         notification_template = NewAnswerNotificationTemplate.objects.create(
             template_html=u"asdasd",
             template_text=u"asdasd",
@@ -120,17 +103,12 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
         self.assertEquals(notification_template.__unicode__(), "Notification template for %s" % (self.instance.name))
 
     def test_a_new_one_is_always_created_with_some_default_values(self):
-        new_answer_html = ''
-        with open(os.path.join(script_dir, '../templates/nuntium/mails/new_answer.html'), 'r') as f:
-            new_answer_html += f.read()
-
         new_answer_txt = ''
         with open(os.path.join(script_dir, '../templates/nuntium/mails/new_answer.txt'), 'r') as f:
             new_answer_txt += f.read()
 
         notification_template = NewAnswerNotificationTemplate.objects.create(writeitinstance=self.instance)
 
-        self.assertEquals(notification_template.template_html, new_answer_html)
         self.assertEquals(notification_template.template_text, new_answer_txt)
         self.assertEquals(notification_template.subject_template, '%(person)s has answered to your message %(message)s')
 
@@ -139,7 +117,7 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
 
         notification_template = instance.new_answer_notification_template
         self.assertTrue(notification_template)
-        self.assertEquals(notification_template.template_html, self.new_answer_html)
+        self.assertEquals(notification_template.template_html, '')
         self.assertEquals(notification_template.subject_template, subject_template)
 
 
@@ -153,7 +131,6 @@ class NewAnswerNotificationToSubscribers(TestCase):
         self.owner = User.objects.all()[0]
         self.instance.new_answer_notification_template.subject_template = 'weeena pelao %(person)s %(message)s'
         self.instance.new_answer_notification_template.save()
-        self.template_str_html = get_template_from_string(self.instance.new_answer_notification_template.template_html)
         self.template_str_txt = get_template_from_string(self.instance.new_answer_notification_template.template_text)
 
     def create_a_new_answer(self):
@@ -162,7 +139,6 @@ class NewAnswerNotificationToSubscribers(TestCase):
             person=self.pedro,
             message=self.message,
             )
-        # template_str = get_template('nuntium/mails/new_answer.html')
 
     def test_when_an_answer_is_created_then_a_mail_is_sent_to_the_subscribers(self):
         self.create_a_new_answer()
@@ -173,13 +149,11 @@ class NewAnswerNotificationToSubscribers(TestCase):
              'answer': self.answer,
              })
 
-        # PLEASE TEST HTML
-        # template_str_html = self.template_str_html.render(d)
-        # I'M NOT TESTED PLEASE DO!!!
         template_str_txt = self.template_str_txt.render(d)
 
         self.assertEquals(len(mail.outbox), 1)
         self.assertEquals(len(mail.outbox[0].to), 1)
+        self.assertFalse(mail.outbox[0].alternatives)
         self.assertEquals(mail.outbox[0].to[0], self.subscriber.email)
         self.assertEquals(mail.outbox[0].body, template_str_txt)
         subject = self.instance.new_answer_notification_template.subject_template % {
@@ -191,6 +165,20 @@ class NewAnswerNotificationToSubscribers(TestCase):
         self.assertEquals(
             mail.outbox[0].from_email,
             self.instance.slug + "@" + settings.DEFAULT_FROM_DOMAIN,
+            )
+
+    def test_answer_notification_with_html(self):
+        # Put some html in the new answer notification template
+        new_answer_notification_template = self.message.writeitinstance.new_answer_notification_template
+        new_answer_notification_template.template_html = '<b>{{message.subject}}</b>'
+
+        self.create_a_new_answer()
+
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(len(mail.outbox[0].to), 1)
+        self.assertEquals(
+            mail.outbox[0].alternatives,
+            [(u'<b>Subject 1</b>', 'text/html')]
             )
 
     @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)

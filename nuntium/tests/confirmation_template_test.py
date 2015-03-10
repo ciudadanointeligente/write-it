@@ -25,9 +25,6 @@ class ConfirmationTemplateTestCase(TestCase):
         script_dir = os.path.dirname(__file__)
 
         self.writeitinstance = WriteItInstance.objects.all()[0]
-        self.default_template = ''
-        with open(os.path.join(script_dir, '../templates/nuntium/mails/confirmation/content_template.html'), 'r') as f:
-            self.default_template = f.read()
 
         self.default_template_text = ''
         with open(os.path.join(script_dir, '../templates/nuntium/mails/confirmation/content_template.txt'), 'r') as f:
@@ -44,7 +41,6 @@ class ConfirmationTemplateTestCase(TestCase):
         confirmation_template = ConfirmationTemplate(writeitinstance=self.writeitinstance)
         self.assertTrue(confirmation_template)
         self.assertEquals(confirmation_template.writeitinstance, self.writeitinstance)
-        self.assertEquals(confirmation_template.content_html, self.default_template)
         self.assertEquals(confirmation_template.content_text, self.default_template_text)
         self.assertEquals(confirmation_template.subject, self.default_subject)
 
@@ -57,7 +53,7 @@ class ConfirmationTemplateTestCase(TestCase):
             )
 
         self.assertTrue(writeitinstance.confirmationtemplate)
-        self.assertEquals(writeitinstance.confirmationtemplate.content_html, self.default_template)
+        self.assertEquals(writeitinstance.confirmationtemplate.content_html, '')
         self.assertEquals(writeitinstance.confirmationtemplate.content_text, self.default_template_text)
         self.assertEquals(writeitinstance.confirmationtemplate.subject, self.default_subject)
 
@@ -97,6 +93,30 @@ class ConfirmationTemplateTestCase(TestCase):
         self.assertEquals(mail.outbox[0].body, expected_body)
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue(message.author_email in mail.outbox[0].to)
+
+    def test_confirmation_mail_with_html_template(self):
+        """The confirmation mail is sent using the HTML template"""
+
+        message = Message.objects.all()[0]
+        template = message.writeitinstance.confirmationtemplate
+
+        template.content_html = "<b>{{confirmation.message.subject}}<b>"
+        template.content_text = "Foo"
+        template.subject = "the subject"
+        template.save()
+
+        Confirmation.objects.create(message=message)
+
+        self.assertEquals(len(mail.outbox), 1)  # it is sent to one person pointed in the contact
+        self.assertEquals(mail.outbox[0].subject, template.subject)
+        self.assertEquals(mail.outbox[0].body, "Foo")
+        self.assertEquals(len(mail.outbox[0].to), 1)
+        self.assertTrue(message.author_email in mail.outbox[0].to)
+
+        self.assertEquals(
+            mail.outbox[0].alternatives,
+            [(u'<b>Subject 1<b>', 'text/html')],
+            )
 
     @override_settings(TEMPLATE_STRING_IF_INVALID='!!INVALID!!')
     def test_rendering_templates(self):
@@ -159,11 +179,6 @@ class ConfirmationTemplateTestCase(TestCase):
              },
             )
 
-        # HTML version
-        template = Template(self.default_template)
-        rendered = template.render(context)
-        self.assertNotIn('!!INVALID!!', rendered)
-
         # Text version
         template = Template(self.default_template_text)
         rendered = template.render(context)
@@ -179,7 +194,6 @@ class ConfirmationTemplateFormTestCase(TestCase):
         """Instanciate the form for changing the confirmation template"""
         data = {
             "content_text": "html",
-            "content_html": "text",
             "subject": "subject",
             }
         form = ConfirmationTemplateForm(data=data,
@@ -189,7 +203,6 @@ class ConfirmationTemplateFormTestCase(TestCase):
         template = form.save()
 
         self.assertEquals(template.content_text, data["content_text"])
-        self.assertEquals(template.content_html, data["content_html"])
         self.assertEquals(template.subject, data["subject"])
 
     def test_instanciate_without_a_writeit_instance_throws_an_error(self):
@@ -213,8 +226,7 @@ class ConfirmationTemplateFormTestCase(TestCase):
         c = Client()
         c.login(username="admin", password="admin")
         data = {
-            "content_text": "html",
-            "content_html": "text",
+            "content_text": "text",
             "subject": "subject",
             }
         response = c.post(url, data=data)
@@ -226,6 +238,5 @@ class ConfirmationTemplateFormTestCase(TestCase):
         # it was updated
         template = self.writeitinstance.confirmationtemplate
 
-        self.assertEquals(template.content_html, data["content_html"])
         self.assertEquals(template.content_text, data["content_text"])
         self.assertEquals(template.subject, data["subject"])
