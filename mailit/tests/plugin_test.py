@@ -113,11 +113,11 @@ class MailTemplateTestCase(TestCase):
 class MailSendingTestCase(TestCase):
     def setUp(self):
         super(MailSendingTestCase, self).setUp()
-        self.person3 = Person.objects.all()[2]
+        self.person3 = Person.objects.get(id=1)
         self.channel = MailChannel()
         self.contact_type2 = ContactType.objects.create(
             name='Uninvented one', label_name='bzbzbzb')
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         self.writeitinstance1 = WriteItInstance.objects.get(id=1)
         self.writeitinstance2 = WriteItInstance.objects.get(id=2)
         self.contact3 = Contact.objects.create(
@@ -126,15 +126,15 @@ class MailSendingTestCase(TestCase):
             value='123456789',
             writeitinstance=self.writeitinstance2,
             )
-        self.message = Message.objects.all()[0]
-        self.outbound_message1 = OutboundMessage.objects.filter(message=self.message)[0]
+        self.message = Message.objects.get(id=1)
+        self.outbound_message1 = OutboundMessage.objects.get(message=self.message, contact__person=self.person3)
         self.message_to_another_contact = Message.objects.create(
             content='Content 1',
             subject='Subject 1',
             writeitinstance=self.writeitinstance2,
             persons=[self.person3],
             )
-        self.outbound_message2 = OutboundMessage.objects.filter(message=self.message_to_another_contact)[0]
+        self.outbound_message2 = OutboundMessage.objects.get(message=self.message_to_another_contact)
 
         self.template1 = MailItTemplate.objects.all()[0]
 
@@ -251,8 +251,8 @@ class MailSendingTestCase(TestCase):
             subject="the subject",
             writeitinstance=self.writeitinstance2,
             persons=[self.person3],
-            author_name="Felipe",
-            author_email="falvarez@votainteligente.cl",
+            author_name="Fiera",
+            author_email="fiera@votainteligente.cl",
             )
         outbound_message = OutboundMessage.objects.get(
             message=message,
