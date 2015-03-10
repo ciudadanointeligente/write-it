@@ -18,9 +18,9 @@ from django.db.models.query import QuerySet
 class TestMessages(TestCase):
     def setUp(self):
         super(TestMessages, self).setUp()
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
-        self.person1 = Person.objects.all()[0]
-        self.person2 = Person.objects.all()[1]
+        self.writeitinstance1 = WriteItInstance.objects.get(id=1)
+        self.person1 = Person.objects.get(id=1)
+        self.person2 = Person.objects.get(id=2)
 
     def test_create_message(self):
         now = timezone.now()
@@ -170,7 +170,7 @@ class TestMessages(TestCase):
         self.assertEquals(message4.slug, 'test-4')
 
     def test_update_a_message_does_not_need_persons(self):
-        message1 = Message.objects.all()[0]
+        message1 = Message.objects.get(id=1)
 
         previous_people = message1.people
 
@@ -184,13 +184,13 @@ class TestMessages(TestCase):
             )
 
     def test_message_has_a_permalink(self):
-        message1 = Message.objects.all()[0]
+        message1 = Message.objects.get(id=1)
         expected_url = reverse('message_detail', kwargs={'slug': message1.slug, 'instance_slug': message1.writeitinstance.slug})
 
         self.assertEquals(expected_url, message1.get_absolute_url())
 
     def test_message_set_to_ready(self):
-        message1 = Message.objects.all()[0]
+        message1 = Message.objects.get(id=1)
 
         message1.set_to_ready()
         first_om = OutboundMessage.objects.filter(message=message1)[0]

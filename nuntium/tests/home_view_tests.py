@@ -30,7 +30,7 @@ class HomeViewTestCase(TestCase):
 
     def test_list_instances(self):
         activate('en')
-        instance1 = WriteItInstance.objects.all()[0]
+        instance1 = WriteItInstance.objects.get(id=1)
         url = reverse("home")
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)

@@ -32,7 +32,7 @@ class TasksTestCase(TestCase):
             )
 
     def test_it_logs_the_sending_of_emails(self):
-        outbound_message = OutboundMessage.objects.all()[0]
+        outbound_message = OutboundMessage.objects.get(id=1)
         outbound_message.status = 'ready'
         outbound_message.save()
 
@@ -60,9 +60,9 @@ class PullFromPopitTask(TestCase):
     def setUp(self):
         super(PullFromPopitTask, self).setUp()
         self.api_instance1 = PopitApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
-        self.person1 = Person.objects.all()[0]
+        self.person1 = Person.objects.get(id=1)
 
-        self.owner = User.objects.all()[0]
+        self.owner = User.objects.get(id=1)
 
     def test_the_pulling_task_name(self):
         '''The pulling from Popit Task has a name'''
@@ -88,7 +88,7 @@ class PeriodicallyPullFromPopitClass(TestCase):
     def setUp(self):
         super(PeriodicallyPullFromPopitClass, self).setUp()
         popit_load_data()
-        self.owner = User.objects.all()[0]
+        self.owner = User.objects.get(id=1)
         #this is the popit_api_instance created based on the previous load
         self.writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
 

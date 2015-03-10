@@ -7,9 +7,9 @@ from popit.models import Person
 class RTLTextInMessages(TestCase):
     def setUp(self):
         super(RTLTextInMessages, self).setUp()
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
-        self.person1 = Person.objects.all()[0]
-        self.person2 = Person.objects.all()[1]
+        self.writeitinstance1 = WriteItInstance.objects.get(id=1)
+        self.person1 = Person.objects.get(id=1)
+        self.person2 = Person.objects.get(id=2)
 
     def test_create_a_message_with_subject_and_content(self):
         content = u"فإنها تجعل من بين أهدافها تحقيق الوحدة الإفريقية"

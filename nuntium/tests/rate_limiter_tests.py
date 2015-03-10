@@ -11,10 +11,10 @@ from django.utils.translation import ugettext as _
 class RateLimiterTestCase(TestCase):
     def setUp(self):
         super(RateLimiterTestCase, self).setUp()
-        self.owner = User.objects.all()[0]
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
-        self.person1 = Person.objects.all()[0]
-        self.person2 = Person.objects.all()[1]
+        self.owner = User.objects.get(id=1)
+        self.writeitinstance1 = WriteItInstance.objects.get(id=1)
+        self.person1 = Person.objects.get(id=1)
+        self.person2 = Person.objects.get(id=2)
 
     def test_a_writeit_instance_has_a_rate_limiter_by_default_0(self):
         instance = WriteItInstance.objects.create(name='instance 234', slug='instance-234', owner=self.owner)

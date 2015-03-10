@@ -32,7 +32,7 @@ class ManagementCommandAnswer(TestCase):
 class ManagementCommandAnswerBehaviour(TestCase):
     def setUp(self):
         super(ManagementCommandAnswerBehaviour, self).setUp()
-        self.outbound_message = OutboundMessage.objects.all()[0]
+        self.outbound_message = OutboundMessage.objects.get(id=1)
         self.identifier = self.outbound_message.outboundmessageidentifier
         self.email_answer = AnswerForManageCommand()
         self.email_answer.subject = 'prueba4'
@@ -111,7 +111,7 @@ class HandleIncomingEmailCommand(TestCase):
         super(HandleIncomingEmailCommand, self).setUp()
 
     def test_call_command(self):
-        identifier = OutboundMessageIdentifier.objects.all()[0]
+        identifier = OutboundMessageIdentifier.objects.first()
         identifier.key = '4aaaabbb'
         identifier.save()
 
@@ -125,7 +125,7 @@ class HandleIncomingEmailCommand(TestCase):
             self.assertEquals(the_answers[0].content, 'prueba4lafieri\n')
 
     def test_call_command_does_not_include_identifier_in_content(self):
-        identifier = OutboundMessageIdentifier.objects.all()[0]
+        identifier = OutboundMessageIdentifier.objects.first()
         identifier.key = '4aaaabbb'
         identifier.save()
 

@@ -15,7 +15,7 @@ class InstanceResourceTestCase(ResourceTestCase):
     def setUp(self):
         super(InstanceResourceTestCase, self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         self.writeitinstance = WriteItInstance.objects.create(name=u"a test", slug=u"a-test", owner=self.user)
         self.api_client = TestApiClient()
         self.data = {'format': 'json', 'username': self.user.username, 'api_key': self.user.api_key.key}
@@ -54,12 +54,12 @@ class InstanceResourceTestCase(ResourceTestCase):
         self.assertValidJSONResponse(response)
 
     def test_get_persons_of_an_instance(self):
-        writeitinstance = WriteItInstance.objects.all()[0]
+        writeitinstance = WriteItInstance.objects.get(id=1)
         url = '/api/v1/instance/{0}/'.format(writeitinstance.id)
         response = self.api_client.get(url, data=self.data)
         instance = self.deserialize(response)
         self.assertIn('persons', instance)
-        pedro = Person.objects.all()[0]
+        pedro = Person.objects.get(id=1)
         self.assertIn(pedro.popit_url, instance['persons'])
 
     def test_create_a_new_instance(self):
@@ -138,13 +138,13 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
     def setUp(self):
         super(MessagesPerInstanceTestCase, self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         self.writeitinstance = WriteItInstance.objects.create(name=u"a test", slug=u"a-test", owner=self.user)
         self.api_client = TestApiClient()
         self.data = {'format': 'json', 'username': self.user.username, 'api_key': self.user.api_key.key}
 
         # creating messages
-        self.pedro = Person.objects.all()[0]
+        self.pedro = Person.objects.get(id=1)
         # Setting that the contact is related to self.writeitinstance rather than to the user
         self.contact = self.pedro.contact_set.all()[0]
         self.contact.writeitinstance = self.writeitinstance
@@ -164,7 +164,7 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
         self.message1.recently_confirmated()
         # Confirmating
 
-        self.marcel = Person.objects.all()[1]
+        self.marcel = Person.objects.get(id=2)
         self.message2 = Message.objects.create(
             content='Content 1',
             author_name='Felipe',

@@ -10,9 +10,9 @@ from tastypie.test import ResourceTestCase, TestApiClient
 class NonModeratedMessagesManagerTestCase(TestCase):
     def setUp(self):
         super(NonModeratedMessagesManagerTestCase, self).setUp()
-        self.moderation_not_needed_instance = WriteItInstance.objects.all()[0]
-        self.person1 = Person.objects.all()[0]
-        self.moderable_instance = WriteItInstance.objects.all()[1]
+        self.moderation_not_needed_instance = WriteItInstance.objects.get(id=1)
+        self.person1 = Person.objects.get(id=1)
+        self.moderable_instance = WriteItInstance.objects.get(id=2)
         self.moderable_instance.config.moderation_needed_in_all_messages = True
 
         self.moderable_instance.config.save()
@@ -38,9 +38,9 @@ class NonModeratedMessagesManagerTestCase(TestCase):
 class PublicMessagesManager(TestCase):
     def setUp(self):
         super(PublicMessagesManager, self).setUp()
-        self.moderation_not_needed_instance = WriteItInstance.objects.all()[0]
-        self.person1 = Person.objects.all()[0]
-        self.moderable_instance = WriteItInstance.objects.all()[1]
+        self.moderation_not_needed_instance = WriteItInstance.objects.get(id=1)
+        self.person1 = Person.objects.get(id=1)
+        self.moderable_instance = WriteItInstance.objects.get(id=2)
         self.moderable_instance.config.moderation_needed_in_all_messages = True
 
         self.moderable_instance.config.save()
@@ -84,11 +84,11 @@ class PublicMessagesInAPI(ResourceTestCase):
     def setUp(self):
         super(PublicMessagesInAPI, self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         self.writeitinstance = WriteItInstance.objects.create(name="a test", slug="a-test", owner=self.user)
         self.writeitinstance.config.moderation_needed_in_all_messages = True
         self.writeitinstance.config.save()
-        self.person1 = Person.objects.all()[0]
+        self.person1 = Person.objects.get(id=1)
         self.api_client = TestApiClient()
         self.data = {'format': 'json', 'username': self.user.username, 'api_key': self.user.api_key.key}
 

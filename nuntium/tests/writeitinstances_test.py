@@ -17,11 +17,11 @@ from requests.exceptions import ConnectionError
 class InstanceTestCase(TestCase):
     def setUp(self):
         super(InstanceTestCase, self).setUp()
-        self.api_instance1 = ApiInstance.objects.all()[0]
-        self.api_instance2 = ApiInstance.objects.all()[1]
-        self.person1 = Person.objects.all()[0]
+        self.api_instance1 = ApiInstance.objects.get(id=1)
+        self.api_instance2 = ApiInstance.objects.get(id=2)
+        self.person1 = Person.objects.get(id=1)
 
-        self.owner = User.objects.all()[0]
+        self.owner = User.objects.get(id=1)
 
     def test_create_instance(self):
         writeitinstance = WriteItInstance.objects.create(
@@ -45,7 +45,7 @@ class InstanceTestCase(TestCase):
         self.assertIn(writeitinstance, self.owner.writeitinstances.all())
 
     def test_instance_unicode(self):
-        writeitinstance = WriteItInstance.objects.all()[0]
+        writeitinstance = WriteItInstance.objects.get(id=1)
         self.assertEquals(writeitinstance.__unicode__(), writeitinstance.name)
 
     def test_instance_containning_several_messages(self):
@@ -61,7 +61,7 @@ class InstanceTestCase(TestCase):
         self.assertEquals(message3.writeitinstance, writeitinstance2)
 
     def test_get_absolute_url(self):
-        writeitinstance1 = WriteItInstance.objects.all()[0]
+        writeitinstance1 = WriteItInstance.objects.get(id=1)
         expected_url = reverse(
             'instance_detail',
             kwargs={'slug': writeitinstance1.slug},
@@ -71,7 +71,7 @@ class InstanceTestCase(TestCase):
 
     def test_get_absolute_url_i18n(self):
         activate("es")
-        writeitinstance1 = WriteItInstance.objects.all()[0]
+        writeitinstance1 = WriteItInstance.objects.get(id=1)
         self.assertTrue(writeitinstance1.get_absolute_url().startswith('/es/'))
         response = self.client.get(writeitinstance1.get_absolute_url())
         self.assertEquals(response.status_code, 200)
@@ -144,11 +144,11 @@ class InstanceTestCase(TestCase):
 class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
     def setUp(self):
         super(WriteItInstanceLoadingPeopleFromAPopitApiTestCase, self).setUp()
-        self.api_instance1 = ApiInstance.objects.all()[0]
-        self.api_instance2 = ApiInstance.objects.all()[1]
-        self.person1 = Person.objects.all()[0]
+        self.api_instance1 = ApiInstance.objects.get(id=1)
+        self.api_instance2 = ApiInstance.objects.get(id=2)
+        self.person1 = Person.objects.get(id=1)
 
-        self.owner = User.objects.all()[0]
+        self.owner = User.objects.get(id=1)
 
     def test_load_persons_from_a_popit_api(self):
         '''Loading persons from a popit api'''
@@ -189,10 +189,10 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
 class InstanceDetailView(TestCase):
     def setUp(self):
         super(InstanceDetailView, self).setUp()
-        self.api_instance1 = ApiInstance.objects.all()[0]
-        self.api_instance2 = ApiInstance.objects.all()[1]
-        self.person1 = Person.objects.all()[0]
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.api_instance1 = ApiInstance.objects.get(id=1)
+        self.api_instance2 = ApiInstance.objects.get(id=2)
+        self.person1 = Person.objects.get(id=1)
+        self.writeitinstance1 = WriteItInstance.objects.get(id=1)
         self.url = self.writeitinstance1.get_absolute_url()
 
     def test_detail_instance_view(self):

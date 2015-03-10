@@ -19,9 +19,9 @@ from plugin_mock.mental_message_plugin import MentalMessage, FatalException, Try
 class OutboundMessageTestCase(TestCase):
     def setUp(self):
         super(OutboundMessageTestCase, self).setUp()
-        self.api_instance1 = ApiInstance.objects.all()[0]
-        self.contact1 = Contact.objects.all()[0]
-        self.message = Message.objects.all()[0]
+        self.api_instance1 = ApiInstance.objects.get(id=1)
+        self.contact1 = Contact.objects.get(id=1)
+        self.message = Message.objects.get(id=1)
 
     def test_create_a_outbound_message(self):
         outbound_message = OutboundMessage.objects.create(
@@ -101,9 +101,9 @@ class OutboundMessageTestCase(TestCase):
 class OutboundMessageIdentifierTestCase(TestCase):
     def setUp(self):
         super(OutboundMessageIdentifierTestCase, self).setUp()
-        self.outbound_message = OutboundMessage.objects.all()[0]
-        self.message = Message.objects.all()[0]
-        self.contact1 = Contact.objects.all()[0]
+        self.outbound_message = OutboundMessage.objects.get(id=1)
+        self.message = Message.objects.get(id=1)
+        self.contact1 = Contact.objects.get(id=1)
 
     def test_create_an_outbound_message_identifier_when_creating_(self):
         with patch('uuid.uuid1') as string:
@@ -154,13 +154,13 @@ class PluginMentalMessageTestCase(TestCase):
     '''
     def setUp(self):
         super(PluginMentalMessageTestCase, self).setUp()
-        self.outbound_message = OutboundMessage.objects.all()[0]
-        self.message = Message.objects.all()[0]
-        self.message_type = ContentType.objects.all()[0]
+        self.outbound_message = OutboundMessage.objects.get(id=1)
+        self.message = Message.objects.get(id=1)
+        self.message_type = ContentType.objects.get(id=1)
         self.writeitinstance1 = WriteItInstance.objects.get(id=1)
-        self.person1 = Person.objects.all()[0]
+        self.person1 = Person.objects.get(id=1)
         self.channel = MentalMessage()
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         self.mental_contact1 = Contact.objects.create(
             person=self.person1,
             contact_type=self.channel.get_contact_type(),
@@ -267,7 +267,7 @@ class PluginMentalMessageTestCase(TestCase):
 class AbstractOutboundMessageTestCase(TestCase):
     def setUp(self):
         super(AbstractOutboundMessageTestCase, self).setUp()
-        self.message = Message.objects.all()[0]
+        self.message = Message.objects.get(id=1)
 
     def test_create_an_abstract_class(self):
         """ Create a subclass of abstract class that does not contain contact"""
@@ -354,7 +354,7 @@ class MessagesToPersonWithoutContactsTestCase(TestCase):
             persons=persons_in_message,
             )
 
-        email = ContactType.objects.all()[0]
+        email = ContactType.objects.get(id=1)
         contact_for_peter = Contact.objects.create(
             person=peter,
             value="peter@votainteligente.cl",
@@ -405,7 +405,7 @@ class MessagesToPersonWithoutContactsTestCase(TestCase):
 
         message.recently_confirmated()
 
-        email = ContactType.objects.all()[0]
+        email = ContactType.objects.get(id=1)
         contact_for_peter = Contact.objects.create(
             person=peter,
             value="peter@votainteligente.cl",

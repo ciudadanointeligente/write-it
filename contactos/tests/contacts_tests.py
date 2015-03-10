@@ -21,8 +21,8 @@ from django.db.models import Q
 class ContactTestCase(TestCase):
     def setUp(self):
         super(ContactTestCase, self).setUp()
-        self.person = Person.objects.all()[0]
-        self.user = User.objects.all()[0]
+        self.person = Person.objects.get(id=1)
+        self.user = User.objects.get(id=1)
 
     def test_are_there_contacts_for_a_person_when_non_empty(self):
         felipe = Person.objects.get(name="Felipe")
@@ -268,7 +268,7 @@ class ResendOutboundMessages(TestCase):
             self.assertEquals(outbound_message.status, "sent")
 
     def test_resends_only_failed_outbound_messages(self):
-        message = Message.objects.all()[0]
+        message = Message.objects.get(id=1)
         OutboundMessage.objects.create(message=message, contact=self.contact, status="ready")
         self.contact.resend_messages()
         current_amount_of_mails_sent_after_resend_messages = len(mail.outbox)
@@ -295,7 +295,7 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
         self.user.set_password('fiera')
         self.user.save()
         # making it explicit
-        self.contact_type = ContactType.objects.all()[0]
+        self.contact_type = ContactType.objects.get(id=1)
         self.pedro = Person.objects.get(name="Pedro")
 
     def test_get_create_form(self):

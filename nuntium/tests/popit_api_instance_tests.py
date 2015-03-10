@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 class EmailCreationWhenPullingFromPopit(TestCase):
     def setUp(self):
         super(EmailCreationWhenPullingFromPopit, self).setUp()
-        self.instance = WriteItInstance.objects.all()[0]
+        self.instance = WriteItInstance.objects.get(id=1)
 
     def test_it_pulls_and_creates_contacts(self):
         '''When pulling from popit it also creates emails'''

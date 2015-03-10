@@ -13,8 +13,8 @@ class AnswersResourceTestCase(ResourceTestCase):
     def setUp(self):
         super(AnswersResourceTestCase, self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
-        self.writeitinstance = WriteItInstance.objects.all()[0]
-        self.user = User.objects.all()[0]
+        self.writeitinstance = WriteItInstance.objects.get(id=1)
+        self.user = User.objects.get(id=1)
         self.api_client = TestApiClient()
         self.data = {'format': 'json', 'username': self.user.username, 'api_key': self.user.api_key.key}
 
@@ -49,8 +49,8 @@ class AnswersResourceTestCase(ResourceTestCase):
 
     def test_get_only_answers_of_the_instance(self):
         """Show answers from the writeitinstance only"""
-        the_other_instance = WriteItInstance.objects.all()[1]
-        person = Person.objects.all()[0]
+        the_other_instance = WriteItInstance.objects.get(id=2)
+        person = Person.objects.get(id=1)
         message = the_other_instance.message_set.all()[0]
         answer = Answer.objects.create(
             message=message,
@@ -93,8 +93,8 @@ class AnswersResourceTestCase(ResourceTestCase):
 
     def test_answer_ordering(self):
         """The answers are displayed from new to old"""
-        person = Person.objects.all()[0]
-        message = Message.objects.all()[0]
+        person = Person.objects.get(id=1)
+        message = Message.objects.get(id=1)
 
         Answer.objects.all().delete()
         answer2 = Answer.objects.create(

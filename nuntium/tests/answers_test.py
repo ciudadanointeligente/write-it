@@ -10,7 +10,7 @@ class AnswerTestCase(TestCase):
         self.message = Message.objects.get(id=1)
         self.person = Person.objects.get(id=1)
         #There is no membership for this guy to any writeitInstance
-        self.person_not_in_the_instance = Person.objects.all()[1]
+        self.person_not_in_the_instance = Person.objects.get(id=2)
 
     def test_create_an_answer(self):
         answer = Answer.objects.create(message=self.message, person=self.person, content="the answer to that is ...")

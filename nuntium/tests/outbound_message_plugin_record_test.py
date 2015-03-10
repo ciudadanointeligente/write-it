@@ -20,8 +20,8 @@ class OutboundMessageRecordTestCase(TestCase):
         super(OutboundMessageRecordTestCase, self).setUp()
         self.channel = MentalMessage()
 
-        self.person1 = Person.objects.all()[0]
-        self.user = User.objects.all()[0]
+        self.person1 = Person.objects.get(id=1)
+        self.user = User.objects.get(id=1)
         self.writeitinstance1 = WriteItInstance.objects.get(id=1)
         self.mental_contact1 = Contact.objects.create(
             person=self.person1,

@@ -12,11 +12,11 @@ from django.core import mail
 class WriteItInstanceConfigTestCase(TestCase):
     def setUp(self):
         super(WriteItInstanceConfigTestCase, self).setUp()
-        self.api_instance1 = ApiInstance.objects.all()[0]
-        self.api_instance2 = ApiInstance.objects.all()[1]
-        self.person1 = Person.objects.all()[0]
+        self.api_instance1 = ApiInstance.objects.get(id=1)
+        self.api_instance2 = ApiInstance.objects.get(id=2)
+        self.person1 = Person.objects.get(id=1)
 
-        self.owner = User.objects.all()[0]
+        self.owner = User.objects.get(id=1)
 
         self.writeitinstance = WriteItInstance.objects.create(
             name='instance 1',
@@ -73,9 +73,9 @@ class WriteItInstanceConfigTestCase(TestCase):
 class TestingModeTestCase(TestCase):
     def setUp(self):
         super(TestingModeTestCase, self).setUp()
-        self.person1 = Person.objects.all()[0]
+        self.person1 = Person.objects.get(id=1)
 
-        self.owner = User.objects.all()[0]
+        self.owner = User.objects.get(id=1)
         self.owner.email = "owner@ciudadanoi.org"
         self.owner.save()
 

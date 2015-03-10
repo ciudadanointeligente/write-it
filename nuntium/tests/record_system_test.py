@@ -10,10 +10,10 @@ class MessageRecordTestCase(TestCase):
     def setUp(self):
         super(MessageRecordTestCase, self).setUp()
         self.outboundmessage_type = ContentType.objects.get(model="outboundmessage")
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
-        self.outbound_message = OutboundMessage.objects.all()[0]
-        self.person1 = Person.objects.all()[0]
-        self.person2 = Person.objects.all()[1]
+        self.writeitinstance1 = WriteItInstance.objects.get(id=1)
+        self.outbound_message = OutboundMessage.objects.get(id=1)
+        self.person1 = Person.objects.get(id=1)
+        self.person2 = Person.objects.get(id=2)
 
     def test_create_a_record(self):
         record = MessageRecord.objects.create(
