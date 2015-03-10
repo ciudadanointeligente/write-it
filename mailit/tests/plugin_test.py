@@ -482,7 +482,6 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
         data = {
             'subject_template': 'Hello there you have a new mail this is subject',
             'content_template': 'hello there this is the content and you got this message',
-            'content_html_template': '<tag>hello there this is the content and you got this message</tag>',
         }
         form = MailitTemplateForm(
             data=data,
@@ -494,7 +493,6 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
 
         self.assertEquals(template.subject_template, data['subject_template'])
         self.assertEquals(template.content_template, data['content_template'])
-        self.assertEquals(template.content_html_template, data['content_html_template'])
 
     def test_raises_error_when_no_instance_is_provided(self):
         data = {

@@ -179,7 +179,6 @@ class ConfirmationTemplateFormTestCase(TestCase):
         """Instanciate the form for changing the confirmation template"""
         data = {
             "content_text": "html",
-            "content_html": "text",
             "subject": "subject",
             }
         form = ConfirmationTemplateForm(data=data,
@@ -189,7 +188,6 @@ class ConfirmationTemplateFormTestCase(TestCase):
         template = form.save()
 
         self.assertEquals(template.content_text, data["content_text"])
-        self.assertEquals(template.content_html, data["content_html"])
         self.assertEquals(template.subject, data["subject"])
 
     def test_instanciate_without_a_writeit_instance_throws_an_error(self):
@@ -213,8 +211,7 @@ class ConfirmationTemplateFormTestCase(TestCase):
         c = Client()
         c.login(username="admin", password="admin")
         data = {
-            "content_text": "html",
-            "content_html": "text",
+            "content_text": "text",
             "subject": "subject",
             }
         response = c.post(url, data=data)
@@ -226,6 +223,5 @@ class ConfirmationTemplateFormTestCase(TestCase):
         # it was updated
         template = self.writeitinstance.confirmationtemplate
 
-        self.assertEquals(template.content_html, data["content_html"])
         self.assertEquals(template.content_text, data["content_text"])
         self.assertEquals(template.subject, data["subject"])

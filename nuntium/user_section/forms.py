@@ -45,7 +45,6 @@ class WriteItInstanceAdvancedUpdateForm(ModelForm):
 
 
 class NewAnswerNotificationTemplateForm(ModelForm):
-
     def __init__(self, *args, **kwargs):
         self.writeitinstance = kwargs.pop('writeitinstance')
         super(NewAnswerNotificationTemplateForm, self).__init__(*args, **kwargs)
@@ -59,11 +58,10 @@ class NewAnswerNotificationTemplateForm(ModelForm):
 
     class Meta:
         model = NewAnswerNotificationTemplate
-        fields = ['subject_template', 'template_html', 'template_text']
+        fields = ['subject_template', 'template_text']
 
         widgets = {
             'subject_template': TextInput(attrs={'class': 'form-control'}),
-            'template_html': Textarea(attrs={'class': 'form-control'}),
             'template_text': Textarea(attrs={'class': 'form-control'}),
         }
 
@@ -71,10 +69,9 @@ class NewAnswerNotificationTemplateForm(ModelForm):
 class ConfirmationTemplateForm(ModelForm):
     class Meta:
         model = ConfirmationTemplate
-        fields = ['subject', 'content_html', 'content_text']
+        fields = ['subject', 'content_text']
         widgets = {
             'subject': TextInput(attrs={'class': 'form-control'}),
-            'content_html': Textarea(attrs={'class': 'form-control'}),
             'content_text': Textarea(attrs={'class': 'form-control'}),
         }
 
