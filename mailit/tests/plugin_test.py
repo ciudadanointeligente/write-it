@@ -52,8 +52,8 @@ class MailChannelTestCase(TestCase):
 class MailTemplateTestCase(TestCase):
     def setUp(self):
         super(MailTemplateTestCase, self).setUp()
-        self.writeitinstance2 = WriteItInstance.objects.all()[1]  # the other one already has a template
-        self.owner = User.objects.all()[0]
+        self.writeitinstance2 = WriteItInstance.objects.get(id=2)  # the other one already has a template
+        self.owner = User.objects.get(id=1)
         self.content_template = ''
         with open('mailit/templates/mailit/mails/content_template.txt', 'r') as f:
             self.content_template += f.read()
@@ -135,8 +135,6 @@ class MailSendingTestCase(TestCase):
             persons=[self.person3],
             )
         self.outbound_message2 = OutboundMessage.objects.get(message=self.message_to_another_contact)
-
-        self.template1 = MailItTemplate.objects.all()[0]
 
     @override_settings(EMAIL_SUBJECT_PREFIX='[WriteIT]')
     def test_sending_email(self):
@@ -350,7 +348,7 @@ class MailSendingTestCase(TestCase):
 class SmtpErrorHandling(TestCase):
     def setUp(self):
         super(SmtpErrorHandling, self).setUp()
-        self.outbound_message1 = OutboundMessage.objects.all()[0]
+        self.outbound_message1 = OutboundMessage.objects.get(id=1)
         self.channel = MailChannel()
 
     def test_server_disconnected(self):
@@ -475,7 +473,7 @@ class SmtpErrorHandling(TestCase):
 class MailitTemplateUpdateTestCase(UserSectionTestCase):
     def setUp(self):
         super(MailitTemplateUpdateTestCase, self).setUp()
-        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.writeitinstance = WriteItInstance.objects.get(id=1)
         self.writeitinstance.owner = self.user
         self.writeitinstance.save()
         self.pedro = Person.objects.get(name="Pedro")
