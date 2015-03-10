@@ -494,7 +494,8 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
                 [subscriber.email],
                 connection=connection,
                 )
-            msg.attach_alternative(html_content, "text/html")
+            if html_content:
+                msg.attach_alternative(html_content, "text/html")
             msg.send()
 
         if answer.message.writeitinstance.config.notify_owner_when_new_answer:
@@ -517,7 +518,8 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
                 [answer.message.writeitinstance.owner.email],
                 connection=connection,
                 )
-            msg.attach_alternative(html_content, "text/html")
+            if html_content:
+                msg.attach_alternative(html_content, "text/html")
             msg.send()
 
         for webhook in answer.message.writeitinstance.answer_webhooks.all():

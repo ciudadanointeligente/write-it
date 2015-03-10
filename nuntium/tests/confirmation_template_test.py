@@ -94,6 +94,30 @@ class ConfirmationTemplateTestCase(TestCase):
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue(message.author_email in mail.outbox[0].to)
 
+    def test_confirmation_mail_with_html_template(self):
+        """The confirmation mail is sent using the HTML template"""
+
+        message = Message.objects.all()[0]
+        template = message.writeitinstance.confirmationtemplate
+
+        template.content_html = "<b>{{confirmation.message.subject}}<b>"
+        template.content_text = "Foo"
+        template.subject = "the subject"
+        template.save()
+
+        Confirmation.objects.create(message=message)
+
+        self.assertEquals(len(mail.outbox), 1)  # it is sent to one person pointed in the contact
+        self.assertEquals(mail.outbox[0].subject, template.subject)
+        self.assertEquals(mail.outbox[0].body, "Foo")
+        self.assertEquals(len(mail.outbox[0].to), 1)
+        self.assertTrue(message.author_email in mail.outbox[0].to)
+
+        self.assertEquals(
+            mail.outbox[0].alternatives,
+            [(u'<b>Subject 1<b>', 'text/html')],
+            )
+
     @override_settings(TEMPLATE_STRING_IF_INVALID='!!INVALID!!')
     def test_rendering_templates(self):
         """Render the default confirmation templates and check for errors.

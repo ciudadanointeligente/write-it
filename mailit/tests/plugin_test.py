@@ -142,13 +142,32 @@ class MailSendingTestCase(TestCase):
         self.assertTrue(result_of_sending)
         self.assertTrue(fatal_error is None)
         self.assertEquals(len(mail.outbox), 1)  # it is sent to one person pointed in the contact
-        self.assertTrue(mail.outbox[0].alternatives)
-        self.assertEquals(mail.outbox[0].alternatives[0][1], 'text/html')
-        self.assertIsInstance(mail.outbox[0], EmailMultiAlternatives)
-        self.assertEquals(mail.outbox[0].subject, '[WriteIT] Message: Subject 1')
-        self.assertEquals(mail.outbox[0].body, u'Hello Pedro:\nYou have a new message:\nsubject: Subject 1 \ncontent: Content 1\n\n\nIf you want to see all the other messages please visit http://127.0.0.1.xip.io:8000/en/writeit_instances/instance1.\nSeeya\n--\nYou writeIt and we deliverit.')
-        self.assertEquals(len(mail.outbox[0].to), 1)
-        self.assertIn("pdaire@ciudadanointeligente.org", mail.outbox[0].to)
+        message = mail.outbox[0]
+        self.assertFalse(message.alternatives)
+        self.assertIsInstance(message, EmailMultiAlternatives)
+        self.assertEquals(message.subject, '[WriteIT] Message: Subject 1')
+        self.assertEquals(message.body, u'Hello Pedro:\nYou have a new message:\nsubject: Subject 1 \ncontent: Content 1\n\n\nIf you want to see all the other messages please visit http://127.0.0.1.xip.io:8000/en/writeit_instances/instance1.\nSeeya\n--\nYou writeIt and we deliverit.')
+        self.assertEquals(len(message.to), 1)
+        self.assertIn("pdaire@ciudadanointeligente.org", message.to)
+
+    @override_settings(EMAIL_SUBJECT_PREFIX='[WriteIT]')
+    def test_sending_email_with_html(self):
+        activate('en')
+
+        self.outbound_message1.message.writeitinstance.mailit_template.content_html_template = "<b>HTML here</b>"
+
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+
+        self.assertTrue(result_of_sending)
+        self.assertTrue(fatal_error is None)
+        self.assertEquals(len(mail.outbox), 1)  # it is sent to one person pointed in the contact
+        message = mail.outbox[0]
+        self.assertEquals(message.alternatives, [(u'<b>HTML here</b>', 'text/html')])
+        self.assertIsInstance(message, EmailMultiAlternatives)
+        self.assertEquals(message.subject, '[WriteIT] Message: Subject 1')
+        self.assertEquals(message.body, u'Hello Pedro:\nYou have a new message:\nsubject: Subject 1 \ncontent: Content 1\n\n\nIf you want to see all the other messages please visit http://127.0.0.1.xip.io:8000/en/writeit_instances/instance1.\nSeeya\n--\nYou writeIt and we deliverit.')
+        self.assertEquals(len(message.to), 1)
+        self.assertIn("pdaire@ciudadanointeligente.org", message.to)
 
     def test_sending_from_email_expected_from_email(self):
         result_of_sending, fatal_error = self.channel.send(self.outbound_message1)

@@ -153,6 +153,7 @@ class NewAnswerNotificationToSubscribers(TestCase):
 
         self.assertEquals(len(mail.outbox), 1)
         self.assertEquals(len(mail.outbox[0].to), 1)
+        self.assertFalse(mail.outbox[0].alternatives)
         self.assertEquals(mail.outbox[0].to[0], self.subscriber.email)
         self.assertEquals(mail.outbox[0].body, template_str_txt)
         subject = self.instance.new_answer_notification_template.subject_template % {
@@ -164,6 +165,20 @@ class NewAnswerNotificationToSubscribers(TestCase):
         self.assertEquals(
             mail.outbox[0].from_email,
             self.instance.slug + "@" + settings.DEFAULT_FROM_DOMAIN,
+            )
+
+    def test_answer_notification_with_html(self):
+        # Put some html in the new answer notification template
+        new_answer_notification_template = self.message.writeitinstance.new_answer_notification_template
+        new_answer_notification_template.template_html = '<b>{{message.subject}}</b>'
+
+        self.create_a_new_answer()
+
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(len(mail.outbox[0].to), 1)
+        self.assertEquals(
+            mail.outbox[0].alternatives,
+            [(u'<b>Subject 1</b>', 'text/html')]
             )
 
     @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
