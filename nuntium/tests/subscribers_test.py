@@ -146,11 +146,11 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
 class NewAnswerNotificationToSubscribers(TestCase):
     def setUp(self):
         super(NewAnswerNotificationToSubscribers, self).setUp()
-        self.instance = WriteItInstance.objects.all()[0]
-        self.message = Message.objects.all()[0]
+        self.instance = WriteItInstance.objects.get(id=1)
+        self.message = Message.objects.get(id=1)
         self.subscriber = Subscriber.objects.create(message=self.message, email=self.message.author_email)
-        self.pedro = Person.objects.all()[0]
-        self.owner = User.objects.all()[0]
+        self.pedro = Person.objects.get(id=1)
+        self.owner = User.objects.get(id=1)
         self.instance.new_answer_notification_template.subject_template = 'weeena pelao %(person)s %(message)s'
         self.instance.new_answer_notification_template.save()
         self.template_str_html = get_template_from_string(self.instance.new_answer_notification_template.template_html)
