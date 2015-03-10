@@ -71,11 +71,11 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
         with open(os.path.join(script_dir, '../templates/nuntium/mails/new_answer.html'), 'r') as f:
             self.new_answer_html += f.read()
         super(NewAnswerToSubscribersMessageTemplate, self).setUp()
-        self.instance = WriteItInstance.objects.all()[0]
+        self.instance = WriteItInstance.objects.get(id=1)
 
-        self.message = Message.objects.all()[0]
-        self.pedro = Person.objects.all()[0]
-        self.owner = User.objects.all()[0]
+        self.message = Message.objects.get(id=1)
+        self.pedro = Person.objects.get(id=1)
+        self.owner = User.objects.get(id=1)
         self.answer = Answer.objects.create(
             content="Ola ke ase? pedalea o ke ase?",
             person=self.pedro,
