@@ -290,8 +290,8 @@ class AbstractOutboundMessageTestCase(TestCase):
 class MessagesToPersonWithoutContactsTestCase(TestCase):
     def setUp(self):
         super(MessagesToPersonWithoutContactsTestCase, self).setUp()
-        self.writeitinstance = WriteItInstance.objects.all()[0]
-        self.message = Message.objects.all()[0]
+        self.writeitinstance = WriteItInstance.objects.get(id=1)
+        self.message = Message.objects.get(id=1)
         self.people = self.message.people
         for person in self.people:
             person.contact_set.all().delete()
