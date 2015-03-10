@@ -19,9 +19,9 @@ script_dir = os.path.dirname(__file__)
 class SubscribersTestCase(TestCase):
     def setUp(self):
         super(SubscribersTestCase, self).setUp()
-        self.moderation_not_needed_instance = WriteItInstance.objects.all()[0]
-        self.message = Message.objects.all()[0]
-        self.person1 = Person.objects.all()[0]
+        self.moderation_not_needed_instance = WriteItInstance.objects.get(id=1)
+        self.message = Message.objects.get(id=1)
+        self.person1 = Person.objects.get(id=1)
 
     def test_create_a_new_subscriber(self):
         subscriber = Subscriber.objects.create(message=self.message, email='felipe@lab.ciudadanointeligente.org')
