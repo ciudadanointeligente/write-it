@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Message, WriteItInstance, OutboundMessage, MessageRecord, \
-    Answer, AnswerWebHook, NewAnswerNotificationTemplate
+    Answer, AnswerWebHook, NewAnswerNotificationTemplate, \
+    ConfirmationTemplate
 
 from popit.models import ApiInstance, Person
 from mailit.models import MailItTemplate
@@ -115,3 +116,8 @@ admin.site.register(Person, PersonAdmin)
 class NewAnswerNotificationTemplateAdmin(admin.ModelAdmin):
     pass
 admin.site.register(NewAnswerNotificationTemplate, NewAnswerNotificationTemplateAdmin)
+
+
+class ConfirmationTemplateAdmin(admin.ModelAdmin):
+    pass
+admin.site.register(ConfirmationTemplate, ConfirmationTemplateAdmin)
