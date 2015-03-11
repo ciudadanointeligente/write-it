@@ -774,7 +774,10 @@ def send_an_email_to_the_author(sender, instance, created, **kwargs):
             [confirmation.message.author_email],  # To
             connection=connection,
             )
-        msg.attach_alternative(html_content, "text/html")
+
+        if html_content:
+            msg.attach_alternative(html_content, "text/html")
+
         try:
             msg.send()
         except:

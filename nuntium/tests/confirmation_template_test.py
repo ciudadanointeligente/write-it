@@ -118,6 +118,19 @@ class ConfirmationTemplateTestCase(TestCase):
             [(u'<b>Subject 1<b>', 'text/html')],
             )
 
+    def test_confirmation_mail_without_html_template(self):
+        '''The confirmation mail is sent without alternatives or text/html'''
+        message = Message.objects.get(id=1)
+        template = message.writeitinstance.confirmationtemplate
+
+        template.content_html = ""
+        template.content_text = "Foo"
+        template.subject = "the subject"
+        template.save()
+
+        Confirmation.objects.create(message=message)
+        self.assertFalse(mail.outbox[0].alternatives)
+
     @override_settings(TEMPLATE_STRING_IF_INVALID='!!INVALID!!')
     def test_rendering_templates(self):
         """Render the default confirmation templates and check for errors.
