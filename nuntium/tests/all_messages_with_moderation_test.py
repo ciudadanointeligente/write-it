@@ -8,10 +8,10 @@ from django.core import mail
 class AllMessagesWithModerationInAWriteItInstances(TestCase):
     def setUp(self):
         super(AllMessagesWithModerationInAWriteItInstances, self).setUp()
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.writeitinstance1 = WriteItInstance.objects.get(id=1)
         self.writeitinstance1.config.moderation_needed_in_all_messages = True
         self.writeitinstance1.save()
-        self.person1 = Person.objects.all()[0]
+        self.person1 = Person.objects.get(id=1)
         self.message = Message.objects.create(
             content='Content 1',
             author_name='Felipe',

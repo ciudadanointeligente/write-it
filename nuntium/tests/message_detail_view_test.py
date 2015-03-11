@@ -8,8 +8,8 @@ import datetime
 class MessageDetailView(TestCase):
     def setUp(self):
         super(MessageDetailView, self).setUp()
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
-        self.person1 = Person.objects.all()[0]
+        self.writeitinstance1 = WriteItInstance.objects.get(id=1)
+        self.person1 = Person.objects.get(id=1)
         self.message = Message.objects.create(
             content='Content 1',
             author_name='Felipe',

@@ -25,7 +25,7 @@ class PostMock():
 class TestApiKeyAuthentification(TestCase):
     def setUp(self):
         super(TestApiKeyAuthentification, self).setUp()
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         self.api_key = self.user.api_key
 
     def test_creation(self):
@@ -46,7 +46,7 @@ class TestApiKeyAuthentification(TestCase):
 class AnswerHandlerTestCase(TestCase):
     def setUp(self):
         super(AnswerHandlerTestCase, self).setUp()
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         self.where_to_post_creation_of_the_answer = 'http://writeit.ciudadanointeligente.org/api/v1/create_answer/'
         config.WRITEIT_API_ANSWER_CREATION = self.where_to_post_creation_of_the_answer
         config.WRITEIT_API_KEY = self.user.api_key.key
@@ -86,7 +86,7 @@ class AnswerHandlerTestCase(TestCase):
 class ReplyHandlerTestCase(ResourceTestCase):
     def setUp(self):
         super(ReplyHandlerTestCase, self).setUp()
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         f = open('mailit/tests/fixture/reply_mail.txt')
         self.email = f.readlines()
         f.close()
@@ -104,7 +104,7 @@ class ReplyHandlerTestCase(ResourceTestCase):
 class DoesNotIncludeTheIdentifierInTheContent(TestCase):
     def setUp(self):
         super(DoesNotIncludeTheIdentifierInTheContent, self).setUp()
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         f = open('mailit/tests/fixture/mail_with_identifier_in_the_content.txt')
         self.email = f.readlines()
         f.close()
@@ -139,7 +139,7 @@ class DoesNotIncludeTheIdentifierInTheContent(TestCase):
 class IncomingEmailHandlerTestCase(ResourceTestCase):
     def setUp(self):
         super(IncomingEmailHandlerTestCase, self).setUp()
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         f = open('mailit/tests/fixture/mail.txt')
         self.email = f.readlines()
         f.close()
@@ -268,7 +268,7 @@ class IncomingEmailHandlerTestCase(ResourceTestCase):
 class HandleBounces(TestCase):
     def setUp(self):
         super(HandleBounces, self).setUp()
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         f = open('mailit/tests/fixture/bounced_mail2.txt')
         self.email = f.readlines()
         f.close()
@@ -301,8 +301,8 @@ class HandleBounces(TestCase):
 class BouncedMessageRecordTestCase(TestCase):
     def setUp(self):
         super(BouncedMessageRecordTestCase, self).setUp()
-        self.outbound_message = OutboundMessage.objects.all()[0]
-        self.identifier = OutboundMessageIdentifier.objects.all()[0]
+        self.outbound_message = OutboundMessage.objects.get(id=1)
+        self.identifier = OutboundMessageIdentifier.objects.first()
         self.identifier.key = '4aaaabbb'
         self.identifier.save()
         self.bounced_email = ""
@@ -338,7 +338,7 @@ class BouncedMessageRecordTestCase(TestCase):
 class BouncedMailInAmazonBug(TestCase):
     def setUp(self):
         super(BouncedMailInAmazonBug, self).setUp()
-        self.message = Message.objects.all()[0]
+        self.message = Message.objects.get(id=1)
         self.contact = Contact.objects.get(value="mailnoexistente@ciudadanointeligente.org")
         self.outbound_message = OutboundMessage.objects.create(message=self.message, contact=self.contact)
         identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
@@ -366,7 +366,7 @@ class BouncedMailInAmazonBug(TestCase):
 class BouncedMailInGmail(TestCase):
     def setUp(self):
         super(BouncedMailInGmail, self).setUp()
-        self.message = Message.objects.all()[0]
+        self.message = Message.objects.get(id=1)
         self.contact = Contact.objects.get(value="mailnoexistente@ciudadanointeligente.org")
         self.outbound_message = OutboundMessage.objects.create(
             message=self.message, contact=self.contact)
@@ -400,7 +400,7 @@ class BouncedMailInGmail(TestCase):
 class EmailReadingExamplesTestCase(TestCase):
     def setUp(self):
         super(EmailReadingExamplesTestCase, self).setUp()
-        self.message = Message.objects.all()[0]
+        self.message = Message.objects.get(id=1)
         self.contact = Contact.objects.get(value="falvarez@ciudadanointeligente.cl")
         self.outbound_message = OutboundMessage.objects.create(message=self.message, contact=self.contact)
         self.outbound_message.send()

@@ -21,7 +21,7 @@ class LoggingTests(TestCase):
 
     @override_settings(ADMINS=(('Felipe', 'falvarez@admins.org'),), INCOMING_EMAIL_LOGGING='ALL')
     def test_it_sends_a_mail_to_the_admins_when_receiving_a_mail(self):
-        identifier = OutboundMessageIdentifier.objects.all()[0]
+        identifier = OutboundMessageIdentifier.objects.first()
         identifier.key = '4aaaabbb'
         identifier.save()
 
@@ -39,7 +39,7 @@ class LoggingTests(TestCase):
 
     @override_settings(ADMINS=None, INCOMING_EMAIL_LOGGING='ALL')
     def test_if_there_are_no_admins_does_not_send_emails(self):
-        identifier = OutboundMessageIdentifier.objects.all()[0]
+        identifier = OutboundMessageIdentifier.objects.first()
         identifier.key = '4aaaabbb'
         identifier.save()
 

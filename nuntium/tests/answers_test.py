@@ -7,10 +7,10 @@ from django.utils.translation import ugettext as _
 class AnswerTestCase(TestCase):
     def setUp(self):
         super(AnswerTestCase, self).setUp()
-        self.message = Message.objects.all()[0]
-        self.person = Person.objects.all()[0]
+        self.message = Message.objects.get(id=1)
+        self.person = Person.objects.get(id=1)
         #There is no membership for this guy to any writeitInstance
-        self.person_not_in_the_instance = Person.objects.all()[1]
+        self.person_not_in_the_instance = Person.objects.get(id=2)
 
     def test_create_an_answer(self):
         answer = Answer.objects.create(message=self.message, person=self.person, content="the answer to that is ...")

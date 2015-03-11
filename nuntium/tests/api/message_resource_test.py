@@ -11,7 +11,7 @@ class MessageResourceTestCase(ResourceTestCase):
     def setUp(self):
         super(MessageResourceTestCase, self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         self.writeitinstance = WriteItInstance.objects.create(name=u"a test", slug=u"a-test", owner=self.user)
         self.api_client = TestApiClient()
         self.data = {'format': 'json', 'username': self.user.username, 'api_key': self.user.api_key.key}
@@ -33,7 +33,7 @@ class MessageResourceTestCase(ResourceTestCase):
         """ The list of messages shown in the API is ordered by created date"""
         # Preparing the test
         Message.objects.all().delete()
-        person1 = Person.objects.all()[0]
+        person1 = Person.objects.get(id=1)
         # cleaning up the database before
         message1 = Message.objects.create(
             content=u'Content 1',
@@ -99,7 +99,7 @@ class MessageResourceTestCase(ResourceTestCase):
         self.assertEquals(len(message_from_the_api['people']), message.people.count())
 
     def test_create_a_new_message(self):
-        writeitinstance = WriteItInstance.objects.all()[0]
+        writeitinstance = WriteItInstance.objects.get(id=1)
         message_data = {
             'author_name': 'Felipipoo',
             'subject': 'new message',
@@ -127,7 +127,7 @@ class MessageResourceTestCase(ResourceTestCase):
             self.assertEquals(outbound_message.status, 'ready')
 
     def test_create_a_new_message_with_a_non_existing_person(self):
-        writeitinstance = WriteItInstance.objects.all()[0]
+        writeitinstance = WriteItInstance.objects.get(id=1)
         message_data = {
             'author_name': 'Felipipoo',
             'subject': 'new message',
@@ -147,7 +147,7 @@ class MessageResourceTestCase(ResourceTestCase):
         self.assertEquals(outbound_messages[0].contact.person, writeitinstance.persons.all()[0])
 
     def test_create_a_new_message_confirmated(self):
-        writeitinstance = WriteItInstance.objects.all()[0]
+        writeitinstance = WriteItInstance.objects.get(id=1)
         message_data = {
             'author_name': 'Felipipoo',
             'subject': 'new message',
@@ -165,7 +165,7 @@ class MessageResourceTestCase(ResourceTestCase):
     def test_create_a_new_message_to_all_persons_in_the_instance(self):
         #here it is the thing I don't know yet how to do this and I'll go for
         #saying all in the persons array instead of having an array or an empty
-        writeitinstance = WriteItInstance.objects.all()[0]
+        writeitinstance = WriteItInstance.objects.get(id=1)
         message_data = {
             'author_name': 'Felipipoo',
             'subject': 'new message',
@@ -186,7 +186,7 @@ class MessageResourceTestCase(ResourceTestCase):
 
     def test_not_confirming_automatically_a_message(self):
         """Push a new message to an instance with no autoconfirm message"""
-        writeitinstance = WriteItInstance.objects.all()[0]
+        writeitinstance = WriteItInstance.objects.get(id=1)
         writeitinstance.config.autoconfirm_api_messages = False
         writeitinstance.config.save()
 
@@ -213,7 +213,7 @@ class MessageResourceTestCase(ResourceTestCase):
 
     def test_not_including_email_in_non_auto_confrim_message(self):
         """Not Including email causes error 403 in a non auto confirm message"""
-        writeitinstance = WriteItInstance.objects.all()[0]
+        writeitinstance = WriteItInstance.objects.get(id=1)
         writeitinstance.config.autoconfirm_api_messages = False
         writeitinstance.config.save()
 
@@ -238,7 +238,7 @@ class MessageResourceTestCase(ResourceTestCase):
 
     def test_including_a_non_email_in_the_author_email(self):
         """When it has an author_email it validates it"""
-        writeitinstance = WriteItInstance.objects.all()[0]
+        writeitinstance = WriteItInstance.objects.get(id=1)
 
         message_data = {
             'author_name': 'Felipipoo',

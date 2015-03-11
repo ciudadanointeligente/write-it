@@ -17,9 +17,9 @@ script_dir = os.path.dirname(__file__)
 class SubscribersTestCase(TestCase):
     def setUp(self):
         super(SubscribersTestCase, self).setUp()
-        self.moderation_not_needed_instance = WriteItInstance.objects.all()[0]
-        self.message = Message.objects.all()[0]
-        self.person1 = Person.objects.all()[0]
+        self.moderation_not_needed_instance = WriteItInstance.objects.get(id=1)
+        self.message = Message.objects.get(id=1)
+        self.person1 = Person.objects.get(id=1)
 
     def test_create_a_new_subscriber(self):
         subscriber = Subscriber.objects.create(message=self.message, email='felipe@lab.ciudadanointeligente.org')
@@ -66,11 +66,11 @@ class SubscribersTestCase(TestCase):
 class NewAnswerToSubscribersMessageTemplate(TestCase):
     def setUp(self):
         super(NewAnswerToSubscribersMessageTemplate, self).setUp()
-        self.instance = WriteItInstance.objects.all()[0]
+        self.instance = WriteItInstance.objects.get(id=1)
 
-        self.message = Message.objects.all()[0]
-        self.pedro = Person.objects.all()[0]
-        self.owner = User.objects.all()[0]
+        self.message = Message.objects.get(id=1)
+        self.pedro = Person.objects.get(id=1)
+        self.owner = User.objects.get(id=1)
         self.answer = Answer.objects.create(
             content="Ola ke ase? pedalea o ke ase?",
             person=self.pedro,
@@ -124,11 +124,11 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
 class NewAnswerNotificationToSubscribers(TestCase):
     def setUp(self):
         super(NewAnswerNotificationToSubscribers, self).setUp()
-        self.instance = WriteItInstance.objects.all()[0]
-        self.message = Message.objects.all()[0]
+        self.instance = WriteItInstance.objects.get(id=1)
+        self.message = Message.objects.get(id=1)
         self.subscriber = Subscriber.objects.create(message=self.message, email=self.message.author_email)
-        self.pedro = Person.objects.all()[0]
-        self.owner = User.objects.all()[0]
+        self.pedro = Person.objects.get(id=1)
+        self.owner = User.objects.get(id=1)
         self.instance.new_answer_notification_template.subject_template = 'weeena pelao %(person)s %(message)s'
         self.instance.new_answer_notification_template.save()
         self.template_str_txt = get_template_from_string(self.instance.new_answer_notification_template.template_text)

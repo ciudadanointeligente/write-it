@@ -18,10 +18,10 @@ from popit.models import Person
 class MessagesSearchTestCase(TestCase):
     def setUp(self):
         super(MessagesSearchTestCase, self).setUp()
-        self.first_message = Message.objects.all()[0]
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
-        self.person1 = Person.objects.all()[0]
-        self.person2 = Person.objects.all()[1]
+        self.first_message = Message.objects.get(id=1)
+        self.writeitinstance1 = WriteItInstance.objects.get(id=1)
+        self.person1 = Person.objects.get(id=1)
+        self.person2 = Person.objects.get(id=2)
         self.index = MessageIndex()
         for message in Message.objects.all():
             message.confirmated = True
@@ -162,7 +162,7 @@ class SearchMessageAccess(SearchIndexTestCase):
 class PerInstanceSearchFormTestCase(SearchIndexTestCase):
     def setUp(self):
         super(PerInstanceSearchFormTestCase, self).setUp()
-        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.writeitinstance = WriteItInstance.objects.get(id=1)
 
     def test_per_instance_search_form(self):
         form = PerInstanceSearchForm(writeitinstance=self.writeitinstance)

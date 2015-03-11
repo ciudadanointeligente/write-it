@@ -17,11 +17,11 @@ from mock import patch
 class ConfirmationTestCase(TestCase):
     def setUp(self):
         super(ConfirmationTestCase, self).setUp()
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
-        self.Marcel = Person.objects.all()[1]
-        felipe = Person.objects.all()[2]
+        self.writeitinstance1 = WriteItInstance.objects.get(id=1)
+        self.Marcel = Person.objects.get(id=2)
+        felipe = Person.objects.get(id=3)
         self.channel = MentalMessage()
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         self.mental_contact1 = Contact.objects.create(
             person=felipe,
             contact_type=self.channel.get_contact_type(),
@@ -201,11 +201,11 @@ class ConfirmationTestCase(TestCase):
 class EmailSendingErrorHandling(TestCase):
     def setUp(self):
         super(EmailSendingErrorHandling, self).setUp()
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
-        self.Marcel = Person.objects.all()[1]
-        felipe = Person.objects.all()[2]
+        self.writeitinstance1 = WriteItInstance.objects.get(id=1)
+        self.Marcel = Person.objects.get(id=2)
+        felipe = Person.objects.get(id=3)
         self.channel = MentalMessage()
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         self.mental_contact1 = Contact.objects.create(person=felipe,
             contact_type=self.channel.get_contact_type(),
             writeitinstance=self.writeitinstance1)

@@ -13,7 +13,7 @@ from django.utils.translation import ugettext as _
 class PersonMultipleChoiceFieldTestCase(TestCase):
     def setUp(self):
         super(PersonMultipleChoiceFieldTestCase, self).setUp()
-        self.person1 = Person.objects.all()[0]
+        self.person1 = Person.objects.get(id=1)
 
     def test_get_widget(self):
         field = PersonMultipleChoiceField(queryset=Person.objects.none())
@@ -69,9 +69,9 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
 class MessageFormTestCase(TestCase):
     def setUp(self):
         super(MessageFormTestCase, self).setUp()
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
-        self.person1 = Person.objects.all()[0]
-        self.contact1 = Contact.objects.all()[0]
+        self.writeitinstance1 = WriteItInstance.objects.get(id=1)
+        self.person1 = Person.objects.get(id=1)
+        self.contact1 = Contact.objects.get(id=1)
 
     def test_form_fields(self):
         form = MessageCreateForm(writeitinstance=self.writeitinstance1)
@@ -184,13 +184,13 @@ class MessageFormTestCase(TestCase):
 class RateLimitingInForm(TestCase):
     def setUp(self):
         super(RateLimitingInForm, self).setUp()
-        self.owner = User.objects.all()[0]
-        self.writeitinstance1 = WriteItInstance.objects.all()[0]
+        self.owner = User.objects.get(id=1)
+        self.writeitinstance1 = WriteItInstance.objects.get(id=1)
         self.writeitinstance1.config.rate_limiter = 1
         self.writeitinstance1.config.save()
-        self.person1 = Person.objects.all()[0]
-        self.person2 = Person.objects.all()[1]
-        self.message = Message.objects.all()[0]
+        self.person1 = Person.objects.get(id=1)
+        self.person2 = Person.objects.get(id=2)
+        self.message = Message.objects.get(id=1)
         Message.objects.create(
             content='Content 1',
             author_name='Felipe',

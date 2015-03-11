@@ -10,8 +10,8 @@ class HandleBounces(ResourceTestCase):
         super(HandleBounces, self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
         self.api_client = TestApiClient()
-        self.user = User.objects.all()[0]
-        self.outbound_message = OutboundMessage.objects.all()[0]
+        self.user = User.objects.get(id=1)
+        self.outbound_message = OutboundMessage.objects.get(id=1)
         self.identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
 
     def get_credentials(self):

@@ -9,10 +9,10 @@ class AnswerCreationResource(ResourceTestCase):
     def setUp(self):
         super(AnswerCreationResource, self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
-        self.outbound_message = OutboundMessage.objects.all()[0]
+        self.outbound_message = OutboundMessage.objects.get(id=1)
         self.identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
         self.api_client = TestApiClient()
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         self.data = {'format': 'json', 'username': self.user.username, 'api_key': self.user.api_key.key}
 
     def get_credentials(self):

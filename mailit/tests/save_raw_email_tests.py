@@ -33,7 +33,7 @@ class IncomingRawEmailTestCase(TestCase, IncomingRawEmailMixin):
 
     def test_it_relates_the_raw_mail_to_an_instance(self):
         '''The raw message can be related to an instance'''
-        instance = WriteItInstance.objects.all()[0]
+        instance = WriteItInstance.objects.get(id=1)
         raw_email = RawIncomingEmail(content=self.email_content)
         raw_email.writeitinstance = instance
         raw_email.save()
@@ -46,7 +46,7 @@ class IncomingRawEmailTestCase(TestCase, IncomingRawEmailMixin):
 
     def test_can_be_related_to_an_answe(self):
         '''A raw mail can be related to an answer'''
-        answer = Answer.objects.all()[0]
+        answer = Answer.objects.get(id=1)
         with self.assertRaises(RawIncomingEmail.DoesNotExist):
             answer.raw_email
         raw_email = RawIncomingEmail(content=self.email_content)
@@ -61,7 +61,7 @@ class IncomingRawEmailTestCase(TestCase, IncomingRawEmailMixin):
 class IncomingEmailAutomaticallySavesRawMessage(TestCase, IncomingRawEmailMixin):
     def setUp(self):
         super(IncomingEmailAutomaticallySavesRawMessage, self).setUp()
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         self.where_to_post_creation_of_the_answer = 'http://testserver/api/v1/create_answer/'
         config.WRITEIT_API_ANSWER_CREATION = self.where_to_post_creation_of_the_answer
         config.WRITEIT_API_KEY = self.user.api_key.key
@@ -69,7 +69,7 @@ class IncomingEmailAutomaticallySavesRawMessage(TestCase, IncomingRawEmailMixin)
 
         self.set_email_content()
 
-        self.outbound_message = OutboundMessage.objects.all()[0]
+        self.outbound_message = OutboundMessage.objects.get(id=1)
         self.identifier = self.outbound_message.outboundmessageidentifier
         self.identifier.key = "4aaaabbb"
         self.identifier.save()

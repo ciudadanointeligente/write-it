@@ -10,7 +10,7 @@ class PersonResourceTestCase(ResourceTestCase):
     def setUp(self):
         super(PersonResourceTestCase, self).setUp()
         call_command('loaddata', 'example_data', verbosity=0)
-        self.user = User.objects.all()[0]
+        self.user = User.objects.get(id=1)
         self.writeitinstance = WriteItInstance.objects.create(name=u"a test", slug=u"a-test", owner=self.user)
         self.api_client = TestApiClient()
 

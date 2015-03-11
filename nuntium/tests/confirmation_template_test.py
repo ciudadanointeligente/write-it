@@ -24,7 +24,7 @@ class ConfirmationTemplateTestCase(TestCase):
         super(ConfirmationTemplateTestCase, self).setUp()
         script_dir = os.path.dirname(__file__)
 
-        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.writeitinstance = WriteItInstance.objects.get(id=1)
 
         self.default_template_text = ''
         with open(os.path.join(script_dir, '../templates/nuntium/mails/confirmation/content_template.txt'), 'r') as f:
@@ -34,7 +34,7 @@ class ConfirmationTemplateTestCase(TestCase):
         with open(os.path.join(script_dir, '../templates/nuntium/mails/confirmation/subject_template.txt'), 'r') as f:
             self.default_subject = f.read()
 
-        self.owner = User.objects.all()[0]
+        self.owner = User.objects.get(id=1)
 
     def test_instanciate(self):
         """Instanciate the confirmation template"""
@@ -60,7 +60,7 @@ class ConfirmationTemplateTestCase(TestCase):
     def test_confirmation_mail_with_template(self):
         """The confirmation mail is sent using the template"""
 
-        message = Message.objects.all()[0]
+        message = Message.objects.get(id=1)
         content_template = "{{confirmation}}{{confirmation_full_url}}{{message_full_url}}"
         template = message.writeitinstance.confirmationtemplate
 
@@ -188,7 +188,7 @@ class ConfirmationTemplateTestCase(TestCase):
 class ConfirmationTemplateFormTestCase(TestCase):
     def setUp(self):
         super(ConfirmationTemplateFormTestCase, self).setUp()
-        self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.writeitinstance = WriteItInstance.objects.get(id=1)
 
     def test_instanciate_form(self):
         """Instanciate the form for changing the confirmation template"""
