@@ -23,6 +23,6 @@ after_script:
   - coveralls --verbose
 env:
   - DB=postgres
-  - DB=mysql
+#  - DB=mysql
   - DB=sqlite3
 
