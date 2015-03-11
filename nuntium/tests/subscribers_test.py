@@ -181,6 +181,16 @@ class NewAnswerNotificationToSubscribers(TestCase):
             [(u'<b>Subject 1</b>', 'text/html')]
             )
 
+    def test_answer_notification_without_alternatives_html(self):
+        '''It doesn't include any alternatives if template_html is empty'''
+
+        new_answer_notification_template = self.message.writeitinstance.new_answer_notification_template
+        new_answer_notification_template.template_html = ''
+        new_answer_notification_template.save()
+
+        self.create_a_new_answer()
+        self.assertFalse(mail.outbox[0].alternatives)
+
     @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
     def test_send_subscribers_notice_from_a_single_unified_email(self):
         '''Send emails from default from email'''
