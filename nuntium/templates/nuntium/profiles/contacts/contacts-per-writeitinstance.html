@@ -3,6 +3,7 @@
 {% load pagination_tags %}
 {% load nuntium_tags %}
 {% load staticfiles %}
+{% load thumbnail %}
 
 {% block extrajs %}
 $(function() { 
@@ -51,7 +52,14 @@ $(function() {
         <tbody>
           {% for person in people %}
           <tr>
-            <td>{{ person.name }}</td>
+            <td>
+              {% if person.image %}
+                {% thumbnail person.image "40x40" crop="center" as im %}
+                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                {% endthumbnail %}
+              {% endif %}
+
+              {{ person.name }}</td>
             <td>{% show_contacts_for person writeitinstance %}</td>            
           </tr>
           {% empty %}

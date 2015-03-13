@@ -3,6 +3,8 @@ from nuntium.views import ConfirmView, AcceptModerationView, RejectModerationVie
 from django.conf.urls.i18n import i18n_patterns
 from tastypie.api import Api
 from nuntium.api import WriteItInstanceResource, MessageResource, AnswerCreationResource, HandleBouncesResource, PersonResource
+from django.conf.urls.static import static
+from django.conf import settings
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -37,4 +39,4 @@ urlpatterns += i18n_patterns('',
     url(r'^', include('nuntium.user_section.urls')),
     url(r'^writeit_instances/', include('nuntium.subdomain_urls')),
     (r'accounts/', include('django.contrib.auth.urls')),
-)
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
