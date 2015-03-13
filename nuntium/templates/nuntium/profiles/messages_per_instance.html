@@ -38,7 +38,6 @@
 
             {% endif %}
             <th>{% trans "Details" %}</th>
-            <th>{% trans "Public link" %}</th>
             <th>{% trans "Answers"%}</th>
             <th>{% trans "Delete"%}</th>
           </tr>
@@ -46,7 +45,12 @@
         <tbody>
           {% for message in writeit_messages %}
           <tr>
-            <td>{{ message.subject }}</td>
+            <td>
+              {{ message.subject }}
+              {% if message.public and message.confirmated %}
+              <a target="_blank" href="{% url 'message_detail' slug=message.slug instance_slug=writeitinstance.slug %}"><i class="fa fa-external-link"></i></a>
+              {% endif %}
+            </td>
             <td>{{ message.content|truncatechars:50|linebreaksbr }}</td>
             <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% if message.public %}{% trans 'This message can be seen by everyone' %}{% else %}{% trans 'TThis message can be seen by you only' %}{% endif %}"><i class="fa {% if message.public %}fa-eye{% else %}fa-eye-slash{% endif %}"></i></div></td>
             <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% if message.confirmated %}{% trans 'The author of this email has confirmed that this was sent from her/his email' %}{% else %}{% trans 'The author of this email has not  confirmed that this was sent from her/his email' %}{% endif %}"><i class="fa {% if message.confirmated %}fa-check-circle-o{% else %}fa-times-circle-o{% endif %}"></i></div></td>
@@ -59,12 +63,6 @@
 
             {% endif %}
             <td><a href="{% url 'message_detail' pk=message.pk %}"><i class="fa fa-cogs"></i></a></td>
-
-            <td>
-              {% if message.public %}
-              <a target="_blank" href="{% url 'message_detail' slug=message.slug instance_slug=writeitinstance.slug %}"><i class="fa fa-link"></i></a>
-              {% endif %}
-            </td>
             <td>
               {% blocktrans count answer_count=message.answers.count %}
                 {{ answer_count }} answer
