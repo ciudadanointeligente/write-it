@@ -69,7 +69,9 @@
               {% plural %}
                 {{ answer_count }} answers
               {% endblocktrans %}
-              <a data-toggle="modal" data-target="#modal" href="{% url 'create_answer' pk=message.pk %}" alt="{% trans "Add"%}"><i class="fa fa-plus"></i></a>
+              {% if writeitinstance.config.can_create_answer %}
+                <a data-toggle="modal" data-target="#modal" href="{% url 'create_answer' pk=message.pk %}" alt="{% trans "Add"%}"><i class="fa fa-plus"></i></a>
+              {% endif %}
             </td>
             <td><a data-toggle="modal" data-target="#modal" class="deleteMessage" href="{% url 'message_delete' pk=message.pk %}"><i class="fa fa-times"></i></a></td>
 
