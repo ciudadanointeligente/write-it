@@ -55,8 +55,11 @@
 	</dl>
 
 	<div class="col-md-4">
-		<button class="btn btn-primary"  data-toggle="modal" data-target="#editAnswer" class="editAnswer" href="{% url 'create_answer' pk=message.pk %}"><i class="fa fa-plus"></i> {% trans "Create an answer" %}</button>
+          {% if message.writeitinstance.config.can_create_answer %}
+          <button class="btn btn-primary"  data-toggle="modal" data-target="#editAnswer" class="editAnswer" href="{% url 'create_answer' pk=message.pk %}"><i class="fa fa-plus"></i> {% trans "Create an answer" %}</button>
+          {% endif %}
 	</div>
+
 	<div class="col-md-8">
 		<table class="table">
 		  <tr>
