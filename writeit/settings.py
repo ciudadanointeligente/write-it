@@ -151,6 +151,7 @@ INSTALLED_APPS = (
     'social.apps.django_app.default',
     'pagination',
     'annoying',
+    'micawber.contrib.mcdjango',
 
     'nuntium',
     'djangoplugins',

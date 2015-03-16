@@ -1,7 +1,8 @@
 {% load staticfiles %}{% load i18n %}{% load markdown_deux_tags %}
+{% load micawber_tags %}
 <div class="panel panel-default answer-in-list">
   <div class="panel-body">
-    <span class="content">{{ answer.content|linebreaks }}</span>
+    <span class="content">{{ answer.content|linebreaks|oembed:"600x600" }}</span>
   </div>
   <div class="panel-footer"><small>{% blocktrans with answer.person.name as name %} by {{ name }}.{% endblocktrans %}</small></div>
 </div>
