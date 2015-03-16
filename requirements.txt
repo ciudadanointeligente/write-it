@@ -1,3 +1,4 @@
+urllib3
 Django==1.6.10
 django-plugins
 South
@@ -10,6 +11,8 @@ django-markdown-deux
 requests
 django-extensions
 django-haystack
+django-pipeline
+libsass
 elasticsearch
 celery
 pyyaml
@@ -27,7 +30,7 @@ python-dateutil
 gunicorn
 dj-database-url==0.2.2
 dj-static==0.0.5
-psycopg2==2.5.1
+#psycopg2==2.5.1
 static==0.4
 wsgiref==0.1.2
 kombu
