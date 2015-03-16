@@ -7,6 +7,7 @@ from django.template import Context
 from django.template.loader import get_template_from_string
 from smtplib import SMTPServerDisconnected, SMTPResponseException
 from django.contrib.sites.models import get_current_site
+from django.core.mail import mail_admins
 
 logging.basicConfig(filename="send_mails.log", level=logging.INFO)
 
@@ -99,6 +100,7 @@ class MailChannel(OutputPlugin):
                 'message': outbound_message.message,
                 'error': e.__unicode__()
                 }
+            mail_admins("Problem sending an email", log)
             logging.info(log)
             return False, True
 
