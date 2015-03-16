@@ -5,16 +5,38 @@ You write it, and we deliver it.
 [![Coverage Status](https://coveralls.io/repos/ciudadanointeligente/write-it/badge.png?branch=master)](https://coveralls.io/r/ciudadanointeligente/write-it)
 [![Code Health](https://landscape.io/github/ciudadanointeligente/write-it/master/landscape.png)](https://landscape.io/github/ciudadanointeligente/write-it/master)
 
-Write-it is an application that aims to deliver messages to people whose contacts are to be private or the messages should be public, for example: members of congress. 
+Write-it is an application that aims to deliver messages to people whose contacts are to be private or the messages should be public, for example: members of congress.
 
 Write-it is a layer on top of [popit](http://popit.mysociety.org) from where it takes the people and adds contacts. The way it delivers messages is using plugins for example: mailit. And this approach allows for future ways of delivering for example: twitter, whatsapp, fax or pager.
 
 Future uses are in [congresoabierto](http://www.congresoabierto.cl) to replace the old "preguntales" (You can [check here](http://congresoabierto.cl/comunicaciones), to see how it used to work) feature, it was inspired by [writetothem](http://www.writetothem.com/).
 
 
+Quick Installation (Vagrant)
+============================
 
-Installation
-------------
+Assuming [you have Vagrant installed](http://docs.vagrantup.com/v2/installation/), run the following:
+
+    git clone https://github.com/ciudadanointeligente/write-it.git
+    cd write-it
+    vagrant up
+
+Vagrant will automatically install WriteIt and all of its dependencies. This can take a few minutes.
+
+Once it’s complete, log into the virtual machine with:
+
+    vagrant ssh
+
+Once you’re inside the virtual machine, run the web server with:
+
+    cd /vagrant
+    ./manage.py runserver 0.0.0.0:8000
+
+And visit http://localhost:8000 on your host machine to use WriteIt.
+
+
+Manual Installation (without Vagrant)
+=====================================
 
 System Requirements
 -------------------
@@ -32,8 +54,6 @@ System Requirements
  * Libssl
 
  In ubuntu you can do ```sudo apt-get install libssl-dev```
-
-
 
 Write-it is built using Django. You should install Django and its dependencies inside a virtualenv. We suggest you use [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/) to create and manage virtualenvs, so if you don’t already have it, [go install it](http://virtualenvwrapper.readthedocs.org/en/latest/install.html#basic-installation), remembering in particular to add the required lines to your shell startup file.
 
@@ -53,7 +73,7 @@ Set up the database, creating an admin user when prompted:
 
 Troubleshooting database migration
 ----------------------------------
-There's a problem migrating and the problem looks like 
+There's a problem migrating and the problem looks like
 
 	django.db.utils.OperationalError: no such table: tastypie_apikey
 
@@ -67,7 +87,7 @@ Then run the server:
 
 
 Testing and Development
------------------------
+=======================
 
 If you want to test without PopitAPI or Elasticsearch
 -----------------------------------------------------
@@ -112,7 +132,7 @@ With that done you will be able to access '/accounts/login/'.
 
 
 API clients
------------
+===========
 
 Write-it has been used mostly through its REST API for which there are a number of API clients.
 The github repos and the status of the development are listed below:
