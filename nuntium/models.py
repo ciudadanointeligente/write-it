@@ -12,8 +12,6 @@ from django.contrib.sites.models import Site
 import datetime
 from djangoplugins.models import Plugin
 from django.core.mail import EmailMultiAlternatives
-from django.template.loader import get_template
-from django.template import Context
 from django.conf import settings
 from django.core.urlresolvers import reverse
 import uuid
@@ -30,6 +28,7 @@ from unidecode import unidecode
 from django.db.models.query import QuerySet
 from itertools import chain
 import os
+import codecs
 from popit_api_instance import PopitApiInstance
 from requests.exceptions import ConnectionError
 from django.core import mail
@@ -38,9 +37,8 @@ from django.core import mail
 def read_template_as_string(path, file_source_path=__file__):
     script_dir = os.path.dirname(file_source_path)
     result = ''
-    with open(os.path.join(script_dir, path), 'r') as f:
+    with codecs.open(os.path.join(script_dir, path), 'r', encoding='utf8') as f:
         result = f.read()
-
     return result
 
 
@@ -228,6 +226,10 @@ class NonModeratedMessagesManager(MessagesManager):
             .exclude(Q(moderated=True) | Q(moderated=None))
 
 
+moderation_subject = read_template_as_string('templates/nuntium/mails/moderation_subject.txt').strip()
+moderation_content_txt = read_template_as_string('templates/nuntium/mails/moderation_mail.txt')
+
+
 class Message(models.Model):
     """Message: Class that contain the info for a model, \
     despite of the input and the output channels. Subject \
@@ -374,11 +376,9 @@ class Message(models.Model):
             outbound_message.save()
 
     def send_moderation_mail(self):
-        plaintext = get_template('nuntium/mails/moderation_mail.txt')
-        htmly = get_template('nuntium/mails/moderation_mail.html')
         current_site = Site.objects.get_current()
         current_domain = 'http://' + current_site.domain
-        url_rejected = current_domain + reverse('moderation_rejected', kwargs={
+        url_reject = current_domain + reverse('moderation_rejected', kwargs={
             'slug': self.moderation.key
             })
 
@@ -386,14 +386,17 @@ class Message(models.Model):
             'slug': self.moderation.key
             })
 
-        d = Context(
-            {'message': self,
-             'url_rejected': url_rejected,
-             'url_accept': url_accept,
-             })
-
-        text_content = plaintext.render(d)
-        html_content = htmly.render(d)
+        context = {
+            'owner_name': self.writeitinstance.owner.username,
+            'author_name': self.author_name,
+            'author_email': self.author_email,
+            'recipients': u', '.join([x.name for x in self.people]),
+            'subject': self.subject,
+            'content': self.content,
+            'writeit_name': self.writeitinstance.name,
+            'url_reject': url_reject,
+            'url_accept': url_accept,
+            }
 
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = settings.DEFAULT_FROM_EMAIL
@@ -403,14 +406,13 @@ class Message(models.Model):
             from_email = self.writeitinstance.slug + "@" + from_domain
 
         connection = self.writeitinstance.config.get_mail_connection()
-        msg = EmailMultiAlternatives(_('Moderation required for\
-         a message in WriteIt'),
-            text_content,  # content
-            from_email,  # From
-            [self.writeitinstance.owner.email],  # To
+        msg = EmailMultiAlternatives(
+            moderation_subject.format(**context),
+            moderation_content_txt.format(**context),
+            from_email,
+            [self.writeitinstance.owner.email],
             connection=connection,
             )
-        msg.attach_alternative(html_content, "text/html")
         msg.send()
 
     def moderate(self):
