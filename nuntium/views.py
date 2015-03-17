@@ -3,9 +3,6 @@ from datetime import datetime
 from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, ListView
 from django.core.urlresolvers import reverse
 from django.http import Http404
-from django.utils.translation import ugettext as _
-from django.contrib import messages
-
 from haystack.views import SearchView
 from itertools import chain
 from popit.models import Person
@@ -68,15 +65,14 @@ class WriteItInstanceDetailView(CreateView):
 
     def form_valid(self, form):
         response = super(WriteItInstanceDetailView, self).form_valid(form)
-        moderations = Moderation.objects.filter(message=self.object)
-        if moderations.count() > 0 or self.object.writeitinstance.config.moderation_needed_in_all_messages:
-            messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation"))
-        else:
-            messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link"))
         return response
 
     def get_success_url(self):
-        return self.object.writeitinstance.get_absolute_url()
+        url = reverse('post_submission', kwargs={
+            'instance_slug': self.object.writeitinstance.slug,
+            'slug': self.object.slug,
+            })
+        return url
 
     def get_form_kwargs(self):
         kwargs = super(WriteItInstanceDetailView, self).get_form_kwargs()
@@ -92,13 +88,34 @@ class WriteItInstanceDetailView(CreateView):
         return context
 
 
-class MessageDetailView(DetailView):
-    template_name = 'nuntium/message/message_detail.html'
+class MessageDetailViewMixin(DetailView):
     model = Message
 
     def get_queryset(self):
-        qs = Message.objects.filter(slug__iexact=self.kwargs['slug'])
+        qs = Message.objects.filter(writeitinstance__slug__iexact=self.kwargs['instance_slug'])
         return qs
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+        message = queryset.get(slug__iexact=self.kwargs['slug'])
+        return message
+
+
+class PostSubmissionView(MessageDetailViewMixin):
+    template_name = 'nuntium/message/post_submission.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PostSubmissionView, self).get_context_data(**kwargs)
+        moderations = Moderation.objects.filter(message=self.object)
+        moderation_follows = moderations.count() > 0 or \
+            self.object.writeitinstance.config.moderation_needed_in_all_messages
+        context['moderation_follows'] = moderation_follows
+        return context
+
+
+class MessageDetailView(MessageDetailViewMixin):
+    template_name = 'nuntium/message/message_detail.html'
 
     def get_object(self):
         the_message = super(MessageDetailView, self).get_object()
