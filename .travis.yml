@@ -21,3 +21,8 @@ script:
   - coverage report -m
 after_script:
   - coveralls --verbose
+env:
+  - DB=postgres
+  - DB=mysql
+  - DB=sqlite3
+
