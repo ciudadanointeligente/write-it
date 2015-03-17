@@ -46,8 +46,6 @@ class TestMessages(TestCase):
         self.assertIsNotNone(message.updated)
         self.assertIsInstance(message.created, datetime.datetime)
         self.assertIsInstance(message.updated, datetime.datetime)
-        self.assertAlmostEqual((message.created - now).total_seconds(), 0, places=2)
-        self.assertAlmostEqual((message.updated - now).total_seconds(), 0, places=2)
 
     def test_message_has_a_is_confirmated_field(self):
         message = Message.objects.create(
