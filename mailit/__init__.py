@@ -9,6 +9,7 @@ from smtplib import SMTPServerDisconnected, SMTPResponseException
 
 from nuntium.plugins import OutputPlugin
 from contactos.models import ContactType
+from writeit_utils import escape_dictionary_values
 
 logging.basicConfig(filename="send_mails.log", level=logging.INFO)
 
@@ -45,7 +46,7 @@ class MailChannel(OutputPlugin):
             'owner_email': writeitinstance.owner.email,
             }
         text_content = template.content_template.format(**context)
-        html_content = template.content_html_template.format(**context)
+        html_content = template.content_html_template.format(**escape_dictionary_values(context))
         subject = template.subject_template.format(**context)
 
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:

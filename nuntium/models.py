@@ -33,6 +33,8 @@ from popit_api_instance import PopitApiInstance
 from requests.exceptions import ConnectionError
 from django.core import mail
 
+from writeit_utils import escape_dictionary_values
+
 
 def read_template_as_string(path, file_source_path=__file__):
     script_dir = os.path.dirname(file_source_path)
@@ -482,7 +484,7 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
 
         subject = new_answer_template.subject_template.format(**context)
         text_content = new_answer_template.template_text.format(**context)
-        html_content = new_answer_template.template_html.format(**context)
+        html_content = new_answer_template.template_html.format(**escape_dictionary_values(context))
 
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = settings.DEFAULT_FROM_EMAIL
@@ -767,8 +769,8 @@ def send_confirmation_email(sender, instance, created, **kwargs):
             }
 
         text_content = plaintext.format(**context)
-        html_content = htmly.format(**context)
         subject = subject.format(**context)
+        html_content = htmly.format(**escape_dictionary_values(context))
 
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = settings.DEFAULT_FROM_EMAIL
