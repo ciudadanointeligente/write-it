@@ -61,11 +61,11 @@
 	</div>
 
 	<div class="col-md-8">
+        <h4>{% trans 'Answers' %}</h4>
 		<table class="table">
 		  <tr>
 		  	<th>{% trans "Person" %}</th>
 		  	<th>{% trans "Content" %}</th>
-		  	<th>{% trans "Actions" %}</th>
 		  </tr>
 		  {% for answer in message.answers.all %}
 			  <tr>
@@ -83,6 +83,23 @@
 		  {% endfor %}
 		</table>
 	</div>
+
+    <div class="col-md-4"></div>
+    <div class="col-md-8">
+        <h4>{% trans 'Reports' %}</h4>
+        <table class="table">
+          <tr>
+            <th>{% trans "Reason" %}</th>
+            <th>{% trans "Date" %}</th>
+          </tr>
+          {% for report in message.reports.all %}
+              <tr>
+                <td>{{report.reason}}</td>
+                <td>{{report.datetime}}</td>
+              </tr>
+          {% endfor %}
+        </table>
+    </div>
 </div>
 </div>
 
