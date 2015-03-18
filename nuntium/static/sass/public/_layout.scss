@@ -1,0 +1,4 @@
+// An example of a layout style, using two bootstrap variables.
+@media(min-width: $screen-sm-min){
+  #some-element { padding: $nav-link-padding; }
+}
