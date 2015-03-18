@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 # from django.conf.urls.i18n import i18n_patterns
 
 from .views import WriteItInstanceDetailView, PerInstanceSearchView, \
-    MessagesPerPersonView, MessageDetailView
+    MessagesPerPersonView, MessageDetailView, ReportCreateView
 
 from django_downloadview import ObjectDownloadView
 from nuntium.models import AnswerAttachment
@@ -19,4 +19,5 @@ urlpatterns = patterns('',
     url(r'^(?P<slug>[-\w]+)/search/?$', PerInstanceSearchView(), name='instance_search'),
     url(r'^(?P<slug>[-\w]+)/per_person/(?P<pk>[-\d]+)/?$', MessagesPerPersonView.as_view(), name='messages_per_person'),
     url(r'^/attachment/(?P<pk>[-\d]+)/?$', download_attachment_view, name='attachment'),
+    url(r'^/report-message/(?P<pk>[-\d]+)/?$', ReportCreateView.as_view(), name='create-report'),
 )

@@ -10,8 +10,9 @@ from haystack.views import SearchView
 from itertools import chain
 from popit.models import Person
 from django.db.models import Q
-from .models import WriteItInstance, Confirmation, Message, Moderation
+from .models import WriteItInstance, Confirmation, Message, Moderation, Report
 from .forms import MessageCreateForm, MessageSearchForm, PerInstanceSearchForm
+from django.shortcuts import get_object_or_404
 
 
 class HomeTemplateView(TemplateView):
@@ -214,3 +215,21 @@ class MessagesPerPersonView(ListView):
         context = super(MessagesPerPersonView, self).get_context_data(**kwargs)
         context['person'] = self.person
         return context
+
+
+class ReportCreateView(CreateView):
+    model = Report
+    template_name = 'nuntium/reports/report_form.html'
+    fields = ['reason', ]
+
+    def get_success_url(self):
+        return reverse('instance_detail', kwargs={'slug': self.message.writeitinstance.slug})
+
+    def dispatch(self, *args, **kwargs):
+
+        self.message = get_object_or_404(Message, id=self.kwargs['pk'])
+        return super(ReportCreateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.message = self.message
+        return super(ReportCreateView, self).form_valid(form)

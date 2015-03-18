@@ -932,3 +932,9 @@ class WriteitInstancePopitInstanceRecord(models.Model):
         self.status = status
         self.status_explanation = explanation
         self.save()
+
+
+class Report(models.Model):
+    message = models.ForeignKey(Message, related_name="reports")
+    reason = models.TextField(default="")
+    datetime = models.DateTimeField(auto_now_add=True)
