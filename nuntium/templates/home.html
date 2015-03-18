@@ -1,22 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block extrajs %}
-{% include "home.js" %}
-{% endblock extrajs %}
-
-{% block menu-home-active %}
- class="active"
-{% endblock menu-home-active %}
-
 {% block content %}
-<div class="jumbotron jumbotron-homepage">
-  <h2>{% trans "You writeit and we deliver it!" %}</h2>
 
-  <p class="leading">{% blocktrans %}Public person messaging tool. Avoid the hassle of mail servers, creating special gmail accounts for your website, get blacklisted, etc. If you want your users to send messages, you're in the right place. {% endblocktrans %}</p>
+    <h1>{% trans "WriteIt is a zero-config factory for building sites that empower citizens to send emails to representatives and politicians." %}</h1>
 
-  <div class="text-center">
-    <a class="btn btn-lg contactBtn" href="{% url 'instance_list' %}"><span class="glyphicon glyphicon-send"></span> {% trans 'Check out our instances' %}</a>
-  </div>
-</div>
-{% endblock content%}
+    <p><a href="#" class="btn btn-primary btn-lg">{% trans "Create a WriteIt instance" %}</a></p>
+
+    <p><a href="{% url 'instance_list' %}">{% trans "Or browse existing instances" %}</a></p>
+
+{% endblock content %}
