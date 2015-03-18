@@ -240,6 +240,7 @@ class Migration(SchemaMigration):
             'notify_owner_when_new_answer': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'rate_limiter': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'testing_mode': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'can_create_answer': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'writeitinstance': ('annoying.fields.AutoOneToOneField', [], {'related_name': "'config'", 'unique': 'True', 'to': u"orm['nuntium.WriteItInstance']"})
         },
         u'nuntium.writeitinstancepopitinstancerecord': {
