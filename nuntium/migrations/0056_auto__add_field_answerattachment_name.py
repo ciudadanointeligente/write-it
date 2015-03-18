@@ -98,7 +98,8 @@ class Migration(SchemaMigration):
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'message': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'answers'", 'to': u"orm['nuntium.Message']"}),
-            'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['popit.Person']"})
+            'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['popit.Person']"}),
+            'content_html': ('django.db.models.fields.TextField', [], {}),
         },
         u'nuntium.answerattachment': {
             'Meta': {'object_name': 'AnswerAttachment'},
