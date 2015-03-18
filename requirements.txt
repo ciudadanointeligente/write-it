@@ -41,3 +41,4 @@ pyasn1
 django-pagination
 django-annoying
 celery-haystack==0.8
+django-celery-transactions<0.2.0
