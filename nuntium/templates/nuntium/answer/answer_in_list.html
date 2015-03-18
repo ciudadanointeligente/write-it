@@ -2,6 +2,11 @@
 <div class="panel panel-default answer-in-list">
   <div class="panel-body">
     <span class="content">{{ answer.content|linebreaks }}</span>
+      {% for attachment in answer.attachments.all %}
+        <a  class="label label-primary" href="{% url 'attachment' pk=attachment.pk %}"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span> {{attachment.name}}</a>    
+      {% endfor %}
   </div>
   <div class="panel-footer"><small>{% blocktrans with answer.person.name as name %} by {{ name }}.{% endblocktrans %}</small></div>
+  
+  
 </div>

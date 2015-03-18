@@ -10,6 +10,7 @@ from email_reply_parser import EmailReplyParser
 from flufl.bounce import all_failures, scan_message
 from mailit.models import RawIncomingEmail
 from nuntium.models import Answer
+from mailit.bin.froide_email_utils import FroideEmailParser
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
@@ -62,6 +63,9 @@ class EmailSaveMixin(object):
             pass
         return answer
 
+    def save_attachment(self, answer, attachment):
+        pass
+
 
 class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
     def __init__(self):
@@ -77,6 +81,7 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
         apikey = config.WRITEIT_API_KEY
         self.requests_session.auth = ApiKeyAuth(username, apikey)
         self.is_bounced = False
+        self.attachments = []
 
     def get_content_text(self):
         cleaned_content = self._content_text
@@ -99,14 +104,21 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
         else:
             answer = self.save()
             raw_answers = RawIncomingEmail.objects.filter(message_id=self.message_id)
-            if answer is not None and raw_answers:
-                raw_email = raw_answers[0]
-                raw_email = RawIncomingEmail.objects.get(message_id=self.message_id)
-                raw_email.answer = answer
-                raw_email.save()
+            if answer is not None:
+                for attachment in self.attachments:
+                    self.save_attachment(answer, attachment)
+                if raw_answers:
+                    raw_email = raw_answers[0]
+                    raw_email = RawIncomingEmail.objects.get(message_id=self.message_id)
+                    raw_email.answer = answer
+                    raw_email.save()
+                return answer
+
+    def add_attachment(self, attachment):
+        self.attachments.append(attachment)
 
 
-class EmailHandler():
+class EmailHandler(FroideEmailParser):
     def __init__(self, answer_class=EmailAnswer):
         self.message = None
         self.answer_class = answer_class
@@ -157,6 +169,10 @@ class EmailHandler():
                     )
             else:
                 self.handle_not_processed_part(part)
+
+            attachment = self.parse_attachment(part)
+            if attachment:
+                answer.add_attachment(attachment)
 
         log = 'New incoming email from %(from)s sent on %(date)s with subject %(subject)s and content %(content)s'
         log = log % {
