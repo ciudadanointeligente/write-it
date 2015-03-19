@@ -1,6 +1,9 @@
 from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 
+from contactos.views import ToggleContactEnabledView
+from mailit.views import MailitTemplateUpdateView
+from nuntium.user_section.stats import StatsView
 from .views import UserAccountView, WriteItInstanceUpdateView, \
     YourInstancesView, WriteItInstanceAdvancedUpdateView, \
     WriteItInstanceTemplateUpdateView, NewAnswerNotificationTemplateUpdateView, \
@@ -9,8 +12,6 @@ from .views import UserAccountView, WriteItInstanceUpdateView, \
     MessageDetail, MessageDelete, AnswerCreateView, ModerationView, AnswerUpdateView, \
     WriteitPopitRelatingView, WriteItDeleteView, WriteItInstanceContactDetailView, \
     WriteItInstanceStatusView, WriteItInstanceApiDocsView
-from mailit.views import MailitTemplateUpdateView
-from nuntium.user_section.stats import StatsView
 
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
@@ -23,9 +24,14 @@ urlpatterns = patterns('',
     url(r'^writeitinstance/(?P<pk>[-\d]+)/messages/?$',
         MessagesPerWriteItInstance.as_view(),
         name='messages_per_writeitinstance'),
+
     url(r'^writeitinstance/(?P<pk>[-\d]+)/contacts/?$',
         WriteItInstanceContactDetailView.as_view(),
         name='contacts-per-writeitinstance'),
+    url(r'^contactos/contacto/toggle-enabled/?$',
+        ToggleContactEnabledView.as_view(),
+        name='toggle-enabled'),
+
     url(r'^writeitinstance/(?P<pk>[-\d]+)/api_docs/?$',
         WriteItInstanceApiDocsView.as_view(),
         name='writeitinstance_api_docs'),
