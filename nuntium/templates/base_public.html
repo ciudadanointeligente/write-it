@@ -73,9 +73,7 @@
             </div>
         </div>
     </header>
-{% endblock header %}
 
-{% block content %}
   {% if writeitinstance and writeitinstance.config.testing_mode %}
     <div class="site-alert">
         <div class="container">
@@ -84,9 +82,7 @@
             <a class="site-alert__cta" href="{% url 'writeitinstance_advanced_update' pk=writeitinstance.config.pk %}">{% trans "Disable Test Mode in Settings" %}</a>
         </div>
     </div>
-  {% endif %}
-
-  {% if writeitinstance and not writeitinstance.config.allow_messages_using_form %}
+  {% elif writeitinstance and not writeitinstance.config.allow_messages_using_form %}
     <div class="site-alert">
         <div class="container">
             <h3 class="site-alert__heading">{% trans "This instance is read-only." %}</h3>
@@ -107,7 +103,9 @@
         </div>
     </div>
   {% endif %}
+{% endblock header %}
 
+{% block content %}
     <div class="site-content">
         <div class="container">
             {% block content_inner %}

@@ -18,3 +18,12 @@ body, .site-footer {
   background-color: $body-bg;
 }
 
+.site-alert {
+  background-color: $color-pale-orange;
+  border-bottom-color: mix(#000, $color-pale-orange, 6%);
+
+  // 1px border to overlap navbar or previous site-alert
+  position: relative;
+  margin-top: -1px;
+  border-top: 1px solid mix(#000, $color-pale-orange, 6%);
+}
