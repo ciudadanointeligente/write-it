@@ -76,7 +76,11 @@
           <div class="row">
             <div class="sidebar">
               <div class="sidebar__inner">
-                {% include 'nuntium/profiles/manager-navigation.html' %}
+                {% if writeitinstance %}
+                  {% include 'nuntium/profiles/manager-navigation.html' %}
+                {% else %}
+                  {% include 'nuntium/profiles/profile-navigation.html' %}
+                {% endif %}
               </div>
             </div>
             <div class="content-area" role="main">
