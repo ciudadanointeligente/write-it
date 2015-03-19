@@ -7,7 +7,7 @@ from .views import UserAccountView, \
     YourInstancesView, \
     WriteItInstanceTemplateUpdateView, NewAnswerNotificationTemplateUpdateView, \
     ConfirmationTemplateUpdateView, WriteItInstanceCreateView, \
-    MessageDetail, MessageDelete, AnswerCreateView, ModerationView, AnswerUpdateView, \
+    MessageDetail, MessageDelete, AnswerCreateView, AnswerUpdateView, \
     WriteItDeleteView, WriteItInstanceContactDetailView, \
     WriteItInstanceStatusView
 
