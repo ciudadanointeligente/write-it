@@ -58,7 +58,7 @@
               {% if message.moderated %}
               <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has been moderated' %}"><i class="fa fa-check-circle-o"></i></div></td>
               {% else %}
-              <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated and you can moderate it by clicking here' %}"><i class="fa fa-times-circle-o"></i> <a class="moderate" href="{% url 'moderate_message' pk=message.pk %}">{% trans "Moderate"%}</a></div></td>
+              <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated and you can moderate it by clicking here' %}"><i class="fa fa-times-circle-o"></i> <a class="moderate" href="{% url 'accept_message' pk=message.pk %}">{% trans "Moderate"%}</a></div></td>
               {% endif %}
 
             {% endif %}

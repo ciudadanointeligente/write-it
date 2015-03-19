@@ -348,7 +348,7 @@ class ModerateURL(UserSectionTestCase):
             persons=[self.person1],
             )
         message.recently_confirmated()
-        url = reverse('moderate_message', kwargs={'pk': message.pk})
+        url = reverse('accept_message', kwargs={'pk': message.pk})
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
         response = c.post(url)
@@ -374,7 +374,7 @@ class ModerateURL(UserSectionTestCase):
             persons=[self.person1],
             )
         message.recently_confirmated()
-        url = reverse('moderate_message', kwargs={'pk': message.pk})
+        url = reverse('accept_message', kwargs={'pk': message.pk})
         c = Client()
         response = c.post(url)
         self.assertRedirectToLogin(response)
@@ -394,7 +394,7 @@ class ModerateURL(UserSectionTestCase):
             persons=[self.person1],
             )
         message.recently_confirmated()
-        url = reverse('moderate_message', kwargs={'pk': message.pk})
+        url = reverse('accept_message', kwargs={'pk': message.pk})
         c = Client()
         c.login(username=not_the_owner.username, password="secreto")
         response = c.post(url)

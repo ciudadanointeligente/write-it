@@ -301,13 +301,13 @@ class AnswerUpdateView(AnswerEditMixin, UpdateView):
         return self.model.objects.get(id=self.kwargs['pk']).message
 
 
-class ModerationView(View):
+class AcceptMessageView(View):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         self.message = get_object_or_404(Message, id=kwargs['pk'])
         if self.message.writeitinstance.owner != self.request.user:
             raise Http404
-        return super(ModerationView, self).dispatch(*args, **kwargs)
+        return super(AcceptMessageView, self).dispatch(*args, **kwargs)
 
     def post(self, request, *args, **kwargs):
 

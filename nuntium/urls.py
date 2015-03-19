@@ -13,6 +13,11 @@ from nuntium.user_section.views import (
     ConfirmationTemplateUpdateView,
     WriteItInstanceContactDetailView,
     MessagesPerWriteItInstance,
+    MessageDetail,
+    AnswerCreateView,
+    AnswerUpdateView,
+    MessageDelete,
+    AcceptMessageView,
 )
 
 
@@ -41,4 +46,9 @@ managepatterns = patterns('',
     url(r'^settings/templates/mailit_template/$', MailitTemplateUpdateView.as_view(), name='mailit-template-update'),
     url(r'^recipients/$', WriteItInstanceContactDetailView.as_view(), name='contacts-per-writeitinstance'),
     url(r'^messages/$', MessagesPerWriteItInstance.as_view(), name='messages_per_writeitinstance'),
+    url(r'^messages/(?P<pk>[-\d]+)/answers/$', MessageDetail.as_view(), name='message_detail'),
+    url(r'^messages/(?P<pk>[-\d]+)/answers/create/$', AnswerCreateView.as_view(), name='create_answer'),
+    url(r'^messages/(?P<message_pk>[-\d]+)/answers/(?P<pk>[-\d]+)/update/$', AnswerUpdateView.as_view(), name='update_answer'),
+    url(r'^messages/(?P<pk>[-\d]+)/delete/$', MessageDelete.as_view(), name='message_delete'),
+    url(r'^messages/(?P<pk>[-\d]+)/accept/$', AcceptMessageView.as_view(), name='accept_message'),
 )
