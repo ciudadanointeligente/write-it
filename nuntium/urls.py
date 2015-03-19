@@ -5,6 +5,7 @@ from nuntium.views import ConfirmView, AcceptModerationView, RejectModerationVie
 from nuntium.user_section.views import (
     WriteItInstanceUpdateView,
     WriteItInstanceAdvancedUpdateView,
+    WriteItInstanceApiDocsView,
 )
 
 
@@ -25,4 +26,5 @@ urlpatterns = patterns('',
 managepatterns = patterns('',
     url(r'^$', WriteItInstanceUpdateView.as_view(), name='writeitinstance_basic_update'),
     url(r'^settings/?$', WriteItInstanceAdvancedUpdateView.as_view(), name='writeitinstance_advanced_update'),
+    url(r'^settings/api/?$', WriteItInstanceApiDocsView.as_view(), name='writeitinstance_api_docs'),
 )

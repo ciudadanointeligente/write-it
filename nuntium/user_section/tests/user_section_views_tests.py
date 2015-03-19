@@ -392,7 +392,7 @@ class WriteItInstanceApiDocsTestCase(UserSectionTestCase):
         self.writeitinstance = WriteItInstance.objects.get(id=1)
 
     def test_per_instance_api_docs(self):
-        url = reverse('writeitinstance_api_docs', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('writeitinstance_api_docs', kwargs={'slug': self.writeitinstance.slug})
         request = self.factory.get(url)
         request.user = self.writeitinstance.owner
 

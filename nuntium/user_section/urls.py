@@ -11,7 +11,7 @@ from .views import UserAccountView, \
     MessagesPerWriteItInstance, \
     MessageDetail, MessageDelete, AnswerCreateView, ModerationView, AnswerUpdateView, \
     WriteitPopitRelatingView, WriteItDeleteView, WriteItInstanceContactDetailView, \
-    WriteItInstanceStatusView, WriteItInstanceApiDocsView
+    WriteItInstanceStatusView
 
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
@@ -27,9 +27,6 @@ urlpatterns = patterns('',
         ToggleContactEnabledView.as_view(),
         name='toggle-enabled'),
 
-    url(r'^writeitinstance/(?P<pk>[-\d]+)/api_docs/?$',
-        WriteItInstanceApiDocsView.as_view(),
-        name='writeitinstance_api_docs'),
     url(r'^message/(?P<pk>[-\d]+)/answers/?$',
         MessageDetail.as_view(),
         name='message_detail'),
