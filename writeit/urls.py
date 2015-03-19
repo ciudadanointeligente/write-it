@@ -24,6 +24,9 @@ urlpatterns = patterns('',
 
     (r'^api/', include(v1_api.urls)),
     url(r'^social_auth/', include('social.apps.django_app.urls', namespace='social'))
+
+    # TODO: These can probably be removed at some point.
+    url(r'^contactos/', include('contactos.urls')),
 )
 
 urlpatterns += i18n_patterns('',
