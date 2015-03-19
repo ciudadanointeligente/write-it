@@ -116,6 +116,12 @@ PIPELINE_CSS = {
             'sass/admin.scss',
         ),
         'output_filename': 'css/admin.css',
+    },
+    'writeit-manager': {
+        'source_filenames': (
+            'sass/manager.scss',
+        ),
+        'output_filename': 'css/manager.css',
     }
 }
 
