@@ -4,22 +4,21 @@
 
 {% block content_inner %}
 
-    <h2>{% trans "Current instances of WriteIt" %}</h2>
+    <h2 class="text-center">{% trans "Current instances of WriteIt" %}</h2>
 
   {% if object_list %}
     {% autopaginate object_list %}
     {% paginate %}
-    <ul>
+    <div class="list-group instances-list-group">
       {% for instance in object_list %}
-        <li>
-            <a href="{% url 'instance_detail' slug=instance.slug %}">{{ instance.name }}</a>
+        <a class="list-group-item" href="{% url 'instance_detail' slug=instance.slug %}">
+          <h4 class="list-group-item-heading">{{ instance.name }}</h4>
           {% if instance.config.testing_mode %}
-            <i class="fa fa-info-circle extra-info" data-toggle="tooltip" data-placement="left"
-title="{% trans 'This instance can only be seen by you and all the messages will go to your email.' %}"></i> <span class="label label-info">{% trans 'Testing mode' %}</span>
+            <p class="list-group-item-text">{% trans 'This instance is in Test Mode. It can only be seen by you and all the messages will go to your email.' %}</p>
           {% endif %}
-        </li>
+        </a>
       {% endfor %}
-    </ul>
+    </div>
     {% paginate %}
   {% else %}
     <p>{% trans "There are no instances yet!" %}</p>
@@ -27,10 +26,3 @@ title="{% trans 'This instance can only be seen by you and all the messages will
   {% endif %}
 
 {% endblock content_inner %}
-
-{% block extrajs %}
-  $(function(){
-    $('.extra-info').tooltip({});
-  });
-{% endblock extrajs %}
-
