@@ -23,7 +23,6 @@ urlpatterns = patterns('',
     url(r'^/?$', RootRedirectView.as_view()),
 
     (r'^api/', include(v1_api.urls)),
-    url(r'^contactos/', include('contactos.urls')),
     url(r'^social_auth/', include('social.apps.django_app.urls', namespace='social'))
 )
 
