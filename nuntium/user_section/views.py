@@ -5,7 +5,6 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, CreateView, DetailView, View, ListView
 from django.views.generic.edit import UpdateView, DeleteView, FormView
-from django.views.generic.detail import SingleObjectMixin
 
 from mailit.forms import MailitTemplateForm
 
@@ -204,41 +203,17 @@ class LoginRequiredMixin(View):
         return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
 
 
-class WriteItInstanceOwnerMixin(SingleObjectMixin):
-    def get_writeitinstance(self):
-        return get_object_or_404(WriteItInstance, slug=self.kwargs['slug'])
-
-    def check_ownership(self):
-        self.writeitinstance = self.get_writeitinstance()
-        if not self.writeitinstance.owner.__eq__(self.request.user):
-            raise Http404
-
+class WriteItInstanceOwnerMixin(LoginRequiredMixin):
     def get_object(self):
-        self.object = super(WriteItInstanceOwnerMixin, self).get_object()
-        self.check_ownership()
-        return self.object
+        slug = self.kwargs.pop('slug')
+        pk = self.kwargs.get('pk')
+        return get_object_or_404(self.model, writeitinstance__slug=slug, writeitinstance__owner=self.request.user, pk=pk)
 
 
-class WriteItRelatedModelMixin(SingleObjectMixin):
-    """This mixin is to handle the case where we have a SingleObjectMixin
-    based view, but we get from the URL the primary key of a WriteItInstance
-    which has a one-to-one relationship with the object rather than the
-    primary key of the object itself. For example, there is a
-    single NewAnswerNotificationTemplate for each WriteItInstance.
-
-    It's not appropriate for anything for which there can be more
-    than one per instance, for example Messages.
-    """
-    def get_object(self):
-        self.object = get_object_or_404(self.model, writeitinstance__pk=self.kwargs['pk'])
-        self.check_ownership()
-        return self.object
-
-
-class UpdateTemplateWithWriteitMixin(LoginRequiredMixin, WriteItRelatedModelMixin, WriteItInstanceOwnerMixin, UpdateView):
+class UpdateTemplateWithWriteitBase(LoginRequiredMixin, WriteItInstanceOwnerMixin, UpdateView):
     def get_form_kwargs(self):
-        kwargs = super(UpdateTemplateWithWriteitMixin, self).get_form_kwargs()
-        kwargs['writeitinstance'] = self.writeitinstance
+        kwargs = super(UpdateTemplateWithWriteitBase, self).get_form_kwargs()
+        kwargs['writeitinstance'] = self.object.writeitinstance
         return kwargs
 
     def get_success_url(self):
@@ -248,35 +223,36 @@ class UpdateTemplateWithWriteitMixin(LoginRequiredMixin, WriteItRelatedModelMixi
             )
 
 
-class NewAnswerNotificationTemplateUpdateView(UpdateTemplateWithWriteitMixin):
+class NewAnswerNotificationTemplateUpdateView(UpdateTemplateWithWriteitBase):
     form_class = NewAnswerNotificationTemplateForm
     model = NewAnswerNotificationTemplate
 
 
-class ConfirmationTemplateUpdateView(UpdateTemplateWithWriteitMixin):
+class ConfirmationTemplateUpdateView(UpdateTemplateWithWriteitBase):
     form_class = ConfirmationTemplateForm
     model = ConfirmationTemplate
 
 
-class MessagesPerWriteItInstance(LoginRequiredMixin, WriteItInstanceOwnerMixin, DetailView):
-    model = WriteItInstance
+class MessagesPerWriteItInstance(LoginRequiredMixin, ListView):
+    model = Message
     template_name = 'nuntium/profiles/messages_per_instance.html'
+
+    def get_queryset(self):
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.kwargs.get('slug'), owner=self.request.user)
+        return super(MessagesPerWriteItInstance, self).get_queryset().filter(writeitinstance=self.writeitinstance)
 
     def get_context_data(self, **kwargs):
         context = super(MessagesPerWriteItInstance, self).get_context_data(**kwargs)
-        context['writeit_messages'] = self.object.message_set.all()
+        context['writeitinstance'] = self.writeitinstance
         return context
 
 
-class MessageDetail(LoginRequiredMixin, WriteItInstanceOwnerMixin, DetailView):
+class MessageDetail(WriteItInstanceOwnerMixin, DetailView):
     model = Message
     template_name = "nuntium/profiles/message_detail.html"
 
-    def get_writeitinstance(self):
-        return self.object.writeitinstance
 
-
-class MessageDelete(LoginRequiredMixin, WriteItInstanceOwnerMixin, DeleteView):
+class MessageDelete(WriteItInstanceOwnerMixin, DeleteView):
     model = Message
     template_name = "nuntium/profiles/message_delete_confirm.html"
 

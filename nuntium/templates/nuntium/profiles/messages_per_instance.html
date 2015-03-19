@@ -22,7 +22,7 @@
 <!-- Tab panes -->
 <div class="tab-content profile-page-tab-content">
   <div class="tab-pane active row">
-    {% autopaginate writeit_messages %}
+    {% autopaginate message_list %}
 
     <div class="col-md-12">
       {% paginate %}
@@ -43,7 +43,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for message in writeit_messages %}
+          {% for message in message_list %}
           <tr>
             <td>
               {{ message.subject }}
