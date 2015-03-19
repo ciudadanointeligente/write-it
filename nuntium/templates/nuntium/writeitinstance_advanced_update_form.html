@@ -49,9 +49,8 @@ $(".chosen-person-select").chosen();
         {{form.autoconfirm_api_messages.label_tag}}
         {{form.autoconfirm_api_messages}}
       </div>
-      <div class="text-right">
-        <input type="button" onclick="javascript:history.back();" class='btn btn-default' value="{% trans 'Cancel' %}" />
-        <input type="submit" class='btn btn-primary' value="{% trans 'Update' %}" />
+      <div class="save-bar">
+        <input type="submit" class='btn btn-primary' value="{% trans 'Save changes' %}" />
       </div>
       {% csrf_token %}
     </form>
