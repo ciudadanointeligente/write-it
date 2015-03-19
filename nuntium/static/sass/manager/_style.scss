@@ -32,3 +32,10 @@
     background-color: transparent;
     padding: 0;
 }
+
+.form-element {
+    input[type="text"],
+    input[type="url"] {
+        @extend .form-control;
+    }
+}
