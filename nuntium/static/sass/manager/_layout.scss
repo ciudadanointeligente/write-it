@@ -4,20 +4,20 @@
 }
 
 .sidebar {
-    @include make-lg-column(3);
+    @include make-lg-column(2);
 }
 
 .sidebar__inner {
     background-color: $gray-darker;
-    padding: 1.5em 2em;
+    padding: 1.5em 0 1.5em 2em;
 }
 
 .content-area {
-    @include make-lg-column(9);
+    @include make-lg-column(10);
 }
 
 .content-area__inner {
-    padding: 1.5em 3em 3em 1em;
+    padding: 1.5em 3em 2em 3em;
     & > .page-header {
         margin-top: 0;
     }

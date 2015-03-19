@@ -3,8 +3,13 @@
 .foobar { background-color: darken($brand-primary, 10%); }
 
 .manager-page {
-        background-color: #fff;
+        background-color: $gray-dark;
         border-radius: 5px;
+        margin-bottom: 3em;
+}
+
+.content-area__inner {
+    background-color: #fff;
 }
 
 .sidebar__inner {
@@ -21,4 +26,9 @@
             color: #fff;
         }
     }
+}
+
+.breadcrumb {
+    background-color: transparent;
+    padding: 0;
 }
