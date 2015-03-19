@@ -28,15 +28,15 @@ $(".chosen-person-select").chosen();
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">{% trans 'Relate a new PopIt' %}</h4>
+        <h4 class="modal-title">{% trans 'Add a new PopIt' %}</h4>
       </div>
       <div class="modal-body">
         <form action="{% url 'relate-writeit-popit' slug=writeitinstance.slug %}" method="POST" role="form">
           {% csrf_token %}
           {{ form.as_p }}
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
-            <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cancel' %}</button>
+            <button type="submit" class="btn btn-primary">{% trans 'Add' %}</button>
           </div>
         </form>
       </div>
@@ -58,7 +58,7 @@ $(".chosen-person-select").chosen();
 
     <div class="col-md-4">
       <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#relate">
-        {% trans 'Relate a new PopIt' %}
+        {% trans 'Add a new PopIt' %}
       </button>
     </div>
     <div class="col-md-8">
