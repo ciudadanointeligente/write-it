@@ -12,7 +12,7 @@ sudo update-locale LANG=en_GB.utf8
 
 # Install the packages we need
 sudo apt-get update
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y git python-dev python-pip libffi-dev libssl-dev g++ yui-compressor
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y git python-dev python-pip libffi-dev libssl-dev
 
 # :TODO: Set up a virtualenv, to protect us
 # from system python packages

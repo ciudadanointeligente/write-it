@@ -55,14 +55,6 @@ System Requirements
 
  In ubuntu you can do ```sudo apt-get install libssl-dev```
 
- * GCC (G++) 4.3+ (used by python libsass package)
-
- In ubuntu you can do ```sudo apt-get install g++```
-
- * yui-compressor
-
- In ubuntu you can do ```sudo apt-get install yui-compressor```
-
 Write-it is built using Django. You should install Django and its dependencies inside a virtualenv. We suggest you use [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/) to create and manage virtualenvs, so if you don’t already have it, [go install it](http://virtualenvwrapper.readthedocs.org/en/latest/install.html#basic-installation), remembering in particular to add the required lines to your shell startup file.
 
 With virtualenvwrapper installed, clone this repo, `cd` into it, and create a virtualenv:
