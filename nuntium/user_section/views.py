@@ -283,7 +283,7 @@ class MessageDelete(LoginRequiredMixin, WriteItInstanceOwnerMixin, DeleteView):
     def get_success_url(self):
         success_url = reverse(
             'messages_per_writeitinstance',
-            kwargs={'pk': self.object.writeitinstance.pk},
+            kwargs={'slug': self.object.writeitinstance.slug},
             )
         return success_url
 
@@ -342,7 +342,7 @@ class ModerationView(View):
 
         url = reverse(
             'messages_per_writeitinstance',
-            kwargs={'pk': self.message.writeitinstance.pk},
+            kwargs={'slug': self.message.writeitinstance.slug},
             )
         return redirect(url)
 

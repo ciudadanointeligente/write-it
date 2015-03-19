@@ -16,7 +16,7 @@
     <li><a href="{% url 'account' %}">{% trans "Your profile" %}</a></li>
     <li><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
     <li><a href="{% url 'writeitinstance_basic_update' slug=message.writeitinstance.slug %}">{{ message.writeitinstance }}</a></li>
-    <li><a href="{% url 'messages_per_writeitinstance' pk=message.writeitinstance.pk %}">{% trans "Messages" %}</a></li>
+    <li><a href="{% url 'messages_per_writeitinstance' slug=message.writeitinstance.slug %}">{% trans "Messages" %}</a></li>
     <li class="active">{{ message }}</li>
 </ul>
 {% endblock header %}

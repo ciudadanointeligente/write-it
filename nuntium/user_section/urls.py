@@ -7,7 +7,6 @@ from .views import UserAccountView, \
     YourInstancesView, \
     WriteItInstanceTemplateUpdateView, NewAnswerNotificationTemplateUpdateView, \
     ConfirmationTemplateUpdateView, WriteItInstanceCreateView, \
-    MessagesPerWriteItInstance, \
     MessageDetail, MessageDelete, AnswerCreateView, ModerationView, AnswerUpdateView, \
     WriteItDeleteView, WriteItInstanceContactDetailView, \
     WriteItInstanceStatusView
@@ -15,9 +14,6 @@ from .views import UserAccountView, \
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
     url(r'^accounts/your_instances/?$', YourInstancesView.as_view(), name='your-instances'),
-    url(r'^writeitinstance/(?P<pk>[-\d]+)/messages/?$',
-        MessagesPerWriteItInstance.as_view(),
-        name='messages_per_writeitinstance'),
 
     url(r'^contactos/contacto/toggle-enabled/?$',
         ToggleContactEnabledView.as_view(),
