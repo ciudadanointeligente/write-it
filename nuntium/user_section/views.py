@@ -109,11 +109,15 @@ class WriteItInstanceTemplateUpdateView(DetailView):
 class WriteItInstanceUpdateView(UpdateView):
     form_class = WriteItInstanceBasicForm
     template_name_suffix = '_update_form'
+    model = WriteItInstance
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        self.queryset = WriteItInstance.objects.filter(owner=self.request.user)
         return super(WriteItInstanceUpdateView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super(WriteItInstanceUpdateView, self).get_queryset().filter(owner=self.request.user)
+        return queryset
 
     def get_success_url(self):
         return reverse(
@@ -165,7 +169,7 @@ class WriteItInstanceCreateView(CreateView):
     def get_success_url(self):
         return reverse(
             'writeitinstance_basic_update',
-            kwargs={'pk': self.object.pk},
+            kwargs={'slug': self.object.slug},
             )
 
     def get_form_kwargs(self):

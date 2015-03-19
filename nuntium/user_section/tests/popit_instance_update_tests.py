@@ -141,7 +141,7 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         url = reverse('relate-writeit-popit', kwargs={'pk': self.writeitinstance.pk})
         response = self.client.post(url, data=self.data)
         self.assertEquals(response.status_code, 302)
-        basic_update_url = reverse('writeitinstance_basic_update', kwargs={'pk': self.writeitinstance.pk})
+        basic_update_url = reverse('writeitinstance_basic_update', kwargs={'slug': self.writeitinstance.slug})
 
         self.assertRedirects(response, basic_update_url)
 

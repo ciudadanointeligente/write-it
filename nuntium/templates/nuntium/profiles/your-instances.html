@@ -78,7 +78,7 @@
             <td> <a target='_blank' href="{% url 'instance_detail' slug=writeitinstance.slug %}"><i class="fa fa-external-link"></i></a></td>
             <td>{% url 'api_dispatch_detail' api_name='v1' resource_name='instance' pk=writeitinstance.id %}</td>
             <td><a href="{% url 'messages_per_writeitinstance' pk=writeitinstance.pk %}"><i class="fa fa-envelope-o"></i></a></td>
-            <td><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}"><i class="fa fa-pencil"></i></a></td>
+            <td><a href="{% url 'writeitinstance_basic_update' slug=writeitinstance.slug %}"><i class="fa fa-pencil"></i></a></td>
             <td><a href="{% url 'delete_an_instance' pk=writeitinstance.pk %}"><i class="fa fa-times"></i></a></td>
             
           </tr>

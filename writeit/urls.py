@@ -6,6 +6,7 @@ from tastypie.api import Api
 
 from nuntium.views import RootRedirectView
 from nuntium.api import WriteItInstanceResource, MessageResource, AnswerCreationResource, HandleBouncesResource, PersonResource
+from nuntium.urls import managepatterns
 
 
 # Uncomment the next two lines to enable the admin:
@@ -23,7 +24,7 @@ urlpatterns = patterns('',
     url(r'^/?$', RootRedirectView.as_view()),
 
     (r'^api/', include(v1_api.urls)),
-    url(r'^social_auth/', include('social.apps.django_app.urls', namespace='social'))
+    url(r'^social_auth/', include('social.apps.django_app.urls', namespace='social')),
 
     # TODO: These can probably be removed at some point.
     url(r'^contactos/', include('contactos.urls')),
@@ -31,6 +32,7 @@ urlpatterns = patterns('',
 
 urlpatterns += i18n_patterns('',
 
+    url(r'^(?P<slug>[-\w]+)/manage/', include(managepatterns)),
     url(r'^', include('nuntium.urls')),
 
     url(r'^', include('nuntium.user_section.urls')),

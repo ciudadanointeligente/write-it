@@ -264,7 +264,7 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         self.marcel = Person.objects.get(name="Marcel")
 
     def test_writeit_instance_edit_url_exists(self):
-        url = reverse('writeitinstance_basic_update', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('writeitinstance_basic_update', kwargs={'slug': self.writeitinstance.slug})
 
         self.assertTrue(url)
 
