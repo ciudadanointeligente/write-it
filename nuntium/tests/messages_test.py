@@ -11,7 +11,6 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 import datetime
-from django.utils import timezone
 from django.db.models.query import QuerySet
 
 
@@ -23,7 +22,6 @@ class TestMessages(TestCase):
         self.person2 = Person.objects.get(id=2)
 
     def test_create_message(self):
-        now = timezone.now()
         message = Message.objects.create(
             content='Content 1',
             author_name='Felipe',
