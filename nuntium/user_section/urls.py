@@ -9,6 +9,7 @@ from .views import UserAccountView, WriteItInstanceUpdateView, \
     MessageDetail, MessageDelete, AnswerCreateView, ModerationView, AnswerUpdateView, \
     WriteitPopitRelatingView, WriteItDeleteView, WriteItInstanceContactDetailView, \
     WriteItInstanceStatusView, WriteItInstanceApiDocsView
+from mailit.views import MailitTemplateUpdateView
 from nuntium.user_section.stats import StatsView
 
 urlpatterns = patterns('',
@@ -54,6 +55,11 @@ urlpatterns = patterns('',
     url(r'^writeitinstance/edit/(?P<pk>[-\d]+)/templates/confirmation_template/?$',
         ConfirmationTemplateUpdateView.as_view(),
         name='edit_confirmation_template'),
+
+    url(r'^writeitinstance/edit/(?P<pk>[-\d]+)/templates/mailit_template?$',
+        MailitTemplateUpdateView.as_view(),
+        name='mailit-template-update'),
+
     url(r'^writeitinstance/create/?$',
         WriteItInstanceCreateView.as_view(),
         name='create_writeit_instance'),
