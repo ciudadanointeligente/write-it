@@ -312,7 +312,7 @@ via Test WriteIt Instance.
 
 Please visit the following link to confirm you want to send this message
 
-http://127.0.0.1.xip.io:8000/confirm_message/fakekey
+http://127.0.0.1.xip.io:8000/en/confirm_message/fakekey
 
 (If you can’t click the link, try copying and pasting it into your
 browser’s address bar)
