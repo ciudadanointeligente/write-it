@@ -2,7 +2,10 @@ from django.conf.urls import patterns, url
 
 from nuntium.views import ConfirmView, AcceptModerationView, RejectModerationView, \
     HomeTemplateView, MessageSearchView, WriteItInstanceListView
-from nuntium.user_section.views import WriteItInstanceUpdateView
+from nuntium.user_section.views import (
+    WriteItInstanceUpdateView,
+    WriteItInstanceAdvancedUpdateView,
+)
 
 
 urlpatterns = patterns('',
@@ -20,5 +23,6 @@ urlpatterns = patterns('',
 )
 
 managepatterns = patterns('',
-    url(r'$', WriteItInstanceUpdateView.as_view(), name='writeitinstance_basic_update'),
+    url(r'^$', WriteItInstanceUpdateView.as_view(), name='writeitinstance_basic_update'),
+    url(r'^settings/?$', WriteItInstanceAdvancedUpdateView.as_view(), name='writeitinstance_advanced_update'),
 )

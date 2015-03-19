@@ -5,7 +5,7 @@ from contactos.views import ToggleContactEnabledView
 from mailit.views import MailitTemplateUpdateView
 from nuntium.user_section.stats import StatsView
 from .views import UserAccountView, \
-    YourInstancesView, WriteItInstanceAdvancedUpdateView, \
+    YourInstancesView, \
     WriteItInstanceTemplateUpdateView, NewAnswerNotificationTemplateUpdateView, \
     ConfirmationTemplateUpdateView, WriteItInstanceCreateView, \
     MessagesPerWriteItInstance, \
@@ -16,9 +16,6 @@ from .views import UserAccountView, \
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
     url(r'^accounts/your_instances/?$', YourInstancesView.as_view(), name='your-instances'),
-    url(r'^writeitinstance/advanced_edit/(?P<pk>[-\d]+)/?$',
-        WriteItInstanceAdvancedUpdateView.as_view(),
-        name='writeitinstance_advanced_update'),
     url(r'^writeitinstance/(?P<pk>[-\d]+)/messages/?$',
         MessagesPerWriteItInstance.as_view(),
         name='messages_per_writeitinstance'),

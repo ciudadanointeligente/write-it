@@ -129,21 +129,27 @@ class WriteItInstanceUpdateView(UpdateView):
 class WriteItInstanceAdvancedUpdateView(UpdateView):
     form_class = WriteItInstanceAdvancedUpdateForm
     template_name = 'nuntium/writeitinstance_advanced_update_form.html'
+    model = WriteItInstanceConfig
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        self.queryset = WriteItInstanceConfig.objects.filter(writeitinstance__owner=self.request.user)
         return super(WriteItInstanceAdvancedUpdateView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        return super(WriteItInstanceAdvancedUpdateView, self).get_queryset().filter(writeitinstance__owner=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super(WriteItInstanceAdvancedUpdateView, self).get_context_data(**kwargs)
         context['writeitinstance'] = self.object.writeitinstance
         return context
 
+    def get_slug_field(self):
+        return 'writeitinstance__slug'
+
     def get_success_url(self):
         return reverse(
             'writeitinstance_advanced_update',
-            kwargs={'pk': self.object.pk},
+            kwargs={'slug': self.object.instance.slug},
             )
 
 
