@@ -359,8 +359,14 @@ class WriteitPopitRelatingView(WriteItInstanceOwnerMixin, FormView):
         return context
 
 
-class WriteItDeleteView(WriteItInstanceOwnerMixin, DeleteView):
+class WriteItDeleteView(DeleteView):
     model = WriteItInstance
+
+    def get_object(self, queryset=None):
+        obj = super(WriteItDeleteView, self).get_object(queryset=queryset)
+        if not obj.owner == self.request.user:
+            raise Http404
+        return obj
 
     def get_success_url(self):
         url = reverse('your-instances')
