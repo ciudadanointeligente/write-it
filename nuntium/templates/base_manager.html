@@ -72,9 +72,22 @@
         {% block header %}
         {% endblock header %}
         {% include 'nuntium/profiles/status-bar.html' %}
+        <div class="manager-page">
+          <div class="row">
+            <div class="sidebar">
+              <div class="sidebar__inner">
+                {% include 'nuntium/profiles/manager-navigation.html' %}
+              </div>
+            </div>
+            <div class="content-area" role="main">
+              <div class="content-area__inner">
+                {% block content %}
+                {% endblock content %}
+              </div>
+            </div>
+          </div>
+        </div>
 
-        {% block content %}
-        {% endblock content %}
       </div>
 
     </div><!-- end wrap -->

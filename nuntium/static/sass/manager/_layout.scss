@@ -2,3 +2,32 @@
 @media(min-width: $screen-sm-min){
   #some-element { padding: $nav-link-padding; }
 }
+
+.sidebar {
+    @include make-lg-column(3);
+}
+
+.sidebar__inner {
+    background-color: $gray-darker;
+    padding: 1.5em 2em;
+}
+
+.content-area {
+    @include make-lg-column(9);
+}
+
+.content-area__inner {
+    padding: 1.5em 3em 3em 1em;
+    & > .page-header {
+        margin-top: 0;
+    }
+}
+
+.navigation__list {
+    list-style-type: none outside none;
+    padding-left: 0;
+    li {
+        line-height: 1.5em;
+        margin-bottom: 0.3em;
+    }
+}
