@@ -11,6 +11,7 @@ from nuntium.user_section.views import (
     WriteItInstanceTemplateUpdateView,
     NewAnswerNotificationTemplateUpdateView,
     ConfirmationTemplateUpdateView,
+    WriteItInstanceContactDetailView,
 )
 
 
@@ -37,4 +38,5 @@ managepatterns = patterns('',
     url(r'^settings/templates/new_answer_notification/$', NewAnswerNotificationTemplateUpdateView.as_view(), name='edit_new_answer_notification_template'),
     url(r'^settings/templates/confirmation_template/$', ConfirmationTemplateUpdateView.as_view(), name='edit_confirmation_template'),
     url(r'^settings/templates/mailit_template/$', MailitTemplateUpdateView.as_view(), name='mailit-template-update'),
+    url(r'^recipients/$', WriteItInstanceContactDetailView.as_view(), name='contacts-per-writeitinstance'),
 )

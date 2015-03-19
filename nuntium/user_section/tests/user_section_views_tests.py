@@ -77,12 +77,12 @@ class ContactsPerWriteItInstanceTestCase(UserSectionTestCase):
 
     def test_the_url_exists(self):
         '''The list of contacts per writeit instance exists'''
-        url = reverse('contacts-per-writeitinstance', kwargs={'pk': self.writeitinstance.id})
+        url = reverse('contacts-per-writeitinstance', kwargs={'slug': self.writeitinstance.slug})
         self.assertTrue(url)
 
     def test_the_url_is_reachable(self):
         '''The url is reachable'''
-        url = reverse('contacts-per-writeitinstance', kwargs={'pk': self.writeitinstance.id})
+        url = reverse('contacts-per-writeitinstance', kwargs={'slug': self.writeitinstance.slug})
         self.client.login(username=self.writeitinstance.owner, password="feroz")
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
@@ -93,14 +93,14 @@ class ContactsPerWriteItInstanceTestCase(UserSectionTestCase):
         '''Only owner can access the list of contacts per writeitinstance'''
         other_user = User.objects.create_user(username='hello', password='password')
         writeitinstance = WriteItInstance.objects.create(name=u"The name", owner=other_user)
-        url = reverse('contacts-per-writeitinstance', kwargs={'pk': writeitinstance.id})
+        url = reverse('contacts-per-writeitinstance', kwargs={'slug': writeitinstance.slug})
         self.client.login(username=self.writeitinstance.owner, password="feroz")
         response = self.client.get(url)
         self.assertEquals(response.status_code, 404)
 
     def test_get_the_list_of_people_in_context(self):
         '''The list of people is in context'''
-        url = reverse('contacts-per-writeitinstance', kwargs={'pk': self.writeitinstance.id})
+        url = reverse('contacts-per-writeitinstance', kwargs={'slug': self.writeitinstance.slug})
         self.client.login(username=self.writeitinstance.owner, password="feroz")
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
