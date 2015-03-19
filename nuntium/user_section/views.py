@@ -206,7 +206,7 @@ class LoginRequiredMixin(View):
 
 class WriteItInstanceOwnerMixin(SingleObjectMixin):
     def get_writeitinstance(self):
-        return get_object_or_404(WriteItInstance, pk=self.kwargs['pk'])
+        return get_object_or_404(WriteItInstance, slug=self.kwargs['slug'])
 
     def check_ownership(self):
         self.writeitinstance = self.get_writeitinstance()

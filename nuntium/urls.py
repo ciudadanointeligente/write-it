@@ -6,6 +6,7 @@ from nuntium.user_section.views import (
     WriteItInstanceUpdateView,
     WriteItInstanceAdvancedUpdateView,
     WriteItInstanceApiDocsView,
+    WriteitPopitRelatingView,
 )
 
 
@@ -27,4 +28,5 @@ managepatterns = patterns('',
     url(r'^$', WriteItInstanceUpdateView.as_view(), name='writeitinstance_basic_update'),
     url(r'^settings/?$', WriteItInstanceAdvancedUpdateView.as_view(), name='writeitinstance_advanced_update'),
     url(r'^settings/api/?$', WriteItInstanceApiDocsView.as_view(), name='writeitinstance_api_docs'),
+    url(r'^settings/sources/?$', WriteitPopitRelatingView.as_view(), name='relate-writeit-popit'),
 )

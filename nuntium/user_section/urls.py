@@ -10,7 +10,7 @@ from .views import UserAccountView, \
     ConfirmationTemplateUpdateView, WriteItInstanceCreateView, \
     MessagesPerWriteItInstance, \
     MessageDetail, MessageDelete, AnswerCreateView, ModerationView, AnswerUpdateView, \
-    WriteitPopitRelatingView, WriteItDeleteView, WriteItInstanceContactDetailView, \
+    WriteItDeleteView, WriteItInstanceContactDetailView, \
     WriteItInstanceStatusView
 
 urlpatterns = patterns('',
@@ -64,9 +64,6 @@ urlpatterns = patterns('',
     url(r'^docs/?$',
         TemplateView.as_view(template_name="nuntium/profiles/docs.html"),
         name='user_section_documentation'),
-    url(r'^writeitinstance/edit/(?P<pk>[-\d]+)/relate-with-popit/?$',
-        WriteitPopitRelatingView.as_view(),
-        name='relate-writeit-popit'),
     url(r'^writeitinstance/delete/(?P<pk>[-\d]+)/?$',
         WriteItDeleteView.as_view(template_name="nuntium/profiles/writeitinstance_check_delete.html"),
         name='delete_an_instance'),

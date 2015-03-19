@@ -31,7 +31,7 @@ $(".chosen-person-select").chosen();
         <h4 class="modal-title">{% trans 'Relate a new PopIt' %}</h4>
       </div>
       <div class="modal-body">
-        <form action="{% url 'relate-writeit-popit' pk=writeitinstance.pk %}" method="POST" role="form">
+        <form action="{% url 'relate-writeit-popit' slug=writeitinstance.slug %}" method="POST" role="form">
           {% csrf_token %}
           {{ form.as_p }}
           <div class="modal-footer">
