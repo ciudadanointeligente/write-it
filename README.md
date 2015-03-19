@@ -72,7 +72,7 @@ Write-it is built using Django. You should install Django and its dependencies i
 
 With virtualenvwrapper installed, clone this repo, `cd` into it, and create a virtualenv:
 
-    git clone git@github.com:ciudadanointeligente/write-it.git
+    git clone https://github.com/ciudadanointeligente/write-it.git
     cd write-it
     mkvirtualenv writeit
 
