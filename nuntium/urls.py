@@ -1,7 +1,8 @@
 from django.conf.urls import patterns, url
-from .views import HomeTemplateView, MessageSearchView,\
-    WriteItInstanceListView
-from django.contrib.auth.views import login
+
+from nuntium.views import ConfirmView, AcceptModerationView, RejectModerationView, \
+    HomeTemplateView, MessageSearchView, WriteItInstanceListView
+
 
 urlpatterns = patterns('',
     # Examples:
@@ -10,6 +11,9 @@ urlpatterns = patterns('',
 
     url(r'^search/?$', MessageSearchView(), name='search_messages'),
 
+    url(r'^confirm_message/(?P<slug>[-\w]+)/?$', ConfirmView.as_view(), name='confirm'),
 
-    url(r'^accounts/login/$', login, name='account_login')
+    url(r'^moderation_accept/(?P<slug>[-\w]+)/?$', AcceptModerationView.as_view(), name='moderation_accept'),
+    url(r'^moderation_reject/(?P<slug>[-\w]+)/?$', RejectModerationView.as_view(), name='moderation_rejected'),
+
 )
