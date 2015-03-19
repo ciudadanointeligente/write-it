@@ -3,10 +3,14 @@
 
 {% block content_inner %}
 
-    <h1>{% trans "WriteIt is a zero-config factory for building sites that empower citizens to send emails to representatives and politicians." %}</h1>
+    <div class="factory-hero">
 
-    <p><a href="#" class="btn btn-primary btn-lg">{% trans "Create a WriteIt instance" %}</a></p>
+        <h1 class="factory-hero__heading">{% trans "WriteIt is a zero-config factory for building sites that empower citizens to send emails to representatives and politicians." %}</h1>
 
-    <p><a href="{% url 'instance_list' %}">{% trans "Or browse existing instances" %}</a></p>
+        <p><a href="#" class="btn btn-primary btn-lg">{% trans "Create a WriteIt instance" %}</a></p>
+
+        <p><a href="{% url 'instance_list' %}">{% trans "Or browse existing instances" %}</a></p>
+
+    </div>
 
 {% endblock content_inner %}

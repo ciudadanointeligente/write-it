@@ -4,29 +4,31 @@
 {% block content %}
 
     <div class="site-content">
-
-        <div class="instance-hero container">
-          <p class="instance-hero__welcome">Welcome to {{ writeitinstance.name }}</p>
-          <h2>
-              {% trans "This is a description of your WriteIt instance. Click the pencil to edit it." %}
-              <a class="instance-hero__edit" href="#"><i class="fa fa-pencil">{% trans "Edit" %}</i></a>
-          </h2>
-          <a class="btn btn-primary" href="#">{% trans "Send a message" %}</a>
+        <div class="container">
+            <div class="instance-hero">
+                <p class="instance-hero__welcome">Welcome to {{ writeitinstance.name }}</p>
+                <h2 class="instance-hero__heading">
+                    {% trans "This is a description of your WriteIt instance. Click the pencil to edit it." %}
+                    <a class="instance-hero__edit" href="#"><i class="fa fa-pencil">{% trans "Edit" %}</i></a>
+                </h2>
+                <a class="btn btn-primary btn-lg" href="#">{% trans "Send a message" %}</a>
+            </div>
         </div>
 
       {% if writeitinstance.message_set %}
-        <div class="instance-summary container">
-            <div class="instance-summary__recent">
-                <h2>{% trans "Recent messages" %}</h2>
-                <p><strong>TODO:</strong> Show recent messages here.</p>
-            </div>
-            <div class="instance-summary__popular">
-                <h2>{% trans "Most popular representatives" %}</h2>
-                <p><strong>TODO:</strong> Show representatives here.</p>
+        <div class="instance-summary">
+            <div class="container">
+                <div class="instance-summary__recent">
+                    <h2>{% trans "Recent messages" %}</h2>
+                    <p><strong>TODO:</strong> Show recent messages here.</p>
+                </div>
+                <div class="instance-summary__popular">
+                    <h2>{% trans "Most popular representatives" %}</h2>
+                    <p><strong>TODO:</strong> Show representatives here.</p>
+                </div>
             </div>
         </div>
       {% endif %}
-
     </div>
 
 {% endblock content %}

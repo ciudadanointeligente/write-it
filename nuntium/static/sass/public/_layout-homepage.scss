@@ -1,0 +1,44 @@
+.instance-hero,
+.factory-hero {
+  padding-top: 3em;
+  padding-bottom: 3em;
+  text-align: center;
+  max-width: 48em;
+  margin-left: auto;
+  margin-right: auto;
+
+  @media (min-height: 700px){
+    padding-top: 4em;
+    padding-bottom: 4em;
+  }
+}
+
+.instance-hero__welcome {
+  color: #999;
+}
+
+.instance-hero__edit {
+  color: #999;
+  font-size: 0.5em;
+
+  .fa:before {
+    margin-right: 0.3em;
+  }
+}
+
+.instance-hero__heading,
+.factory-hero__heading {
+  margin-bottom: 1em;
+}
+
+.instance-summary {
+  padding-top: 2em;
+  padding-bottom: 2em;
+  background-color: #f8f8f8;
+  border-top: 1px solid #e7e7e7;
+
+  @media (min-height: 700px){
+    padding-top: 3em;
+    padding-bottom: 3em;
+  }
+}
