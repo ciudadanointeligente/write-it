@@ -4,7 +4,7 @@
 <ul class="nav nav-tabs">
   <li class="{% if section == 'writeitinstance_basic_update' %}active{% endif %}"><a href="{% url 'writeitinstance_basic_update' slug=writeitinstance.slug %}">{% trans "Basic Update" %}</a></li>
   <li class="{% if section == 'writeitinstance_advanced_update' %}active{% endif %}"><a href="{% url 'writeitinstance_advanced_update' slug=writeitinstance.slug %}">{% trans "Advanced Update" %}</a></li>
-  <li class="{% if section == 'writeitinstance_template_update' %}active{% endif %}"><a href="{% url 'writeitinstance_template_update' pk=writeitinstance.pk %}">{% trans "Templates" %}</a></li>
+  <li class="{% if section == 'writeitinstance_template_update' %}active{% endif %}"><a href="{% url 'writeitinstance_template_update' slug=writeitinstance.slug %}">{% trans "Templates" %}</a></li>
   <li class="{% if section == 'contacts-per-writeitinstance' %}active{% endif %}"><a href="{% url 'contacts-per-writeitinstance' pk=writeitinstance.pk %}">{% trans "Contacts" %}</a></li>
   <li class="{% if section == 'messages_per_writeitinstance' %}active{% endif %}"><a href="{% url 'messages_per_writeitinstance' pk=writeitinstance.pk %}">{% trans "Messages" %}</a></li>
   <li class="{% if section == 'relate-writeit-popit' %}active{% endif %}"><a href="{% url 'relate-writeit-popit' slug=writeitinstance.slug %}">{% trans "Popit instances" %}</a></li>

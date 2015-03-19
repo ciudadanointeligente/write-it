@@ -354,7 +354,7 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         c = Client()
         c.login(username=self.writeitinstance.owner.get_username(), password='feroz')
 
-        url = reverse('writeitinstance_template_update', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('writeitinstance_template_update', kwargs={'slug': self.writeitinstance.slug})
 
         response = c.get(url)
         self.assertEquals(response.status_code, 200)
@@ -425,7 +425,7 @@ class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
         self.assertEquals(template.subject_template, data['subject_template'])
 
     def test_update_template_view(self):
-        url = reverse('edit_new_answer_notification_template', kwargs={'pk': self.writeitinstance.id})
+        url = reverse('edit_new_answer_notification_template', kwargs={'slug': self.writeitinstance.slug})
 
         self.assertTrue(url)
 
@@ -441,7 +441,7 @@ class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
             }
 
         response = c.post(url, data=data)
-        url = reverse('writeitinstance_template_update', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('writeitinstance_template_update', kwargs={'slug': self.writeitinstance.slug})
         self.assertRedirects(response, url)
 
         # actual_subject = self.writeitinstance.new_answer_notification_template.subject_template
@@ -449,7 +449,7 @@ class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
     def test_a_non_owner_cannot_update_a_template(self):
         User.objects.create_user(username="not_owner", password="secreto")
 
-        url = reverse('edit_new_answer_notification_template', kwargs={'pk': self.writeitinstance.id})
+        url = reverse('edit_new_answer_notification_template', kwargs={'slug': self.writeitinstance.slug})
         c = Client()
         # logging in as another person different to the owner
         c.login(username="not_owner", password="secreto")
@@ -465,7 +465,7 @@ class NewAnswerNotificationUpdateViewForm(UserSectionTestCase):
         self.assertEquals(response.status_code, 404)
 
     def test_login_required_to_do_this_kind_of_stuff(self):
-        url = reverse('edit_new_answer_notification_template', kwargs={'pk': self.writeitinstance.id})
+        url = reverse('edit_new_answer_notification_template', kwargs={'slug': self.writeitinstance.slug})
         c = Client()
         data = {
             'template_html': self.writeitinstance.new_answer_notification_template.template_html,

@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, url
 
+from mailit.views import MailitTemplateUpdateView
 from nuntium.views import ConfirmView, AcceptModerationView, RejectModerationView, \
     HomeTemplateView, MessageSearchView, WriteItInstanceListView
 from nuntium.user_section.views import (
@@ -7,6 +8,9 @@ from nuntium.user_section.views import (
     WriteItInstanceAdvancedUpdateView,
     WriteItInstanceApiDocsView,
     WriteitPopitRelatingView,
+    WriteItInstanceTemplateUpdateView,
+    NewAnswerNotificationTemplateUpdateView,
+    ConfirmationTemplateUpdateView,
 )
 
 
@@ -29,4 +33,8 @@ managepatterns = patterns('',
     url(r'^settings/?$', WriteItInstanceAdvancedUpdateView.as_view(), name='writeitinstance_advanced_update'),
     url(r'^settings/api/?$', WriteItInstanceApiDocsView.as_view(), name='writeitinstance_api_docs'),
     url(r'^settings/sources/?$', WriteitPopitRelatingView.as_view(), name='relate-writeit-popit'),
+    url(r'^settings/templates/?$', WriteItInstanceTemplateUpdateView.as_view(), name='writeitinstance_template_update'),
+    url(r'^settings/templates/new_answer_notification?$', NewAnswerNotificationTemplateUpdateView.as_view(), name='edit_new_answer_notification_template'),
+    url(r'^settings/templates/confirmation_template?$', ConfirmationTemplateUpdateView.as_view(), name='edit_confirmation_template'),
+    url(r'^settings/templates/mailit_template?$', MailitTemplateUpdateView.as_view(), name='mailit-template-update'),
 )

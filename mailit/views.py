@@ -31,4 +31,4 @@ class MailitTemplateUpdateView(UpdateView):
         return kwargs
 
     def get_success_url(self):
-        return reverse('writeitinstance_template_update', kwargs={'pk': self.writeitinstance.pk})
+        return reverse('writeitinstance_template_update', kwargs={'slug': self.writeitinstance.slug})

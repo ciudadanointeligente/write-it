@@ -234,7 +234,7 @@ class ConfirmationTemplateFormTestCase(TestCase):
 
     def test_update_url(self):
         """Updating the template using the web"""
-        url = reverse('edit_confirmation_template', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('edit_confirmation_template', kwargs={'slug': self.writeitinstance.slug})
         self.assertTrue(url)
         c = Client()
         c.login(username="admin", password="admin")
@@ -245,7 +245,7 @@ class ConfirmationTemplateFormTestCase(TestCase):
         response = c.post(url, data=data)
         your_instances_url = reverse(
             'writeitinstance_template_update',
-            kwargs={"pk": self.writeitinstance.id},
+            kwargs={"slug": self.writeitinstance.pk},
             )
         self.assertRedirects(response, your_instances_url)
         # it was updated

@@ -2,7 +2,6 @@ from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 
 from contactos.views import ToggleContactEnabledView
-from mailit.views import MailitTemplateUpdateView
 from nuntium.user_section.stats import StatsView
 from .views import UserAccountView, \
     YourInstancesView, \
@@ -43,20 +42,6 @@ urlpatterns = patterns('',
     url(r'^message/(?P<pk>[-\d]+)/moderate/?$',
         ModerationView.as_view(),
         name='moderate_message'),
-
-    url(r'^writeitinstance/edit/(?P<pk>[-\d]+)/templates/?$',
-        WriteItInstanceTemplateUpdateView.as_view(),
-        name='writeitinstance_template_update'),
-    url(r'^writeitinstance/edit/(?P<pk>[-\d]+)/templates/new_answer_notification/?$',
-        NewAnswerNotificationTemplateUpdateView.as_view(),
-        name='edit_new_answer_notification_template'),
-    url(r'^writeitinstance/edit/(?P<pk>[-\d]+)/templates/confirmation_template/?$',
-        ConfirmationTemplateUpdateView.as_view(),
-        name='edit_confirmation_template'),
-
-    url(r'^writeitinstance/edit/(?P<pk>[-\d]+)/templates/mailit_template?$',
-        MailitTemplateUpdateView.as_view(),
-        name='mailit-template-update'),
 
     url(r'^writeitinstance/create/?$',
         WriteItInstanceCreateView.as_view(),
