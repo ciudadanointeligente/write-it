@@ -46,6 +46,8 @@ System Requirements
 
  * [Elasticsearch](http://www.elasticsearch.org/)
 
+ * [RabbitMQ](http://rabbitmq.com)
+
  It's required if you want to play around seaching messages and answers, this part is optional.
 
  * [Urllib3](http://urllib3.readthedocs.org/en/latest/)
