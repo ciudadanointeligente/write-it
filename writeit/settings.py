@@ -105,17 +105,11 @@ PIPELINE_COMPILERS = (
     )
 PIPELINE_SASS_BINARY = '/usr/bin/env sassc'  # Libsass, via libsass-python
 PIPELINE_CSS = {
-    'writeit-public': {
+    'writeit-main': {
         'source_filenames': (
-            'sass/public.scss',
+            'sass/main.scss',
         ),
-        'output_filename': 'css/public.css',
-    },
-    'writeit-admin': {
-        'source_filenames': (
-            'sass/admin.scss',
-        ),
-        'output_filename': 'css/admin.css',
+        'output_filename': 'css/main.css',
     }
 }
 
