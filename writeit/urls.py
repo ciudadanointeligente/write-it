@@ -23,7 +23,6 @@ urlpatterns = patterns('',
     url(r'^moderation_reject/(?P<slug>[-\w]+)/?$', RejectModerationView.as_view(), name='moderation_rejected'),
     (r'^api/', include(v1_api.urls)),
     url(r'^contactos/', include('contactos.urls')),
-    url(r'^mailit/', include('mailit.urls')),
     url(r'^social_auth/', include('social.apps.django_app.urls', namespace='social'))
 
 
