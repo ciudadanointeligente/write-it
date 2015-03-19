@@ -47,7 +47,7 @@
 </div>
 <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
-        <button type="button" class="btn btn-warning" onClick='deleteMessage(this)' href="{% url 'message_delete' pk=message.pk %}">{% trans "Delete" %}</button>
+        <button type="button" class="btn btn-warning" onClick='deleteMessage(this)' href="{% url 'message_delete' slug=message.writeitinstance.slug pk=message.pk %}">{% trans "Delete" %}</button>
       </div>
 </div>
 </div>
@@ -55,7 +55,7 @@
 function deleteMessage(button){
 	$.post($(button).attr('href'), function(){
 		$('#confirmDelete').modal('hide')
-		window.location = "{% url 'messages_per_writeitinstance' pk=message.writeitinstance.pk %}"
+		window.location = "{% url 'messages_per_writeitinstance' slug=message.writeitinstance.slug %}"
 	})
 }
 </script>

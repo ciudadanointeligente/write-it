@@ -58,11 +58,11 @@
               {% if message.moderated %}
               <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has been moderated' %}"><i class="fa fa-check-circle-o"></i></div></td>
               {% else %}
-              <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated and you can moderate it by clicking here' %}"><i class="fa fa-times-circle-o"></i> <a class="moderate" href="{% url 'moderate_message' pk=message.pk %}">{% trans "Moderate"%}</a></div></td>
+              <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated and you can moderate it by clicking here' %}"><i class="fa fa-times-circle-o"></i> <a class="moderate" href="{% url 'accept_message' pk=message.pk %}">{% trans "Moderate"%}</a></div></td>
               {% endif %}
 
             {% endif %}
-            <td><a href="{% url 'message_detail' pk=message.pk %}"><i class="fa fa-cogs"></i></a></td>
+            <td><a href="{% url 'message_detail' slug=writeitinstance.slug pk=message.pk %}"><i class="fa fa-cogs"></i></a></td>
             <td>
               {% blocktrans count answer_count=message.answers.count %}
                 {{ answer_count }} answer
@@ -70,10 +70,10 @@
                 {{ answer_count }} answers
               {% endblocktrans %}
               {% if writeitinstance.config.can_create_answer %}
-                <a data-toggle="modal" data-target="#modal" href="{% url 'create_answer' pk=message.pk %}" alt="{% trans "Add"%}"><i class="fa fa-plus"></i></a>
+                <a data-toggle="modal" data-target="#modal" href="{% url 'create_answer' slug=writeitinstance.slug pk=message.pk %}" alt="{% trans "Add"%}"><i class="fa fa-plus"></i></a>
               {% endif %}
             </td>
-            <td><a data-toggle="modal" data-target="#modal" class="deleteMessage" href="{% url 'message_delete' pk=message.pk %}"><i class="fa fa-times"></i></a></td>
+            <td><a data-toggle="modal" data-target="#modal" class="deleteMessage" href="{% url 'message_delete' slug=writeitinstance.slug pk=message.pk %}"><i class="fa fa-times"></i></a></td>
 
           </tr>
           {% empty %}

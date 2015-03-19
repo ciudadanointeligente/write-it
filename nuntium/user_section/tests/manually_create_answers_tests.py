@@ -17,14 +17,13 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         '''
         There is a url for viewing all messages per WriteItInstance
         '''
-        url = reverse('messages_per_writeitinstance', kwargs={'pk': self.writeitinstance.pk})
-        self.assertTrue(url)
+        reverse('messages_per_writeitinstance', kwargs={'slug': self.writeitinstance.slug})
 
     def test_it_can_be_reached(self):
         '''
         The view for viewing messages per writeit instance is reachable
         '''
-        url = reverse('messages_per_writeitinstance', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('messages_per_writeitinstance', kwargs={'slug': self.writeitinstance.slug})
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
         response = c.get(url)
@@ -42,7 +41,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         """
         The messages url is not reachable by someone who is not logged in
         """
-        url = reverse('messages_per_writeitinstance', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('messages_per_writeitinstance', kwargs={'slug': self.writeitinstance.slug})
         c = Client()
         response = c.get(url)
         self.assertRedirectToLogin(response, next_url=url)
@@ -52,7 +51,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         The url is not reachable if the the user is not the owner
         """
         not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
-        url = reverse('messages_per_writeitinstance', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('messages_per_writeitinstance', kwargs={'slug': self.writeitinstance.slug})
         c = Client()
         c.login(username=not_the_owner.username, password="secreto")
         response = c.get(url)
@@ -62,15 +61,14 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         """
         There is a url for getting all answers per message
         """
-        url = reverse('message_detail', kwargs={'pk': self.writeitinstance.pk})
-        self.assertTrue(url)
+        reverse('message_detail', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
 
     def test_get_all_answers_url(self):
         """
         Get the url for all answers per message brings them
         Is the same as message detail
         """
-        url = reverse('message_detail', kwargs={'pk': self.message.pk})
+        url = reverse('message_detail', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
         response = c.get(url)
@@ -105,7 +103,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         """
         When a user is not logged in he cannot see the answers per message
         """
-        url = reverse('message_detail', kwargs={'pk': self.message.pk})
+        url = reverse('message_detail', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
         c = Client()
         response = c.get(url)
         self.assertRedirectToLogin(response, next_url=url)
@@ -117,7 +115,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         """
         not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
 
-        url = reverse('message_detail', kwargs={'pk': self.message.pk})
+        url = reverse('message_detail', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
         c = Client()
         c.login(username=not_the_owner.username, password="secreto")
         response = c.get(url)
@@ -127,8 +125,6 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         '''There is a form to create an answer'''
         # print self.message.people, self.message.writeitinstance.persons.all()
         form = AnswerForm(message=self.message)
-
-        self.assertTrue(form)
         self.assertIn("person", form.fields)
         self.assertIn("content", form.fields)
         self.assertEquals(form.message, self.message)
@@ -161,8 +157,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         '''
         There is a view that I can access to create a message
         '''
-        url = reverse('create_answer', kwargs={'pk': self.message.pk})
-        self.assertTrue(url)
+        url = reverse('create_answer', kwargs={'slug': self.writeitinstance.slug, 'pk': self.message.pk})
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
         response = c.get(url)
@@ -182,12 +177,11 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
             'person': self.message.people.all()[0].pk,
             'content': "hello this is an answer",
             }
-        url = reverse('create_answer', kwargs={'pk': self.message.pk})
-        self.assertTrue(url)
+        url = reverse('create_answer', kwargs={'slug': self.writeitinstance.slug, 'pk': self.message.pk})
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
         response = c.post(url, data=data)
-        detail_message_url = reverse('message_detail', kwargs={'pk': self.message.pk})
+        detail_message_url = reverse('message_detail', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
         self.assertRedirects(response, detail_message_url)
         new_count = Answer.objects.filter(message=self.message).count()
         self.assertEquals(new_count, previous_count + 1)
@@ -196,7 +190,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         '''
         Only logged in user can create an answer
         '''
-        url = reverse('create_answer', kwargs={'pk': self.message.pk})
+        url = reverse('create_answer', kwargs={'slug': self.writeitinstance.slug, 'pk': self.message.pk})
         c = Client()
         # not logged
         response = c.get(url)
@@ -208,7 +202,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         '''
         self.assertEquals(self.message.writeitinstance, self.writeitinstance)
         not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
-        url = reverse('create_answer', kwargs={'pk': self.message.pk})
+        url = reverse('create_answer', kwargs={'slug': self.writeitinstance.slug, 'pk': self.message.pk})
         c = Client()
         c.login(username=not_the_owner.username, password="secreto")
         response = c.get(url)
@@ -225,24 +219,43 @@ class ManuallyEditAnswer(UserSectionTestCase):
 
     def test_there_is_an_endpoint(self):
         '''There is an endpoint to which posting updates an answer'''
-        url = reverse('update_answer', kwargs={'pk': self.answer.pk})
-        self.assertTrue(url)
+        reverse(
+            'update_answer',
+            kwargs={
+                'slug': self.message.writeitinstance.slug,
+                'message_pk': self.answer.message.pk,
+                'pk': self.answer.pk
+                },
+            )
 
     def test_post_updated_answer(self):
         '''Posting updated answer'''
-        url = reverse('update_answer', kwargs={'pk': self.answer.pk})
+        url = reverse(
+            'update_answer',
+            kwargs={
+                'slug': self.message.writeitinstance.slug,
+                'message_pk': self.answer.message.pk,
+                'pk': self.answer.pk
+                },
+            )
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
         data = {'content': "this is the new content"}
         response = c.post(url, data=data)
-        detail_message_url = reverse('message_detail', kwargs={'pk': self.message.pk})
+        detail_message_url = reverse('message_detail', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
         self.assertRedirects(response, detail_message_url)
         answer = Answer.objects.get(id=self.answer.id)
         self.assertTrue(answer.content, data['content'])
 
     def test_posting_non_user(self):
         '''Posting an updated answer as a non user redirects to login'''
-        url = reverse('update_answer', kwargs={'pk': self.answer.pk})
+        url = reverse('update_answer',
+            kwargs={
+                'slug': self.message.writeitinstance.slug,
+                'message_pk': self.answer.message.pk,
+                'pk': self.answer.pk
+                },
+            )
 
         c = Client()
         data = {'content': "this is the new content"}
@@ -253,7 +266,14 @@ class ManuallyEditAnswer(UserSectionTestCase):
         '''Posting as a user that is not the owner'''
         not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
 
-        url = reverse('update_answer', kwargs={'pk': self.answer.pk})
+        url = reverse('update_answer',
+            kwargs={
+                'slug': self.message.writeitinstance.slug,
+                'message_pk': self.answer.message.pk,
+                'pk': self.answer.pk
+                },
+            )
+
         c = Client()
         c.login(username=not_the_owner.username, password="secreto")
         data = {'content': "this is the new content"}
@@ -263,7 +283,14 @@ class ManuallyEditAnswer(UserSectionTestCase):
 
     def test_get_the_edit_form(self):
         '''Getting the update form'''
-        url = reverse('update_answer', kwargs={'pk': self.answer.pk})
+        url = reverse('update_answer',
+            kwargs={
+                'slug': self.message.writeitinstance.slug,
+                'message_pk': self.answer.message.pk,
+                'pk': self.answer.pk
+                },
+            )
+
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
         response = c.get(url)
@@ -279,12 +306,11 @@ class DeleteMessageView(UserSectionTestCase):
 
     def test_there_is_a_url_to_delete_messages(self):
         '''There is a url that would help me to delete a message'''
-        url = reverse('message_delete', kwargs={'pk': self.message.pk})
-        self.assertTrue(url)
+        reverse('message_delete', kwargs={'slug': self.writeitinstance.slug, 'pk': self.message.pk})
 
     def test_posting_to_that_url_deletes_the_message(self):
         '''When posting to delete a message it deletes it'''
-        url = reverse('message_delete', kwargs={'pk': self.message.pk})
+        url = reverse('message_delete', kwargs={'slug': self.writeitinstance.slug, 'pk': self.message.pk})
 
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
@@ -292,12 +318,12 @@ class DeleteMessageView(UserSectionTestCase):
         self.assertEquals(response.status_code, 200)
         self.assertFalse(Message.objects.filter(id=self.message.id))
         '''It should redirect to the see all messages url'''
-        allmessages_url = reverse('messages_per_writeitinstance', kwargs={'pk': self.writeitinstance.pk})
+        allmessages_url = reverse('messages_per_writeitinstance', kwargs={'slug': self.writeitinstance.slug})
         self.assertRedirects(response, allmessages_url)
 
     def test_a_get_gives_me_the_cornfirmation_url(self):
         '''When I do a get it takes me to the confirm deleting url'''
-        url = reverse('message_delete', kwargs={'pk': self.message.pk})
+        url = reverse('message_delete', kwargs={'slug': self.writeitinstance.slug, 'pk': self.message.pk})
 
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
@@ -308,7 +334,7 @@ class DeleteMessageView(UserSectionTestCase):
     def test_it_cannot_be_accessed_by_a_non_user(self):
         '''A non user cannot delete a message'''
 
-        url = reverse('message_delete', kwargs={'pk': self.message.pk})
+        url = reverse('message_delete', kwargs={'slug': self.writeitinstance.slug, 'pk': self.message.pk})
 
         c = Client()
         response = c.get(url)
@@ -318,7 +344,7 @@ class DeleteMessageView(UserSectionTestCase):
         '''If the user is not the owner of the instance then he/she cannot delete a message'''
         not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
 
-        url = reverse('message_delete', kwargs={'pk': self.message.pk})
+        url = reverse('message_delete', kwargs={'slug': self.writeitinstance.slug, 'pk': self.message.pk})
         c = Client()
         c.login(username=not_the_owner.username, password="secreto")
         response1 = c.get(url)
@@ -348,7 +374,7 @@ class ModerateURL(UserSectionTestCase):
             persons=[self.person1],
             )
         message.recently_confirmated()
-        url = reverse('moderate_message', kwargs={'pk': message.pk})
+        url = reverse('accept_message', kwargs={'slug': message.writeitinstance.slug, 'pk': message.pk})
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
         response = c.post(url)
@@ -357,7 +383,7 @@ class ModerateURL(UserSectionTestCase):
         self.assertTrue(message_again.moderated)
 
         '''Redirecting'''
-        allmessages_url = reverse('messages_per_writeitinstance', kwargs={'pk': self.writeitinstance.pk})
+        allmessages_url = reverse('messages_per_writeitinstance', kwargs={'slug': self.writeitinstance.slug})
         self.assertRedirects(response, allmessages_url)
 
     def test_logged_user(self):
@@ -374,7 +400,7 @@ class ModerateURL(UserSectionTestCase):
             persons=[self.person1],
             )
         message.recently_confirmated()
-        url = reverse('moderate_message', kwargs={'pk': message.pk})
+        url = reverse('accept_message', kwargs={'slug': message.writeitinstance.slug, 'pk': message.pk})
         c = Client()
         response = c.post(url)
         self.assertRedirectToLogin(response)
@@ -394,7 +420,7 @@ class ModerateURL(UserSectionTestCase):
             persons=[self.person1],
             )
         message.recently_confirmated()
-        url = reverse('moderate_message', kwargs={'pk': message.pk})
+        url = reverse('accept_message', kwargs={'slug': message.writeitinstance.slug, 'pk': message.pk})
         c = Client()
         c.login(username=not_the_owner.username, password="secreto")
         response = c.post(url)

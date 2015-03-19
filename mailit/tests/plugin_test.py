@@ -553,7 +553,7 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
                 )
 
     def test_url_update(self):
-        url = reverse('mailit-template-update', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('mailit-template-update', kwargs={'slug': self.writeitinstance.slug})
 
         self.assertTrue(url)
 
@@ -568,7 +568,7 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
 
         response = c.post(url, data=data)
         url = reverse('writeitinstance_template_update',
-            kwargs={'pk': self.writeitinstance.pk})
+            kwargs={'slug': self.writeitinstance.slug})
         self.assertRedirects(response, url)
 
         self.assertEquals(
@@ -583,7 +583,7 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
     def test_a_non_owner_cannot_update_a_template(self):
         User.objects.create_user(username="not_owner", password="secreto")
 
-        url = reverse('mailit-template-update', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('mailit-template-update', kwargs={'slug': self.writeitinstance.slug})
         c = Client()
         c.login(username="not_owner", password="secreto")
 
@@ -598,7 +598,7 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
         self.assertEquals(response.status_code, 404)
 
     def test_a_non_logged_user_is_told_to_login(self):
-        url = reverse('mailit-template-update', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('mailit-template-update', kwargs={'slug': self.writeitinstance.slug})
         c = Client()
 
         data = {

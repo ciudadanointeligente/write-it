@@ -471,7 +471,7 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
         new_answer_template = writeitinstance.new_answer_notification_template
 
         current_site = Site.objects.get_current()
-        message_url = 'http://' + current_site.domain + reverse('message_detail', kwargs={'pk': answer.message.pk})
+        message_url = 'http://' + current_site.domain + reverse('message_detail', kwargs={'instance_slug': writeitinstance.slug, 'slug': answer.message.slug})
 
         context = {
             'author_name': answer.message.author_name,

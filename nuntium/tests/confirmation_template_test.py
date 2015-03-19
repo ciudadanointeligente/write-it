@@ -218,7 +218,7 @@ class ConfirmationTemplateFormTestCase(TestCase):
 
     def test_update_url(self):
         """Updating the template using the web"""
-        url = reverse('edit_confirmation_template', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('edit_confirmation_template', kwargs={'slug': self.writeitinstance.slug})
         self.assertTrue(url)
         c = Client()
         c.login(username="admin", password="admin")
@@ -229,7 +229,7 @@ class ConfirmationTemplateFormTestCase(TestCase):
         response = c.post(url, data=data)
         your_instances_url = reverse(
             'writeitinstance_template_update',
-            kwargs={"pk": self.writeitinstance.id},
+            kwargs={"slug": self.writeitinstance.slug},
             )
         self.assertRedirects(response, your_instances_url)
         # it was updated
@@ -320,7 +320,7 @@ browser’s address bar)
 
 Once you have confirmed the message, you can access it by going to
 
-http://127.0.0.1.xip.io:8000/en/writeit_instances/test-writeit-instance/messages/test-message
+http://127.0.0.1.xip.io:8000/en/writeit_instances/test-writeit-instance/messages/test-message/
 
 
 **IMPORTANT** Once confirmed, this message, will be sent to
