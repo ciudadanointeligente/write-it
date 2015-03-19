@@ -6,7 +6,7 @@
     <div class="site-content">
 
         <div class="instance-hero container">
-          <p class="instance-hero__welcome">Welcome to {{ instance.name }}</p>
+          <p class="instance-hero__welcome">Welcome to {{ writeitinstance.name }}</p>
           <h2>
               {% trans "This is a description of your WriteIt instance. Click the pencil to edit it." %}
               <a class="instance-hero__edit" href="#"><i class="fa fa-pencil">{% trans "Edit" %}</i></a>
@@ -26,6 +26,8 @@
             </div>
         </div>
       {% endif %}
+
+    </div>
 
 {% endblock content %}
 

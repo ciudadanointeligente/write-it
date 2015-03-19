@@ -11,46 +11,66 @@
 {% block header %}
     <header class="site-header">
         <div class="container">
-            <h1 class="site-header__site-masthead">
-              {% if writeitinstance %}
-                <a href="{% url 'instance_detail' slug=writeitinstance.slug %}">{{ writeitinstance.name }}</a>
-                <small>{% trans "A WriteIt instance" %}</small>
-              {% else %}
-                <a href="{% url 'home' %}">WriteIt</a>
-                <small>{% trans "A Poplus Component" %}</small>
-              {% endif %}
-            </h1>
-            <ul class="site-header__links">
-              {% if not user.is_authenticated %}
-                <li class="site-header__link site-header__link--sign-in"><a href="{% url 'account_login' %}">{% trans "Instance manager sign in" %}</a></li>
-              {% else %}
-                <li class="site-header__link site-header__link--user dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                      <i class="fa fa-user"></i> {{ user }} <b class="caret"></b>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="{% url 'account' %}">
-                                <span class="glyphicon glyphicon-cog"></span>
-                                {% trans "Your Profile" %}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'your-instances' %}">
-                                <span class="glyphicon glyphicon-tasks"></span>
-                                {% trans "Your Instances" %}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'django.contrib.auth.views.logout' %}">
-                                <span class="glyphicon glyphicon-log-out"></span>
-                                {% trans "Logout" %}
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-              {% endif %}
-            </ul>
+            <div class="site-header__masthead">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <h1>
+                  {% if writeitinstance %}
+                    <a href="{% url 'instance_detail' slug=writeitinstance.slug %}">{{ writeitinstance.name }}</a>
+                    <small>{% trans "A WriteIt instance" %}</small>
+                  {% else %}
+                    <a href="{% url 'home' %}">WriteIt</a>
+                    <small>{% trans "A Poplus Component" %}</small>
+                  {% endif %}
+                </h1>
+            </div>
+            <div class="site-header__nav" id="navbar" role="navigation">
+                <ul>
+                    <li class="site-header__nav__link"><a href="#">Home</a></li>
+                    <li class="site-header__nav__link"><a href="#">Messages</a></li>
+                    <li class="site-header__nav__link"><a href="#">Search</a></li>
+                  {% if not user.is_authenticated %}
+                    <li class="site-header__nav__link site-header__nav__link--sign-in"><a href="{% url 'account_login' %}">{% trans "Instance manager sign in" %}</a></li>
+                  {% else %}
+                    <li class="site-header__nav__link site-header__nav__link--user dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                          <i class="glyphicon glyphicon-user"></i><b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <span class="dropdown-menu-item">
+                                    <strong>{{ user }}</strong><br>
+                                    {{ user.email }}
+                                </span>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="{% url 'account' %}">
+                                    <span class="glyphicon glyphicon-cog"></span>
+                                    {% trans "Your Profile" %}
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'your-instances' %}">
+                                    <span class="glyphicon glyphicon-tasks"></span>
+                                    {% trans "Your Instances" %}
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'django.contrib.auth.views.logout' %}">
+                                    <span class="glyphicon glyphicon-log-out"></span>
+                                    {% trans "Logout" %}
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                  {% endif %}
+                </ul>
+            </div>
         </div>
     </header>
 {% endblock header %}
