@@ -48,7 +48,7 @@ System Requirements
 
  * [RabbitMQ](http://rabbitmq.com)
 
- It's required if you want to play around seaching messages and answers, this part is optional.
+ It's required if you want to play around searching messages and answers, this part is optional.
 
  * [Urllib3](http://urllib3.readthedocs.org/en/latest/)
 
