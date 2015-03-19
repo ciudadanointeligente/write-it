@@ -38,9 +38,9 @@ $(".chosen-person-select").chosen();
         {{form.persons.label_tag}}
         {{form.persons}}
       </div>
-      <div class="text-right">
-        <input type="button" onclick="javascript:history.back();" class='btn btn-default' value="{% trans 'Cancel' %}" />
-        <input type="submit" class='btn btn-primary' value="{% trans 'Update' %}" />
+
+      <div class="save-bar">
+        <input type="submit" class='btn btn-primary' value="{% trans 'Save changes' %}" />
       </div>
 
       {% csrf_token %}
