@@ -1,4 +1,4 @@
-{% extends "base_edit.html" %}
+{% extends "base_manager.html" %}
 {% load i18n %}
 {% load staticfiles %}
 {% load pagination_tags %}
@@ -80,7 +80,7 @@
             <td><a href="{% url 'messages_per_writeitinstance' slug=writeitinstance.slug %}"><i class="fa fa-envelope-o"></i></a></td>
             <td><a href="{% url 'writeitinstance_basic_update' slug=writeitinstance.slug %}"><i class="fa fa-pencil"></i></a></td>
             <td><a href="{% url 'delete_an_instance' pk=writeitinstance.pk %}"><i class="fa fa-times"></i></a></td>
-            
+
           </tr>
           {% empty %}
           <tr><td colspan="3" class="text-center">You have no instances</td></tr>

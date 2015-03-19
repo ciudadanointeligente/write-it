@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load pipeline %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="{{ LANGUAGE_CODE }}"{% if LANGUAGE_BIDI %}dir="RTL"{% endif %} class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
+
+    <title>Write-it</title>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+    {% stylesheet 'writeit-manager' %}
+
+    {% block extracss %}
+    {% endblock extracss %}
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      <!-- Fixed navbar -->
+      <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">WriteIt</a>
+          </div>
+          <div class="navbar-collapse collapse">
+
+            <ul class="nav navbar-nav navbar-right">
+              {% if not user.is_authenticated %}
+              <li{% block menu-login-active %}{% endblock menu-login-active %}><a href="{% url 'account_login' %}">Login</a></li>
+              {% else %}
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ user }} <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="{% url 'account' %}"><span class="glyphicon glyphicon-cog"></span> {% trans "Your Profile" %}</a></li>
+                  <li><a href="{% url 'your-instances' %}"><span class="glyphicon glyphicon-tasks"></span> {% trans "Your Instances" %}</a></li>
+                  <li><a href="{% url 'django.contrib.auth.views.logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                </ul>
+              </li>
+              {% endif %}
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+
+      <div class="container">
+        {% block header %}
+        {% endblock header %}
+
+        {% block content %}
+        {% endblock content %}
+      </div>
+
+    </div><!-- end wrap -->
+
+    <div id="footer">
+      <ul class="container">
+        <li class="fci">{% blocktrans %}Built by <a href="http://www.ciudadanointeligente.org">Fundación Ciudadano Inteligente</a>{% endblocktrans %}</li>
+        <li class="poplus-logo">
+          <a href="http://poplus.org/">
+            <img src="{% static 'img/icon-poplus.png' %}">
+            Poplus
+          </a>
+        </li>
+        <li class="github">
+          <a href="http://www.github.com/ciudadanointeligente/write-it">
+            <i class="fa fa-github"></i>
+            {% blocktrans %}Find the code at Github{% endblocktrans %}
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <script src="{% static 'js/jquery.cookie.js' %}"></script>
+    <script src="{% static 'js/removeDiacritics.js' %}"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extrascripts %}
+    {% endblock extrascripts %}
+    <script type="text/javascript">
+      var csrftoken = $.cookie('csrftoken');
+      function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+      }
+      $.ajaxSetup({
+          crossDomain: false, // obviates need for sameOrigin test
+          beforeSend: function(xhr, settings) {
+              if (!csrfSafeMethod(settings.type)) {
+                  xhr.setRequestHeader("X-CSRFToken", csrftoken);
+              }
+          }
+      });
+    {% block extrajs %}
+    {% endblock extrajs %}
+    </script>
+    <!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-XXXX-Y');  // Replace with your property ID.
+      ga('send', 'pageview');
+
+    </script>
+    <!-- End Google Analytics -->
+  </body>
+</html>
