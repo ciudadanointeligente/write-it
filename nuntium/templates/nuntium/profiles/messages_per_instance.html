@@ -18,13 +18,10 @@
 {% endblock header %}
 
 {% block content %}
-
-<!-- Tab panes -->
-<div class="tab-content profile-page-tab-content">
-  <div class="tab-pane active row">
+  <div class="page-header">
+    <h2>{% trans "Messages" %}</h2>
+  </div>
     {% autopaginate message_list %}
-
-    <div class="col-md-12">
       {% paginate %}
       <table class="table table-striped">
         <thead>
@@ -82,10 +79,7 @@
         </tbody>
       </table>
       {% paginate %}
-    </div>
 
-  </div>
-</div>
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content b-color">
