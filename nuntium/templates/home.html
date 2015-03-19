@@ -1,7 +1,7 @@
-{% extends "base.html" %}
+{% extends "base_public.html" %}
 {% load i18n %}
 
-{% block content %}
+{% block content_inner %}
 
     <h1>{% trans "WriteIt is a zero-config factory for building sites that empower citizens to send emails to representatives and politicians." %}</h1>
 
@@ -9,4 +9,4 @@
 
     <p><a href="{% url 'instance_list' %}">{% trans "Or browse existing instances" %}</a></p>
 
-{% endblock content %}
+{% endblock content_inner %}

@@ -1,40 +1,31 @@
-{% extends "base.html" %}
+{% extends "base_public.html" %}
 {% load i18n %}
 
 {% block content %}
 
-  {% if writeitinstance.config.testing_mode %}
-    <div class="test-mode-alert">
-        <h3 class="test-mode-heading">This instance is in Test Mode.</h3>
-        <p class="test-mode-description">Nobody but you can access this instance, and any messages you send will be sent to your email address rather than real representatives.</p>
-        <a class="test-mode-cta" href="{% url 'writeitinstance_advanced_update' slug=writeitinstance.slug %}">{% trans "Disable Test Mode in Settings" %}</a>
-    </div>
-  {% endif %}
+    <div class="site-content">
 
-  {% if not writeitinstance.config.allow_messages_using_form %}
-    <p>{% trans "Sorry, you can’t currently create new messages using this WriteIt." %}</p>
-  {% elif not writeitinstance.persons.exists %}
-    <p>{% trans "Sorry, there is no-one to write to yet. Please check back soon." %}</p>
-  {% endif %}
-
-    <div class="instance-hero">
-      <p class="instance-hero__welcome">Welcome to [[instance display name]]</p>
-      <h2>[[instance description]]</h2>
-      <a class="btn btn-primary" href="#">Send a message</a>
-    </div>
-
-  {% if writeitinstance.message_set %}
-    <div class="instance-summary">
-        <div class="instance-summary__recent">
-            <h2>Recent messages</h2>
-            <p><strong>TODO:</strong> Show recent messages here.</p>
+        <div class="instance-hero container">
+          <p class="instance-hero__welcome">Welcome to {{ instance.name }}</p>
+          <h2>
+              {% trans "This is a description of your WriteIt instance. Click the pencil to edit it." %}
+              <a class="instance-hero__edit" href="#"><i class="fa fa-pencil">{% trans "Edit" %}</i></a>
+          </h2>
+          <a class="btn btn-primary" href="#">{% trans "Send a message" %}</a>
         </div>
-        <div class="instance-summary__popular">
-            <h2>Most popular representatives</h2>
-            <p><strong>TODO:</strong> Show representatives here.</p>
+
+      {% if writeitinstance.message_set %}
+        <div class="instance-summary container">
+            <div class="instance-summary__recent">
+                <h2>{% trans "Recent messages" %}</h2>
+                <p><strong>TODO:</strong> Show recent messages here.</p>
+            </div>
+            <div class="instance-summary__popular">
+                <h2>{% trans "Most popular representatives" %}</h2>
+                <p><strong>TODO:</strong> Show representatives here.</p>
+            </div>
         </div>
-    </div>
-  {% endif %}
+      {% endif %}
 
 {% endblock content %}
 

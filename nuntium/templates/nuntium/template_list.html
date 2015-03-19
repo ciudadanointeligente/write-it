@@ -1,8 +1,8 @@
-{% extends "base.html" %}
+{% extends "base_public.html" %}
 {% load i18n %}
 {% load pagination_tags %}
 
-{% block content %}
+{% block content_inner %}
 
     <h2>{% trans "Current instances of WriteIt" %}</h2>
 
@@ -26,10 +26,11 @@ title="{% trans 'This instance can only be seen by you and all the messages will
     <p><a href="#" class="btn btn-primary">{% trans "Create a WriteIt instance" %}</a></p>
   {% endif %}
 
-    <script type="text/javascript">
-      $(function(){
-        $('.extra-info').tooltip({});
-      });
-    </script>
+{% endblock content_inner %}
 
-{% endblock content %}
+{% block extrajs %}
+  $(function(){
+    $('.extra-info').tooltip({});
+  });
+{% endblock extrajs %}
+

@@ -19,7 +19,8 @@
     <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 
-    {% stylesheet 'writeit-public' %}
+    {% block css %}
+    {% endblock css %}
 
     {% block extracss %}
     {% endblock extracss %}
@@ -33,71 +34,14 @@
 
 <body>
 
-    <div>
-      {% if writeitinstance %}
-        <a href="{% url 'instance_detail' slug=writeitinstance.slug %}">writeitinstance.name</a>
-        {% trans "A WriteIt instance" %}
-      {% else %}
-        <a href="{% url 'home' %}">WriteIt</a>
-        {% trans "A Poplus Component" %}
-      {% endif %}
-    </div>
+    {% block header %}
+    {% endblock header %}
 
-  {% if not user.is_authenticated %}
-    <a href="{% url 'login' %}">{% trans "Instance manager sign in" %}</a>
-  {% else %}
-    <div class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ user }} <b class="caret"></b></a>
-        <ul class="dropdown-menu">
-            <li>
-                <a href="{% url 'account' %}">
-                    <span class="glyphicon glyphicon-cog"></span>
-                    {% trans "Your Profile" %}
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'your-instances' %}">
-                    <span class="glyphicon glyphicon-tasks"></span>
-                    {% trans "Your Instances" %}
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'django.contrib.auth.views.logout' %}">
-                    <span class="glyphicon glyphicon-log-out"></span>
-                    {% trans "Logout" %}
-                </a>
-            </li>
-        </ul>
-    </div>
-  {% endif %}
+    {% block content %}
+    {% endblock content %}
 
-    <div id="content">
-        {% block header %}
-        {% endblock header %}
-
-        {% block content %}
-        {% endblock content %}
-    </div>
-
-    <footer>
-        <ul>
-            <li>
-                {% blocktrans %}Built by <a href="http://www.ciudadanointeligente.org">Fundación Ciudadano Inteligente</a>{% endblocktrans %}
-            </li>
-            <li>
-                <a href="http://poplus.org/">
-                    <img src="{% static 'img/icon-poplus.png' %}">
-                    Poplus
-                </a>
-            </li>
-            <li>
-                <a href="http://www.github.com/ciudadanointeligente/write-it">
-                    <i class="fa fa-github"></i>
-                    {% blocktrans %}Find the code at Github{% endblocktrans %}
-                </a>
-            </li>
-        </ul>
-    </footer>
+    {% block footer %}
+    {% endblock footer %}
 
     <script src="{% static 'js/jquery.cookie.js' %}"></script>
     <script src="{% static 'js/removeDiacritics.js' %}"></script>
