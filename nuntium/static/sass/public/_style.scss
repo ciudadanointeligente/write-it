@@ -27,3 +27,11 @@ body, .site-footer {
   margin-top: -1px;
   border-top: 1px solid mix(#000, $color-pale-orange, 6%);
 }
+
+.writing-breadcrumb__step {
+  color: mix($body-bg, $text-color, 60%);
+}
+
+.writing-breadcrumb__step--current {
+  color: $text-color;
+}

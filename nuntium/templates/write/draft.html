@@ -3,13 +3,15 @@
 
 {% block content_inner %}
 
-<h1>DRAFT MESSAGE PAGE</h1>
+    {% include "write/breadcrumb.html" with current_step=2 %}
 
-<p>What do you want your message to say?</p>
+    <h1>DRAFT MESSAGE PAGE</h1>
 
-<textarea></textarea>
+    <p>What do you want your message to say?</p>
 
-<a href="{% url 'write_who' slug='foo' %}">Back</a>
-<a href="{% url 'write_preview' slug='foo' %}">Preview page</a>
+    <textarea></textarea>
+
+    <a href="{% url 'write_who' slug='foo' %}">Back</a>
+    <a href="{% url 'write_preview' slug='foo' %}">Preview page</a>
 
 {% endblock content_inner %}

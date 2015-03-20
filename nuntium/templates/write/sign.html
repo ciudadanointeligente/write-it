@@ -3,11 +3,13 @@
 
 {% block content_inner %}
 
-<h1>SIGN MESSAGE PAGE</h1>
+    {% include "write/breadcrumb.html" with current_step=4 %}
 
-<p>We've sent you an email to confirm your address. Please follow the link in the email to send your message.</p>
+    <h1>SIGN MESSAGE PAGE</h1>
 
-<a href="{% url 'write_preview' slug='foo' %}">Back</a>
-<a href="{% url 'thread_read' slug='foo' pk=1337 %}">Page they get to once clicking the link in their email</a>
+    <p>We've sent you an email to confirm your address. Please follow the link in the email to send your message.</p>
+
+    <a href="{% url 'write_preview' slug='foo' %}">Back</a>
+    <a href="{% url 'thread_read' slug='foo' pk=1337 %}">Page they get to once clicking the link in their email</a>
 
 {% endblock content_inner %}
