@@ -28,3 +28,35 @@
 .writing-breadcrumb__step--current {
   font-weight: bold;
 }
+
+.writing-buttons {
+  @include clearfix();
+  margin: 2em 0;
+}
+
+.writing-buttons__button--next {
+  @extend .btn;
+  @extend .btn-primary;
+
+  float: right;
+
+  &:after {
+    @extend .fa;
+    content: $fa-var-chevron-right;
+    margin-left: 0.5em;
+    vertical-align: -1px;
+  }
+}
+
+.writing-buttons__button--previous {
+  @extend .btn;
+
+  float: left;
+
+  &:before {
+    @extend .fa;
+    content: $fa-var-chevron-left;
+    margin-right: 0.5em;
+    vertical-align: -1px;
+  }
+}

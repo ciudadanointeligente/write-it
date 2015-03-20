@@ -16,6 +16,8 @@
       <option>Alice</option>
     </select>
 
-    <a href="{% url 'write_draft' slug='foo' %}">Draft page</a>
+    <p class="writing-buttons">
+        <a class="writing-buttons__button--next" href="{% url 'write_draft' slug='foo' %}">{% trans "Draft message" %}</a>
+    </p>
 
 {% endblock content_inner %}

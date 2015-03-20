@@ -11,7 +11,7 @@
                     {% trans "This is a description of your WriteIt instance. Click the pencil to edit it." %}
                     <a class="instance-hero__edit" href="#"><i class="fa fa-pencil">{% trans "Edit" %}</i></a>
                 </h2>
-                <a class="btn btn-primary btn-lg" href="#">{% trans "Send a message" %}</a>
+                <a class="btn btn-primary btn-lg" href="{% url 'write_who' slug='foo' %}">{% trans "Send a message" %}</a>
             </div>
         </div>
 

@@ -11,7 +11,9 @@
 
     <textarea></textarea>
 
-    <a href="{% url 'write_who' slug='foo' %}">Back</a>
-    <a href="{% url 'write_preview' slug='foo' %}">Preview page</a>
+    <p class="writing-buttons">
+        <a class="writing-buttons__button--previous" href="{% url 'write_who' slug='foo' %}">{% trans "Change recipients" %}</a>
+        <a class="writing-buttons__button--next" href="{% url 'write_preview' slug='foo' %}">{% trans "Preview message" %}</a>
+    </p>
 
 {% endblock content_inner %}

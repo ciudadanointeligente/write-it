@@ -11,7 +11,9 @@
 
     <blockquote>Foo bar baz</blockquote>
 
-    <a href="{% url 'write_draft' slug='foo' %}">Back</a>
-    <a href="{% url 'write_sign' slug='foo' %}">Sign page</a>
+    <p class="writing-buttons">
+        <a class="writing-buttons__button--previous" href="{% url 'write_draft' slug='foo' %}">{% trans "Edit message" %}</a>
+        <a class="writing-buttons__button--next" href="{% url 'write_sign' slug='foo' %}">{% trans "Send message" %}</a>
+    </p>
 
 {% endblock content_inner %}

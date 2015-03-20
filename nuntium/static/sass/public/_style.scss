@@ -35,3 +35,7 @@ body, .site-footer {
 .writing-breadcrumb__step--current {
   color: $text-color;
 }
+
+.writing-buttons__button--previous {
+  @include button-variant(#666, #eee, #e6e6e6);
+}
