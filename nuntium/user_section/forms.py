@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.forms import ModelForm, TextInput, Textarea, \
-    CheckboxInput, NumberInput
+    CheckboxInput, NumberInput, IntegerField
 
 from nuntium.models import WriteItInstance, \
     NewAnswerNotificationTemplate, \
@@ -11,6 +11,7 @@ from django.forms import ValidationError, ModelChoiceField, Form, URLField
 from django.utils.translation import ugettext as _
 from popit.models import Person
 from ..forms import WriteItInstanceCreateFormPopitUrl
+from django.conf import settings
 
 
 class WriteItInstanceBasicForm(ModelForm):
@@ -24,6 +25,8 @@ class WriteItInstanceBasicForm(ModelForm):
 
 
 class WriteItInstanceAdvancedUpdateForm(ModelForm):
+    maximum_recipients = IntegerField(min_value=0, max_value=settings.OVERALL_MAX_RECIPIENTS)
+
     class Meta:
         model = WriteItInstanceConfig
         fields = [
@@ -33,6 +36,7 @@ class WriteItInstanceAdvancedUpdateForm(ModelForm):
             'notify_owner_when_new_answer',
             'autoconfirm_api_messages',
             'testing_mode',
+            'maximum_recipients',
             ]
         widgets = {
             'moderation_needed_in_all_messages': CheckboxInput(attrs={'class': 'form-control'}),
@@ -41,6 +45,7 @@ class WriteItInstanceAdvancedUpdateForm(ModelForm):
             'notify_owner_when_new_answer': CheckboxInput(attrs={'class': 'form-control'}),
             'autoconfirm_api_messages': CheckboxInput(attrs={'class': 'form-control'}),
             'testing_mode': CheckboxInput(attrs={'class': 'form-control'}),
+            'maximum_recipients': NumberInput(attrs={'class': 'form-control'}),
         }
 
 
