@@ -13,7 +13,7 @@ sudo update-locale LANG=en_GB.utf8
 # Install the packages we need
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y git python-dev python-pip libffi-dev libssl-dev
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y git python-dev python-pip libffi-dev libssl-dev rabbitmq-server
 
 # Instructions from: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup-repositories.html
 wget -qO - https://packages.elasticsearch.org/GPG-KEY-elasticsearch | sudo apt-key add -
