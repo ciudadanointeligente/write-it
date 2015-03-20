@@ -1,0 +1,15 @@
+{% extends "base_public.html" %}
+{% load i18n %}
+
+{% block content_inner %}
+
+<h1>DRAFT MESSAGE PAGE</h1>
+
+<p>What do you want your message to say?</p>
+
+<textarea></textarea>
+
+<a href="{% url 'write_who' slug='foo' %}">Back</a>
+<a href="{% url 'write_preview' slug='foo' %}">Preview page</a>
+
+{% endblock content_inner %}

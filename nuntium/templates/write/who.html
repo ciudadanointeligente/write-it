@@ -1,0 +1,19 @@
+{% extends "base_public.html" %}
+{% load i18n %}
+
+{% block content_inner %}
+
+<h1>WHO MESSAGE PAGE</h1>
+
+<p>Who do you want to send you message to?</p>
+
+<select>
+  <option>Choose who to write to</option>
+  <option disabled>---</option>
+  <option>Bob</option>
+  <option>Alice</option>
+</select>
+
+<a href="{% url 'write_draft' slug='foo' %}">Draft page</a>
+
+{% endblock content_inner %}

@@ -1,0 +1,15 @@
+{% extends "base_public.html" %}
+{% load i18n %}
+
+{% block content_inner %}
+
+<h1>PREVIEW MESSAGE PAGE</h1>
+
+<p>Here's a preview of your message:</p>
+
+<blockquote>Foo bar baz</blockquote>
+
+<a href="{% url 'write_draft' slug='foo' %}">Back</a>
+<a href="{% url 'write_sign' slug='foo' %}">Sign page</a>
+
+{% endblock content_inner %}
