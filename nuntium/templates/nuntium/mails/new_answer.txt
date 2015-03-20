@@ -1,9 +1,20 @@
-Dear {{user}}:
+Dear {author_name}
 
-We received an answer from {{person}} to your message "{{message.subject}}" and the answer is:
+{person} has replied to your {writeit_name}
+message with subject
 
-{{answer.content}}
+"{subject}"
 
-Thanks for using Write-It
+
+You can see their response at
+
+{message_url}
+
+
+{person} said:
+
+{content}
+
 -- 
-The Write-it Team
+
+Thanks for using {writeit_name}

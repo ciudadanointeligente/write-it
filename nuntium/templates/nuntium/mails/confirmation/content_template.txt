@@ -1,25 +1,45 @@
-Hello {{ confirmation.message.author_name }}:
-We have received a message written by you in {{ confirmation.message.writeitinstance.name }}.
-The message was:
-Subject:  {{ confirmation.message.subject }} 
-Content:  {{ confirmation.message.content|linebreaks }}
-To: {% for person in confirmation.message.people %}
-{{ person.name }}
-{% endfor %}
-
-Please confirm that you have sent this message by copiying the next url in your browser.
+Hello {author_name}
 
 
-{{ confirmation_full_url }}.
-{% if confirmation.message.public %}
+You just submitted a message to
 
-Once you have confirmed, you will be able to access your message if you go to the next url
+{recipients}
+
+via {writeit_name}.
 
 
-{{ message_full_url }}.
+Please visit the following link to confirm you want to send this message
 
-{% endif %}
+{confirmation_url}
 
-Thanks.
+(If you can’t click the link, try copying and pasting it into your
+browser’s address bar)
 
-The writeit team.
+
+Once you have confirmed the message, you can access it by going to
+
+{message_url}
+
+
+**IMPORTANT** Once confirmed, this message, will be sent to
+
+{recipients}.
+
+It will also be published on {writeit_name},
+where your name, your message, and any replies, will be public and
+online for anyone to read, and will also probably appear in search
+engine results.
+
+
+If this message didn’t come from you (or you’ve changed your mind and
+don’t want to send it after all) please just ignore this email.
+
+
+Thanks for using {writeit_name}, and
+here is a copy of your message for your records:
+
+
+To: {recipients}
+Subject: {subject}
+
+{content}

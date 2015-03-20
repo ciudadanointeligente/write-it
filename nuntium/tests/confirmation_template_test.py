@@ -1,9 +1,9 @@
+# coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from ..models import Confirmation
+from ..models import Confirmation, send_confirmation_email
 from ..models import Message, WriteItInstance, ConfirmationTemplate
 from django.core import mail
 from django.core.urlresolvers import reverse
-from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
 from django.forms import ValidationError
 from django.template import Context, Template
@@ -13,6 +13,7 @@ from django.test.utils import override_settings
 from contactos.models import Contact, ContactType
 from popit.models import Person
 
+import codecs
 import os
 script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
 
@@ -27,11 +28,11 @@ class ConfirmationTemplateTestCase(TestCase):
         self.writeitinstance = WriteItInstance.objects.get(id=1)
 
         self.default_template_text = ''
-        with open(os.path.join(script_dir, '../templates/nuntium/mails/confirmation/content_template.txt'), 'r') as f:
+        with codecs.open(os.path.join(script_dir, '../templates/nuntium/mails/confirmation/content_template.txt'), 'r', encoding='utf8') as f:
             self.default_template_text = f.read()
 
         self.default_subject = ''
-        with open(os.path.join(script_dir, '../templates/nuntium/mails/confirmation/subject_template.txt'), 'r') as f:
+        with codecs.open(os.path.join(script_dir, '../templates/nuntium/mails/confirmation/subject_template.txt'), 'r', encoding='utf8') as f:
             self.default_subject = f.read()
 
         self.owner = User.objects.get(id=1)
@@ -61,7 +62,7 @@ class ConfirmationTemplateTestCase(TestCase):
         """The confirmation mail is sent using the template"""
 
         message = Message.objects.get(id=1)
-        content_template = "{{confirmation}}{{confirmation_full_url}}{{message_full_url}}"
+        content_template = "{author_name} {subject}"
         template = message.writeitinstance.confirmationtemplate
 
         template.content_html = content_template
@@ -69,38 +70,21 @@ class ConfirmationTemplateTestCase(TestCase):
         template.subject = "the subject"
         template.save()
 
-        confirmation = Confirmation.objects.create(message=message)
-        # Then I create a confirmation a mail is sent
-        url = reverse(
-            'confirm',
-            kwargs={'slug': confirmation.key},
-            )
-        current_site = Site.objects.get_current()
-        confirmation_full_url = "http://" + current_site.domain + url
-
-        message_full_url = "http://" + current_site.domain + message.get_absolute_url()
-        content_template_template = Template(content_template)
-        context = Context(
-            {'confirmation': confirmation,
-             'confirmation_full_url': confirmation_full_url,
-             'message_full_url': message_full_url,
-             },
-            )
-        expected_body = content_template_template.render(context)
+        Confirmation.objects.create(message=message)
 
         self.assertEquals(len(mail.outbox), 1)  # it is sent to one person pointed in the contact
         self.assertEquals(mail.outbox[0].subject, template.subject)
-        self.assertEquals(mail.outbox[0].body, expected_body)
+        self.assertEquals(mail.outbox[0].body, 'Fiera Subject 1')
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue(message.author_email in mail.outbox[0].to)
 
     def test_confirmation_mail_with_html_template(self):
         """The confirmation mail is sent using the HTML template"""
 
-        message = Message.objects.all()[0]
+        message = Message.objects.get(id=1)
         template = message.writeitinstance.confirmationtemplate
 
-        template.content_html = "<b>{{confirmation.message.subject}}<b>"
+        template.content_html = "<b>{subject}<b>"
         template.content_text = "Foo"
         template.subject = "the subject"
         template.save()
@@ -253,3 +237,116 @@ class ConfirmationTemplateFormTestCase(TestCase):
 
         self.assertEquals(template.content_text, data["content_text"])
         self.assertEquals(template.subject, data["subject"])
+
+
+class SendConfirmationEmailTestCase(TestCase):
+    def setUp(self):
+        owner = User.objects.create(
+            username="Test User",
+            )
+        writeitinstance = WriteItInstance.objects.create(
+            name="Test WriteIt Instance",
+            owner=owner,
+            )
+        recipient = Person.objects.create(
+            name='Test Person',
+            api_instance_id=1,
+            )
+        contact_type = ContactType.objects.create(
+            name='Contact Type Name',
+            label_name='Contact Type Label',
+            )
+        Contact.objects.create(
+            contact_type=contact_type,
+            person=recipient,
+            value='Test Value',  # What is the value for?
+            writeitinstance=writeitinstance,
+            )
+        message = Message(
+            author_name='Message Author',
+            author_email='test@example.com',
+            subject='Test Message',
+            content='Test Content',
+            writeitinstance=writeitinstance,
+            persons=[recipient],
+            )
+
+        # We can't use .create here because we need .save() to
+        # create outboundmessage objects.
+        message.save()
+
+        # Saving the message with people rather than using create
+        # because we need people for the veryfy_people call.
+        message.save()
+
+        self.confirmation = Confirmation.objects.create(
+            message=message,
+            key='fakekey',
+            )
+
+        return super(SendConfirmationEmailTestCase, self).setUp()
+
+    @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True,
+                       DEFAULT_FROM_EMAIL='from@example.com')
+    def test_confirmation_email_public_message(self):
+        mail.outbox = []
+        send_confirmation_email(None, self.confirmation, True)
+        self.assertEqual(len(mail.outbox), 1)
+
+        email = mail.outbox.pop()
+
+        self.assertEqual(email.subject, u'Please confirm your WriteIt message to Test Person')
+        recipients = email.recipients()
+        self.assertEqual(len(recipients), 1)
+        self.assertEqual(recipients[0], 'test@example.com')
+
+        expected_body = u"""Hello Message Author
+
+
+You just submitted a message to
+
+Test Person
+
+via Test WriteIt Instance.
+
+
+Please visit the following link to confirm you want to send this message
+
+http://127.0.0.1.xip.io:8000/confirm_message/fakekey
+
+(If you can’t click the link, try copying and pasting it into your
+browser’s address bar)
+
+
+Once you have confirmed the message, you can access it by going to
+
+http://127.0.0.1.xip.io:8000/en/writeit_instances/test-writeit-instance/messages/test-message
+
+
+**IMPORTANT** Once confirmed, this message, will be sent to
+
+Test Person.
+
+It will also be published on Test WriteIt Instance,
+where your name, your message, and any replies, will be public and
+online for anyone to read, and will also probably appear in search
+engine results.
+
+
+If this message didn’t come from you (or you’ve changed your mind and
+don’t want to send it after all) please just ignore this email.
+
+
+Thanks for using Test WriteIt Instance, and
+here is a copy of your message for your records:
+
+
+To: Test Person
+Subject: Test Message
+
+Test Content
+"""
+
+        self.assertEqual(email.body, expected_body)
+        self.assertEqual(email.content_subtype, u'plain')
+        self.assertEqual(email.from_email, u'from@example.com')

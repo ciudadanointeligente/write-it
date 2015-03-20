@@ -1,1 +1,1 @@
-%(person)s has answered to your message %(message)s
+{person} has replied to your message {subject}
