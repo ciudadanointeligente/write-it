@@ -54,6 +54,7 @@ $(".chosen-person-select").chosen();
         {{form.autoconfirm_api_messages}}
       </div>
       <div class="form-group">
+        {{form.maximum_recipients.errors}}
         {{form.maximum_recipients.label_tag}}
         {{form.maximum_recipients}}
       </div>

@@ -1,6 +1,7 @@
 # coding=utf-8
 from django.forms import ModelForm, TextInput, Textarea, \
-    CheckboxInput, NumberInput, IntegerField
+    CheckboxInput, NumberInput
+from django.core import validators
 
 from nuntium.models import WriteItInstance, \
     NewAnswerNotificationTemplate, \
@@ -25,8 +26,6 @@ class WriteItInstanceBasicForm(ModelForm):
 
 
 class WriteItInstanceAdvancedUpdateForm(ModelForm):
-    maximum_recipients = IntegerField(min_value=0, max_value=settings.OVERALL_MAX_RECIPIENTS)
-
     class Meta:
         model = WriteItInstanceConfig
         fields = [
@@ -47,6 +46,11 @@ class WriteItInstanceAdvancedUpdateForm(ModelForm):
             'testing_mode': CheckboxInput(attrs={'class': 'form-control'}),
             'maximum_recipients': NumberInput(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(WriteItInstanceAdvancedUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['maximum_recipients'].validators.append(validators.MinValueValidator(1))
+        self.fields['maximum_recipients'].validators.append(validators.MaxValueValidator(settings.OVERALL_MAX_RECIPIENTS))
 
 
 class NewAnswerNotificationTemplateForm(ModelForm):
