@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, url
+from django.views.generic import TemplateView
 
 from mailit.views import MailitTemplateUpdateView
 from nuntium.views import (
@@ -28,7 +29,6 @@ from nuntium.user_section.views import (
     WriteitPopitRelatingView,
 )
 from nuntium.user_section.stats import StatsView
-
 
 urlpatterns = patterns('',
     # Examples:
@@ -65,4 +65,16 @@ managepatterns = patterns('',
     url(r'^delete/$',
         WriteItDeleteView.as_view(template_name="nuntium/profiles/writeitinstance_check_delete.html"),
         name='delete_an_instance'),
+)
+
+# New front-end message writing process
+frontendpatterns = patterns('',
+    url(r'^write/who/$', TemplateView.as_view(template_name='write/who.html'), name='write_who'),
+    url(r'^write/draft/$', TemplateView.as_view(template_name='write/draft.html'), name='write_draft'),
+    url(r'^write/preview/$', TemplateView.as_view(template_name='write/preview.html'), name='write_preview'),
+    url(r'^write/sign/$', TemplateView.as_view(template_name='write/sign.html'), name='write_sign'),
+    # url(r'^write/sign/(?P<token>[-\w]+)/$', SignTokenView.as_view(), name='write_sign_token'),
+    url(r'^thread/(?P<pk>[-\d]+)/$', TemplateView.as_view(template_name='thread/read.html'), name='thread_read'),
+    url(r'^from/(?P<pk>[-\d]+)/$', TemplateView.as_view(template_name='thread/from.html'), name='thread_from'),
+    url(r'^to/(?P<pk>[-\d]+)/$', TemplateView.as_view(template_name='thread/to.html'), name='thread_to'),
 )

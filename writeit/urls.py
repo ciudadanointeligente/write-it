@@ -12,6 +12,8 @@ from nuntium.urls import managepatterns
 # Uncomment the next two lines to enable the admin:
 admin.autodiscover()
 
+from nuntium.urls import frontendpatterns
+
 v1_api = Api(api_name='v1')
 v1_api.register(WriteItInstanceResource())
 v1_api.register(MessageResource())
@@ -34,9 +36,11 @@ urlpatterns += i18n_patterns('',
 
     url(r'^(?P<slug>[-\w]+)/manage/', include(managepatterns)),
     url(r'^', include('nuntium.urls')),
+    url(r'^(?P<slug>[-\w]+)/', include(frontendpatterns)),
 
     url(r'^', include('nuntium.user_section.urls')),
     url(r'^writeit_instances/', include('nuntium.subdomain_urls')),
 
     (r'accounts/', include('django.contrib.auth.urls')),
+
 )
