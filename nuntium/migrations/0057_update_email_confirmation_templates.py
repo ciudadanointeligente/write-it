@@ -27,7 +27,7 @@ To: {% for person in confirmation.message.people %}
 {{ person.name }}
 {% endfor %}
 
-Please confirm that you have sent this message by copiying the next url in your browser.
+Please confirm that you have sent this message by copying the next url in your browser.
 
 
 {{ confirmation_full_url }}.
@@ -42,8 +42,7 @@ Once you have confirmed, you will be able to access your message if you go to th
 
 Thanks.
 
-The writeit team.
-"""
+The writeit team."""
 
 new_answer_old_subject = '%(person)s has answered to your message %(message)s\n'
 old_confirmation_subject = 'Confirmation email for a message in WriteIt\n'
