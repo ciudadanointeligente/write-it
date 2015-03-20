@@ -109,11 +109,15 @@ class WriteItInstanceTemplateUpdateView(DetailView):
 class WriteItInstanceUpdateView(UpdateView):
     form_class = WriteItInstanceBasicForm
     template_name_suffix = '_update_form'
+    model = WriteItInstance
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        self.queryset = WriteItInstance.objects.filter(owner=self.request.user)
         return super(WriteItInstanceUpdateView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super(WriteItInstanceUpdateView, self).get_queryset().filter(owner=self.request.user)
+        return queryset
 
     def get_success_url(self):
         return reverse(
@@ -125,21 +129,27 @@ class WriteItInstanceUpdateView(UpdateView):
 class WriteItInstanceAdvancedUpdateView(UpdateView):
     form_class = WriteItInstanceAdvancedUpdateForm
     template_name = 'nuntium/writeitinstance_advanced_update_form.html'
+    model = WriteItInstanceConfig
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        self.queryset = WriteItInstanceConfig.objects.filter(writeitinstance__owner=self.request.user)
         return super(WriteItInstanceAdvancedUpdateView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        return super(WriteItInstanceAdvancedUpdateView, self).get_queryset().filter(writeitinstance__owner=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super(WriteItInstanceAdvancedUpdateView, self).get_context_data(**kwargs)
         context['writeitinstance'] = self.object.writeitinstance
         return context
 
+    def get_slug_field(self):
+        return 'writeitinstance__slug'
+
     def get_success_url(self):
         return reverse(
             'writeitinstance_advanced_update',
-            kwargs={'pk': self.object.pk},
+            kwargs={'slug': self.object.instance.slug},
             )
 
 
@@ -165,7 +175,7 @@ class WriteItInstanceCreateView(CreateView):
     def get_success_url(self):
         return reverse(
             'writeitinstance_basic_update',
-            kwargs={'pk': self.object.pk},
+            kwargs={'slug': self.object.slug},
             )
 
     def get_form_kwargs(self):
@@ -195,46 +205,22 @@ class LoginRequiredMixin(View):
 
 
 class WriteItInstanceOwnerMixin(SingleObjectMixin):
-    def get_writeitinstance(self):
-        return get_object_or_404(WriteItInstance, pk=self.kwargs['pk'])
-
-    def check_ownership(self):
-        self.writeitinstance = self.get_writeitinstance()
-        if not self.writeitinstance.owner.__eq__(self.request.user):
-            raise Http404
-
     def get_object(self):
-        self.object = super(WriteItInstanceOwnerMixin, self).get_object()
-        self.check_ownership()
-        return self.object
+        slug = self.kwargs.pop('slug')
+        pk = self.kwargs.get('pk')
+        return get_object_or_404(self.model, writeitinstance__slug=slug, writeitinstance__owner=self.request.user, pk=pk)
 
 
-class WriteItRelatedModelMixin(SingleObjectMixin):
-    """This mixin is to handle the case where we have a SingleObjectMixin
-    based view, but we get from the URL the primary key of a WriteItInstance
-    which has a one-to-one relationship with the object rather than the
-    primary key of the object itself. For example, there is a
-    single NewAnswerNotificationTemplate for each WriteItInstance.
-
-    It's not appropriate for anything for which there can be more
-    than one per instance, for example Messages.
-    """
-    def get_object(self):
-        self.object = get_object_or_404(self.model, writeitinstance__pk=self.kwargs['pk'])
-        self.check_ownership()
-        return self.object
-
-
-class UpdateTemplateWithWriteitMixin(LoginRequiredMixin, WriteItRelatedModelMixin, WriteItInstanceOwnerMixin, UpdateView):
+class UpdateTemplateWithWriteitMixin(LoginRequiredMixin, WriteItInstanceOwnerMixin, UpdateView):
     def get_form_kwargs(self):
         kwargs = super(UpdateTemplateWithWriteitMixin, self).get_form_kwargs()
-        kwargs['writeitinstance'] = self.writeitinstance
+        kwargs['writeitinstance'] = self.object.writeitinstance
         return kwargs
 
     def get_success_url(self):
         return reverse(
             'writeitinstance_template_update',
-            kwargs={'pk': self.writeitinstance.pk},
+            kwargs={'pk': self.object.writeitinstance.pk},
             )
 
 
@@ -248,22 +234,19 @@ class ConfirmationTemplateUpdateView(UpdateTemplateWithWriteitMixin):
     model = ConfirmationTemplate
 
 
-class MessagesPerWriteItInstance(LoginRequiredMixin, WriteItInstanceOwnerMixin, DetailView):
-    model = WriteItInstance
+class MessagesPerWriteItInstance(LoginRequiredMixin, ListView):
+    model = Message
     template_name = 'nuntium/profiles/messages_per_instance.html'
 
     def get_context_data(self, **kwargs):
         context = super(MessagesPerWriteItInstance, self).get_context_data(**kwargs)
-        context['writeit_messages'] = self.object.message_set.all()
+        context['writeitinstance'] = get_object_or_404(WriteItInstance, slug=self.kwargs.get('slug'), owner=self.request.user)
         return context
 
 
 class MessageDetail(LoginRequiredMixin, WriteItInstanceOwnerMixin, DetailView):
     model = Message
     template_name = "nuntium/profiles/message_detail.html"
-
-    def get_writeitinstance(self):
-        return self.object.writeitinstance
 
 
 class MessageDelete(LoginRequiredMixin, WriteItInstanceOwnerMixin, DeleteView):
@@ -273,7 +256,7 @@ class MessageDelete(LoginRequiredMixin, WriteItInstanceOwnerMixin, DeleteView):
     def get_success_url(self):
         success_url = reverse(
             'messages_per_writeitinstance',
-            kwargs={'pk': self.object.writeitinstance.pk},
+            kwargs={'slug': self.object.writeitinstance.slug},
             )
         return success_url
 
@@ -318,13 +301,13 @@ class AnswerUpdateView(AnswerEditMixin, UpdateView):
         return self.model.objects.get(id=self.kwargs['pk']).message
 
 
-class ModerationView(View):
+class AcceptMessageView(View):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         self.message = get_object_or_404(Message, id=kwargs['pk'])
         if self.message.writeitinstance.owner != self.request.user:
             raise Http404
-        return super(ModerationView, self).dispatch(*args, **kwargs)
+        return super(AcceptMessageView, self).dispatch(*args, **kwargs)
 
     def post(self, request, *args, **kwargs):
 
@@ -332,7 +315,7 @@ class ModerationView(View):
 
         url = reverse(
             'messages_per_writeitinstance',
-            kwargs={'pk': self.message.writeitinstance.pk},
+            kwargs={'slug': self.message.writeitinstance.slug},
             )
         return redirect(url)
 
@@ -367,8 +350,14 @@ class WriteitPopitRelatingView(WriteItInstanceOwnerMixin, FormView):
         return context
 
 
-class WriteItDeleteView(WriteItInstanceOwnerMixin, DeleteView):
+class WriteItDeleteView(DeleteView):
     model = WriteItInstance
+
+    def get_object(self, queryset=None):
+        obj = super(WriteItDeleteView, self).get_object(queryset=queryset)
+        if not obj.owner == self.request.user:
+            raise Http404
+        return obj
 
     def get_success_url(self):
         url = reverse('your-instances')

@@ -17,14 +17,14 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         '''
         There is a url for viewing all messages per WriteItInstance
         '''
-        url = reverse('messages_per_writeitinstance', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('messages_per_writeitinstance', kwargs={'slug': self.writeitinstance.slug})
         self.assertTrue(url)
 
     def test_it_can_be_reached(self):
         '''
         The view for viewing messages per writeit instance is reachable
         '''
-        url = reverse('messages_per_writeitinstance', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('messages_per_writeitinstance', kwargs={'slug': self.writeitinstance.slug})
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
         response = c.get(url)
@@ -42,7 +42,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         """
         The messages url is not reachable by someone who is not logged in
         """
-        url = reverse('messages_per_writeitinstance', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('messages_per_writeitinstance', kwargs={'slug': self.writeitinstance.slug})
         c = Client()
         response = c.get(url)
         self.assertRedirectToLogin(response, next_url=url)
@@ -52,7 +52,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         The url is not reachable if the the user is not the owner
         """
         not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
-        url = reverse('messages_per_writeitinstance', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('messages_per_writeitinstance', kwargs={'slug': self.writeitinstance.slug})
         c = Client()
         c.login(username=not_the_owner.username, password="secreto")
         response = c.get(url)
@@ -292,7 +292,7 @@ class DeleteMessageView(UserSectionTestCase):
         self.assertEquals(response.status_code, 200)
         self.assertFalse(Message.objects.filter(id=self.message.id))
         '''It should redirect to the see all messages url'''
-        allmessages_url = reverse('messages_per_writeitinstance', kwargs={'pk': self.writeitinstance.pk})
+        allmessages_url = reverse('messages_per_writeitinstance', kwargs={'slug': self.writeitinstance.slug})
         self.assertRedirects(response, allmessages_url)
 
     def test_a_get_gives_me_the_cornfirmation_url(self):
@@ -348,7 +348,7 @@ class ModerateURL(UserSectionTestCase):
             persons=[self.person1],
             )
         message.recently_confirmated()
-        url = reverse('moderate_message', kwargs={'pk': message.pk})
+        url = reverse('accept_message', kwargs={'pk': message.pk})
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
         response = c.post(url)
@@ -357,7 +357,7 @@ class ModerateURL(UserSectionTestCase):
         self.assertTrue(message_again.moderated)
 
         '''Redirecting'''
-        allmessages_url = reverse('messages_per_writeitinstance', kwargs={'pk': self.writeitinstance.pk})
+        allmessages_url = reverse('messages_per_writeitinstance', kwargs={'slug': self.writeitinstance.slug})
         self.assertRedirects(response, allmessages_url)
 
     def test_logged_user(self):
@@ -374,7 +374,7 @@ class ModerateURL(UserSectionTestCase):
             persons=[self.person1],
             )
         message.recently_confirmated()
-        url = reverse('moderate_message', kwargs={'pk': message.pk})
+        url = reverse('accept_message', kwargs={'pk': message.pk})
         c = Client()
         response = c.post(url)
         self.assertRedirectToLogin(response)
@@ -394,7 +394,7 @@ class ModerateURL(UserSectionTestCase):
             persons=[self.person1],
             )
         message.recently_confirmated()
-        url = reverse('moderate_message', kwargs={'pk': message.pk})
+        url = reverse('accept_message', kwargs={'pk': message.pk})
         c = Client()
         c.login(username=not_the_owner.username, password="secreto")
         response = c.post(url)

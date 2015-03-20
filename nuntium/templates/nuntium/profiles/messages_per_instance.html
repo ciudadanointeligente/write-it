@@ -22,7 +22,7 @@
 <!-- Tab panes -->
 <div class="tab-content profile-page-tab-content">
   <div class="tab-pane active row">
-    {% autopaginate writeit_messages %}
+    {% autopaginate message_list %}
 
     <div class="col-md-12">
       {% paginate %}
@@ -43,7 +43,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for message in writeit_messages %}
+          {% for message in message_list %}
           <tr>
             <td>
               {{ message.subject }}
@@ -58,7 +58,7 @@
               {% if message.moderated %}
               <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has been moderated' %}"><i class="fa fa-check-circle-o"></i></div></td>
               {% else %}
-              <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated and you can moderate it by clicking here' %}"><i class="fa fa-times-circle-o"></i> <a class="moderate" href="{% url 'moderate_message' pk=message.pk %}">{% trans "Moderate"%}</a></div></td>
+              <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated and you can moderate it by clicking here' %}"><i class="fa fa-times-circle-o"></i> <a class="moderate" href="{% url 'accept_message' pk=message.pk %}">{% trans "Moderate"%}</a></div></td>
               {% endif %}
 
             {% endif %}

@@ -55,7 +55,7 @@
 function deleteMessage(button){
 	$.post($(button).attr('href'), function(){
 		$('#confirmDelete').modal('hide')
-		window.location = "{% url 'messages_per_writeitinstance' pk=message.writeitinstance.pk %}"
+		window.location = "{% url 'messages_per_writeitinstance' slug=message.writeitinstance.slug %}"
 	})
 }
 </script>

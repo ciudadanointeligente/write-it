@@ -31,7 +31,7 @@ $(".chosen-person-select").chosen();
       <i class="fa fa-info-circle"></i> This instance is in testing mode which means that all mails will go to the owner and not to the person that you are writing to.
       {% endblocktrans %}
       {% trans 'To change it you can go to ' %}
-      <a href="{% url 'writeitinstance_advanced_update' pk=writeitinstance.config.pk %}">{% trans "advanced update" %}</a>.
+      <a href="{% url 'writeitinstance_advanced_update' slug=writeitinstance.slug %}">{% trans "advanced update" %}</a>.
 
   </div>
 {% endif %}
