@@ -18,6 +18,5 @@ src
 *.egg-info
 
 .vagrant/
-Vagrantfile
 
 attachments/
