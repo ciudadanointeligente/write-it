@@ -50,6 +50,10 @@
               {% if message.public and message.confirmated %}
               <a target="_blank" href="{% url 'message_detail' slug=message.slug instance_slug=writeitinstance.slug %}"><i class="fa fa-external-link"></i></a>
               {% endif %}
+              {% if message.reports.all %}
+              <a href="{% url 'message_detail' pk=message.pk %}"><i class="fa fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="{% trans 'This message has been reported' %}"></i>
+              <!-- click here to  do something about it--></a>
+              {% endif %}
             </td>
             <td>{{ message.content|truncatechars:50|linebreaksbr }}</td>
             <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% if message.public %}{% trans 'This message can be seen by everyone' %}{% else %}{% trans 'TThis message can be seen by you only' %}{% endif %}"><i class="fa {% if message.public %}fa-eye{% else %}fa-eye-slash{% endif %}"></i></div></td>
@@ -103,6 +107,7 @@ $(function(){
     })
 
   })
+  $('[data-toggle="tooltip"]').tooltip()
 })
 
 </script>
