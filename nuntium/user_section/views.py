@@ -282,8 +282,10 @@ class AnswerEditMixin(View):
         return super(AnswerEditMixin, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        success_url = reverse('message_detail', kwargs={'pk': self.message.pk})
-        return success_url
+        return reverse(
+            'message_detail_private',
+            kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk},
+            )
 
 
 class AnswerCreateView(AnswerEditMixin, CreateView):

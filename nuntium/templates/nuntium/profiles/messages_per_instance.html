@@ -62,7 +62,7 @@
               {% endif %}
 
             {% endif %}
-            <td><a href="{% url 'message_detail' slug=writeitinstance.slug pk=message.pk %}"><i class="fa fa-cogs"></i></a></td>
+            <td><a href="{% url 'message_detail_private' slug=writeitinstance.slug pk=message.pk %}"><i class="fa fa-cogs"></i></a></td>
             <td>
               {% blocktrans count answer_count=message.answers.count %}
                 {{ answer_count }} answer

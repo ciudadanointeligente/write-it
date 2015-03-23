@@ -61,14 +61,14 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         """
         There is a url for getting all answers per message
         """
-        reverse('message_detail', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
+        reverse('message_detail_private', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
 
     def test_get_all_answers_url(self):
         """
         Get the url for all answers per message brings them
         Is the same as message detail
         """
-        url = reverse('message_detail', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
+        url = reverse('message_detail_private', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
         response = c.get(url)
@@ -85,7 +85,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         """
         When a user is not logged in he cannot see the answers per message
         """
-        url = reverse('message_detail', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
+        url = reverse('message_detail_private', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
         c = Client()
         response = c.get(url)
         self.assertRedirectToLogin(response, next_url=url)
@@ -97,7 +97,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         """
         not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
 
-        url = reverse('message_detail', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
+        url = reverse('message_detail_private', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
         c = Client()
         c.login(username=not_the_owner.username, password="secreto")
         response = c.get(url)
@@ -163,7 +163,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         c = Client()
         c.login(username=self.writeitinstance.owner.username, password='admin')
         response = c.post(url, data=data)
-        detail_message_url = reverse('message_detail', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
+        detail_message_url = reverse('message_detail_private', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
         self.assertRedirects(response, detail_message_url)
         new_count = Answer.objects.filter(message=self.message).count()
         self.assertEquals(new_count, previous_count + 1)
@@ -224,7 +224,7 @@ class ManuallyEditAnswer(UserSectionTestCase):
         c.login(username=self.writeitinstance.owner.username, password='admin')
         data = {'content': "this is the new content"}
         response = c.post(url, data=data)
-        detail_message_url = reverse('message_detail', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
+        detail_message_url = reverse('message_detail_private', kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk})
         self.assertRedirects(response, detail_message_url)
         answer = Answer.objects.get(id=self.answer.id)
         self.assertTrue(answer.content, data['content'])
