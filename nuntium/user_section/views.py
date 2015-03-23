@@ -210,7 +210,13 @@ class WriteItInstanceOwnerMixin(LoginRequiredMixin):
         return get_object_or_404(self.model, writeitinstance__slug=slug, writeitinstance__owner=self.request.user, pk=pk)
 
 
-class UpdateTemplateWithWriteitBase(LoginRequiredMixin, WriteItInstanceOwnerMixin, UpdateView):
+# Note that there is no need for subclasses of this to also subclass WriteItInstanceOwnerMixin
+# as it does its own owner checking.
+class UpdateTemplateWithWriteitBase(LoginRequiredMixin, UpdateView):
+    def get_object(self):
+        slug = self.kwargs.pop('slug')
+        return get_object_or_404(self.model, writeitinstance__slug=slug, writeitinstance__owner=self.request.user)
+
     def get_form_kwargs(self):
         kwargs = super(UpdateTemplateWithWriteitBase, self).get_form_kwargs()
         kwargs['writeitinstance'] = self.object.writeitinstance
