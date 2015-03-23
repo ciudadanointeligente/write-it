@@ -39,3 +39,9 @@
         @extend .form-control;
     }
 }
+
+.page-header {
+    h2 {
+        font-weight: bold;
+    }
+}
