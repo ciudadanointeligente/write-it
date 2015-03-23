@@ -5,15 +5,33 @@
 
     {% include "write/breadcrumb.html" with current_step=2 %}
 
-    <h1>DRAFT MESSAGE PAGE</h1>
+    <form class="writing-step">
+        <p class="form-group">
+            <label for="id-message">Your message</label>
+            <textarea id="id-message" class="form-control" rows="10"></textarea>
+        </p>
 
-    <p>What do you want your message to say?</p>
+        <div class="row">
+            <div class="col-sm-6">
+                <p class="form-group">
+                    <label for="id-name">Your name</label>
+                    <input type="text" id="id-name" class="form-control">
+                </p>
+            </div>
+            <div class="col-sm-6">
+                <p class="form-group">
+                    <label for="id-email" class="label-with-hint">
+                        Your email
+                        <small>{% trans "Nobody will see this, ever." %}</small>
+                    </label>
+                    <input type="email" id="id-email" class="form-control">
+                </p>
+            </div>
+        </div>
 
-    <textarea></textarea>
-
-    <p class="writing-buttons">
-        <a class="writing-buttons__button--previous" href="{% url 'write_who' slug='foo' %}">{% trans "Change recipients" %}</a>
-        <a class="writing-buttons__button--next" href="{% url 'write_preview' slug='foo' %}">{% trans "Preview message" %}</a>
-    </p>
-
+        <p class="writing-buttons">
+            <a class="writing-buttons__button--previous" href="{% url 'write_who' slug='foo' %}">{% trans "Change recipients" %}</a>
+            <a class="writing-buttons__button--next" href="{% url 'write_preview' slug='foo' %}">{% trans "Preview message" %}</a>
+        </p>
+    </form>
 {% endblock content_inner %}

@@ -1,23 +1,41 @@
 {% extends "base_public.html" %}
 {% load i18n %}
+{% load static %}
+
+{% block extrascripts %}
+    <script src="{% static 'js/chosen.jquery.min.js' %}"></script>
+{% endblock extrascripts %}
+{% block extrajs %}
+    $("#id-select-person").chosen({
+      width: '100%',
+      max_selected_options: 3,
+      no_results_text: '{% trans "No recipients match" %}',
+      placeholder_text_multiple: ' ', // hide placeholder text
+      placeholder_text_single: ' ', // hide placeholder text
+      single_backstroke_delete: false
+    });
+{% endblock extrajs %}
 
 {% block content_inner %}
 
     {% include "write/breadcrumb.html" with current_step=1 %}
 
-    <h1>WHO MESSAGE PAGE</h1>
+    <form class="writing-step">
+        <p class="form-group">
+            <label for="id-select-person">Search for recipients by name</label>
+            <select id="id-select-person" multiple>
+                <option>Alice Brown</option>
+                <option>Bob Black</option>
+                <option>Carol Green</option>
+                <option>Dan Indigo</option>
+                <option>Eve Brown</option>
+                <option>Frank Brown</option>
+            </select>
+        </p>
 
-    <p>Who do you want to send you message to?</p>
-
-    <select>
-      <option>Choose who to write to</option>
-      <option disabled>---</option>
-      <option>Bob</option>
-      <option>Alice</option>
-    </select>
-
-    <p class="writing-buttons">
-        <a class="writing-buttons__button--next" href="{% url 'write_draft' slug='foo' %}">{% trans "Draft message" %}</a>
-    </p>
+        <p class="writing-buttons">
+            <a class="writing-buttons__button--next" href="{% url 'write_draft' slug='foo' %}">{% trans "Draft message" %}</a>
+        </p>
+    </form>
 
 {% endblock content_inner %}
