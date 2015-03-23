@@ -11,10 +11,15 @@
 
 }
 
-.site-alert__description {
 
-}
+@media (min-width: $screen-md) {
+  .site-alert__description {
+    float: left;
+    width: 60%;
+    margin-bottom: 0;
+  }
 
-.site-alert__cta {
-
+  .site-alert__cta {
+    float: right;
+  }
 }
