@@ -172,7 +172,6 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         self.assertEquals(messages[0].message, _("We are now getting the people from popit"))
 
     def test_get_the_url(self):
-
         form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
         form.is_valid()
         form.relate()

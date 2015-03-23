@@ -329,17 +329,21 @@ class AcceptMessageView(View):
         return redirect(url)
 
 
-class WriteitPopitRelatingView(WriteItInstanceOwnerMixin, FormView):
+class WriteitPopitRelatingView(FormView):
     form_class = RelatePopitInstanceWithWriteItInstance
     template_name = 'nuntium/profiles/writeitinstance_and_popit_relations.html'
 
+    # This method also checks for instance ownership
+    def get_writeitinstance(self):
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.kwargs.get('slug'), owner=self.request.user)
+
     def dispatch(self, *args, **kwargs):
-        self.object = self.get_writeitinstance()
+        self.get_writeitinstance()
         return super(WriteitPopitRelatingView, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(WriteitPopitRelatingView, self).get_form_kwargs()
-        kwargs['writeitinstance'] = self.object
+        kwargs['writeitinstance'] = self.writeitinstance
         return kwargs
 
     def get_success_url(self):
@@ -350,12 +354,12 @@ class WriteitPopitRelatingView(WriteItInstanceOwnerMixin, FormView):
         # It returns an AsyncResult http://celery.readthedocs.org/en/latest/reference/celery.result.html
         # that we could use for future information about this process
         view_messages.add_message(self.request, view_messages.INFO, _("We are now getting the people from popit"))
-        response = super(WriteitPopitRelatingView, self).form_valid(form)
-        return response
+        return super(WriteitPopitRelatingView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(WriteitPopitRelatingView, self).get_context_data(**kwargs)
-        context['relations'] = self.object.writeitinstancepopitinstancerecord_set.all()
+        context['writeitinstance'] = self.writeitinstance
+        context['relations'] = self.writeitinstance.writeitinstancepopitinstancerecord_set.all()
         return context
 
 
