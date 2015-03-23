@@ -3,9 +3,21 @@
 <div class="message {% if recently_sent %}message--sent{% endif %}">
     <dl class="message__meta">
         <dt>{% trans "To" %}</dt>
+      {% if person_links %}
+        <dd>
+            <a href="{% url 'thread_to' slug='foo' pk=1024 %}" title="{% trans "Show all messages to Alice Brown" %}">Alice Brown</a>,
+            <a href="{% url 'thread_to' slug='foo' pk=1024 %}" title="{% trans "Show all messages to Bob Black" %}">Bob Black</a></dd>
+      {% else %}
         <dd>Alice Brown, Bob Black</dd>
+      {% endif %}
         <dt>{% trans "From" %}</dt>
+      {% if person_links %}
+        <dd>
+            <a href="{% url 'thread_from' slug='foo' pk=42 %}" title="{% trans "Show all messages from Joe Bloggs" %}">Joe Bloggs</a>
+        </dd>
+      {% else %}
         <dd>Joe Bloggs <small class="text-muted">({% trans "Recipients will not see your email address" %})</small></dd>
+      {% endif %}
     </dl>
     <div class="message__content">
         <p>Dear representatives,</p>

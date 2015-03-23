@@ -11,11 +11,10 @@
         <p>{% trans "We will email you when there’s a reply.<br/>Or you can bookmark this page and check back later." %}</p>
     </div>
 
-    {% include "thread/message.html" with recently_sent=True %}
+    {% include "thread/message.html" with recently_sent=True person_links=True %}
 
-    <ul>
-      <li><a href="{% url 'thread_from' slug='foo' pk=42 %}">All messages from this user</a></li>
-      <li><a href="{% url 'thread_to' slug='foo' pk=1024 %}">All messages to this politician</a></li>
-    <ul>
+    <div class="post-message-actions">
+        <a href="#" class="post-message-actions__back">{% trans "Back to all messages" %}</a>
+    </div>
 
 {% endblock content_inner %}
