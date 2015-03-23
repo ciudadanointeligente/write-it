@@ -1,0 +1,42 @@
+.message {
+  background-color: #f3f3f3;
+  padding: 1em;
+
+  @media (min-width: $screen-sm) {
+    padding: 2em;
+  }
+}
+
+.message__meta {
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 1.5em;
+
+  dt {
+    float: left;
+    width: 4em;
+    clear: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  dd {
+    margin-left: 5em;
+    margin-bottom: 0.5em;
+
+    &:last-child {
+      margin-bottom: 1.5em;
+    }
+  }
+
+  .text-muted {
+    color: #aaa;
+    margin-left: 5px;
+  }
+}
+
+.message__content {
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
