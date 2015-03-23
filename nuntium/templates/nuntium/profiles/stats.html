@@ -20,6 +20,9 @@
 {% endblock header %}
 
 {% block content %}
+    <div class="page-header">
+        <h2>{% trans "Statistics" %}</h2>
+    </div>
     <table class="table">
       {% for stat_name, stat_value in stats.get_stats %}
       <tr>
