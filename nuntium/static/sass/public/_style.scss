@@ -39,3 +39,8 @@ body, .site-footer {
 .writing-buttons__button--previous {
   @include button-variant(#666, #eee, #e6e6e6);
 }
+
+.chosen-container .chosen-results li em {
+  font-weight: bold;
+  background: none;
+}
