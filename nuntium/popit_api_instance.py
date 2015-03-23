@@ -1,6 +1,27 @@
 from popit.models import ApiInstance, Person, get_paginated_generator
 from contactos.models import Contact
 from mailit import MailChannel
+from datetime import datetime
+
+
+def get_date_or_none(membership_doc, key, format="%Y-%m-%d"):
+    try:
+        return datetime.strptime(membership_doc.get(key, None), format)
+    except TypeError:
+        return None
+
+
+def _is_current_membership(start_date, end_date):
+    today = datetime.today()
+    is_valid = ((start_date is None) or start_date <= today) and\
+        ((end_date is None) or end_date >= today)
+    return is_valid
+
+
+def is_current_membership(membership_doc, start_date_key='start_date', end_date_key='end_date'):
+    start_date = get_date_or_none(membership_doc, start_date_key)
+    end_date = get_date_or_none(membership_doc, end_date_key)
+    return _is_current_membership(start_date, end_date)
 
 
 class PopitPerson(Person):
@@ -29,9 +50,15 @@ class PopitPerson(Person):
             PopitPerson.create_contact(obj, doc, writeitinstance)
 
     @classmethod
+    def determine_if_person_is_current(cls, doc):
+        enable = any([is_current_membership(membership) for membership in doc['memberships']])
+        return enable
+
+    @classmethod
     def create_contact(cls, obj, doc, writeitinstance):
         contact_type = MailChannel().get_contact_type()
         created_emails = []
+        enable_contacts = cls.determine_if_person_is_current(doc)
         if 'contact_details' in doc:
             for contact_detail in doc['contact_details']:
                 if contact_detail['type'] == 'email':
@@ -40,6 +67,7 @@ class PopitPerson(Person):
                         writeitinstance=writeitinstance,
                         person=obj)
                     contact.value = contact_detail['value']
+                    contact.enabled = enable_contacts
                     contact.save()
                     created_emails.append(contact.value)
         if 'email' in doc and doc['email'] not in created_emails:
@@ -48,6 +76,7 @@ class PopitPerson(Person):
                 writeitinstance=writeitinstance,
                 person=obj)
             contact.value = doc['email']
+            contact.enabled = enable_contacts
             contact.save()
 
 
