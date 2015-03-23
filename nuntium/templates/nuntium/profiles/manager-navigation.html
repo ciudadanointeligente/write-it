@@ -5,9 +5,9 @@
     <li class="{% if section == 'writeitinstance_basic_update' %}active{% endif %}"><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{% trans "Basic Update" %}</a></li>
     <li class="{% if section == 'writeitinstance_advanced_update' %}active{% endif %}"><a href="{% url 'writeitinstance_advanced_update' pk=writeitinstance.config.pk %}">{% trans "Advanced Update" %}</a></li>
     <li class="{% if section == 'writeitinstance_template_update' %}active{% endif %}"><a href="{% url 'writeitinstance_template_update' pk=writeitinstance.pk %}">{% trans "Templates" %}</a></li>
-    <li class="{% if section == 'contacts-per-writeitinstance' %}active{% endif %}"><a href="{% url 'contacts-per-writeitinstance' pk=writeitinstance.pk %}">{% trans "Contacts" %}</a></li>
+    <li class="{% if section == 'contacts-per-writeitinstance' %}active{% endif %}"><a href="{% url 'contacts-per-writeitinstance' pk=writeitinstance.pk %}">{% trans "Recipients" %}</a></li>
     <li class="{% if section == 'messages_per_writeitinstance' %}active{% endif %}"><a href="{% url 'messages_per_writeitinstance' pk=writeitinstance.pk %}">{% trans "Messages" %}</a></li>
-    <li class="{% if section == 'relate-writeit-popit' %}active{% endif %}"><a href="{% url 'relate-writeit-popit' pk=writeitinstance.pk %}">{% trans "Popit instances" %}</a></li>
+    <li class="{% if section == 'relate-writeit-popit' %}active{% endif %}"><a href="{% url 'relate-writeit-popit' pk=writeitinstance.pk %}">{% trans "Data sources" %}</a></li>
     <li class="{% if section == 'writeitinstance_api_docs' %}active{% endif %}"><a href="{% url 'writeitinstance_api_docs' pk=writeitinstance.pk %}">{% trans "API" %}</a></li>
     <li class="{% if section == 'stats' %}active{% endif %}"><a href="{% url 'stats' pk=writeitinstance.pk %}">{% trans "Stats" %}</a></li>
   </ul>
