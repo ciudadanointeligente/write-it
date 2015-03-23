@@ -7,21 +7,7 @@
 
     <div class="writing-step">
         <!-- :TODO: break this out into separate template, so we can re-use it on message/thread viewing pages -->
-        <div class="message">
-            <dl class="message__meta">
-                <dt>{% trans "To" %}</dt>
-                <dd>Alice Brown, Bob Black</dd>
-                <dt>{% trans "From" %}</dt>
-                <dd>Joe Bloggs <small class="text-muted">({% trans "Recipients will not see your email address" %})</small></dd>
-            </dl>
-            <div class="message__content">
-                <p>Dear representatives,</p>
-                <p>I am writing to inform you of blah blah blah blah. Blah blah blah. Blah blah blah blah blah blah blah. Blah blah blah. Blah blah blah blah blah blah blah.</p>
-                <p>I would like to request blah blah blah blah blah. Blah blah blah blah blah blah blah. Blah blah blah. Blah blah blah blah blah blah blah.</p>
-                <p>Yours,</p>
-                <p>J. Bloggs</p>
-            </div>
-        </div>
+        {% include "thread/message.html" %}
 
         <p class="writing-buttons">
             <a class="writing-buttons__button--previous" href="{% url 'write_draft' slug='foo' %}">{% trans "Edit message" %}</a>

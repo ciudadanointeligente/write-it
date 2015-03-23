@@ -3,18 +3,19 @@
 
 {% block content_inner %}
 
-<h1>THREAD READ PAGE</h1>
+    <!-- We should only show this the first time they see this page -->
+    {% include "write/breadcrumb.html" with current_step=5 %}
 
-<p style="color: pink">[flash message] Your message has been sent!! We'll email you when there's a reply, or you can bookmark this page and come back to check for responses.[/flash message]</p>
+    <div class="writing-step writing-step--final">
+        <h2>{% trans "Your message has been sent" %} :&thinsp;)</h2>
+        <p>{% trans "We will email you when there’s a reply.<br/>Or you can bookmark this page and check back later." %}</p>
+    </div>
 
-<p>Foo bar baz</p>
+    {% include "thread/message.html" with recently_sent=True %}
 
-<a href="{% url 'write_sign' slug='foo' %}">Back</a>
-<a href="{% url 'write_who' slug='foo' %}">Start again (back to the write/who page)</a>
-
-<ul>
-  <li><a href="{% url 'thread_from' slug='foo' pk=42 %}">All messages from this user</a></li>
-  <li><a href="{% url 'thread_to' slug='foo' pk=1024 %}">All messages to this politician</a></li>
-<ul>
+    <ul>
+      <li><a href="{% url 'thread_from' slug='foo' pk=42 %}">All messages from this user</a></li>
+      <li><a href="{% url 'thread_to' slug='foo' pk=1024 %}">All messages to this politician</a></li>
+    <ul>
 
 {% endblock content_inner %}

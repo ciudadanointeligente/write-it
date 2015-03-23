@@ -94,6 +94,21 @@
   }
 }
 
+// A special version of writing-step that sits above
+// a standard message page, so needs less margin.
+.writing-step--final {
+  margin-bottom: 1em;
+  text-align: center;
+
+  @media (min-width: $screen-sm) {
+    margin-bottom: 2em;
+  }
+
+  @media (min-height: 700px) {
+    margin-bottom: 3em;
+  }
+}
+
 .label-with-hint {
   display: block; // override default Bootstrap inline-block
 
