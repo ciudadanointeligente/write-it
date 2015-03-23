@@ -313,6 +313,16 @@ class DeleteMessageView(UserSectionTestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "nuntium/profiles/message_delete_confirm.html")
 
+    def test_if_moderation_needed_moderation_column_displayed(self):
+        self.writeitinstance.config.moderation_needed_in_all_messages = True
+        self.writeitinstance.config.save()
+
+        url = reverse('message_delete', kwargs={'slug': self.writeitinstance.slug, 'pk': self.message.pk})
+        self.client.login(username=self.writeitinstance.owner.username, password='admin')
+        response = self.client.get(url)
+        self.assertContains(response, '<dt>Moderated</dt>', html=True)
+        # self.assertContains(response, 'Moderated')
+
     def test_it_cannot_be_accessed_by_a_non_user(self):
         '''A non user cannot delete a message'''
 
