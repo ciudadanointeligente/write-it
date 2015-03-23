@@ -14,7 +14,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">{% trans 'Create a new instance' %}</h4>
+        <h4 class="modal-title">{% trans 'Create a new WriteIt' %}</h4>
       </div>
       <div class="modal-body">
         <form action="{% url 'create_writeit_instance' %}" method="POST" role="form">
@@ -38,19 +38,17 @@
   </div>
 {% endif %}
 
-
-<!-- Tab panes -->
-<div class="tab-content profile-page-tab-content">
-  <div class="tab-pane active row" id="instances">
-
-    <div class="col-md-4">
-      <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createNew">
-        {% trans 'Create a new instance' %}
-      </button>
+    <div class="page-header">
+    <h2>{% trans "Your WriteIts" %}</h2>
     </div>
+
+
+      <button class="btn btn-primary" data-toggle="modal" data-target="#createNew">
+        {% trans 'Create a new Write-It' %}
+      </button>
+
     {% autopaginate object_list %}
     {% paginate %}
-    <div class="col-md-8">
       <table class="table table-striped">
         <thead>
           <tr>
@@ -67,7 +65,7 @@
         <tbody>
           {% for writeitinstance in object_list %}
           <tr>
-            <td>{{ writeitinstance }} {% if writeitinstance.pulling_from_popit_status.inprogress > 0 %}<i class="fa fa-spinner fa-pulse spinner_{{ writeitinstance.pk }}" data-toggle="tooltip" data-placement="left" title="{% trans 'We are currently getting information from popit' %}"></i>
+            <td><a href="{% url 'writeitinstance_basic_update' pk=writeitinstance.pk %}">{{ writeitinstance }}</a> {% if writeitinstance.pulling_from_popit_status.inprogress > 0 %}<i class="fa fa-spinner fa-pulse spinner_{{ writeitinstance.pk }}" data-toggle="tooltip" data-placement="left" title="{% trans 'We are currently getting information from popit' %}"></i>
               <script type="text/javascript">
               $(function(){
                 go_and_check_status_of_instance("{% url 'pulling_status' pk=writeitinstance.pk %}", "spinner_{{ writeitinstance.pk }}")
@@ -87,11 +85,6 @@
           {% endfor %}
         </tbody>
       </table>
-    </div>
-
-  </div>
-  <div class="tab-pane" id="nothing"><a href="http://github.com/ciudadanointeligente/write-it" data-toggle="tab">{% trans "please don't go any further" %}</a></div>
-</div>
 <script type="text/javascript">
   var go_and_check_status_of_instance = function(url, class_){
     $.get(url, function(status){
