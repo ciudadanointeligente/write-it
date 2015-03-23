@@ -65,6 +65,10 @@
     height: 6em;
   }
 
+  h2 {
+    font-size: 1.2em;
+  }
+
   @media (min-width: $screen-sm){
     .form-group {
       margin-bottom: 2em;
@@ -73,6 +77,20 @@
         margin-bottom: 0;
       }
     }
+  }
+}
+
+// A special version of the standard writing-step,
+// which is much simpler and more spaced out.
+.writing-step--confirm-email {
+  text-align: center;
+
+  h2 {
+    margin-bottom: 1em;
+  }
+
+  p {
+    margin-bottom: 1.5em;
   }
 }
 
