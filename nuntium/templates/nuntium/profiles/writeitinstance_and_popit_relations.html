@@ -47,41 +47,23 @@ $(".chosen-person-select").chosen();
   </div>
       {% autopaginate relations %}
       {% paginate %}
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>
-              {% trans 'PopIt' %}
-            </th>
-            <th>
-              {% trans 'created' %}
-            </th>
-            <th>
-              {% trans 'updated' %}
-            </th>
-            <th>
-              {% trans 'status' %}
-            </th>
-            <th>
-              {% trans 'notes' %}
-            </th>
-            <th>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
           {% for record in relations %}
-            <tr>
-              <td>{{ record.popitapiinstance.url }}</td>
-              <td>{{ record.created }}</td>
-              <td>{{ record.updated }}</td>
-              <td>{{ record.status }}</td>
-              <td>{{ record.status_explanation }}</td>
-            </tr>
+            <ul class="list-of-data-sources">
+              <li class="list-of-data-sources__data-source">
+                <h3 class="data-source__title"><a href="{{ record.popitapiinstance.url }}">{{ record.popitapiinstance.url }}</a></h3>
+                <p class="data-source__info">{{ record.status }} &mdash; last updated {{ record.updated }}</p>
+                <div class="data-source__controls">
+                  <ul>
+                    <li><a href="#">Edit</a></li>
+                    <li><a href="#">Disconnect</a></li>
+                    <li><a href="#">Delete</a></li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
           {% endfor %}
         </table>
         {% paginate %}
       </tbody>
-
 
 {% endblock content %}
