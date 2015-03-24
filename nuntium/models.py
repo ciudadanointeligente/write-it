@@ -162,6 +162,7 @@ class WriteItInstanceConfig(models.Model):
     email_use_tls = models.NullBooleanField()
     email_use_ssl = models.NullBooleanField()
     can_create_answer = models.BooleanField(default=False, help_text="Can create an answer using the WebUI")
+    api_read_only = models.BooleanField(default=False, help_text="The API for this instance read-only")
 
     def get_mail_connection(self):
         connection = mail.get_connection()

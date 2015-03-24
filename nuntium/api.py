@@ -133,6 +133,13 @@ class AnswerResource(ModelResource):
         return bundle
 
 
+class MessageAuthorization(Authorization):
+    def create_detail(self, object_list, bundle):
+        read_only = bundle.obj.writeitinstance.config.api_read_only
+        is_owned_by_user = bundle.obj.writeitinstance.owner == bundle.request.user
+        return not read_only and is_owned_by_user
+
+
 class MessageResource(ModelResource):
     writeitinstance = fields.ToOneField(WriteItInstanceResource,
         'writeitinstance')
@@ -150,7 +157,7 @@ class MessageResource(ModelResource):
         # ordering = ['-created']
         # should work but it doesn't so I put it in the queryset
         resource_name = 'message'
-        authorization = Authorization()
+        authorization = MessageAuthorization()
         authentication = ApiKeyAuthentication()
         always_return_data = True
         paginator_class = PagePaginator
