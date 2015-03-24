@@ -146,7 +146,7 @@ class MessageResourceTestCase(ResourceTestCase):
         self.assertEquals(outbound_messages.count(), 1)
         self.assertEquals(outbound_messages[0].contact.person, writeitinstance.persons.all()[0])
 
-    def test_create_a_new_message_confirmated(self):
+    def test_create_a_new_message_confirmed(self):
         writeitinstance = WriteItInstance.objects.get(id=1)
         message_data = {
             'author_name': 'Felipipoo',
@@ -258,3 +258,43 @@ class MessageResourceTestCase(ResourceTestCase):
 
         self.assertEquals(response.status_code, 400)
         self.assertFalse(Message.objects.filter(author_name='Felipipoo'))
+
+    def test_unauthorized_if_config(self):
+        '''If unauthorized by writeitinstance config then I get 401 when creating a message'''
+        writeitinstance = WriteItInstance.objects.get(id=1)
+        writeitinstance.config.api_read_only = True
+        writeitinstance.config.save()
+        message_data = {
+            'author_name': 'Felipipoo',
+            'subject': 'new message',
+            'content': 'the content thing',
+            'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
+            'persons': [writeitinstance.persons.all()[0].popit_url],
+        }
+        url = '/api/v1/message/'
+        response = self.api_client.post(url,
+            data=message_data,
+            format='json',
+            authentication=self.get_credentials())
+        self.assertHttpUnauthorized(response)
+
+    def test_create_a_message_to_an_instance_by_non_owner(self):
+        '''Posting to an instance and not being the owner'''
+        other_owner = User.objects.create_user(username="other_owner")
+        writeitinstance = WriteItInstance.objects.get(id=1)
+        writeitinstance.owner = other_owner
+        writeitinstance.save()
+
+        message_data = {
+            'author_name': 'Felipipoo',
+            'subject': 'new message',
+            'content': 'the content thing',
+            'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
+            'persons': [writeitinstance.persons.all()[0].popit_url],
+        }
+        url = '/api/v1/message/'
+        response = self.api_client.post(url,
+            data=message_data,
+            format='json',
+            authentication=self.get_credentials())
+        self.assertHttpUnauthorized(response)
