@@ -34,7 +34,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         self.assertIn(self.writeitinstance.message_set.all()[0], response.context['message_list'])
         self.assertIn(self.writeitinstance.message_set.all()[1], response.context['message_list'])
         self.assertIn(self.writeitinstance.message_set.all()[2], response.context['message_list'])
-        self.assertTemplateUsed(response, "base_edit.html")
+        self.assertTemplateUsed(response, "base_manager.html")
         self.assertTemplateUsed(response, "nuntium/profiles/messages_per_instance.html")
 
     def test_the_messages_url_is_not_reachable_by_non_user(self):
@@ -75,7 +75,7 @@ class ManuallyCreateAnswersTestCase(UserSectionTestCase):
         self.assertIn("message", response.context)
         self.assertEquals(response.context['message'].writeitinstance, self.writeitinstance)
         self.assertEquals(response.context['message'], self.message)
-        self.assertTemplateUsed(response, "base_edit.html")
+        self.assertTemplateUsed(response, "base_manager.html")
         self.assertTemplateUsed(response, "nuntium/profiles/message_detail.html")
         for person in self.message.people:
             # Decoding response.content to UTF-8 because of accented characters.

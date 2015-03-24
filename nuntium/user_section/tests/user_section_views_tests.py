@@ -63,7 +63,7 @@ class UserViewTestCase(UserSectionTestCase):
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "nuntium/profiles/your-profile.html")
-        self.assertTemplateUsed(response, "base_edit.html")
+        self.assertTemplateUsed(response, "base_manager.html")
 
 
 class ContactsPerWriteItInstanceTestCase(UserSectionTestCase):
@@ -350,7 +350,7 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
 
         response = c.get(url)
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'base_edit.html')
+        self.assertTemplateUsed(response, 'base_manager.html')
         self.assertTemplateUsed(response, 'nuntium/profiles/templates.html')
         self.assertIsInstance(response.context['new_answer_template_form'], NewAnswerNotificationTemplateForm)
         self.assertIsInstance(response.context['mailit_template_form'], MailitTemplateForm)
