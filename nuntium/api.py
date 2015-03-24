@@ -239,6 +239,10 @@ class AnswerCreationResource(Resource):
     def obj_create(self, bundle, **kwargs):
         identifier_key = bundle.data['key']
         identifier = OutboundMessageIdentifier.objects.get(key=bundle.data['key'])
+        read_only = identifier.outbound_message.message.writeitinstance.config.api_read_only
+        if read_only:
+            raise ImmediateHttpResponse(response=http.HttpUnauthorized())
+
         owner = identifier.outbound_message.message.writeitinstance.owner
 
         if owner != bundle.request.user:

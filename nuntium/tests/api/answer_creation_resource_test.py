@@ -27,7 +27,10 @@ class AnswerCreationResource(ResourceTestCase):
             'content': content,
             }
         previous_answers = Answer.objects.count()
-        response = self.api_client.post(url, data=answer_data, format='json', authentication=self.get_credentials())
+        response = self.api_client.post(url,
+            data=answer_data,
+            format='json',
+            authentication=self.get_credentials(),)
         self.assertHttpCreated(response)
 
         answers_count = Answer.objects.count()
@@ -76,3 +79,15 @@ class AnswerCreationResource(ResourceTestCase):
 
         response = self.api_client.patch(url, data=answer_data)
         self.assertHttpMethodNotAllowed(response)
+
+    def test_if_configured_read_only_cannot_create(self):
+        self.identifier.outbound_message.message.writeitinstance.config.api_read_only = True
+        self.identifier.outbound_message.message.writeitinstance.config.save()
+        url = '/api/v1/create_answer/'
+        content = 'Fiera tiene una pulga'
+        answer_data = {
+            'key': self.identifier.key,
+            'content': content,
+            }
+        response = self.api_client.post(url, data=answer_data, format='json', authentication=self.get_credentials())
+        self.assertHttpUnauthorized(response)
