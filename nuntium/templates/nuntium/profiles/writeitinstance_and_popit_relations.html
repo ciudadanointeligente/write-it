@@ -53,11 +53,13 @@ $(".chosen-person-select").chosen();
                 <h3 class="data-source__title"><a href="{{ record.popitapiinstance.url }}">{{ record.popitapiinstance.url }}</a></h3>
                 <p class="data-source__info">{{ record.status }} &mdash; last updated {{ record.updated }}</p>
                 <div class="data-source__controls">
+                  {% comment %}
                   <ul>
                     <li><a href="#">Edit</a></li>
                     <li><a href="#">Disconnect</a></li>
                     <li><a href="#">Delete</a></li>
                   </ul>
+                  {% endcomment %}
                 </div>
               </li>
             </ul>
