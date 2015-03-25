@@ -8,6 +8,7 @@ from nuntium.views import (
     HomeTemplateView,
     MessageSearchView,
     RejectModerationView,
+    WriteItInstanceDetailView,
     WriteItInstanceListView,
     )
 from nuntium.user_section.views import (
@@ -69,6 +70,7 @@ managepatterns = patterns('',
 
 # New front-end message writing process
 frontendpatterns = patterns('',
+    url(r'^$', WriteItInstanceDetailView.as_view(), name='instance_detail'),
     url(r'^write/who/$', TemplateView.as_view(template_name='write/who.html'), name='write_who'),
     url(r'^write/draft/$', TemplateView.as_view(template_name='write/draft.html'), name='write_draft'),
     url(r'^write/preview/$', TemplateView.as_view(template_name='write/preview.html'), name='write_preview'),
