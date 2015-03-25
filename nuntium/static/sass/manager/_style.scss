@@ -1,0 +1,56 @@
+// Some example styles, using two bootstrap variables.
+.thankyou-message { color: $font-family-serif; }
+.foobar { background-color: darken($brand-primary, 10%); }
+
+.manager-page {
+        background-color: $gray-dark;
+        border-radius: 5px;
+        margin-bottom: 3em;
+}
+
+.content-area__inner {
+    background-color: #fff;
+}
+
+.sidebar__inner {
+    background-color: $gray-dark;
+    border-top-left-radius: 5px;
+}
+
+.navigation__list {
+    a {
+        color: lighten($gray-light, 25%);
+        &:hover,
+        &:focus,
+        &:active {
+            color: #fff;
+        }
+    }
+}
+
+.breadcrumb {
+    background-color: transparent;
+    padding: 0;
+}
+
+.form-element {
+    input[type="text"],
+    input[type="url"] {
+        @extend .form-control;
+    }
+}
+
+.page-header {
+    h2 {
+        font-weight: bold;
+    }
+}
+
+
+.data-source__title {
+    font-size: 1.3125em;
+}
+
+.data-source__info {
+    color: $gray;
+}

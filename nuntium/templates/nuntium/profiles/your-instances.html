@@ -1,4 +1,4 @@
-{% extends "base_edit.html" %}
+{% extends "base_manager.html" %}
 {% load i18n %}
 {% load staticfiles %}
 {% load pagination_tags %}
@@ -14,7 +14,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">{% trans 'Create a new instance' %}</h4>
+        <h4 class="modal-title">{% trans 'Create a new WriteIt' %}</h4>
       </div>
       <div class="modal-body">
         <form action="{% url 'create_writeit_instance' %}" method="POST" role="form">
@@ -38,19 +38,17 @@
   </div>
 {% endif %}
 
-
-<!-- Tab panes -->
-<div class="tab-content profile-page-tab-content">
-  <div class="tab-pane active row" id="instances">
-
-    <div class="col-md-4">
-      <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createNew">
-        {% trans 'Create a new instance' %}
-      </button>
+    <div class="page-header">
+    <h2>{% trans "Your WriteIts" %}</h2>
     </div>
+
+
+      <button class="btn btn-primary" data-toggle="modal" data-target="#createNew">
+        {% trans 'Create a new Write-It' %}
+      </button>
+
     {% autopaginate object_list %}
     {% paginate %}
-    <div class="col-md-8">
       <table class="table table-striped">
         <thead>
           <tr>
@@ -67,10 +65,10 @@
         <tbody>
           {% for writeitinstance in object_list %}
           <tr>
-            <td>{{ writeitinstance }} {% if writeitinstance.pulling_from_popit_status.inprogress > 0 %}<i class="fa fa-spinner fa-pulse spinner_{{ writeitinstance.pk }}" data-toggle="tooltip" data-placement="left" title="{% trans 'We are currently getting information from popit' %}"></i>
+            <td><a href="{% url 'writeitinstance_basic_update' slug=writeitinstance.slug %}">{{ writeitinstance }}</a> {% if writeitinstance.pulling_from_popit_status.inprogress > 0 %}<i class="fa fa-spinner fa-pulse spinner_{{ writeitinstance.pk }}" data-toggle="tooltip" data-placement="left" title="{% trans 'We are currently getting information from popit' %}"></i>
               <script type="text/javascript">
               $(function(){
-                go_and_check_status_of_instance("{% url 'pulling_status' pk=writeitinstance.pk %}", "spinner_{{ writeitinstance.pk }}")
+                go_and_check_status_of_instance("{% url 'pulling_status' slug=writeitinstance.slug %}", "spinner_{{ writeitinstance.pk }}")
               })
               </script>
               {% endif %}
@@ -79,19 +77,14 @@
             <td>{% url 'api_dispatch_detail' api_name='v1' resource_name='instance' pk=writeitinstance.id %}</td>
             <td><a href="{% url 'messages_per_writeitinstance' slug=writeitinstance.slug %}"><i class="fa fa-envelope-o"></i></a></td>
             <td><a href="{% url 'writeitinstance_basic_update' slug=writeitinstance.slug %}"><i class="fa fa-pencil"></i></a></td>
-            <td><a href="{% url 'delete_an_instance' pk=writeitinstance.pk %}"><i class="fa fa-times"></i></a></td>
-            
+            <td><a href="{% url 'delete_an_instance' slug=writeitinstance.slug %}"><i class="fa fa-times"></i></a></td>
+
           </tr>
           {% empty %}
           <tr><td colspan="3" class="text-center">You have no instances</td></tr>
           {% endfor %}
         </tbody>
       </table>
-    </div>
-
-  </div>
-  <div class="tab-pane" id="nothing"><a href="http://github.com/ciudadanointeligente/write-it" data-toggle="tab">{% trans "please don't go any further" %}</a></div>
-</div>
 <script type="text/javascript">
   var go_and_check_status_of_instance = function(url, class_){
     $.get(url, function(status){

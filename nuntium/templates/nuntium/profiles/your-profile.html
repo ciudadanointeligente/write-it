@@ -1,4 +1,4 @@
-{% extends "base_edit.html" %}
+{% extends "base_manager.html" %}
 {% load i18n %}
 {% load staticfiles %}
 
@@ -17,10 +17,9 @@
 {% endblock header %}
 
 {% block content %}
-<!-- Tab panes -->
-<div class="tab-content profile-page-tab-content edit-profile-tab-content">
-  <div class="tab-pane active" id="profile">
-
+    <div class="page-header">
+      <h2>{% trans "Your profile" %}</h2>
+    </div>
     <form class="form-horizontal" method="post" action="" role="form">
       <div class="form-group">
         <label class="col-sm-2 control-label">{% trans "Username" %}</label>
@@ -66,6 +65,4 @@
       {% csrf_token %}
     </form>
 
-  </div>
-</div>
 {% endblock content%}

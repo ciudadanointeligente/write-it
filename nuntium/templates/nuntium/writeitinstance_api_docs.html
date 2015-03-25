@@ -1,4 +1,4 @@
-{% extends "base_edit.html" %}
+{% extends "base_manager.html" %}
 {% load i18n %}
 
 {% block header %}
@@ -13,10 +13,6 @@
 {% endblock header %}
 
 {% block content %}
-  <div class="tab-content profile-page-tab-content">
-    <div class="tab-pane active row" id="instances">
-      <div class="tab-content">
-        <div class="tab-pane active" id="basic-update">
           <div class="page-header">
             <h2>{% trans "Creating a message using the API" %}</h2>
             <p>{% trans "To create a message using the API, send a POST request to" %}<br>
@@ -37,8 +33,4 @@
             </code>
             </p>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
 {% endblock content %}
