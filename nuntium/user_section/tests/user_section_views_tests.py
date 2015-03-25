@@ -215,11 +215,11 @@ class WriteItInstancePullingDetailViewTestCase(UserSectionTestCase):
 
     def test_theres_a_url_to_check_whats_happening(self):
         '''There is a url to let the user know what's happening with her/his instance'''
-        reverse('pulling_status', kwargs={'pk': self.writeitinstance.pk})
+        reverse('pulling_status', kwargs={'slug': self.writeitinstance.slug})
 
     def test_get_content(self):
         '''The content should be a JSON containing the current status of the procedure'''
-        url = reverse('pulling_status', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('pulling_status', kwargs={'slug': self.writeitinstance.slug})
         c = Client()
         c.login(username=self.owner.username, password='admin')
         response = c.get(url)
@@ -228,7 +228,7 @@ class WriteItInstancePullingDetailViewTestCase(UserSectionTestCase):
 
     def test_it_can_only_be_accessed_by_the_owner(self):
         '''It can only be accessed by the owner'''
-        url = reverse('pulling_status', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('pulling_status', kwargs={'slug': self.writeitinstance.slug})
         c = Client()
         fiera = User.objects.create_user(
             username="fierita",
@@ -243,7 +243,7 @@ class WriteItInstancePullingDetailViewTestCase(UserSectionTestCase):
 
     def test_cannot_be_accessed_by_a_non_user(self):
         '''It cannot be accessed by a non user'''
-        url = reverse('pulling_status', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('pulling_status', kwargs={'slug': self.writeitinstance.slug})
         c = Client()
         response = c.get(url)
         self.assertRedirectToLogin(response)

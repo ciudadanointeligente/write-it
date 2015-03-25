@@ -18,13 +18,16 @@ from nuntium.user_section.views import (
     MessageDetail,
     MessagesPerWriteItInstance,
     NewAnswerNotificationTemplateUpdateView,
+    WriteItDeleteView,
     WriteItInstanceAdvancedUpdateView,
     WriteItInstanceApiDocsView,
     WriteItInstanceContactDetailView,
+    WriteItInstanceStatusView,
     WriteItInstanceTemplateUpdateView,
     WriteItInstanceUpdateView,
     WriteitPopitRelatingView,
 )
+from nuntium.user_section.stats import StatsView
 
 
 urlpatterns = patterns('',
@@ -57,4 +60,9 @@ managepatterns = patterns('',
     url(r'^messages/(?P<message_pk>[-\d]+)/answers/(?P<pk>[-\d]+)/update/$', AnswerUpdateView.as_view(), name='update_answer'),
     url(r'^messages/(?P<pk>[-\d]+)/delete/$', MessageDelete.as_view(), name='message_delete'),
     url(r'^messages/(?P<pk>[-\d]+)/accept/$', AcceptMessageView.as_view(), name='accept_message'),
+    url(r'^stats/$', StatsView.as_view(), name='stats'),
+    url(r'^pulling_status/$', WriteItInstanceStatusView.as_view(), name='pulling_status'),
+    url(r'^delete/$',
+        WriteItDeleteView.as_view(template_name="nuntium/profiles/writeitinstance_check_delete.html"),
+        name='delete_an_instance'),
 )
