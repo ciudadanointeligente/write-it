@@ -16,10 +16,10 @@
 	  <dd>{{ message.author_name }}</dd>
 	  <dt>{% trans "Confirmed" %}</dt>
 	  <dd><i class="fa {% if message.confirmated %}fa-check{% else %}fa-times{% endif %}"></i></dd>
-	  {% if writeitinstance.moderation_needed_in_all_messages %}
-	  	<dt>{% trans "Moderated" %}</dt>
-        <dd><i class="fa {% if message.moderated %}fa-check{% else %}fa-times{% endif %}"></i></dd>
-      {% endif %}
+	  {% if message.writeitinstance.config.moderation_needed_in_all_messages %}
+	      <dt>{% trans "Moderated" %}</dt>
+              <dd><i class="fa {% if message.moderated %}fa-check{% else %}fa-times{% endif %}"></i></dd>
+          {% endif %}
 	  <dt>{% trans "Public" %}</dt>
 	  <dd><i class="fa {% if message.public %}fa-check{% else %}fa-times{% endif %}"></i></dd>
 	  {% if message.public %}
@@ -47,7 +47,7 @@
 </div>
 <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
-        <button type="button" class="btn btn-warning" onClick='deleteMessage(this)' href="{% url 'message_delete' pk=message.pk %}">{% trans "Delete" %}</button>
+        <button type="button" class="btn btn-warning" onClick='deleteMessage(this)' href="{% url 'message_delete' slug=message.writeitinstance.slug pk=message.pk %}">{% trans "Delete" %}</button>
       </div>
 </div>
 </div>
@@ -55,7 +55,7 @@
 function deleteMessage(button){
 	$.post($(button).attr('href'), function(){
 		$('#confirmDelete').modal('hide')
-		window.location = "{% url 'messages_per_writeitinstance' pk=message.writeitinstance.pk %}"
+		window.location = "{% url 'messages_per_writeitinstance' slug=message.writeitinstance.slug %}"
 	})
 }
 </script>

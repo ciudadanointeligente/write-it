@@ -83,7 +83,7 @@ class ConfirmationTestCase(TestCase):
         message_full_url = 'http://' + current_site.domain + self.message.get_absolute_url()
 
         self.assertEquals(len(mail.outbox), 1)  # it is sent to one person pointed in the contact
-        self.assertEquals(mail.outbox[0].subject, 'Confirmation email for a message in WriteIt')
+        self.assertEquals(mail.outbox[0].subject, u'Please confirm your WriteIt message to Felipe')
         self.assertTrue(self.message.author_name in mail.outbox[0].body)
         self.assertIn(confirmation_full_url, mail.outbox[0].body)
         self.assertTrue(url in mail.outbox[0].body)
@@ -144,13 +144,6 @@ class ConfirmationTestCase(TestCase):
             kwargs={'slug': confirmation.key},
             )
         self.assertEquals(expected_url, confirmation.get_absolute_url())
-
-    def test_private_messages_do_not_have_its_absolute_url(self):
-        self.message.public = False
-        self.message.save()
-
-        Confirmation.objects.create(message=self.message)
-        self.assertFalse(self.message.get_absolute_url() in mail.outbox[0].body)
 
     def test_access_the_confirmation_url(self):
         confirmation = Confirmation.objects.create(message=self.message)

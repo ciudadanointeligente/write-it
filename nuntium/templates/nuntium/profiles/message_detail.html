@@ -15,8 +15,8 @@
     <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
     <li><a href="{% url 'account' %}">{% trans "Your profile" %}</a></li>
     <li><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
-    <li><a href="{% url 'writeitinstance_basic_update' pk=message.writeitinstance.pk %}">{{ message.writeitinstance }}</a></li>
-    <li><a href="{% url 'messages_per_writeitinstance' pk=message.writeitinstance.pk %}">{% trans "Messages" %}</a></li>
+    <li><a href="{% url 'writeitinstance_basic_update' slug=message.writeitinstance.slug %}">{{ message.writeitinstance }}</a></li>
+    <li><a href="{% url 'messages_per_writeitinstance' slug=message.writeitinstance.slug %}">{% trans "Messages" %}</a></li>
     <li class="active">{{ message }}</li>
 </ul>
 {% endblock header %}
@@ -56,7 +56,7 @@
 
 	<div class="col-md-4">
           {% if message.writeitinstance.config.can_create_answer %}
-          <button class="btn btn-primary"  data-toggle="modal" data-target="#editAnswer" class="editAnswer" href="{% url 'create_answer' pk=message.pk %}"><i class="fa fa-plus"></i> {% trans "Create an answer" %}</button>
+          <button class="btn btn-primary" data-toggle="modal" data-target="#editAnswer" class="editAnswer" href="{% url 'create_answer' slug=message.writeitinstance.slug pk=message.pk %}"><i class="fa fa-plus"></i> {% trans "Create an answer" %}</button>
           {% endif %}
 	</div>
 
@@ -71,7 +71,7 @@
 			  <tr>
 			  	<td>{{answer.person}}</td>
 			  	<td>{{answer.content|truncatechars:50|linebreaksbr}}</td>
-			  	<td><a data-toggle="modal" data-target="#updateAnswer-{{answer.id}}"  href="{% url 'update_answer' pk=answer.pk %}" alt="{% trans 'Edit Answer' %}"><i class="fa fa-pencil"></i> </a></td>
+			  	<td><a data-toggle="modal" data-target="#updateAnswer-{{answer.id}}"  href="{% url 'update_answer' slug=message.writeitinstance.slug message_pk=message.pk pk=answer.pk %}" alt="{% trans 'Edit Answer' %}"><i class="fa fa-pencil"></i> </a></td>
 			  </tr>
 
 			  	<div class="modal fade" id="updateAnswer-{{answer.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

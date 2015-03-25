@@ -1,13 +1,15 @@
+import logging
+
+from django.conf import settings
+from django.core.mail import mail_admins
+from django.core.mail.message import EmailMultiAlternatives
+from django.contrib.sites.models import get_current_site
+
+from smtplib import SMTPServerDisconnected, SMTPResponseException
+
 from nuntium.plugins import OutputPlugin
 from contactos.models import ContactType
-from django.conf import settings
-
-import logging
-from django.template import Context
-from django.template.loader import get_template_from_string
-from smtplib import SMTPServerDisconnected, SMTPResponseException
-from django.contrib.sites.models import get_current_site
-from django.core.mail import mail_admins
+from writeit_utils import escape_dictionary_values
 
 logging.basicConfig(filename="send_mails.log", level=logging.INFO)
 
@@ -27,54 +29,47 @@ class MailChannel(OutputPlugin):
         # Returns a tuple with the result_of_sending, fatal_error
         # so False, True means that there was an error sending and you should not try again
         try:
-            template = outbound_message.message.writeitinstance.mailit_template
+            writeitinstance = outbound_message.message.writeitinstance
+            template = writeitinstance.mailit_template
         except:
             return False, False
 
-        full_url = ''.join(['http://', get_current_site(None).domain, outbound_message.message.writeitinstance.get_absolute_url()])
-        format = {
+        full_url = ''.join(['http://', get_current_site(None).domain, writeitinstance.get_absolute_url()])
+        author_name = outbound_message.message.author_name
+        context = {
             'subject': outbound_message.message.subject,
             'content': outbound_message.message.content,
             'person': outbound_message.contact.person.name,
-            'author': outbound_message.message.author_name,
+            'author': author_name,
             'writeit_url': full_url,
-        }
-        d = Context(format)
-        mail_as_txt = get_template_from_string(template.content_template)
-        mail_as_html = get_template_from_string(template.content_html_template)
-        text_content = mail_as_txt.render(d)
-        html_content = mail_as_html.render(d)
-
-        subject = template.subject_template % format
-        content = text_content
-        author_name = outbound_message.message.author_name
+            'writeit_name': writeitinstance.name,
+            'owner_email': writeitinstance.owner.email,
+            }
+        text_content = template.content_template.format(**context)
+        html_content = template.content_html_template.format(**escape_dictionary_values(context))
+        subject = template.subject_template.format(**context)
 
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = author_name + " <" + settings.DEFAULT_FROM_EMAIL + ">"
         else:
-            from_domain = outbound_message.message.writeitinstance.config.custom_from_domain\
-                or settings.DEFAULT_FROM_DOMAIN
+            from_domain = writeitinstance.config.custom_from_domain or settings.DEFAULT_FROM_DOMAIN
             from_email = (
-                author_name + " <" + outbound_message.message.writeitinstance.slug +
+                author_name + " <" + writeitinstance.slug +
                 "+" + outbound_message.outboundmessageidentifier.key +
                 '@' + from_domain + ">"
                 )
 
         # There there should be a try and except looking
         # for errors and stuff
-        from django.core.mail.message import EmailMultiAlternatives
         try:
-            if outbound_message.message.writeitinstance.config.testing_mode:
-                to_email = outbound_message.message.writeitinstance.owner.email
-            else:
-                to_email = outbound_message.contact.value
-            connection = outbound_message.message.writeitinstance.config.get_mail_connection()
+            to_email = writeitinstance.owner.email if writeitinstance.config.testing_mode else outbound_message.contact.value
+
             msg = EmailMultiAlternatives(
                 subject,
-                content,
+                text_content,
                 from_email,
                 [to_email],
-                connection=connection,
+                connection=writeitinstance.config.get_mail_connection(),
                 )
             if html_content:
                 msg.attach_alternative(html_content, "text/html")

@@ -42,7 +42,7 @@ class ContactCreateView(CreateView):
     form_class = ContactCreateForm
 
     def get_success_url(self):
-        return reverse('contacts-per-writeitinstance', kwargs={'pk': self.writeitinstance.id})
+        return reverse('contacts-per-writeitinstance', kwargs={'slug': self.writeitinstance.slug})
 
     def get_form_kwargs(self):
         kwargs = super(ContactCreateView, self).get_form_kwargs()

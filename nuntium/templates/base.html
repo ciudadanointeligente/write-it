@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 {% load staticfiles %}
-{% load pipeline %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 {% get_current_language_bidi as LANGUAGE_BIDI %}
@@ -15,15 +14,35 @@
 
     <title>Write-it</title>
 
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
     <!-- Latest compiled and minified JavaScript -->
     <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 
-    {% stylesheet 'writeit-public' %}
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
 
+
+    <style type="text/css">
+    /* Sticky footer styles
+    -------------------------------------------------- */
+
+    html,
+    body {
+      height: 100%;
+      background: url("{% static 'img/imagenFondo.png' %}") no-repeat scroll 100% 50px #E6E7E7;
+      /* The html and body elements cannot have any padding or margin. */
+    }
+    </style>
+    <link rel="stylesheet" href="{% static 'css/bootstrap-social.css' %}">
     {% block extracss %}
     {% endblock extracss %}
-
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="../../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 
@@ -70,7 +89,7 @@
 
             <ul class="nav navbar-nav navbar-right">
               {% if not user.is_authenticated %}
-              <li{% block menu-login-active %}{% endblock menu-login-active %}><a href="{% url 'account_login' %}">Login</a></li>
+              <li{% block menu-login-active %}{% endblock menu-login-active %}><a href="{% url 'login' %}">Login</a></li>
               {% else %}
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ user }} <b class="caret"></b></a>

@@ -6,7 +6,7 @@
   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
   <h4 class="modal-title" id="myModalLabel">{% blocktrans with message=form.message.subject|linebreaksbr %}Create an answer for "{{ message }}"{% endblocktrans %}</h4>
 </div>
-<form action="{% url 'create_answer' pk=form.message.pk %}" method="POST">{% csrf_token %}
+<form action="{% url 'create_answer' slug=form.message.writeitinstance.slug pk=form.message.pk %}" method="POST">{% csrf_token %}
 	<div class="modal-body">
 		{{ form.non_field_errors }}
         <div class="fieldWrapper">

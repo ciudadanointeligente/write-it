@@ -5,12 +5,10 @@ from popit.models import Person
 from django.contrib.auth.models import User
 from django.core import mail
 from django.conf import settings
-from django.template.loader import get_template_from_string
 import os
 from django.test.utils import override_settings
-from django.template import Context
 
-subject_template = '%(person)s has answered to your message %(message)s'
+subject_template = u'{person} has replied to your message {subject}\n'
 script_dir = os.path.dirname(__file__)
 
 
@@ -110,7 +108,7 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
         notification_template = NewAnswerNotificationTemplate.objects.create(writeitinstance=self.instance)
 
         self.assertEquals(notification_template.template_text, new_answer_txt)
-        self.assertEquals(notification_template.subject_template, '%(person)s has answered to your message %(message)s')
+        self.assertEquals(notification_template.subject_template, subject_template)
 
     def test_when_I_create_a_new_writeitinstance_then_a_notification_template_is_created(self):
         instance = WriteItInstance.objects.create(name=u'instance 234', slug=u'instance-234', owner=self.owner)
@@ -122,6 +120,8 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
 
 
 class NewAnswerNotificationToSubscribers(TestCase):
+    answer_content = "Ola ke ase? pedalea o ke ase?"
+
     def setUp(self):
         super(NewAnswerNotificationToSubscribers, self).setUp()
         self.instance = WriteItInstance.objects.get(id=1)
@@ -131,35 +131,37 @@ class NewAnswerNotificationToSubscribers(TestCase):
         self.owner = User.objects.get(id=1)
         self.instance.new_answer_notification_template.subject_template = 'weeena pelao %(person)s %(message)s'
         self.instance.new_answer_notification_template.save()
-        self.template_str_txt = get_template_from_string(self.instance.new_answer_notification_template.template_text)
+        self.template_str_txt = self.instance.new_answer_notification_template.template_text
 
     def create_a_new_answer(self):
         self.answer = Answer.objects.create(
-            content="Ola ke ase? pedalea o ke ase?",
+            content=self.answer_content,
             person=self.pedro,
             message=self.message,
             )
 
     def test_when_an_answer_is_created_then_a_mail_is_sent_to_the_subscribers(self):
         self.create_a_new_answer()
-        d = Context(
-            {'user': self.message.author_name,
-             'person': self.pedro,
-             'message': self.message,
-             'answer': self.answer,
-             })
 
-        template_str_txt = self.template_str_txt.render(d)
+        context = {
+            'author_name': 'Fiera',
+            'person': 'Pedro',
+            'subject': 'Subject 1',
+            'content': self.answer_content,
+            'writeit_name': 'instance 1',
+            'message_url_part': 'messages/subject-1',
+            }
 
         self.assertEquals(len(mail.outbox), 1)
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertFalse(mail.outbox[0].alternatives)
         self.assertEquals(mail.outbox[0].to[0], self.subscriber.email)
-        self.assertEquals(mail.outbox[0].body, template_str_txt)
-        subject = self.instance.new_answer_notification_template.subject_template % {
-            'person': self.pedro.name,
-            'message': self.message.subject,
-        }
+
+        for key, value in context.items():
+            self.assertIn(value, mail.outbox[0].body)
+
+        subject = self.instance.new_answer_notification_template.subject_template.format(**context)
+
         self.assertEquals(mail.outbox[0].subject, subject)
 
         self.assertEquals(
@@ -170,7 +172,7 @@ class NewAnswerNotificationToSubscribers(TestCase):
     def test_answer_notification_with_html(self):
         # Put some html in the new answer notification template
         new_answer_notification_template = self.message.writeitinstance.new_answer_notification_template
-        new_answer_notification_template.template_html = '<b>{{message.subject}}</b>'
+        new_answer_notification_template.template_html = '<b>{subject}</b>'
 
         self.create_a_new_answer()
 
@@ -192,32 +194,11 @@ class NewAnswerNotificationToSubscribers(TestCase):
         self.instance.config.save()
         self.create_a_new_answer()
         user = User.objects.get(email="admin@admines.cl")
-        d = Context(
-            {'user': user,
-             'person': self.pedro,
-             'message': self.message,
-             'answer': self.answer,
-             })
-
-        # FIXME - PLEASE TEST HTML
-        # template_str_html = self.template_str_html.render(d)
-        # I'M NOT TESTED PLEASE DO!!!
-        template_str_txt = self.template_str_txt.render(d)
 
         # now test the email to the owner
         self.assertEquals(len(mail.outbox), 2)
         self.assertEquals(len(mail.outbox[1].to), 1)
         self.assertEquals(mail.outbox[1].to[0], user.email)
-        self.assertEquals(mail.outbox[1].body, template_str_txt)
-        subject = self.instance.new_answer_notification_template.subject_template % {
-            'person': self.pedro,
-            'message': self.message.subject,
-        }
-        self.assertEquals(mail.outbox[0].subject, subject)
-        self.assertEquals(
-            mail.outbox[0].from_email,
-            self.instance.slug + "@" + settings.DEFAULT_FROM_DOMAIN,
-            )
 
     def test_notify_the_owner_using_custom_domain(self):
         '''Using custom domain to notify the owner of an instance if custom config is provided'''

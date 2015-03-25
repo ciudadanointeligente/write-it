@@ -1,5 +1,6 @@
 from smtplib import SMTPServerDisconnected, SMTPResponseException
 from mock import patch
+import codecs
 
 from django.core import mail
 from django.core.urlresolvers import reverse
@@ -55,7 +56,7 @@ class MailTemplateTestCase(TestCase):
         self.writeitinstance2 = WriteItInstance.objects.get(id=2)  # the other one already has a template
         self.owner = User.objects.get(id=1)
         self.content_template = ''
-        with open('mailit/templates/mailit/mails/content_template.txt', 'r') as f:
+        with codecs.open('mailit/templates/mailit/mails/content_template.txt', 'r', encoding='utf8') as f:
             self.content_template += f.read()
 
     def test_it_has_a_template(self):
@@ -74,7 +75,7 @@ class MailTemplateTestCase(TestCase):
 
         template = MailItTemplate.objects.create(writeitinstance=self.writeitinstance2)
 
-        self.assertEquals(template.subject_template, "[WriteIT] Message: %(subject)s")
+        self.assertEquals(template.subject_template, "[WriteIT] Message: {subject}")
         self.assertEquals(template.content_template, self.content_template)
 
     def test_when_creating_a_new_instance_then_a_new_template_is_created_automatically(self):
@@ -88,7 +89,7 @@ class MailTemplateTestCase(TestCase):
             )
 
         self.assertTrue(instance.mailit_template)
-        self.assertEquals(instance.mailit_template.subject_template, "[WriteIT] Message: %(subject)s")
+        self.assertEquals(instance.mailit_template.subject_template, "[WriteIT] Message: {subject}")
         self.assertEquals(instance.mailit_template.content_template, self.content_template)
         self.assertEquals(instance.mailit_template.content_html_template, '')
 
@@ -102,7 +103,7 @@ class MailTemplateTestCase(TestCase):
         instance.save()
 
         self.assertTrue(instance.mailit_template)
-        self.assertEquals(instance.mailit_template.subject_template, "[WriteIT] Message: %(subject)s")
+        self.assertEquals(instance.mailit_template.subject_template, "[WriteIT] Message: {subject}")
         self.assertEquals(instance.mailit_template.content_template, self.content_template)
 
 
@@ -144,7 +145,20 @@ class MailSendingTestCase(TestCase):
         self.assertFalse(message.alternatives)
         self.assertIsInstance(message, EmailMultiAlternatives)
         self.assertEquals(message.subject, '[WriteIT] Message: Subject 1')
-        self.assertEquals(message.body, u'Hello Pedro:\nYou have a new message:\nsubject: Subject 1 \ncontent: Content 1\n\n\nIf you want to see all the other messages please visit http://127.0.0.1.xip.io:8000/en/writeit_instances/instance1.\nSeeya\n--\nYou writeIt and we deliverit.')
+
+        context = [
+            'Subject 1',
+            'Content 1',
+            'Pedro',
+            'Fiera',
+            'writeit_instances/instance1',
+            'instance 1',
+            'admin@admines.cl',
+            ]
+
+        for item in context:
+            self.assertIn(item, message.body)
+
         self.assertEquals(len(message.to), 1)
         self.assertIn("pdaire@ciudadanointeligente.org", message.to)
 
@@ -163,7 +177,20 @@ class MailSendingTestCase(TestCase):
         self.assertEquals(message.alternatives, [(u'<b>HTML here</b>', 'text/html')])
         self.assertIsInstance(message, EmailMultiAlternatives)
         self.assertEquals(message.subject, '[WriteIT] Message: Subject 1')
-        self.assertEquals(message.body, u'Hello Pedro:\nYou have a new message:\nsubject: Subject 1 \ncontent: Content 1\n\n\nIf you want to see all the other messages please visit http://127.0.0.1.xip.io:8000/en/writeit_instances/instance1.\nSeeya\n--\nYou writeIt and we deliverit.')
+
+        context = [
+            'Subject 1',
+            'Content 1',
+            'Pedro',
+            'Fiera',
+            'writeit_instances/instance1',
+            'instance 1',
+            'admin@admines.cl',
+            ]
+
+        for item in context:
+            self.assertIn(item, message.body)
+
         self.assertEquals(len(message.to), 1)
         self.assertIn("pdaire@ciudadanointeligente.org", message.to)
 
@@ -188,7 +215,7 @@ class MailSendingTestCase(TestCase):
         self.assertEquals(mail.outbox[0].from_email, expected_from_email)
 
     @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
-    def test_loggin_email_sending_from_default_from_email(self):
+    def test_login_email_sending_from_default_from_email(self):
         '''
         When sending an email and default from email is the default sender
         then it is logged as that
@@ -253,7 +280,7 @@ class MailSendingTestCase(TestCase):
 
     def test_template_string_keys(self):
         # template = self.writeitinstance2.mailit_template
-        self.writeitinstance2.mailit_template.content_template += "{{ author }}"
+        self.writeitinstance2.mailit_template.content_template += "{author}"
         self.writeitinstance2.mailit_template.save()
 
         contact3 = Contact.objects.create(
@@ -526,7 +553,7 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
                 )
 
     def test_url_update(self):
-        url = reverse('mailit-template-update', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('mailit-template-update', kwargs={'slug': self.writeitinstance.slug})
 
         self.assertTrue(url)
 
@@ -541,7 +568,7 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
 
         response = c.post(url, data=data)
         url = reverse('writeitinstance_template_update',
-            kwargs={'pk': self.writeitinstance.pk})
+            kwargs={'slug': self.writeitinstance.slug})
         self.assertRedirects(response, url)
 
         self.assertEquals(
@@ -556,7 +583,7 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
     def test_a_non_owner_cannot_update_a_template(self):
         User.objects.create_user(username="not_owner", password="secreto")
 
-        url = reverse('mailit-template-update', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('mailit-template-update', kwargs={'slug': self.writeitinstance.slug})
         c = Client()
         c.login(username="not_owner", password="secreto")
 
@@ -571,7 +598,7 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
         self.assertEquals(response.status_code, 404)
 
     def test_a_non_logged_user_is_told_to_login(self):
-        url = reverse('mailit-template-update', kwargs={'pk': self.writeitinstance.pk})
+        url = reverse('mailit-template-update', kwargs={'slug': self.writeitinstance.slug})
         c = Client()
 
         data = {

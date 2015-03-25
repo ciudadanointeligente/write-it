@@ -18,7 +18,5 @@ src
 *.egg-info
 
 .vagrant/
-Vagrantfile
 
-writeit/static/
 attachments/

@@ -1,0 +1,190 @@
+/* Header */
+
+.navbar-inverse {
+  background-image: -webkit-linear-gradient(top,#2E353F 0,#222 100%);
+  background-image: linear-gradient(to bottom,#2E353F 0,#222 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff3c3c3c',endColorstr='#ff222222',GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.navbar-inverse .navbar-collapse, .navbar-inverse .navbar-form {
+  border-color: #2E353F;
+}
+
+.logo-image {
+  width: auto;
+  height: 30px;
+  margin-top: 7px;
+}
+
+.navbar-brand {
+  padding-top: 3px;
+  padding-bottom: 0px;
+}
+
+.navbar .nav a .glyphicon,
+.navbar .nav a .fa {
+  margin-right: 4px;
+}
+
+
+/* Footer */
+
+#wrap {
+  /* Wrapper for page content to push down footer */
+  min-height: 100%;
+  height: auto;
+  /* Negative indent footer by its height */
+  margin: 0 auto -50px;
+  /* Pad bottom by footer height */
+  padding: 0 0 50px;
+}
+
+#footer {
+  height: 50px; /* same as navbar */
+  background-color: #2E353F;
+  color: #666;
+}
+
+#footer ul {
+  list-style: none;
+  margin-bottom: 0;
+}
+
+#footer li {
+  float: left;
+  margin-right: 30px;
+}
+
+#footer li.fci {
+  float: right;
+  margin-right: 0;
+}
+
+#footer a {
+  color: #999; /* same as navbar */
+  display: inline-block;
+  line-height: 50px;
+  text-decoration: none;
+}
+
+#footer a:hover {
+  color: #fff; /* same as navbar */
+}
+
+#footer .fa {
+  font-size: 1.5em;
+}
+
+.poplus-logo img,
+#footer .fa {
+  vertical-align: -2px;
+  margin-right: 4px;
+}
+
+
+/* Homepage */
+
+.jumbotron {
+  background-color: transparent;
+}
+
+.jumbotron-homepage {
+  margin: 0;
+}
+
+@media screen and (min-width: 768px) {
+  .jumbotron-homepage {
+    margin: 0 auto;
+    max-width: 800px;
+  }
+}
+
+.contactBtn {
+  background: #57D6AC;
+  color: #FFFFFF;
+  font-size: 24px;
+  line-height: 21.2px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  opacity: 0.9;
+  padding: 15px 10px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  width: 100%;
+  margin-top: 50px;
+}
+
+.contactBtn:hover {
+  color: #fff;
+  background-color: #47C49A;
+}
+
+.contactBtn .glyphicon {
+  margin-right: 10px;
+  vertical-align: -2px;
+}
+
+
+/* Other pages */
+
+#wrap > .container {
+  padding: 60px 15px 0;
+}
+
+.writing-panel {
+  margin-top: 20px;
+}
+
+.writing-panel .panel-body {
+  padding: 20px;
+}
+
+.writing-panel form {
+  padding: 0 15px; /* compensate for -15px horizontal margins on form-groups */
+}
+
+.answer-in-list {
+  margin: 20px;
+}
+
+.template-update {
+  background-color: #2E353F;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+}
+
+.profile-page-nav {
+  margin-top: 20px;
+}
+
+.profile-page-tab-content {
+  margin-bottom: 50px;
+  background: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-top: 0;
+}
+
+@media screen and (min-width: 768px) {
+  .profile-page-tab-content,
+  .writing-panel .panel-body {
+    padding: 40px;
+  }
+}
+
+.edit-profile-tab-content {
+  padding: 40px 80px 40px 0;
+}
+
+.profile-page-tab-content .page-header,
+.profile-page-tab-content .page-header h3 {
+  margin-top: 0;
+}
+
+.add-contact {
+  cursor:pointer
+}

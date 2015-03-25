@@ -18,7 +18,7 @@ class MailitTemplateUpdateView(UpdateView):
         return super(MailitTemplateUpdateView, self).dispatch(*args, **kwargs)
 
     def get_object(self):
-        self.writeitinstance = get_object_or_404(WriteItInstance, pk=self.kwargs['pk'])
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.kwargs['slug'])
         if not self.writeitinstance.owner.__eq__(self.request.user):
             raise Http404
         self.object = self.writeitinstance.mailit_template
@@ -31,4 +31,4 @@ class MailitTemplateUpdateView(UpdateView):
         return kwargs
 
     def get_success_url(self):
-        return reverse('writeitinstance_template_update', kwargs={'pk': self.writeitinstance.pk})
+        return reverse('writeitinstance_template_update', kwargs={'slug': self.writeitinstance.slug})
