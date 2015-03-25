@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load pipeline %}
+{% load i18n %}
+
+{% block css %}
+    {% stylesheet 'writeit-public' %}
+{% endblock css %}
+
+{% block header %}
+    <header class="site-header">
+        <div class="container">
+            <div class="site-header__masthead">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <h1>
+                  {% if writeitinstance %}
+                    <a href="{% url 'instance_detail' slug=writeitinstance.slug %}">{{ writeitinstance.name }}</a>
+                    <small>{% trans "A WriteIt instance" %}</small>
+                  {% else %}
+                    <a href="{% url 'home' %}">WriteIt</a>
+                    <small>{% trans "A Poplus Component" %}</small>
+                  {% endif %}
+                </h1>
+            </div>
+            <div class="site-header__nav" id="navbar" role="navigation">
+                <ul>
+                    <li class="site-header__nav__link"><a href="#">Home</a></li>
+                    <li class="site-header__nav__link"><a href="#">Messages</a></li>
+                    <li class="site-header__nav__link"><a href="#">Search</a></li>
+                  {% if not user.is_authenticated %}
+                    <li class="site-header__nav__link site-header__nav__link--sign-in"><a href="{% url 'login' %}">{% trans "Instance manager sign in" %}</a></li>
+                  {% else %}
+                    <li class="site-header__nav__link site-header__nav__link--user dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                          <i class="glyphicon glyphicon-user"></i><b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <span class="dropdown-menu-item">
+                                    <strong>{{ user }}</strong><br>
+                                    {{ user.email }}
+                                </span>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="{% url 'account' %}">
+                                    <span class="glyphicon glyphicon-cog"></span>
+                                    {% trans "Your Profile" %}
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'your-instances' %}">
+                                    <span class="glyphicon glyphicon-tasks"></span>
+                                    {% trans "Your Instances" %}
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'django.contrib.auth.views.logout' %}">
+                                    <span class="glyphicon glyphicon-log-out"></span>
+                                    {% trans "Logout" %}
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                  {% endif %}
+                </ul>
+            </div>
+        </div>
+    </header>
+
+  {% if writeitinstance and writeitinstance.config.testing_mode %}
+    <div class="site-alert">
+        <div class="container">
+            <h3 class="site-alert__heading">{% trans "This instance is in Test Mode." %}</h3>
+            <p class="site-alert__description">{% trans "Nobody but you can access this instance, and any messages you send will be sent to your email address rather than real representatives." %}</p>
+            <a class="site-alert__cta" href="{% url 'writeitinstance_advanced_update' slug=writeitinstance.slug %}">{% trans "Disable Test Mode in Settings" %}</a>
+        </div>
+    </div>
+  {% endif %}
+
+  {% if writeitinstance and not writeitinstance.config.allow_messages_using_form %}
+    <div class="site-alert">
+        <div class="container">
+            <h3 class="site-alert__heading">{% trans "This instance is read-only." %}</h3>
+            <p class="site-alert__description">{% trans "You can’t currently create new messages using this WriteIt." %}</p>
+          {% if not user.is_authenticated %}
+            <a class="site-alert__cta" href="{% url 'writeitinstance_advanced_update' slug=writeitinstance.slug %}">{% trans "Change this in Settings" %}</a>
+          {% endif %}
+        </div>
+    </div>
+  {% elif writeitinstance and not writeitinstance.persons.exists %}
+    <div class="site-alert">
+        <div class="container">
+            <h3 class="site-alert__heading">{% trans "This instance has no recipients." %}</h3>
+            <p class="site-alert__description">{% trans "There is no-one to write to yet. Please check back soon." %}</p>
+          {% if not user.is_authenticated %}
+            <a class="site-alert__cta" href="{% url 'writeitinstance_advanced_update' slug=writeitinstance.slug %}">{% trans "Import people from PopIt" %}</a>
+          {% endif %}
+        </div>
+    </div>
+  {% endif %}
+
+  {% if messages %}
+    <ul class="flash-messages">
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+{% endblock header %}
+
+{% block content %}
+    <div class="site-content">
+        <div class="container">
+            {% block content_inner %}
+            {% endblock content_inner %}
+        </div>
+    </div>
+{% endblock content %}
+
+{% block footer %}
+    <footer class="site-footer">
+        <div class="container">
+            <ul>
+                <li>
+                    {% blocktrans %}Built by <a href="http://www.ciudadanointeligente.org">Fundación Ciudadano Inteligente</a>{% endblocktrans %}
+                </li>
+                <li>
+                    <a href="http://poplus.org/">
+                        <img src="{% static 'img/icon-poplus.png' %}">
+                        Poplus
+                    </a>
+                </li>
+                <li>
+                    <a href="http://www.github.com/ciudadanointeligente/write-it">
+                        <i class="fa fa-github"></i>
+                        {% blocktrans %}Find the code at Github{% endblocktrans %}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </footer>
+{% endblock footer %}

@@ -1,4 +1,18 @@
-// An example of a layout style, using two bootstrap variables.
-@media(min-width: $screen-sm-min){
-  #some-element { padding: $nav-link-padding; }
+@import "layout-homepage";
+@import "layout-header";
+@import "layout-footer";
+@import "layout-alerts";
+@import "layout-write";
+@import "layout-message";
+@import "layout-person";
+
+.dropdown-menu-item {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+}
+
+.instances-list-group {
+  max-width: 28em;
+  margin: 2em auto;
 }

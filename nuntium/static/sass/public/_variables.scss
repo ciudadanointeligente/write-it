@@ -1,5 +1,11 @@
-// An example of how colour variables should be defined
-$color-green: lime;
+$color-orange: #f1c232;
+$color-blue: #428bca;
+$color-pale-orange: #ffe599;
+$color-google-blue: #0266C8;
 
-// An example of how to override bootstrap variables
-$brand-primary: $color-green;
+$font-size-base: 16px; // up from default 14px
+$brand-primary: $color-orange;
+$link-color: $color-blue;
+
+$chosen-sprite-path: '/static/img/chosen-sprite.png';
+$chosen-sprite-retina-path: '/static/img/chosen-sprite@2x.png';

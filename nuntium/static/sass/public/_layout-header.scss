@@ -1,0 +1,36 @@
+.site-header {
+  @extend .navbar;
+  @extend .navbar-default;
+
+  margin-bottom: 0;
+  border-width: 0 0 1px 0;
+  border-radius: 0;
+}
+
+.site-header__masthead {
+  @extend .navbar-header;
+
+  h1 {
+    @extend .navbar-brand;
+    margin-top: 0;
+    margin-bottom: 0;
+
+    small {
+      margin-left: 0.5em;
+
+      // Hide on small screens
+      @extend .hidden-xs;
+    }
+  }
+}
+
+.site-header__nav {
+  @extend .navbar-collapse;
+  @extend .collapse;
+
+  & > ul {
+    @extend .nav;
+    @extend .navbar-nav;
+    @extend .navbar-right;
+  }
+}

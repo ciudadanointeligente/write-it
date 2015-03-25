@@ -1,36 +1,28 @@
-{% extends "base.html" %}
+{% extends "base_public.html" %}
 {% load i18n %}
 {% load pagination_tags %}
-{% block extrajs %}
-{% include "home.js" %}
-{% endblock extrajs %}
 
-{% block menu-list-active %}
- class="active"
-{% endblock menu-list-active %}
+{% block content_inner %}
 
-{% block content %}
-<div class="tab-content profile-page-tab-content">
+    <h2 class="text-center">{% trans "Current instances of WriteIt" %}</h2>
 
-  <h2>{% trans "Current instances of write it" %}</h2>
-  {% autopaginate object_list %}
-  {% paginate %}
-  <ul>
-  {% for instance in object_list %}
-    <li><a href="{% url 'instance_detail' slug=instance.slug %}">{{ instance.name }}</a>
-    {% if instance.config.testing_mode %}
-        <i class="fa fa-info-circle extra-info" data-toggle="tooltip" data-placement="left"
-        title="{% trans 'This instance can only be seen by you and all the messages will go to your email.' %}"></i> <span class="label label-info">{% trans 'Testing mode' %}</span>
-    {% endif %}
-    </li>
-  {% endfor %}
-  </ul>
-  {% paginate %}
-</div>
+  {% if object_list %}
+    {% autopaginate object_list %}
+    {% paginate %}
+    <div class="list-group instances-list-group">
+      {% for instance in object_list %}
+        <a class="list-group-item" href="{% url 'instance_detail' slug=instance.slug %}">
+          <h4 class="list-group-item-heading">{{ instance.name }}</h4>
+          {% if instance.config.testing_mode %}
+            <p class="list-group-item-text">{% trans 'This instance is in Test Mode. It can only be seen by you and all the messages will go to your email.' %}</p>
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+    {% paginate %}
+  {% else %}
+    <p>{% trans "There are no instances yet!" %}</p>
+    <p><a href="#" class="btn btn-primary">{% trans "Create a WriteIt instance" %}</a></p>
+  {% endif %}
 
-<script type="text/javascript">
-    $(function(){
-        $('.extra-info').tooltip({})
-    })
-</script>
-{% endblock content%}
+{% endblock content_inner %}

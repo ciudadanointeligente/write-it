@@ -1,0 +1,7 @@
+.site-footer {
+  padding-top: 1em;
+
+  ul {
+    @extend .list-inline;
+  }
+}

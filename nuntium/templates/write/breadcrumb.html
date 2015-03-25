@@ -1,0 +1,31 @@
+{% load i18n %}
+
+<ul class="writing-breadcrumb">
+
+  {% if current_step == 1 %}
+    <li class="writing-breadcrumb__step writing-breadcrumb__step--current">{% trans "Select recipients" %}</li>
+  {% else %}
+    <li class="writing-breadcrumb__step">{% trans "Select recipients" %}</li>
+  {% endif %}
+
+  {% if current_step == 2 %}
+    <li class="writing-breadcrumb__step writing-breadcrumb__step--current">{% trans "Draft message" %}</li>
+  {% else %}
+    <li class="writing-breadcrumb__step">{% trans "Draft message" %}</li>
+  {% endif %}
+
+  {% if current_step == 3 %}
+    <li class="writing-breadcrumb__step writing-breadcrumb__step--current">{% trans "Preview message" %}</li>
+  {% else %}
+    <li class="writing-breadcrumb__step">{% trans "Preview message" %}</li>
+  {% endif %}
+
+  {% if current_step == 4 %}
+    <li class="writing-breadcrumb__step writing-breadcrumb__step--current">{% trans "Confirm email address" %}</li>
+  {% elif current_step == 5 %}
+    <li class="writing-breadcrumb__step writing-breadcrumb__step--current">{% trans "Message sent" %}</li>
+  {% else %}
+    <li class="writing-breadcrumb__step">{% trans "Send message" %}</li>
+  {% endif %}
+
+</ul>
