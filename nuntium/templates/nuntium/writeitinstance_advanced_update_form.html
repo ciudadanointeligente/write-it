@@ -53,6 +53,11 @@ $(".chosen-person-select").chosen();
         {{form.autoconfirm_api_messages.label_tag}}
         {{form.autoconfirm_api_messages}}
       </div>
+      <div class="form-group">
+        {{form.maximum_recipients.errors}}
+        {{form.maximum_recipients.label_tag}}
+        {{form.maximum_recipients}}
+      </div>
       <div class="text-right">
         <input type="button" onclick="javascript:history.back();" class='btn btn-default' value="{% trans 'Cancel' %}" />
         <input type="submit" class='btn btn-primary' value="{% trans 'Update' %}" />

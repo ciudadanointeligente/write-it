@@ -287,6 +287,9 @@ CELERYBEAT_SCHEDULE = {
         'schedule': crontab(hour=5, minute=30, day_of_week=1),
     },
 }
+# the biggest number of recipients a user can
+# configure without asking the admin of the site
+OVERALL_MAX_RECIPIENTS = 10
 # Logs every incoming email??
 INCOMING_EMAIL_LOGGING = 'None'
 
