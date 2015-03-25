@@ -103,6 +103,15 @@
         </div>
     </div>
   {% endif %}
+
+  {% if messages %}
+    <ul class="flash-messages">
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
 {% endblock header %}
 
 {% block content %}
