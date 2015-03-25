@@ -1,5 +1,5 @@
 # coding=utf-8
-from django.forms import ModelForm, ModelMultipleChoiceField, SelectMultiple, URLField
+from django.forms import ModelForm, ModelMultipleChoiceField, SelectMultiple, URLField, Form
 from .models import Message, WriteItInstance, Confirmation
 
 from contactos.models import Contact
@@ -80,6 +80,18 @@ class MessageCreateForm(ModelForm):
     class Meta:
         model = Message
         exclude = ("writeitinstance", "status", "slug", "moderated", "confirmated", "public")
+
+
+class WhoForm(Form):
+    pass
+
+
+class DraftForm(Form):
+    pass
+
+
+class PreviewForm(Form):
+    pass
 
 
 class MessageSearchForm(SearchForm):

@@ -2,9 +2,10 @@ from datetime import datetime
 
 from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, ListView
 from django.core.urlresolvers import reverse
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django.contrib import messages
+from django.contrib.formtools.wizard.views import NamedUrlSessionWizardView
 
 from haystack.views import SearchView
 from itertools import chain
@@ -12,6 +13,7 @@ from popit.models import Person
 from django.db.models import Q
 from .models import WriteItInstance, Confirmation, Message, Moderation
 from .forms import MessageCreateForm, MessageSearchForm, PerInstanceSearchForm
+from nuntium import forms
 
 
 class HomeTemplateView(TemplateView):
@@ -51,44 +53,47 @@ class WriteItInstanceListView(ListView):
         return queryset
 
 
-class WriteItInstanceDetailView(CreateView):
-    form_class = MessageCreateForm
+class WriteItInstanceDetailView(DetailView):
     model = WriteItInstance
     template_name = 'nuntium/instance_detail.html'
 
-    def get_object(self):
-        subdomain = self.kwargs['slug']
-        if not self.object:
-            try:
-                self.object = self.model.objects.get(slug=subdomain)
-            except WriteItInstance.DoesNotExist:
-                raise Http404
 
-        return self.object
+FORMS = [("who", forms.WhoForm),
+         ("draft", forms.DraftForm),
+         ("preview", forms.PreviewForm)]
 
-    def form_valid(self, form):
-        response = super(WriteItInstanceDetailView, self).form_valid(form)
-        moderations = Moderation.objects.filter(message=self.object)
-        if moderations.count() > 0 or self.object.writeitinstance.config.moderation_needed_in_all_messages:
-            messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation"))
-        else:
-            messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link"))
-        return response
+TEMPLATES = {"who": "write/who.html",
+             "draft": "write/draft.html",
+             "preview": "write/preview.html"}
 
-    def get_success_url(self):
-        return self.object.writeitinstance.get_absolute_url()
 
-    def get_form_kwargs(self):
-        kwargs = super(WriteItInstanceDetailView, self).get_form_kwargs()
-        self.object = self.get_object()
-        kwargs['writeitinstance'] = self.object
-        return kwargs
+class WriteMessageView(NamedUrlSessionWizardView):
+    form_list = FORMS
 
-    def get_context_data(self, **kwargs):
-        context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
-        public_messages = Message.public_objects.filter(writeitinstance=self.object)
-        context['public_messages'] = public_messages
-        context['search_form'] = PerInstanceSearchForm(writeitinstance=self.object)
+    def dispatch(self, request, *args, **kwargs):
+        self.writeitinstance = WriteItInstance.objects.get(slug=kwargs['slug'])
+        return super(WriteMessageView, self).dispatch(request=request, *args, **kwargs)
+
+    def get_template_names(self):
+        return [TEMPLATES[self.steps.current]]
+
+    def get_step_url(self, step):
+        return reverse(self.url_name, kwargs={'slug': self.kwargs['slug'], 'step': step})
+
+    def process_step(self, form):
+        form_data = self.get_form_step_data(form)
+        self.storage.extra_data.update(form_data)
+        return form_data
+
+    def done(self, form_list, **kwargs):
+        do_something_with_the_form_data(form_list)
+        return HttpResponseRedirect(reverse('write_message_sign', kwargs={'slug': self.kwargs['slug']}))
+
+    def get_context_data(self, form, **kwargs):
+        context = super(WriteMessageView, self).get_context_data(form=form, **kwargs)
+        context['writeitinstance'] = self.writeitinstance
+        if self.steps.current == 'who':
+            context['persons'] = self.writeitinstance.persons.all()
         return context
 
 

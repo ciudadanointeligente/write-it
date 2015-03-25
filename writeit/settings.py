@@ -205,6 +205,9 @@ INSTALLED_APPS = (
     'django_object_actions',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+
+    # Multi-page form wizard
+    'django.contrib.formtools',
 )
 
 if TESTING:

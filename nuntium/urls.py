@@ -6,6 +6,7 @@ from nuntium.views import (
     AcceptModerationView,
     ConfirmView,
     HomeTemplateView,
+    WriteMessageView,
     MessageSearchView,
     RejectModerationView,
     WriteItInstanceDetailView,
@@ -68,13 +69,16 @@ managepatterns = patterns('',
         name='delete_an_instance'),
 )
 
+write_message_wizard = WriteMessageView.as_view(url_name='write_message_step')
+
 # New front-end message writing process
 frontendpatterns = patterns('',
     url(r'^$', WriteItInstanceDetailView.as_view(), name='instance_detail'),
-    url(r'^write/who/$', TemplateView.as_view(template_name='write/who.html'), name='write_who'),
-    url(r'^write/draft/$', TemplateView.as_view(template_name='write/draft.html'), name='write_draft'),
-    url(r'^write/preview/$', TemplateView.as_view(template_name='write/preview.html'), name='write_preview'),
-    url(r'^write/sign/$', TemplateView.as_view(template_name='write/sign.html'), name='write_sign'),
+    url(r'^write/(?P<step>.+)/$', write_message_wizard, name='write_message_step'),
+    url(r'^write/$', write_message_wizard, name='write_message'),
+    # url(r'^write/draft/$', TemplateView.as_view(template_name='write/draft.html'), name='write_draft'),
+    # url(r'^write/preview/$', TemplateView.as_view(template_name='write/preview.html'), name='write_preview'),
+    url(r'^write/sign/$', TemplateView.as_view(template_name='write/sign.html'), name='write_message_sign'),
     # url(r'^write/sign/(?P<token>[-\w]+)/$', SignTokenView.as_view(), name='write_sign_token'),
     url(r'^thread/(?P<pk>[-\d]+)/$', TemplateView.as_view(template_name='thread/read.html'), name='thread_read'),
     url(r'^from/(?P<pk>[-\d]+)/$', TemplateView.as_view(template_name='thread/from.html'), name='thread_from'),
