@@ -371,4 +371,4 @@ class InstanceDetailView(TestCase):
         url = instance.get_absolute_url()
         response = self.client.get(url)
 
-        self.assertIn('there is no-one to write to', response.content)
+        self.assertIn('There is no-one to write to yet', response.content)
