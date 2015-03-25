@@ -34,7 +34,7 @@
                     <li class="site-header__nav__link"><a href="#">Messages</a></li>
                     <li class="site-header__nav__link"><a href="#">Search</a></li>
                   {% if not user.is_authenticated %}
-                    <li class="site-header__nav__link site-header__nav__link--sign-in"><a href="{% url 'account_login' %}">{% trans "Instance manager sign in" %}</a></li>
+                    <li class="site-header__nav__link site-header__nav__link--sign-in"><a href="{% url 'login' %}">{% trans "Instance manager sign in" %}</a></li>
                   {% else %}
                     <li class="site-header__nav__link site-header__nav__link--user dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
