@@ -11,6 +11,8 @@ django-markdown-deux
 requests
 django-extensions
 django-haystack
+django-pipeline
+libsass
 elasticsearch
 celery
 pyyaml
