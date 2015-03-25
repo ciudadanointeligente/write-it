@@ -82,7 +82,9 @@
             <a class="site-alert__cta" href="{% url 'writeitinstance_advanced_update' slug=writeitinstance.slug %}">{% trans "Disable Test Mode in Settings" %}</a>
         </div>
     </div>
-  {% elif writeitinstance and not writeitinstance.config.allow_messages_using_form %}
+  {% endif %}
+
+  {% if writeitinstance and not writeitinstance.config.allow_messages_using_form %}
     <div class="site-alert">
         <div class="container">
             <h3 class="site-alert__heading">{% trans "This instance is read-only." %}</h3>
