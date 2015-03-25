@@ -79,7 +79,10 @@
         <div class="container">
             <h3 class="site-alert__heading">{% trans "This instance is in Test Mode." %}</h3>
             <p class="site-alert__description">{% trans "Nobody but you can access this instance, and any messages you send will be sent to your email address rather than real representatives." %}</p>
-            <a class="site-alert__cta" href="{% url 'writeitinstance_advanced_update' slug=writeitinstance.slug %}">{% trans "Disable Test Mode in Settings" %}</a>
+
+            {% if user.is_authenticated %}
+              <a class="site-alert__cta" href="{% url 'writeitinstance_advanced_update' slug=writeitinstance.slug %}">{% trans "Disable Test Mode in Settings" %}</a>
+            {% endif %}
         </div>
     </div>
   {% endif %}
@@ -89,7 +92,7 @@
         <div class="container">
             <h3 class="site-alert__heading">{% trans "This instance is read-only." %}</h3>
             <p class="site-alert__description">{% trans "You can’t currently create new messages using this WriteIt." %}</p>
-          {% if not user.is_authenticated %}
+          {% if user.is_authenticated %}
             <a class="site-alert__cta" href="{% url 'writeitinstance_advanced_update' slug=writeitinstance.slug %}">{% trans "Change this in Settings" %}</a>
           {% endif %}
         </div>
@@ -99,7 +102,7 @@
         <div class="container">
             <h3 class="site-alert__heading">{% trans "This instance has no recipients." %}</h3>
             <p class="site-alert__description">{% trans "There is no-one to write to yet. Please check back soon." %}</p>
-          {% if not user.is_authenticated %}
+          {% if user.is_authenticated %}
             <a class="site-alert__cta" href="{% url 'writeitinstance_advanced_update' slug=writeitinstance.slug %}">{% trans "Import people from PopIt" %}</a>
           {% endif %}
         </div>
