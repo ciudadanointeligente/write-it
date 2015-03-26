@@ -6,7 +6,7 @@
     <script src="{% static 'js/chosen.jquery.min.js' %}"></script>
 {% endblock extrascripts %}
 {% block extrajs %}
-    $("#id-select-person").chosen({
+    $(".chosen-person-select").chosen({
       width: '100%',
       max_selected_options: 3,
       no_results_text: '{% trans "No recipients match" %}',
@@ -20,21 +20,16 @@
 
     {% include "write/breadcrumb.html" with current_step=1 %}
 
-    <form class="writing-step">
+    <form class="writing-step" action="" method="post">{% csrf_token %}
+        {{ wizard.management_form }}
         <p class="form-group">
-            <label for="id-select-person">Search for recipients by name</label>
-            <select id="id-select-person" multiple>
-                <option>Alice Brown</option>
-                <option>Bob Black</option>
-                <option>Carol Green</option>
-                <option>Dan Indigo</option>
-                <option>Eve Brown</option>
-                <option>Frank Brown</option>
-            </select>
+            <label for="id_who-persons">{% trans "Search for recipients by name" %}</label>
+            {{ form.persons.errors }}
+            {{ form.persons }}
         </p>
 
         <p class="writing-buttons">
-            <a class="writing-buttons__button--next" href="{% url 'write_draft' slug='foo' %}">{% trans "Draft message" %}</a>
+            <input class="writing-buttons__button--next" type="submit" value="{% trans "Draft message" %}"/>
         </p>
     </form>
 

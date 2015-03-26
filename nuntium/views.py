@@ -1,17 +1,20 @@
 from datetime import datetime
 
-from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, ListView
+from django.views.generic import TemplateView, DetailView, RedirectView, ListView
 from django.core.urlresolvers import reverse
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django.contrib import messages
+from django.contrib.formtools.wizard.views import NamedUrlSessionWizardView
+from django.shortcuts import get_object_or_404
 
 from haystack.views import SearchView
 from itertools import chain
 from popit.models import Person
 from django.db.models import Q
 from .models import WriteItInstance, Confirmation, Message, Moderation
-from .forms import MessageCreateForm, MessageSearchForm, PerInstanceSearchForm
+from .forms import MessageSearchForm, PerInstanceSearchForm
+from nuntium import forms
 
 
 class HomeTemplateView(TemplateView):
@@ -51,44 +54,77 @@ class WriteItInstanceListView(ListView):
         return queryset
 
 
-class WriteItInstanceDetailView(CreateView):
-    form_class = MessageCreateForm
+class WriteItInstanceDetailView(DetailView):
     model = WriteItInstance
     template_name = 'nuntium/instance_detail.html'
 
-    def get_object(self):
-        subdomain = self.kwargs['slug']
-        if not self.object:
-            try:
-                self.object = self.model.objects.get(slug=subdomain)
-            except WriteItInstance.DoesNotExist:
-                raise Http404
 
-        return self.object
+FORMS = [("who", forms.WhoForm),
+         ("draft", forms.DraftForm),
+         ("preview", forms.PreviewForm)]
 
-    def form_valid(self, form):
-        response = super(WriteItInstanceDetailView, self).form_valid(form)
-        moderations = Moderation.objects.filter(message=self.object)
-        if moderations.count() > 0 or self.object.writeitinstance.config.moderation_needed_in_all_messages:
-            messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation"))
+TEMPLATES = {"who": "write/who.html",
+             "draft": "write/draft.html",
+             "preview": "write/preview.html"}
+
+
+class WriteMessageView(NamedUrlSessionWizardView):
+    form_list = FORMS
+
+    def dispatch(self, request, *args, **kwargs):
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=kwargs['slug'])
+        return super(WriteMessageView, self).dispatch(request=request, *args, **kwargs)
+
+    def get_template_names(self):
+        return [TEMPLATES[self.steps.current]]
+
+    def get_step_url(self, step):
+        return reverse(self.url_name, kwargs={'slug': self.kwargs['slug'], 'step': step})
+
+    def get_form_kwargs(self, step):
+        if step == 'who':
+            # FIXME: Do we actually want .all() here?
+            return {'persons_queryset': self.writeitinstance.persons.all()}
         else:
-            messages.success(self.request, _("Thanks for submitting your message, please check your email and click on the confirmation link"))
-        return response
+            return {}
 
-    def get_success_url(self):
-        return self.object.writeitinstance.get_absolute_url()
+    def get_form_values(self):
+        """
+        This code is taken from the django form wizards views.py
+        Returns a dictionary of all form values
+        """
+        final_form_list = []
+        # walk through the form list and try to validate the data again.
+        for form_key in ['who', 'draft']:
+            form_obj = self.get_form(step=form_key,
+                data=self.storage.get_step_data(form_key),
+                files=self.storage.get_step_files(form_key))
+            form_obj.is_valid()
+            final_form_list.append(form_obj)
+        data = {}
+        [data.update(form.cleaned_data) for form in final_form_list]
+        return data
 
-    def get_form_kwargs(self):
-        kwargs = super(WriteItInstanceDetailView, self).get_form_kwargs()
-        self.object = self.get_object()
-        kwargs['writeitinstance'] = self.object
-        return kwargs
+    def done(self, form_list, **kwargs):
+        data = {}
+        [data.update(form.cleaned_data) for form in form_list]
+        # Save a message object here
+        message = Message(writeitinstance=self.writeitinstance, **data)
+        message.save()
+        moderations = Moderation.objects.filter(message=message)
+        if moderations.count() > 0 or self.writeitinstance.config.moderation_needed_in_all_messages:
+            messages.success(self.request, _("Please confirm your email address. We have sent a confirmation link to %(email)s. After that your message will be waiting for moderation.") % {'email': message.author_email})
+        else:
+            messages.success(self.request, _("Please confirm your email address. We have sent a confirmation link to %(email)s.") % {'email': message.author_email})
+        return HttpResponseRedirect(reverse('write_message_sign', kwargs={'slug': self.kwargs['slug']}))
 
-    def get_context_data(self, **kwargs):
-        context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
-        public_messages = Message.public_objects.filter(writeitinstance=self.object)
-        context['public_messages'] = public_messages
-        context['search_form'] = PerInstanceSearchForm(writeitinstance=self.object)
+    def get_context_data(self, form, **kwargs):
+        context = super(WriteMessageView, self).get_context_data(form=form, **kwargs)
+        context['writeitinstance'] = self.writeitinstance
+        if self.steps.current == 'who':
+            context['persons'] = self.writeitinstance.persons.all()
+        if self.steps.current == 'preview':
+            context.update(self.get_form_values())
         return context
 
 

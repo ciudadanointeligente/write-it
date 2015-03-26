@@ -5,33 +5,43 @@
 
     {% include "write/breadcrumb.html" with current_step=2 %}
 
-    <form class="writing-step">
+    <form class="writing-step" action="" method="post">{% csrf_token %}
+        {{ wizard.management_form }}
+        {{ form.non_field_errors }}
         <p class="form-group">
-            <label for="id-message">Your message</label>
-            <textarea id="id-message" class="form-control" rows="10"></textarea>
+            <label for="id_draft-subject">{% trans "Subject" %}</label>
+            {{ form.subject.errors }}
+            {{ form.subject }}
+        </p>
+        <p class="form-group">
+            <label for="id_draft-content">{% trans "Your message" %}</label>
+            {{ form.content.errors }}
+            {{ form.content }}
         </p>
 
         <div class="row">
             <div class="col-sm-6">
                 <p class="form-group">
-                    <label for="id-name">Your name</label>
-                    <input type="text" id="id-name" class="form-control">
+                    <label for="id_draft-author_name">Your name</label>
+                    {{ form.author_name.errors }}
+                    {{ form.author_name }}
                 </p>
             </div>
             <div class="col-sm-6">
                 <p class="form-group">
-                    <label for="id-email" class="label-with-hint">
+                    <label for="id_draft-author_email" class="label-with-hint">
                         Your email
                         <small>{% trans "Nobody will see this, ever." %}</small>
                     </label>
-                    <input type="email" id="id-email" class="form-control">
+                    {{ form.author_email.errors }}
+                    {{ form.author_email }}
                 </p>
             </div>
         </div>
 
         <p class="writing-buttons">
-            <a class="writing-buttons__button--previous" href="{% url 'write_who' slug='foo' %}">{% trans "Change recipients" %}</a>
-            <a class="writing-buttons__button--next" href="{% url 'write_preview' slug='foo' %}">{% trans "Preview message" %}</a>
+            <a class="writing-buttons__button--previous" href="{% url 'write_message_step' slug=writeitinstance.slug step=wizard.steps.prev %}">{% trans "Change recipients" %}</a>
+            <input class="writing-buttons__button--next" type="submit" value="{% trans "Preview message" %}"/>
         </p>
     </form>
 {% endblock content_inner %}

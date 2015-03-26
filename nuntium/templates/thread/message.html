@@ -5,25 +5,27 @@
         <dt>{% trans "To" %}</dt>
       {% if person_links %}
         <dd>
-            <a href="{% url 'thread_to' slug='foo' pk=1024 %}" title="{% trans "Show all messages to Alice Brown" %}">Alice Brown</a>,
-            <a href="{% url 'thread_to' slug='foo' pk=1024 %}" title="{% trans "Show all messages to Bob Black" %}">Bob Black</a></dd>
+            {% for person in persons %}
+            <a href="{% url 'thread_to' slug=writeitinstance.slug pk=person.pk %}" title="{% blocktrans with name=person.name %}Show all messages to {{ name }}{% endblocktrans %}">{{ person.name }}</a></dd>
+            {% endfor %}
       {% else %}
-        <dd>Alice Brown, Bob Black</dd>
+      <dd>{% for person in persons %}
+        {% if forloop.last and not forloop.first %} and {% elif not forloop.first %}, {% endif %}
+      {{ person.name }}
+        {% endfor %}</dd>
       {% endif %}
         <dt>{% trans "From" %}</dt>
       {% if person_links %}
         <dd>
-            <a href="{% url 'thread_from' slug='foo' pk=42 %}" title="{% trans "Show all messages from Joe Bloggs" %}">Joe Bloggs</a>
+            <a href="{% url 'thread_from' slug='foo' pk=42 %}" title="{% trans "Show all messages from {{ author_name }}" %}">{{ author_name }}</a>
         </dd>
       {% else %}
-        <dd>Joe Bloggs <small class="text-muted">({% trans "Recipients will not see your email address" %})</small></dd>
+          <dd>{{ author_name }} <small class="text-muted">({% trans "Recipients will not see your email address" %})</small></dd>
       {% endif %}
+          <dt>{% trans "Subject" %}</dt>
+          <dd>{{ subject }}</dd>
     </dl>
     <div class="message__content">
-        <p>Dear representatives,</p>
-        <p>I am writing to inform you of blah blah blah blah. Blah blah blah. Blah blah blah blah blah blah blah. Blah blah blah. Blah blah blah blah blah blah blah.</p>
-        <p>I would like to request blah blah blah blah blah. Blah blah blah blah blah blah blah. Blah blah blah. Blah blah blah blah blah blah blah.</p>
-        <p>Yours,</p>
-        <p>J. Bloggs</p>
+        <pre>{{ content }}</pre>
     </div>
 </div>
