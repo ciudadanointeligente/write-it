@@ -6,12 +6,8 @@
     {% include "write/breadcrumb.html" with current_step=4 %}
 
     <div class="writing-step writing-step--confirm-email">
-        <h2>{% trans "Please confirm your email address" %}</h2>
 
-        <p>{% trans "We have sent a confirmation link to" %} joebloggs87@gmail.com</p>
-
-        <!-- Would be awesome to show a button like this if their email is a common webmail provider -->
-        <a href="https://mail.google.com" class="btn btn-primary" target="_blank">{% trans "Go to" %} gmail.com</a>
+        <p>{% trans "Thanks, your message will be sent once you click the confirmation link in your email." %}</p>
 
         <!-- Temporary, while we're testing! -->
         <p style="font-size: 0.8em; margin-top: 4em"><a href="{% url 'thread_read' slug='foo' pk=1337 %}">DEBUG: Skip to next page</a></p>

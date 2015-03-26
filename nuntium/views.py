@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.views.generic import TemplateView, CreateView, DetailView, RedirectView, ListView
+from django.views.generic import TemplateView, DetailView, RedirectView, ListView
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.utils.translation import ugettext as _
@@ -13,7 +13,7 @@ from itertools import chain
 from popit.models import Person
 from django.db.models import Q
 from .models import WriteItInstance, Confirmation, Message, Moderation
-from .forms import MessageCreateForm, MessageSearchForm, PerInstanceSearchForm
+from .forms import MessageSearchForm, PerInstanceSearchForm
 from nuntium import forms
 
 
@@ -95,7 +95,7 @@ class WriteMessageView(NamedUrlSessionWizardView):
         """
         final_form_list = []
         # walk through the form list and try to validate the data again.
-        for form_key in self.get_form_list():
+        for form_key in ['who', 'draft']:
             form_obj = self.get_form(step=form_key,
                 data=self.storage.get_step_data(form_key),
                 files=self.storage.get_step_files(form_key))
@@ -106,7 +106,16 @@ class WriteMessageView(NamedUrlSessionWizardView):
         return data
 
     def done(self, form_list, **kwargs):
-        do_something_with_the_form_data(form_list)
+        data = {}
+        [data.update(form.cleaned_data) for form in form_list]
+        # Save a message object here
+        message = Message(writeitinstance=self.writeitinstance, **data)
+        message.save()
+        moderations = Moderation.objects.filter(message=message)
+        if moderations.count() > 0 or self.writeitinstance.config.moderation_needed_in_all_messages:
+            messages.success(self.request, _("Please confirm your email address. We have sent a confirmation link to %(email)s. After that your message will be waiting for moderation.") % {'email': message.author_email})
+        else:
+            messages.success(self.request, _("Please confirm your email address. We have sent a confirmation link to %(email)s.") % {'email': message.author_email})
         return HttpResponseRedirect(reverse('write_message_sign', kwargs={'slug': self.kwargs['slug']}))
 
     def get_context_data(self, form, **kwargs):
