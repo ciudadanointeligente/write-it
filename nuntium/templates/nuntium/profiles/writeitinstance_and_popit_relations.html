@@ -1,5 +1,6 @@
 {% extends "base_manager.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% load staticfiles %}
 {% load pagination_tags %}
 
@@ -33,7 +34,7 @@ $(".chosen-person-select").chosen();
     <h2>{% trans "Data Sources" %}</h2>
   </div>
   <div class="add-new-data-source">
-    <form action="{% url 'relate-writeit-popit' slug=writeitinstance.slug %}" method="POST" role="form">
+    <form action="{% url 'relate-writeit-popit' subdomain=writeitinstance.slug %}" method="POST" role="form">
     <h3>{% trans "Add a new data source" %}</h3>
       {% csrf_token %}
       <div class="form-element">

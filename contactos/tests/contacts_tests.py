@@ -12,7 +12,7 @@ from mailit.management.commands.handleemail import AnswerForManageCommand
 from ..forms import ContactUpdateForm, ContactCreateForm
 from django.test.client import RequestFactory, Client
 from django.forms import ModelForm
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 import simplejson as json
 from nuntium.models import WriteItInstance
 from django.db.models import Q
@@ -334,7 +334,7 @@ class ContactCreateFormAndViewTestCase(UserSectionTestCase):
 
         response = c.post(url, data=data)
         self.assertEquals(response.status_code, 302)
-        url_for_list_of_contacts = reverse('contacts-per-writeitinstance', kwargs={'slug': self.writeitinstance.slug})
+        url_for_list_of_contacts = reverse('contacts-per-writeitinstance', subdomain=self.writeitinstance.slug)
         self.assertRedirects(response, url_for_list_of_contacts)
 
         contact = Contact.objects.get(Q(writeitinstance__owner=self.user), Q(value='mail@the-real-mail.com'))

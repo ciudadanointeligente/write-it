@@ -2,6 +2,7 @@
 {% load staticfiles %}
 {% load pipeline %}
 {% load i18n %}
+{% load subdomainurls %}
 {% get_current_language as LANGUAGE_CODE %}
 {% get_current_language_bidi as LANGUAGE_BIDI %}
 <html lang="{{ LANGUAGE_CODE }}"{% if LANGUAGE_BIDI %}dir="RTL"{% endif %} class="no-js">

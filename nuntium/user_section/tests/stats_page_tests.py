@@ -1,6 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
 from nuntium.models import WriteItInstance
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from django.test.client import Client
 from nuntium.user_section.stats import StatsPerInstance
 

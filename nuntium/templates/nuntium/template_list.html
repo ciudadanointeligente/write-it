@@ -1,5 +1,6 @@
 {% extends "base_front.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% load pagination_tags %}
 
 {% block content %}
@@ -11,7 +12,7 @@
     {% paginate %}
     <div class="list-group instances-list-group">
       {% for instance in object_list %}
-        <a class="list-group-item" href="{% url 'instance_detail' slug=instance.slug %}">
+        <a class="list-group-item" href="{% url 'instance_detail' subdomain=instance.slug %}">
           <h4 class="list-group-item-heading">{{ instance.name }}</h4>
           {% if instance.config.testing_mode %}
             <p class="list-group-item-text">{% trans 'This instance is in Test Mode. It can only be seen by you and all the messages will go to your email.' %}</p>

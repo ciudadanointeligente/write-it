@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from ...models import WriteItInstance, Message, Answer
 from django.contrib.auth.models import User
 from django.test.client import Client

@@ -1,6 +1,6 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from ..models import WriteItInstance, Message
 from django.test.client import Client
 from popit.models import Person

@@ -1,5 +1,5 @@
 from global_test_case import popit_load_data
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from nuntium.models import WriteItInstance, Membership, WriteitInstancePopitInstanceRecord
 from django.contrib.auth.models import User
 from django.forms import Form, URLField

@@ -1,5 +1,6 @@
 {% extends "base_manager.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% load staticfiles %}
 {% load pagination_tags %}
 {% block header %}
@@ -65,19 +66,19 @@
         <tbody>
           {% for writeitinstance in object_list %}
           <tr>
-            <td><a href="{% url 'writeitinstance_basic_update' slug=writeitinstance.slug %}">{{ writeitinstance }}</a> {% if writeitinstance.pulling_from_popit_status.inprogress > 0 %}<i class="fa fa-spinner fa-pulse spinner_{{ writeitinstance.pk }}" data-toggle="tooltip" data-placement="left" title="{% trans 'We are currently getting information from popit' %}"></i>
+            <td><a href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{{ writeitinstance }}</a> {% if writeitinstance.pulling_from_popit_status.inprogress > 0 %}<i class="fa fa-spinner fa-pulse spinner_{{ writeitinstance.pk }}" data-toggle="tooltip" data-placement="left" title="{% trans 'We are currently getting information from popit' %}"></i>
               <script type="text/javascript">
               $(function(){
-                go_and_check_status_of_instance("{% url 'pulling_status' slug=writeitinstance.slug %}", "spinner_{{ writeitinstance.pk }}")
+                go_and_check_status_of_instance("{% url 'pulling_status' subdomain=writeitinstance.slug %}", "spinner_{{ writeitinstance.pk }}")
               })
               </script>
               {% endif %}
             </td>
-            <td> <a target='_blank' href="{% url 'instance_detail' slug=writeitinstance.slug %}"><i class="fa fa-external-link"></i></a></td>
+            <td> <a target='_blank' href="{% url 'instance_detail' subdomain=writeitinstance.slug %}"><i class="fa fa-external-link"></i></a></td>
             <td>{% url 'api_dispatch_detail' api_name='v1' resource_name='instance' pk=writeitinstance.id %}</td>
-            <td><a href="{% url 'messages_per_writeitinstance' slug=writeitinstance.slug %}"><i class="fa fa-envelope-o"></i></a></td>
-            <td><a href="{% url 'writeitinstance_basic_update' slug=writeitinstance.slug %}"><i class="fa fa-pencil"></i></a></td>
-            <td><a href="{% url 'delete_an_instance' slug=writeitinstance.slug %}"><i class="fa fa-times"></i></a></td>
+            <td><a href="{% url 'messages_per_writeitinstance' subdomain=writeitinstance.slug %}"><i class="fa fa-envelope-o"></i></a></td>
+            <td><a href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}"><i class="fa fa-pencil"></i></a></td>
+            <td><a href="{% url 'delete_an_instance' subdomain=writeitinstance.slug %}"><i class="fa fa-times"></i></a></td>
 
           </tr>
           {% empty %}

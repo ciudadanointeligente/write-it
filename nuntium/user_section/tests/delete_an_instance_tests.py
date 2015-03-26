@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from ...models import WriteItInstance
 from django.test.client import Client
 from .user_section_views_tests import UserSectionTestCase

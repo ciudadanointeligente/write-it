@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator

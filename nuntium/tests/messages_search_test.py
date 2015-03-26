@@ -8,7 +8,7 @@ from ..forms import MessageSearchForm, PerInstanceSearchForm
 from haystack import indexes
 from haystack.fields import CharField
 from haystack.forms import SearchForm
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from ..views import MessageSearchView, PerInstanceSearchView
 from ..models import WriteItInstance
 from haystack.views import SearchView

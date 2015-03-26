@@ -3,7 +3,7 @@ from global_test_case import GlobalTestCase as TestCase
 from ..models import Confirmation, send_confirmation_email
 from ..models import Message, WriteItInstance, ConfirmationTemplate
 from django.core import mail
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from django.contrib.auth.models import User
 from django.forms import ValidationError
 from django.template import Context, Template

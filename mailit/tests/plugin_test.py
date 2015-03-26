@@ -3,7 +3,7 @@ from mock import patch
 import codecs
 
 from django.core import mail
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from django.core.mail.message import EmailMultiAlternatives
 from django.contrib.auth.models import User
 from django.conf import settings

@@ -6,7 +6,7 @@
       {% if person_links %}
         <dd>
             {% for person in persons %}
-            <a href="{% url 'thread_to' slug=writeitinstance.slug pk=person.pk %}" title="{% blocktrans with name=person.name %}Show all messages to {{ name }}{% endblocktrans %}">{{ person.name }}</a></dd>
+            <a href="{% url 'thread_to' subdomain=writeitinstance.slug pk=person.pk %}" title="{% blocktrans with name=person.name %}Show all messages to {{ name }}{% endblocktrans %}">{{ person.name }}</a></dd>
             {% endfor %}
       {% else %}
       <dd>{% for person in persons %}

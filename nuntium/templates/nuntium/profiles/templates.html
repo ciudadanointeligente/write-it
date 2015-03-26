@@ -1,5 +1,6 @@
 {% extends "base_manager.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% load staticfiles %}
 
 
@@ -28,7 +29,7 @@ $(".chosen-person-select").chosen();
     <h3>{% trans "Mail Template" %}</h3>
     <h4>{% trans "This is the mail template that the person gets when a new message exists" %}</h4>
 
-    <form class="template-update" role="form" action="{% url 'mailit-template-update' slug=writeitinstance.slug %}" method="post">
+    <form class="template-update" role="form" action="{% url 'mailit-template-update' subdomain=writeitinstance.slug %}" method="post">
 
         {{ mailit_template_form.as_p }}
         <div class="save-bar">
@@ -40,7 +41,7 @@ $(".chosen-person-select").chosen();
     <h3>{% trans "Confirmation Template" %}</h3>
     <h4>{% trans "This is the mail template that the person who creates a message gets in order to confirm their email" %}</h4>
 
-    <form class="template-update" role="form" action="{% url 'edit_confirmation_template' slug=writeitinstance.slug %}" method="post">
+    <form class="template-update" role="form" action="{% url 'edit_confirmation_template' subdomain=writeitinstance.slug %}" method="post">
 
         {{ confirmation_template_form.as_p }}
         <div class="save-bar">
@@ -52,7 +53,7 @@ $(".chosen-person-select").chosen();
 
     <h3>{% trans "New answer notification template" %}</h3>
     <h4>{% trans "When a new answer comes in it will notify all the subscribers with this template" %}</h4>
-    <form class="template-update" role="form" action="{% url 'edit_new_answer_notification_template' slug=writeitinstance.slug %}" method="post">
+    <form class="template-update" role="form" action="{% url 'edit_new_answer_notification_template' subdomain=writeitinstance.slug %}" method="post">
 
         {{ new_answer_template_form.as_p }}
         <div class="save-bar">
