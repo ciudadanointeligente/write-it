@@ -20,7 +20,7 @@
             <div class="container">
                 <div class="instance-summary__recent">
                     <h2>{% trans "Recent messages" %}</h2>
-                    <p><strong>TODO:</strong> Show recent messages here.</p>
+                    {% include 'thread/message_mini.html' %}
                 </div>
                 <div class="instance-summary__popular">
                     <h2>{% trans "Most popular representatives" %}</h2>
