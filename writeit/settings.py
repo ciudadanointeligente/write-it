@@ -122,6 +122,12 @@ PIPELINE_CSS = {
             'sass/manager.scss',
         ),
         'output_filename': 'css/manager.css',
+    },
+    'writeit-front': {
+        'source_filenames': (
+            'sass/front.scss',
+        ),
+        'output_filename': 'css/front.css',
     }
 }
 

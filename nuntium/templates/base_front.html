@@ -19,7 +19,7 @@
     <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 
-    {% stylesheet 'writeit-manager' %}
+    {% stylesheet 'writeit-front' %}
 
     {% block extracss %}
     {% endblock extracss %}
@@ -72,26 +72,14 @@
         {% block header %}
         {% endblock header %}
         {% include 'nuntium/profiles/status-bar.html' %}
-        <div class="manager-page">
-          <div class="row">
-            <div class="sidebar">
-              <div class="sidebar__inner">
-                {% if writeitinstance %}
-                  {% include 'nuntium/profiles/manager-navigation.html' %}
-                {% else %}
-                  {% include 'nuntium/profiles/profile-navigation.html' %}
-                {% endif %}
-              </div>
-            </div>
+        <div class="full-page">
+        <div class="row">
             <div class="content-area" role="main">
-              <div class="content-area__inner">
                 {% block content %}
                 {% endblock content %}
-              </div>
             </div>
           </div>
         </div>
-
       </div>
 
     </div><!-- end wrap -->
