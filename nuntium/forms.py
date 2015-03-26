@@ -105,6 +105,7 @@ class DraftForm(ModelForm):
 class PreviewForm(ModelForm):
     class Meta:
         model = Message
+        fields = []
 
 
 class MessageSearchForm(SearchForm):

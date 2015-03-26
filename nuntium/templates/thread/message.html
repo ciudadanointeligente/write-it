@@ -13,17 +13,15 @@
         <dt>{% trans "From" %}</dt>
       {% if person_links %}
         <dd>
-            <a href="{% url 'thread_from' slug='foo' pk=42 %}" title="{% trans "Show all messages from Joe Bloggs" %}">Joe Bloggs</a>
+            <a href="{% url 'thread_from' slug='foo' pk=42 %}" title="{% trans "Show all messages from {{ author_name }}" %}">{{ author_name }}</a>
         </dd>
       {% else %}
-        <dd>Joe Bloggs <small class="text-muted">({% trans "Recipients will not see your email address" %})</small></dd>
+          <dd>{{ author_name }} <small class="text-muted">({% trans "Recipients will not see your email address" %})</small></dd>
       {% endif %}
+          <dt>{% trans "Subject" %}</dt>
+          <dd>{{ subject }}</dd>
     </dl>
     <div class="message__content">
-        <p>Dear representatives,</p>
-        <p>I am writing to inform you of blah blah blah blah. Blah blah blah. Blah blah blah blah blah blah blah. Blah blah blah. Blah blah blah blah blah blah blah.</p>
-        <p>I would like to request blah blah blah blah blah. Blah blah blah blah blah blah blah. Blah blah blah. Blah blah blah blah blah blah blah.</p>
-        <p>Yours,</p>
-        <p>J. Bloggs</p>
+        <pre>{{ content }}</pre>
     </div>
 </div>

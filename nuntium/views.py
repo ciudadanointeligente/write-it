@@ -88,11 +88,6 @@ class WriteMessageView(NamedUrlSessionWizardView):
         else:
             return {}
 
-    def process_step(self, form):
-        form_data = self.get_form_step_data(form)
-        self.storage.extra_data.update(form_data)
-        return form_data
-
     def done(self, form_list, **kwargs):
         do_something_with_the_form_data(form_list)
         return HttpResponseRedirect(reverse('write_message_sign', kwargs={'slug': self.kwargs['slug']}))
@@ -102,6 +97,11 @@ class WriteMessageView(NamedUrlSessionWizardView):
         context['writeitinstance'] = self.writeitinstance
         if self.steps.current == 'who':
             context['persons'] = self.writeitinstance.persons.all()
+        context['persons'] = context['who-persons']
+        context['subject'] = context['draft-subject'][0]
+        context['content'] = context['draft-content'][0]
+        context['author_name'] = context['draft-author_name'][0]
+        context['author_email'] = context['draft-author_email'][0]
         return context
 
 
