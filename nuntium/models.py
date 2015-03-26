@@ -905,6 +905,13 @@ from tastypie.models import create_api_key
 
 models.signals.post_save.connect(create_api_key, sender=User)
 
+PERIODICITY = (
+    ('--', 'Never'),
+    ('2D', 'Twice every Day'),
+    ('1D', 'Daily'),
+    ('1W', 'Weekly'),
+)
+
 
 class WriteitInstancePopitInstanceRecord(models.Model):
     STATUS_CHOICES = (
@@ -917,6 +924,11 @@ class WriteitInstancePopitInstanceRecord(models.Model):
     writeitinstance = models.ForeignKey(WriteItInstance)
     popitapiinstance = models.ForeignKey(ApiInstance)
     autosync = models.BooleanField(default=True)
+    periodicity = models.CharField(
+        max_length="1",
+        choices=PERIODICITY,
+        default='1W',
+        )
     status = models.CharField(
         max_length="20",
         choices=STATUS_CHOICES,

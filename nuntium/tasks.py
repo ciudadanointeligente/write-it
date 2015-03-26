@@ -21,8 +21,9 @@ def pull_from_popit(writeitinstance, popit_api_instance):
 
 
 @task()
-def update_all_popits():
-    all_records = WriteitInstancePopitInstanceRecord.objects.filter(autosync=True)
+def update_all_popits(periodicity='1W'):
+    all_records = WriteitInstancePopitInstanceRecord.objects.filter(autosync=True,
+        periodicity=periodicity)
     logger.info(u'Complete resync of all instances')
     for record in all_records:
         popit_api_instance = PopitApiInstance.objects.get(id=record.popitapiinstance.id)
