@@ -164,9 +164,16 @@ MIDDLEWARE_CLASSES = (
     'pagination.middleware.PaginationMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'subdomains.middleware.SubdomainURLRoutingMiddleware',
 )
 
-ROOT_URLCONF = 'writeit.urls'
+ROOT_URLCONF = 'nuntium.subdomain_urls'
+
+# A dictionary of urlconf module paths, keyed by their subdomain.
+SUBDOMAIN_URLCONFS = {
+    None: 'writeit.urls',  # no subdomain, e.g. ``example.com``
+    'www': 'writeit.urls',
+}
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'writeit.wsgi.application'
@@ -214,6 +221,7 @@ INSTALLED_APPS = (
 
     # Multi-page form wizard
     'django.contrib.formtools',
+    'subdomains',
 )
 
 if TESTING:

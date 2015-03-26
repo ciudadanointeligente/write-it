@@ -1,7 +1,7 @@
 from django.views.generic.edit import UpdateView
 from .models import MailItTemplate
 from .forms import MailitTemplateForm
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 from nuntium.models import WriteItInstance
@@ -31,4 +31,4 @@ class MailitTemplateUpdateView(UpdateView):
         return kwargs
 
     def get_success_url(self):
-        return reverse('writeitinstance_template_update', kwargs={'slug': self.writeitinstance.slug})
+        return reverse('writeitinstance_template_update', subdomain=self.writeitinstance.slug)

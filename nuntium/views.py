@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.views.generic import TemplateView, DetailView, RedirectView, ListView
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django.contrib import messages
@@ -58,6 +58,9 @@ class WriteItInstanceDetailView(DetailView):
     model = WriteItInstance
     template_name = 'nuntium/instance_detail.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        self.kwargs['slug'] = request.subdomain
+        return super(WriteItInstanceDetailView, self).dispatch(request, *args, **kwargs)
 
 FORMS = [("who", forms.WhoForm),
          ("draft", forms.DraftForm),
@@ -72,14 +75,11 @@ class WriteMessageView(NamedUrlSessionWizardView):
     form_list = FORMS
 
     def dispatch(self, request, *args, **kwargs):
-        self.writeitinstance = get_object_or_404(WriteItInstance, slug=kwargs['slug'])
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=request.subdomain)
         return super(WriteMessageView, self).dispatch(request=request, *args, **kwargs)
 
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]
-
-    def get_step_url(self, step):
-        return reverse(self.url_name, kwargs={'slug': self.kwargs['slug'], 'step': step})
 
     def get_form_kwargs(self, step):
         if step == 'who':
@@ -116,7 +116,7 @@ class WriteMessageView(NamedUrlSessionWizardView):
             messages.success(self.request, _("Please confirm your email address. We have sent a confirmation link to %(email)s. After that your message will be waiting for moderation.") % {'email': message.author_email})
         else:
             messages.success(self.request, _("Please confirm your email address. We have sent a confirmation link to %(email)s.") % {'email': message.author_email})
-        return HttpResponseRedirect(reverse('write_message_sign', kwargs={'slug': self.kwargs['slug']}))
+        return HttpResponseRedirect(reverse('write_message_sign', subdomain=self.writeitinstance.slug))
 
     def get_context_data(self, form, **kwargs):
         context = super(WriteMessageView, self).get_context_data(form=form, **kwargs)

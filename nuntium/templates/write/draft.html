@@ -40,7 +40,7 @@
         </div>
 
         <p class="writing-buttons">
-            <a class="writing-buttons__button--previous" href="{% url 'write_message_step' slug=writeitinstance.slug step=wizard.steps.prev %}">{% trans "Change recipients" %}</a>
+            <a class="writing-buttons__button--previous" href="{% url 'write_message_step' step=wizard.steps.prev %}">{% trans "Change recipients" %}</a>
             <input class="writing-buttons__button--next" type="submit" value="{% trans "Preview message" %}"/>
         </p>
     </form>

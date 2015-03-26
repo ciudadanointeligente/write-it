@@ -1,5 +1,6 @@
 {% extends "base_instance.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 
 {% block content %}
 
@@ -11,7 +12,7 @@
                     {% trans "This is a description of your WriteIt instance. Click the pencil to edit it." %}
                     <a class="instance-hero__edit" href="#"><i class="fa fa-pencil">{% trans "Edit" %}</i></a>
                 </h2>
-                <a class="btn btn-primary btn-lg" href="{% url 'write_message' slug=writeitinstance.slug %}">{% trans "Send a message" %}</a>
+                <a class="btn btn-primary btn-lg" href="{% url 'write_message' subdomain=writeitinstance.slug %}">{% trans "Send a message" %}</a>
             </div>
         </div>
 
@@ -35,7 +36,7 @@
 
 {% block search_form %}
 
-    <form action="{% url 'instance_search' slug=writeitinstance.slug %}" class="navbar-form navbar-right" method="get"  role="form">
+    <form action="{% url 'instance_search' subdomain=writeitinstance.slug %}" class="navbar-form navbar-right" method="get"  role="form">
         <div class="form-group">
             <label class="sr-only" for="exampleInputEmail2">Search within messages</label>
             <input type="text" class="form-control" name="q" id="id_q" placeholder="{% trans 'Search within messages' %}">

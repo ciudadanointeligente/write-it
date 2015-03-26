@@ -1,5 +1,6 @@
 {% extends "base_manager.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% load staticfiles %}
 {% load pagination_tags %}
 {% block extrajs %}
@@ -59,7 +60,7 @@
               {% endif %}
 
             {% endif %}
-            <td><a href="{% url 'message_detail_private' slug=writeitinstance.slug pk=message.pk %}"><i class="fa fa-cogs"></i></a></td>
+            <td><a href="{% url 'message_detail_private' subdomain=writeitinstance.slug pk=message.pk %}"><i class="fa fa-cogs"></i></a></td>
             <td>
               {% blocktrans count answer_count=message.answers.count %}
                 {{ answer_count }} answer
@@ -67,10 +68,10 @@
                 {{ answer_count }} answers
               {% endblocktrans %}
               {% if writeitinstance.config.can_create_answer %}
-                <a data-toggle="modal" data-target="#modal" href="{% url 'create_answer' slug=writeitinstance.slug pk=message.pk %}" alt="{% trans "Add"%}"><i class="fa fa-plus"></i></a>
+                <a data-toggle="modal" data-target="#modal" href="{% url 'create_answer' subdomain=writeitinstance.slug pk=message.pk %}" alt="{% trans "Add"%}"><i class="fa fa-plus"></i></a>
               {% endif %}
             </td>
-            <td><a data-toggle="modal" data-target="#modal" class="deleteMessage" href="{% url 'message_delete' slug=writeitinstance.slug pk=message.pk %}"><i class="fa fa-times"></i></a></td>
+            <td><a data-toggle="modal" data-target="#modal" class="deleteMessage" href="{% url 'message_delete' subdomain=writeitinstance.slug pk=message.pk %}"><i class="fa fa-times"></i></a></td>
 
           </tr>
           {% empty %}

@@ -8,7 +8,7 @@ from ..forms import MessageSearchForm, PerInstanceSearchForm
 from haystack import indexes
 from haystack.fields import CharField
 from haystack.forms import SearchForm
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from ..views import MessageSearchView, PerInstanceSearchView
 from ..models import WriteItInstance
 from haystack.views import SearchView
@@ -188,7 +188,7 @@ class PerInstanceSearchFormTestCase(SearchIndexTestCase):
         self.assertEquals(view.template, 'nuntium/instance_search.html')
 
     def test_per_instance_search_url(self):
-        url = reverse('instance_search', kwargs={'slug': self.writeitinstance.slug})
+        url = reverse('instance_search', subdomain=self.writeitinstance.slug)
 
         response = self.client.get(url)
 

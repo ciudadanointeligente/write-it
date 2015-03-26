@@ -1,7 +1,7 @@
 from nuntium.user_section.tests.user_section_views_tests import UserSectionTestCase
 from django.contrib.auth.models import User
 from contactos.models import Contact
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 import json
 from django.core import mail
 

@@ -5,7 +5,7 @@ from ..models import Message, WriteItInstance, \
 from popit.models import Person
 from django.core import mail
 from django.contrib.sites.models import Site
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 import datetime
 from mock import patch
 from django.core.exceptions import ValidationError
