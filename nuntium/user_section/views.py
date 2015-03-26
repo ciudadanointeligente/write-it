@@ -383,3 +383,21 @@ class WriteItDeleteView(DeleteView):
     def get_success_url(self):
         url = reverse('your-instances')
         return url
+
+
+class MessageTogglePublic(View):
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_authenticated():
+            raise Http404
+        return super(MessageTogglePublic, self).dispatch(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        writeitinstance = get_object_or_404(WriteItInstance, slug=self.kwargs['slug'],
+            owner=self.request.user)
+        message = get_object_or_404(writeitinstance.message_set.all(), pk=self.kwargs['pk'])
+        message.public = not message.public
+        message.save()
+        return HttpResponse(
+            json.dumps({'pk': message.id, 'public': message.public}),
+            content_type="application/json"
+        )

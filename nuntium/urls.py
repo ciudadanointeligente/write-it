@@ -9,6 +9,7 @@ from nuntium.views import (
     WriteItInstanceListView,
     )
 
+
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', HomeTemplateView.as_view(template_name='home.html'), name='home'),
