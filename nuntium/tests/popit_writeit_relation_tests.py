@@ -40,6 +40,7 @@ class PopitWriteitRelationRecord(TestCase):
         self.assertTrue(record.created)
         self.assertTrue(record.autosync)
         self.assertEquals(record.status, 'nothing')
+        self.assertEquals(record.periodicity, '1W')  # Weekly
         self.assertFalse(record.status_explanation)
 
     def test_unicode(self):
