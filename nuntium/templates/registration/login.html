@@ -1,7 +1,7 @@
-{% extends "base_front.html" %}
+{% extends "base_manager.html" %}
 {% load staticfiles %}
 {% load i18n %}
-
+{% block bodyclass %}login-screen{% endblock bodyclass %}
 {% block content %}
 <div class="accounts-box">
     <div class="accounts-box__instructions">
@@ -13,6 +13,8 @@
             <i class="fa fa-google"></i> Sign in with Google
         </a>
     </div>
+    {% block sidebar %}
+    {% endblock sidebar %}
     <div class="accounts-box__login-register-forms">
         {% if form.errors %}
             <div class="alert alert-danger">

@@ -34,7 +34,7 @@
     <![endif]-->
   </head>
 
-  <body>
+  <body class="{% block bodyclass %}{% endblock bodyclass %}">
     <div id="wrap">
 
       <!-- Fixed navbar -->
@@ -74,6 +74,7 @@
         {% include 'nuntium/profiles/status-bar.html' %}
         <div class="manager-page">
           <div class="row">
+            {% block sidebar %}
             <div class="sidebar">
               <div class="sidebar__inner">
                 {% if writeitinstance %}
@@ -83,6 +84,7 @@
                 {% endif %}
               </div>
             </div>
+            {% endblock sidebar %}
             <div class="content-area" role="main">
               <div class="content-area__inner">
                 {% block content %}
