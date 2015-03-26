@@ -18,6 +18,8 @@ from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, 
 from django.contrib import messages as view_messages
 from django.utils.translation import ugettext as _
 import json
+from nuntium.popit_api_instance import PopitApiInstance
+from nuntium.tasks import pull_from_popit
 
 
 class UserAccountView(TemplateView):
@@ -363,6 +365,23 @@ class WriteitPopitRelatingView(FormView):
         context['writeitinstance'] = self.writeitinstance
         context['relations'] = self.writeitinstance.writeitinstancepopitinstancerecord_set.all()
         return context
+
+
+class ReSyncFromPopit(View):
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_authenticated():
+            raise Http404
+        return super(ReSyncFromPopit, self).dispatch(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        writeitinstance = get_object_or_404(WriteItInstance,
+            slug=self.kwargs['slug'],
+            owner=self.request.user)
+        popits_previously_related = PopitApiInstance.objects.filter(
+            writeitinstancepopitinstancerecord__writeitinstance=writeitinstance)
+        popit_api_instance = get_object_or_404(popits_previously_related, pk=self.kwargs['popit_api_pk'])
+        pull_from_popit.delay(writeitinstance, popit_api_instance)
+        return HttpResponse()
 
 
 class WriteItDeleteView(DeleteView):

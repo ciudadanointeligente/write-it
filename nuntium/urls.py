@@ -24,6 +24,7 @@ from nuntium.user_section.views import (
     WriteItInstanceTemplateUpdateView,
     WriteItInstanceUpdateView,
     WriteitPopitRelatingView,
+    ReSyncFromPopit,
 )
 
 
@@ -46,6 +47,7 @@ managepatterns = patterns('',
     url(r'^settings/$', WriteItInstanceAdvancedUpdateView.as_view(), name='writeitinstance_advanced_update'),
     url(r'^settings/api/$', WriteItInstanceApiDocsView.as_view(), name='writeitinstance_api_docs'),
     url(r'^settings/sources/$', WriteitPopitRelatingView.as_view(), name='relate-writeit-popit'),
+    url(r'^settings/sources/resync/(?P<popit_api_pk>[-\d]+)/$', ReSyncFromPopit.as_view(), name='resync-from-popit'),
     url(r'^settings/templates/$', WriteItInstanceTemplateUpdateView.as_view(), name='writeitinstance_template_update'),
     url(r'^settings/templates/new_answer_notification/$', NewAnswerNotificationTemplateUpdateView.as_view(), name='edit_new_answer_notification_template'),
     url(r'^settings/templates/confirmation_template/$', ConfirmationTemplateUpdateView.as_view(), name='edit_confirmation_template'),
