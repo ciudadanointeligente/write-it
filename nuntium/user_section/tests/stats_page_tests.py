@@ -14,12 +14,12 @@ class StatsPageTestCase(TestCase):
 
     def test_there_is_a_url(self):
         '''There is a url for stats per instance'''
-        url = reverse('stats', kwargs={'slug': self.writeitinstance.slug})
+        url = reverse('stats', subdomain=self.writeitinstance.slug)
         self.assertTrue(url)
 
     def test_get_the_url_brings_the_instance_and_renders_the_template(self):
         '''When getting the url brings some stats and renders the specific template'''
-        url = reverse('stats', kwargs={'slug': self.writeitinstance.slug})
+        url = reverse('stats', subdomain=self.writeitinstance.slug)
         self.client.login(username=self.writeitinstance.owner, password="feroz")
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
@@ -28,7 +28,7 @@ class StatsPageTestCase(TestCase):
 
     def test_it_brings_some_stats_as_well(self):
         '''It brings some stats as well'''
-        url = reverse('stats', kwargs={'slug': self.writeitinstance.slug})
+        url = reverse('stats', subdomain=self.writeitinstance.slug)
         client = Client()
         client.login(username=self.writeitinstance.owner, password="feroz")
         response = client.get(url)

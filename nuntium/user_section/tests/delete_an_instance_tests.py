@@ -13,12 +13,12 @@ class DeleteAnInstanceTestCase(UserSectionTestCase):
 
     def test_delete_url(self):
         '''There is a url to delete a writeitinstance'''
-        url = reverse('delete_an_instance', kwargs={'slug': self.writeitinstance.slug})
+        url = reverse('delete_an_instance', subdomain=self.writeitinstance.slug)
         self.assertTrue(url)
 
     def test_get_to_url(self):
         '''Get the delete a WriteItInstance url returns a check if deleting'''
-        url = reverse('delete_an_instance', kwargs={'slug': self.writeitinstance.slug})
+        url = reverse('delete_an_instance', subdomain=self.writeitinstance.slug)
         c = Client()
         c.login(username="fiera", password="feroz")
         response = c.get(url)
@@ -30,7 +30,7 @@ class DeleteAnInstanceTestCase(UserSectionTestCase):
 
     def test_post_to_url(self):
         '''When I post to the URL then it deletes the writeitinstance'''
-        url = reverse('delete_an_instance', kwargs={'slug': self.writeitinstance.slug})
+        url = reverse('delete_an_instance', subdomain=self.writeitinstance.slug)
         c = Client()
         c.login(username="fiera", password="feroz")
         response = c.post(url)
@@ -42,7 +42,7 @@ class DeleteAnInstanceTestCase(UserSectionTestCase):
 
     def test_get_if_not_logged_in(self):
         '''If I'm not logged in I cannot get the writeit instance delete url'''
-        url = reverse('delete_an_instance', kwargs={'slug': self.writeitinstance.slug})
+        url = reverse('delete_an_instance', subdomain=self.writeitinstance.slug)
         c = Client()
         # this line is intentionally commented so I can show that I'm not logged in
         # c.login(username="fiera", password="feroz")
@@ -52,7 +52,7 @@ class DeleteAnInstanceTestCase(UserSectionTestCase):
 
     def test_post_if_not_logged_in(self):
         '''If I'm not logged in I cannot post to the writeit instance delete url'''
-        url = reverse('delete_an_instance', kwargs={'slug': self.writeitinstance.slug})
+        url = reverse('delete_an_instance', subdomain=self.writeitinstance.slug)
         c = Client()
         # this line is intentionally commented so I can show that I'm not logged in
         # c.login(username="fiera", password="feroz")

@@ -188,7 +188,7 @@ class PerInstanceSearchFormTestCase(SearchIndexTestCase):
         self.assertEquals(view.template, 'nuntium/instance_search.html')
 
     def test_per_instance_search_url(self):
-        url = reverse('instance_search', kwargs={'slug': self.writeitinstance.slug})
+        url = reverse('instance_search', subdomain=self.writeitinstance.slug)
 
         response = self.client.get(url)
 
