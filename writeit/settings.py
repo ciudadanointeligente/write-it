@@ -123,11 +123,11 @@ PIPELINE_CSS = {
         ),
         'output_filename': 'css/manager.css',
     },
-    'writeit-front': {
+    'writeit-writeinpublic': {
         'source_filenames': (
-            'sass/front.scss',
+            'sass/writeinpublic.scss',
         ),
-        'output_filename': 'css/front.css',
+        'output_filename': 'css/writeinpublic.css',
     }
 }
 
