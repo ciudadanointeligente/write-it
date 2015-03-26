@@ -36,7 +36,7 @@ class PersonSelectMultipleWidget(SelectMultiple):
 
 
 class PersonMultipleChoiceField(ModelMultipleChoiceField):
-    widget = PersonSelectMultipleWidget(attrs={'class': 'chosen-person-select form-control'})
+    widget = PersonSelectMultipleWidget(attrs={'class': 'chosen-person-select'})
 
     def label_from_instance(self, obj):
         return obj.name
@@ -83,7 +83,11 @@ class MessageCreateForm(ModelForm):
 
 
 class WhoForm(Form):
-    pass
+    persons = PersonMultipleChoiceField(queryset=Person.objects.none())
+
+    def __init__(self, persons_queryset, *args, **kwargs):
+        super(WhoForm, self).__init__(*args, **kwargs)
+        self.fields['persons'].queryset = persons_queryset
 
 
 class DraftForm(Form):

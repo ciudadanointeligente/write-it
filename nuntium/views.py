@@ -80,6 +80,12 @@ class WriteMessageView(NamedUrlSessionWizardView):
     def get_step_url(self, step):
         return reverse(self.url_name, kwargs={'slug': self.kwargs['slug'], 'step': step})
 
+    def get_form_kwargs(self, step):
+        if step == 'who':
+            return {'persons_queryset': self.writeitinstance.persons.all()}
+        else:
+            return {}
+
     def process_step(self, form):
         form_data = self.get_form_step_data(form)
         self.storage.extra_data.update(form_data)
