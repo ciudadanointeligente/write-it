@@ -6,6 +6,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.formtools.wizard.views import NamedUrlSessionWizardView
+from django.shortcuts import get_object_or_404
 
 from haystack.views import SearchView
 from itertools import chain
@@ -71,7 +72,7 @@ class WriteMessageView(NamedUrlSessionWizardView):
     form_list = FORMS
 
     def dispatch(self, request, *args, **kwargs):
-        self.writeitinstance = WriteItInstance.objects.get(slug=kwargs['slug'])
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=kwargs['slug'])
         return super(WriteMessageView, self).dispatch(request=request, *args, **kwargs)
 
     def get_template_names(self):
@@ -82,6 +83,7 @@ class WriteMessageView(NamedUrlSessionWizardView):
 
     def get_form_kwargs(self, step):
         if step == 'who':
+            # FIXME: Do we actually want .all() here?
             return {'persons_queryset': self.writeitinstance.persons.all()}
         else:
             return {}

@@ -1,5 +1,5 @@
 # coding=utf-8
-from django.forms import ModelForm, ModelMultipleChoiceField, SelectMultiple, URLField, Form
+from django.forms import ModelForm, ModelMultipleChoiceField, SelectMultiple, URLField, Form, Textarea, TextInput, EmailInput
 from .models import Message, WriteItInstance, Confirmation
 
 from contactos.models import Contact
@@ -90,12 +90,21 @@ class WhoForm(Form):
         self.fields['persons'].queryset = persons_queryset
 
 
-class DraftForm(Form):
-    pass
+class DraftForm(ModelForm):
+    class Meta:
+        model = Message
+        fields = ['content', 'subject', 'author_name', 'author_email']
+        widgets = {
+            'content': Textarea(attrs={'class': 'form-control'}),
+            'subject': TextInput(attrs={'class': 'form-control'}),
+            'author_name': TextInput(attrs={'class': 'form-control'}),
+            'author_email': EmailInput(attrs={'class': 'form-control'}),
+        }
 
 
-class PreviewForm(Form):
-    pass
+class PreviewForm(ModelForm):
+    class Meta:
+        model = Message
 
 
 class MessageSearchForm(SearchForm):
