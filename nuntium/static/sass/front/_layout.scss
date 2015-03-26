@@ -1,0 +1,14 @@
+.accounts-box {
+    @include make-md-column(12);
+    @include make-lg-column(10);
+    @include make-lg-column-offset(1);
+    padding: 0;
+}
+
+.accounts-box__login-register-forms {
+    @include make-md-column(7);
+}
+
+.accounts-box__instructions {
+    @include make-md-column(5);
+}
