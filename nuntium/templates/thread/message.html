@@ -5,10 +5,14 @@
         <dt>{% trans "To" %}</dt>
       {% if person_links %}
         <dd>
-            <a href="{% url 'thread_to' slug='foo' pk=1024 %}" title="{% trans "Show all messages to Alice Brown" %}">Alice Brown</a>,
-            <a href="{% url 'thread_to' slug='foo' pk=1024 %}" title="{% trans "Show all messages to Bob Black" %}">Bob Black</a></dd>
+            {% for person in persons %}
+            <a href="{% url 'thread_to' slug=writeitinstance.slug pk=person.pk %}" title="{% blocktrans with name=person.name %}Show all messages to {{ name }}{% endblocktrans %}">{{ person.name }}</a></dd>
+            {% endfor %}
       {% else %}
-        <dd>Alice Brown, Bob Black</dd>
+      <dd>{% for person in persons %}
+        {% if forloop.last and not forloop.first %} and {% elif not forloop.first %}, {% endif %}
+      {{ person.name }}
+        {% endfor %}</dd>
       {% endif %}
         <dt>{% trans "From" %}</dt>
       {% if person_links %}

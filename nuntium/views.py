@@ -88,6 +88,23 @@ class WriteMessageView(NamedUrlSessionWizardView):
         else:
             return {}
 
+    def get_form_values(self):
+        """
+        This code is taken from the django form wizards views.py
+        Returns a dictionary of all form values
+        """
+        final_form_list = []
+        # walk through the form list and try to validate the data again.
+        for form_key in self.get_form_list():
+            form_obj = self.get_form(step=form_key,
+                data=self.storage.get_step_data(form_key),
+                files=self.storage.get_step_files(form_key))
+            form_obj.is_valid()
+            final_form_list.append(form_obj)
+        data = {}
+        [data.update(form.cleaned_data) for form in final_form_list]
+        return data
+
     def done(self, form_list, **kwargs):
         do_something_with_the_form_data(form_list)
         return HttpResponseRedirect(reverse('write_message_sign', kwargs={'slug': self.kwargs['slug']}))
@@ -97,11 +114,8 @@ class WriteMessageView(NamedUrlSessionWizardView):
         context['writeitinstance'] = self.writeitinstance
         if self.steps.current == 'who':
             context['persons'] = self.writeitinstance.persons.all()
-        context['persons'] = context['who-persons']
-        context['subject'] = context['draft-subject'][0]
-        context['content'] = context['draft-content'][0]
-        context['author_name'] = context['draft-author_name'][0]
-        context['author_email'] = context['draft-author_email'][0]
+        if self.steps.current == 'preview':
+            context.update(self.get_form_values())
         return context
 
 
