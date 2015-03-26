@@ -11,6 +11,7 @@ from datetime import timedelta
 from django.utils import timezone
 from mock import patch, call
 from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse
 
 
 class PopitWriteitRelationRecord(TestCase):
@@ -220,3 +221,67 @@ class PopitWriteitRelationRecord(TestCase):
         calls = [call('inprogress'), call('error', _('We could not connect with the URL'))]
 
         set_status.assert_has_calls(calls)
+
+
+class UpdateStatusOfPopitWriteItRelation(TestCase):
+    '''
+    This test cases should deal with users wanting to:
+    * Manually resync their instances
+    * How often they want their instances to be resynced
+    * Disable syncing of the instance
+    '''
+    def setUp(self):
+        super(UpdateStatusOfPopitWriteItRelation, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.get(id=1)
+        self.owner = self.writeitinstance.owner
+        self.owner.set_password('feroz')
+        self.owner.save()
+        self.popit_api_instance = PopitApiInstance.objects.first()
+        # Empty the popit_api_instance
+        self.popit_api_instance.person_set.all().delete()
+        self.popit_api_instance.url = settings.TEST_POPIT_API_URL
+        self.popit_api_instance.save()
+        self.popit_writeit_record = WriteitInstancePopitInstanceRecord.objects.create(
+            writeitinstance=self.writeitinstance,
+            popitapiinstance=self.popit_api_instance
+            )
+
+    def test_post_to_the_url_for_manual_resync(self):
+        '''Resyncing can be done by posting to a url'''
+        # This is just a symbolism but it is to show how this popit api is empty
+        self.assertFalse(self.popit_api_instance.person_set.all())
+
+        url = reverse('resync-from-popit', kwargs={'slug': self.writeitinstance.slug,
+            'popit_api_pk': self.popit_api_instance.pk})
+        self.client.login(username=self.owner.username, password="feroz")
+        response = self.client.post(url)
+        self.assertEquals(response.status_code, 200)
+        # It should have been updated
+        self.assertTrue(self.popit_api_instance.person_set.all())
+
+    def test_doesnt_add_another_relation_w_p(self):
+        '''
+        If a user posts to the server using another popit_api that has not previously been related
+        it does not add another relation
+        '''
+        another_popit_api_instance = PopitApiInstance.objects.last()
+        self.assertNotIn(another_popit_api_instance,
+            self.writeitinstance.writeitinstancepopitinstancerecord_set.all())
+
+        url = reverse('resync-from-popit', kwargs={'slug': self.writeitinstance.slug,
+            'popit_api_pk': another_popit_api_instance.pk})
+        self.client.login(username=self.owner.username, password="feroz")
+        response = self.client.post(url)
+        self.assertEquals(response.status_code, 404)
+
+    def test_post_has_to_be_the_owner_of_the_instance(self):
+        '''Only the owner of an instance can resync'''
+        url = reverse('resync-from-popit', kwargs={'slug': self.writeitinstance.slug,
+            'popit_api_pk': self.popit_api_instance.pk})
+        response = self.client.post(url)
+        self.assertEquals(response.status_code, 404)
+
+        other_user = User.objects.create_user(username="other_user", password="s3cr3t0")
+        self.client.login(username=other_user.username, password='s3cr3t0')
+        response = self.client.post(url)
+        self.assertEquals(response.status_code, 404)
