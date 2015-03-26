@@ -15,6 +15,8 @@ from nuntium.user_section.views import WriteItInstanceUpdateView, WriteItInstanc
 from nuntium.user_section.forms import WriteItInstanceBasicForm, \
     WriteItInstanceAdvancedUpdateForm, WriteItInstanceCreateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
+from nuntium.popit_api_instance import PopitApiInstance
+import json
 
 
 class UserSectionTestCase(TestCase):
@@ -198,9 +200,6 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         response = c.post(url, data=self.data, follow=True)
 
         self.assertEquals(response.status_code, 404)
-
-from nuntium.popit_api_instance import PopitApiInstance
-import json
 
 
 class WriteItInstancePullingDetailViewTestCase(UserSectionTestCase):
