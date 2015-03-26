@@ -1,8 +1,8 @@
-{% extends "base_public.html" %}
+{% extends "base_front.html" %}
 {% load i18n %}
 {% load pagination_tags %}
 
-{% block content_inner %}
+{% block content %}
 
     <h2 class="text-center">{% trans "Current instances of WriteIt" %}</h2>
 
@@ -25,4 +25,4 @@
     <p><a href="#" class="btn btn-primary">{% trans "Create a WriteIt instance" %}</a></p>
   {% endif %}
 
-{% endblock content_inner %}
+{% endblock content %}

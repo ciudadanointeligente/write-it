@@ -12,3 +12,9 @@
 .accounts-box__instructions {
     @include make-md-column(5);
 }
+
+
+.instances-list-group {
+  max-width: 28em;
+  margin: 2em auto;
+}
