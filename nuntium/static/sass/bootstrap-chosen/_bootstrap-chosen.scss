@@ -21,7 +21,7 @@ $chosen-focus-box-shadow: 0 1px 1px rgba(0, 0, 0, .075) inset, 0 0 8px $chosen-b
 $chosen-focus-transition: border linear .2s, box-shadow linear .2s !default;
 $chosen-height: $input-height-base !default;
 $chosen-multi-height: $input-height-base + 6px !default;
-$chosen-sprite-path: 'chosen-sprite.png' !default;
+$chosen-sprite-path: '/static/img/chosen-sprite.png' !default;
 $chosen-sprite-retina-path: 'chosen-sprite@2x.png' !default;
 
 .chosen-select { width: 100%; }
