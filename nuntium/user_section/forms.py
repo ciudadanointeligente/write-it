@@ -16,11 +16,16 @@ from ..forms import WriteItInstanceCreateFormPopitUrl
 class WriteItInstanceBasicForm(ModelForm):
     class Meta:
         model = WriteItInstance
-        fields = ['name']
+        fields = ['name', 'description']
 
         widgets = {
-            'name': TextInput(attrs={'class': 'form-control'})
-        }
+            'name': TextInput(attrs={'class': 'form-control'}),
+            'description': TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': _('Write to the people in power. Get answers. Be heard.'),
+                    }),
+            }
 
 
 class WriteItInstanceAdvancedUpdateForm(ModelForm):
