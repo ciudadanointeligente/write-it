@@ -1,9 +1,0 @@
-{% extends "base_instance.html" %}
-{% load i18n %}
-{% load subdomainurls %}
-
-{% block content_inner %}
-    {% for message in message_list %}
-        {% include "nuntium/message/message_in_list.html" with message=message %}
-    {% endfor %}
-{% endblock content_inner %}
