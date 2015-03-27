@@ -111,6 +111,7 @@ class WriteMessageView(NamedUrlSessionWizardView):
         # Save a message object here
         message = Message(writeitinstance=self.writeitinstance, **data)
         message.save()
+        Confirmation.objects.create(message=message)
         moderations = Moderation.objects.filter(message=message)
         if moderations.count() > 0 or self.writeitinstance.config.moderation_needed_in_all_messages:
             messages.success(self.request, _("Please confirm your email address. We have sent a confirmation link to %(email)s. After that your message will be waiting for moderation.") % {'email': message.author_email})
