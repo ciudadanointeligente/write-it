@@ -31,7 +31,7 @@
             </div>
             <div class="site-header__nav" id="navbar" role="navigation">
                 <ul>
-                    <li class="site-header__nav__link"><a href="#">Home</a></li>
+                    <li class="site-header__nav__link"><a href="{% url 'instance_detail' %}">Home</a></li>
                     <li class="site-header__nav__link"><a href="#">Messages</a></li>
                     <li class="site-header__nav__link"><a href="#">Search</a></li>
                   {% if not user.is_authenticated %}
@@ -50,19 +50,19 @@
                             </li>
                             <li class="divider"></li>
                             <li>
-                                <a href="{% url 'account' %}">
+                                <a href="{% url 'account' subdomain=None %}">
                                     <span class="glyphicon glyphicon-cog"></span>
                                     {% trans "Your Profile" %}
                                 </a>
                             </li>
                             <li>
-                                <a href="{% url 'your-instances' %}">
+                                <a href="{% url 'your-instances' subdomain=None %}">
                                     <span class="glyphicon glyphicon-tasks"></span>
                                     {% trans "Your WriteIts" %}
                                 </a>
                             </li>
                             <li>
-                                <a href="{% url 'django.contrib.auth.views.logout' %}">
+                                <a href="{% url 'django.contrib.auth.views.logout' subdomain=None %}">
                                     <span class="glyphicon glyphicon-log-out"></span>
                                     {% trans "Sign out" %}
                                 </a>
