@@ -125,7 +125,7 @@ class WriteMessageView(NamedUrlSessionWizardView):
         if self.steps.current == 'who':
             context['persons'] = self.writeitinstance.persons.all()
         if self.steps.current == 'preview':
-            context.update(self.get_form_values())
+            context['message'] = self.get_form_values()
         return context
 
 
@@ -232,13 +232,12 @@ class PerInstanceSearchView(SearchView):
 
 class MessagesPerPersonView(ListView):
     model = Message
-    template_name = "nuntium/message/per_person.html"
+    template_name = "thread/to.html"
 
-    def dispatch(self, *args, **kwargs):
-        self.person = Person.objects.get(id=self.kwargs['pk'])
-        self.subdomain = self.kwargs['slug']
-        self.writeitinstance = WriteItInstance.objects.get(slug=self.subdomain)
-        return super(MessagesPerPersonView, self).dispatch(*args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        self.person = Person.objects.get(pk=self.kwargs['pk'])
+        self.writeitinstance = WriteItInstance.objects.get(slug=request.subdomain)
+        return super(MessagesPerPersonView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         qs = Message.public_objects.filter(
@@ -251,3 +250,17 @@ class MessagesPerPersonView(ListView):
         context = super(MessagesPerPersonView, self).get_context_data(**kwargs)
         context['person'] = self.person
         return context
+
+
+class MessageThreadsView(ListView):
+    model = Message
+    template_name = 'thread/all.html'
+
+    def get_queryset(self):
+        queryset = super(MessageThreadsView, self).get_queryset()
+        return queryset.filter(writeitinstance__slug=self.request.subdomain)
+
+
+class MessageThreadView(DetailView):
+    model = Message
+    template_name = 'thread/read.html'

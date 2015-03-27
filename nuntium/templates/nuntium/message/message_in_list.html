@@ -4,35 +4,35 @@
 {% load markdown_deux_tags %}
 
 <dl class="dl-horizontal">
-<div class="panel panel-default">
-	<div class="panel-heading">
-	<h4>{{ message.subject }} <a href="{{ message.get_absolute_url }}"><span class="glyphicon glyphicon-link"></span></a></h4>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>{{ message.subject }} <a href="{{ message.get_absolute_url }}"><span class="glyphicon glyphicon-link"></span></a></h4>
 
-        {% with answer_count=message.answers.all.count %}
-          {% if not answer_count %}
+            {% with answer_count=message.answers.all.count %}
+            {% if not answer_count %}
             {% trans "There are no answers yet" %}
-          {% else %}
+            {% else %}
             {% blocktrans count answer_count=answer_count %}
-              There is {{ answer_count }} answer
+            There is {{ answer_count }} answer
             {% plural %}
-              There are {{ answer_count }} answers
+            There are {{ answer_count }} answers
             {% endblocktrans %}
-          {% endif %}
-        {% endwith %}
+            {% endif %}
+            {% endwith %}
 
-	</div>
-	<div class="panel-body">
-	<p>{% markdown %}{{ message.content }}{% endmarkdown %}</p>
-	<i class="glyphicon glyphicon-user"></i>
-	{% for person in message.people %}
-	  <a class="label label-default" title="{% blocktrans with person_name=person.name %}See all messages sent to {{ person_name }}{% endblocktrans %}" href='{% url 'messages_per_person' slug=message.writeitinstance.slug pk=person.id %}'>{{ person.name }}</a>
-	{% endfor %}
+        </div>
+        <div class="panel-body">
+            <p>{% markdown %}{{ message.content }}{% endmarkdown %}</p>
+            <i class="glyphicon glyphicon-user"></i>
+            {% for person in message.people %}
+            <a class="label label-default" title="{% blocktrans with person_name=person.name %}See all messages sent to {{ person_name }}{% endblocktrans %}" href='{% url 'thread_to' pk=person.pk %}'>{{ person.name }}</a>
+            {% endfor %}
 
-	<br />
-	<span class="author_name col-md-4"><small>{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}</small></span>
-    <div class='col-md-4 col-md-offset-4'>{% if message.created %}
-      {{ message.created }}
-      {% endif %}</div>
+            <br />
+            <span class="author_name col-md-4"><small>{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}</small></span>
+            <div class='col-md-4 col-md-offset-4'>{% if message.created %}
+                {{ message.created }}
+                {% endif %}</div>
+        </div>
     </div>
-</div>
 </dl>

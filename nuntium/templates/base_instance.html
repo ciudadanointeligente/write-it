@@ -32,7 +32,7 @@
             <div class="site-header__nav" id="navbar" role="navigation">
                 <ul>
                     <li class="site-header__nav__link"><a href="{% url 'instance_detail' %}">Home</a></li>
-                    <li class="site-header__nav__link"><a href="#">Messages</a></li>
+                    <li class="site-header__nav__link"><a href="{% url 'message_threads' %}">Messages</a></li>
                     <li class="site-header__nav__link"><a href="#">Search</a></li>
                   {% if not user.is_authenticated %}
                     <li class="site-header__nav__link site-header__nav__link--sign-in"><a href="{% url 'login' subdomain=None %}">{% trans "Sign in" %}</a></li>
