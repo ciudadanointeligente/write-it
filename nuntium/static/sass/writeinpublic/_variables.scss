@@ -1,7 +1,15 @@
 // Override bootstrap variables
 $body-bg: #f3f1eb;
-$brand-primary: #4faded;
-$font-family-sans-serif: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$brand-primary: #e94f36;
+$font-family-sans-serif: Signika, "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-family-serif: "adelle", "Helvetica Neue", Arial, Helvetica, serif;
 $btn-default-border: transparent;
 $font-size-base: 16px;
 $line-height-base: 1.5;
+$font-family-base: $font-family-serif;
+$headings-font-family:    $font-family-sans-serif;
+$headings-font-weight:    700 !default;
+
+$colour_green: #c2d83a;
+$colour_dark_blue: #2e353e;
+$high-dpi-screen: '-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi';

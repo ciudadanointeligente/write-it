@@ -1,9 +1,132 @@
-h1, h2, h3, h4 {
-    font-weight: bold;
+h1,
+.primary-heading {
+    font-size: 2.375em;
+    line-height: 1.1em;
+    font-weight: 400;
+    @media (min-width: $screen-md-min) {
+        font-size: 3.75em;
+    }
 }
 
+h2,
+.secondary-heading {
+    font-size: 1.875em;
+    font-weight: 600;
+    @media (min-width: $screen-md-min) {
+        font-size: 2.375em;
+    }
+}
+
+h3,
+.tertiary-heading {
+    font-size: 1.5em;
+    font-weight: 700;
+}
+
+h4,
+.quarternary-heading {
+    font-size: 1.125em;
+    text-transform: uppercase;
+}
+
+p {
+    line-height: 1.66em;
+    margin-bottom: 1em;
+    margin-bottom: 1rem;
+    margin-top: 0;
+}
 label {
     font-weight: normal;
+}
+
+// header
+.poplus-logo-tab {
+    display: inline-block;
+    background-color: $colour_green;
+    text-indent: -1000%;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 4.375em;
+    height: 4em;
+    position: absolute;
+    top: -0.666em;
+    left: 1em;
+    background-image: url('../img/poplus-logo.png'); // #todo: @2;
+    @media ($high-dpi-screen)  {
+        background-image: url('../img/poplus-logo@2.png');
+    }
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 50px 36px;
+    @media (min-width: $screen-md-min){
+        height: 5.8125em;
+        width: 6.25em;
+        top: -11px;
+        background-size: 70px 52px;
+    }
+}
+
+.site-title {
+    font-family: $font-family-sans-serif;
+    font-size: 1.2em;
+    margin-left: 90px;
+    @media (min-width: $screen-md-min) {
+        margin-left: 4.2em;
+        font-size: 1.875em;
+    }
+    &:hover,
+    &:active,
+    &:focus {
+        text-decoration: none;
+    }
+}
+
+.component-title {
+    color: $colour_dark_blue;
+}
+
+.dot-poplus {
+    color: $colour_green;
+    text-transform: uppercase;
+}
+
+.navbar {
+    box-shadow: 0px 1px 3px rgba(0,0,0,0.2);
+    padding-top: 0.65em;
+    padding-bottom: 0.65em;
+    @include clearfix;
+    margin: 0;
+    border: 0;
+    .container {
+        position: relative;
+    }
+}
+
+.factory-hero {
+    padding-top: 3em;
+    padding-bottom: 3em;
+    background-image: url("../img/front-write-it-background.jpg");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    @media (min-width: $screen-lg-min) {
+        padding-top: 7em;
+        padding-bottom: 8em;
+    }
+}
+
+.factory-hero__heading {
+    font-weight: 600;
+    margin-bottom: 36px;
+    color: #fff;
+    @media  (min-width: $screen-lg-min) {
+        font-size: 4.5em;
+        max-width: 80%;
+    }
+}
+
+.create-own-button {
+    margin-right: 1em;
 }
 
 .form-group {
@@ -42,9 +165,11 @@ label {
 }
 
 .btn {
-    font-weight: bold;
     border: 0;
     padding: ($padding-base-vertical*2) ($padding-base-horizontal*2);
+    border-radius: 1.5em;
+    font-weight: 600;
+    font-family: $font-family-sans-serif;
 }
 
 .btn-full-width {

@@ -1,4 +1,4 @@
-{% extends "base_manager.html" %}
+{% extends "base_writeinpublic.html" %}
 {% load i18n %}
 {% block sidebar %}
 {% endblock sidebar %}
@@ -6,13 +6,11 @@
 {% block content %}
 
     <div class="factory-hero">
+        <div class="container">
+            <h1 class="factory-hero__heading">{% trans "For public conversations with your politicians" %}</h1>
 
-        <h1 class="factory-hero__heading">{% trans "WriteIt is a zero-config factory for building sites that empower citizens to send emails to representatives and politicians." %}</h1>
-
-        <p><a href="#" class="btn btn-primary btn-lg">{% trans "Create a WriteIt instance" %}</a></p>
-
-        <p><a href="{% url 'instance_list' %}">{% trans "Or browse existing instances" %}</a></p>
-
+            <p><a href="#" class="btn btn-primary btn-lg create-own-button">{% trans "Create your own" %}</a> <a href="{% url 'instance_list' %}">{% trans "Or browse existing ones" %}</a></p>
+        </div>
     </div>
 
 {% endblock content %}

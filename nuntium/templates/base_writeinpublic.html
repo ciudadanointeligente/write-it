@@ -12,8 +12,10 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
-    <link href='http://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-    <title>WriteIt</title>
+    <link href='http://fonts.googleapis.com/css?family=Signika:400,600,700' rel='stylesheet' type='text/css'>
+    <script src="//use.typekit.net/sbp2hrv.js"></script>
+    <script>try{Typekit.load();}catch(e){}</script>
+    <title>WriteInPublic</title>
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
@@ -38,16 +40,11 @@
     <div id="wrap">
 
       <!-- Fixed navbar -->
-      <div class="navbar navbar-default navbar-static-top navbar-inverse" role="navigation">
+      <div class="navbar navbar-default navbar-static-top" role="navigation">
         <div class="container">
           <div class="navbar-header">
-            <a class="navbar-brand" href="/">
-            {% if writeitinstance.name %}
-              {{ writeitinstance.name }}
-            {% else %}
-              WriteIt
-            {% endif %}
-            </a>
+            <a href="/" class="poplus-logo-tab">Poplus</a>
+            <a href="/" class="site-title"><span class="component-title">WriteInPublic</span><span class="dot-poplus">.Poplus</span></a>
           </div>
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
@@ -68,38 +65,13 @@
         </div>
       </div>
 
-      <div class="container">
-        {% block header %}
-        {% endblock header %}
-        {% include 'nuntium/profiles/status-bar.html' %}
-        <div class="full-page">
-        <div class="row">
-            <div class="content-area" role="main">
                 {% block content %}
                 {% endblock content %}
-            </div>
-          </div>
-        </div>
-      </div>
 
     </div><!-- end wrap -->
 
     <div id="footer">
-      <ul class="container">
-        <li class="fci">{% blocktrans %}Built by <a href="http://www.ciudadanointeligente.org">Fundación Ciudadano Inteligente</a>{% endblocktrans %}</li>
-        <li class="poplus-logo">
-          <a href="http://poplus.org/">
-            <img src="{% static 'img/icon-poplus.png' %}">
-            Poplus
-          </a>
-        </li>
-        <li class="github">
-          <a href="http://www.github.com/ciudadanointeligente/write-it">
-            <i class="fa fa-github"></i>
-            {% blocktrans %}Find the code at Github{% endblocktrans %}
-          </a>
-        </li>
-      </ul>
+      <div class="container"></div>
     </div>
 
     <!-- Bootstrap core JavaScript
