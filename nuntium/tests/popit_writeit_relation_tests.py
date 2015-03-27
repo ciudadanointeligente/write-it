@@ -12,6 +12,7 @@ from django.utils import timezone
 from mock import patch, call
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
+from nuntium.user_section.forms import WriteItPopitUpdateForm
 
 
 class PopitWriteitRelationRecord(TestCase):
@@ -223,15 +224,9 @@ class PopitWriteitRelationRecord(TestCase):
         set_status.assert_has_calls(calls)
 
 
-class UpdateStatusOfPopitWriteItRelation(TestCase):
-    '''
-    This test cases should deal with users wanting to:
-    * Manually resync their instances
-    * How often they want their instances to be resynced
-    * Disable syncing of the instance
-    '''
+class WriteItPopitTestCase(TestCase):
     def setUp(self):
-        super(UpdateStatusOfPopitWriteItRelation, self).setUp()
+        super(WriteItPopitTestCase, self).setUp()
         self.writeitinstance = WriteItInstance.objects.get(id=1)
         self.owner = self.writeitinstance.owner
         self.owner.set_password('feroz')
@@ -245,6 +240,17 @@ class UpdateStatusOfPopitWriteItRelation(TestCase):
             writeitinstance=self.writeitinstance,
             popitapiinstance=self.popit_api_instance
             )
+
+
+class UpdateStatusOfPopitWriteItRelation(WriteItPopitTestCase):
+    '''
+    This test cases should deal with users wanting to:
+    * Manually resync their instances
+    * How often they want their instances to be resynced
+    * Disable syncing of the instance
+    '''
+    def setUp(self):
+        super(UpdateStatusOfPopitWriteItRelation, self).setUp()
 
     def test_post_to_the_url_for_manual_resync(self):
         '''Resyncing can be done by posting to a url'''
@@ -285,3 +291,17 @@ class UpdateStatusOfPopitWriteItRelation(TestCase):
         self.client.login(username=other_user.username, password='s3cr3t0')
         response = self.client.post(url)
         self.assertEquals(response.status_code, 404)
+
+
+class UpdateRecordFormTestCase(WriteItPopitTestCase):
+    '''
+    This deals with a Form to update the periodicity of syncronization of an instance
+    '''
+    def setUp(self):
+        super(UpdateRecordFormTestCase, self).setUp()
+
+    def test_validate_the_form(self):
+        data = {'periodicity': '1D'}
+        form = WriteItPopitUpdateForm(data, instance=self.popit_writeit_record)
+        self.assertIn('periodicity', form.fields)
+        self.assertTrue(form.is_valid())
