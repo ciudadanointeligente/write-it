@@ -469,7 +469,6 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
         connection = writeitinstance.config.get_mail_connection()
         new_answer_template = writeitinstance.new_answer_notification_template
 
-        current_site = Site.objects.get_current()
         message_url = reverse('thread_read', subdomain=writeitinstance.slug, kwargs={'slug': answer.message.slug})
 
         context = {

@@ -1,10 +1,8 @@
 from subdomains.utils import reverse
 from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
 from django.conf import settings
 from django.db.models import Q
 from django.test.client import Client, RequestFactory
-from django.utils.translation import activate
 from django.utils.unittest import skipUnless
 from popit.models import Person
 from mailit.forms import MailitTemplateForm

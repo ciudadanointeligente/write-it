@@ -5,6 +5,11 @@
   <ul class="navigation__list">
       <li{% if section == 'account' %} class="active"{% endif %}><a href="{% url 'account' %}">{% trans "Your Profile" %}</a></li>
   <li{% if section == 'your-instances' %} class="active"{% endif %}><a href="{% url 'your-instances' %}">{% trans "Your WriteIts" %}</a></li>
-  <li{% if section == 'docs' %} class="active"{% endif %}><a href="{% url 'user_section_documentation' %}">{% trans "Documentation" %}</a></li>
+  {% if writeitinstance %}
+    <li>
+      <h2 class="navigation__instance-name">{{ writeitinstance.name }}</h2>
+      {% include 'nuntium/profiles/manager-navigation.html' %}
+    </li>
+  {% endif %}
   </ul>
 </nav>

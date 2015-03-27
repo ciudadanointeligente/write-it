@@ -78,11 +78,7 @@
             {% block sidebar %}
             <div class="sidebar">
               <div class="sidebar__inner">
-                {% if writeitinstance %}
-                  {% include 'nuntium/profiles/manager-navigation.html' %}
-                {% else %}
-                  {% include 'nuntium/profiles/profile-navigation.html' %}
-                {% endif %}
+                {% include 'nuntium/profiles/profile-navigation.html' %}
               </div>
             </div>
             {% endblock sidebar %}

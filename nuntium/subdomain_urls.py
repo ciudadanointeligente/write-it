@@ -3,21 +3,15 @@ from django.conf.urls.i18n import i18n_patterns
 from django.views.generic import TemplateView
 
 from .views import PerInstanceSearchView, \
-    MessagesPerPersonView, MessageDetailView
+    MessagesPerPersonView
 
 from django_downloadview import ObjectDownloadView
 
 from mailit.views import MailitTemplateUpdateView
 from nuntium.models import AnswerAttachment
 from nuntium.views import (
-    AcceptModerationView,
-    ConfirmView,
-    HomeTemplateView,
     WriteMessageView,
-    MessageSearchView,
-    RejectModerationView,
     WriteItInstanceDetailView,
-    WriteItInstanceListView,
     )
 from nuntium.user_section.views import (
     AcceptMessageView,

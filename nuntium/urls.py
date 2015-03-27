@@ -1,36 +1,13 @@
 from django.conf.urls import patterns, url
-from django.views.generic import TemplateView
 
-from mailit.views import MailitTemplateUpdateView
 from nuntium.views import (
     AcceptModerationView,
     ConfirmView,
     HomeTemplateView,
-    WriteMessageView,
     MessageSearchView,
     RejectModerationView,
-    WriteItInstanceDetailView,
     WriteItInstanceListView,
     )
-from nuntium.user_section.views import (
-    AcceptMessageView,
-    AnswerCreateView,
-    AnswerUpdateView,
-    ConfirmationTemplateUpdateView,
-    MessageDelete,
-    MessageDetail,
-    MessagesPerWriteItInstance,
-    NewAnswerNotificationTemplateUpdateView,
-    WriteItDeleteView,
-    WriteItInstanceAdvancedUpdateView,
-    WriteItInstanceApiDocsView,
-    WriteItInstanceContactDetailView,
-    WriteItInstanceStatusView,
-    WriteItInstanceTemplateUpdateView,
-    WriteItInstanceUpdateView,
-    WriteitPopitRelatingView,
-)
-from nuntium.user_section.stats import StatsView
 
 urlpatterns = patterns('',
     # Examples:

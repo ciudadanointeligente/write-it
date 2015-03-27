@@ -24,7 +24,10 @@
 }
 
 .navigation__list {
+    @extend .list-unstyled;
+    color: $gray-light;
     a {
+        font-weight: normal;
         color: lighten($gray-light, 25%);
         &:hover,
         &:focus,
@@ -32,6 +35,17 @@
             color: #fff;
         }
     }
+}
+
+.navigation__instance-name {
+    font-size: 1.125em;
+    font-weight: bold;
+    margin-top: 0.66em;
+    margin-bottom: 0.33em;
+}
+
+.navigation__instance-section {
+    margin-left: 0.66em;
 }
 
 .breadcrumb {
