@@ -132,3 +132,25 @@
         background-color: lighten(#0266C8, 10%);
     }
 }
+
+// Template page
+
+.template-container {
+    background-color: #f4f4f4;
+    padding: 1.5em;
+    margin-bottom: 3em;
+    border-radius: $border-radius-base;
+    .helptext {
+        margin: 0.5em 0;
+        color: $gray;
+        display: block;
+    }
+    .save-bar {
+        margin-top: 0;
+        border: 0;
+    }
+}
+
+.template__title {
+    font-weight: bold;
+}
