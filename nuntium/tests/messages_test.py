@@ -181,7 +181,7 @@ class TestMessages(TestCase):
 
     def test_message_has_a_permalink(self):
         message1 = Message.objects.get(id=1)
-        expected_url = reverse('message_detail', kwargs={'slug': message1.slug, 'instance_slug': message1.writeitinstance.slug})
+        expected_url = reverse('thread_read', subdomain=message1.writeitinstance.slug, kwargs={'slug': message1.slug})
 
         self.assertEquals(expected_url, message1.get_absolute_url())
 
