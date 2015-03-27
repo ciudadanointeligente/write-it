@@ -7,7 +7,7 @@
 
     <div class="writing-step">
         <!-- :TODO: break this out into separate template, so we can re-use it on message/thread viewing pages -->
-        {% include "thread/message.html" %}
+        {% include "thread/message.html" with message=message %}
         <form action="" method="post">{% csrf_token %}
             {{ wizard.management_form }}
 

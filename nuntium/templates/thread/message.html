@@ -5,11 +5,11 @@
         <dt>{% trans "To" %}</dt>
       {% if person_links %}
         <dd>
-            {% for person in persons %}
+            {% for person in message.persons %}
             <a href="{% url 'thread_to' subdomain=writeitinstance.slug pk=person.pk %}" title="{% blocktrans with name=person.name %}Show all messages to {{ name }}{% endblocktrans %}">{{ person.name }}</a></dd>
             {% endfor %}
       {% else %}
-      <dd>{% for person in persons %}
+      <dd>{% for person in message.persons %}
         {% if forloop.last and not forloop.first %} and {% elif not forloop.first %}, {% endif %}
       {{ person.name }}
         {% endfor %}</dd>
@@ -17,15 +17,15 @@
         <dt>{% trans "From" %}</dt>
       {% if person_links %}
         <dd>
-            <a href="{% url 'thread_from' slug='foo' pk=42 %}" title="{% trans "Show all messages from {{ author_name }}" %}">{{ author_name }}</a>
+            <a href="#" title="{% trans "Show all messages from {{ message.author_name }}" %}">{{ message.author_name }}</a>
         </dd>
       {% else %}
-          <dd>{{ author_name }} <small class="text-muted">({% trans "Recipients will not see your email address" %})</small></dd>
+          <dd>{{ message.author_name }} <small class="text-muted">({% trans "Recipients will not see your email address" %})</small></dd>
       {% endif %}
           <dt>{% trans "Subject" %}</dt>
-          <dd>{{ subject }}</dd>
+          <dd>{{ message.subject }}</dd>
     </dl>
     <div class="message__content">
-        <pre>{{ content }}</pre>
+        <pre>{{ message.content }}</pre>
     </div>
 </div>

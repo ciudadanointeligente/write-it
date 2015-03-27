@@ -124,7 +124,7 @@ class WriteMessageView(NamedUrlSessionWizardView):
         if self.steps.current == 'who':
             context['persons'] = self.writeitinstance.persons.all()
         if self.steps.current == 'preview':
-            context.update(self.get_form_values())
+            context['message'] = self.get_form_values()
         return context
 
 
@@ -250,3 +250,13 @@ class MessagesPerPersonView(ListView):
         context = super(MessagesPerPersonView, self).get_context_data(**kwargs)
         context['person'] = self.person
         return context
+
+
+class MessageThreadsView(ListView):
+    model = Message
+    template_name = 'thread/all.html'
+
+
+class MessageThreadView(DetailView):
+    model = Message
+    template_name = 'thread/read.html'
