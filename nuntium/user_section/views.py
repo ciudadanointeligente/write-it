@@ -128,7 +128,7 @@ class WriteItInstanceUpdateView(UpdateView):
     def get_success_url(self):
         return reverse(
             'writeitinstance_basic_update',
-            subdomain=self.object.slug
+            subdomain=self.object.slug,
             )
 
 
@@ -156,7 +156,7 @@ class WriteItInstanceAdvancedUpdateView(UpdateView):
     def get_success_url(self):
         return reverse(
             'writeitinstance_advanced_update',
-            kwargs={'slug': self.object.writeitinstance.slug},
+            subdomain=self.object.writeitinstance.slug,
             )
 
 
