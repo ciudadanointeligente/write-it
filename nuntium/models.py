@@ -48,6 +48,7 @@ class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people
     for usability purposes. E.g. 'Candidates running for president'"""
     name = models.CharField(max_length=255)
+    description = models.CharField(max_length=512, blank=True)
     slug = AutoSlugField(populate_from='name', unique=True)
     persons = models.ManyToManyField(Person,
         related_name='writeit_instances',
