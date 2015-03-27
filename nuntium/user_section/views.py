@@ -32,8 +32,9 @@ class WriteItInstanceDetailBaseView(DetailView):
     model = WriteItInstance
 
     @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(DetailView, self).dispatch(*args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        self.kwargs['slug'] = request.subdomain
+        return super(DetailView, self).dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         self.object = super(DetailView, self).get_object(queryset=queryset)
@@ -251,7 +252,7 @@ class MessagesPerWriteItInstance(LoginRequiredMixin, ListView):
     template_name = 'nuntium/profiles/messages_per_instance.html'
 
     def get_queryset(self):
-        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.kwargs.get('slug'), owner=self.request.user)
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.request.subdomain, owner=self.request.user)
         return super(MessagesPerWriteItInstance, self).get_queryset().filter(writeitinstance=self.writeitinstance)
 
     def get_context_data(self, **kwargs):
@@ -344,7 +345,7 @@ class WriteitPopitRelatingView(FormView):
 
     # This method also checks for instance ownership
     def get_writeitinstance(self):
-        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.kwargs.get('slug'), owner=self.request.user)
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.request.subdomain, owner=self.request.user)
 
     def dispatch(self, *args, **kwargs):
         self.get_writeitinstance()

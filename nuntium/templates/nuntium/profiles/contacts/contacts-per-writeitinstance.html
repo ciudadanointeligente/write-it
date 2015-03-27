@@ -10,7 +10,7 @@ $(function() {
   $('.toggle-enable').change(function() {
 
     var csrftoken = $.cookie('csrftoken');
-    $.post("{% url 'toggle-enabled' %}",{
+    $.post("{% url 'toggle-enabled' subdomain=None %}",{
       "csrfmiddlewaretoken":csrftoken,
       'id': $(this).attr('contact-id')
     }, function(data){
