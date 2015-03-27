@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% block content %}
 {% load markdown_deux_tags %}
 <div class="panel panel-default container-fluid">
@@ -12,7 +13,7 @@
         {% trans 'This message was sent to' %}
         <br />
             {% for person in message.people %}
-              <a class="label label-default" title="{% blocktrans with person_name=person.name %}See all messages sent to {{ person_name }}{% endblocktrans %}" href='{% url 'messages_per_person' slug=message.writeitinstance.slug pk=person.id %}'>{{ person.name }}</a>
+              <a class="label label-default" title="{% blocktrans with person_name=person.name %}See all messages sent to {{ person_name }}{% endblocktrans %}" href='{% url 'thread_to' pk=person.pk %}'>{{ person.name }}</a>
             {% endfor %}
     </div>
   </div>

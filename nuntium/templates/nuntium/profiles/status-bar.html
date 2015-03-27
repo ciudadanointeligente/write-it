@@ -1,0 +1,21 @@
+{% load i18n %}
+{% load subdomainurls %}
+{% load staticfiles %}
+
+{% for rec in writeitinstance.writeitinstancepopitinstancerecord_set.all %}
+    {% if rec.status == 'inprogress' %}
+        <div class="alert alert-warning" role="alert">
+            {% blocktrans with url=rec.popitapiinstance.url %}
+            Currently we are pulling people from {{ url }}
+            {% endblocktrans %}
+        </div>
+    {% endif %}
+{% endfor %}
+{% if writeitinstance.config.testing_mode %}
+  <div class="alert alert-info" role="alert">
+
+      <a href="{% url 'writeitinstance_advanced_update' subdomain=writeitinstance.slug %}">{% blocktrans %}
+      <i class="fa fa-info-circle"></i> This instance is in testing mode which means that all mails will go to you.
+      {% endblocktrans %}</a>
+  </div>
+{% endif %}

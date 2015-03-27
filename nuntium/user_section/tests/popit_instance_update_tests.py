@@ -1,5 +1,5 @@
 from global_test_case import popit_load_data
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from nuntium.models import WriteItInstance, Membership, WriteitInstancePopitInstanceRecord
 from django.contrib.auth.models import User
 from django.forms import Form, URLField
@@ -132,15 +132,15 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         self.assertTrue(self.writeitinstance.persons.all())
 
     def test_url_for_posting_the_url(self):
-        reverse('relate-writeit-popit', kwargs={'slug': self.writeitinstance.slug})
+        reverse('relate-writeit-popit', subdomain=self.writeitinstance.slug)
 
     def test_post_to_the_url(self):
         '''It should reject the get to that url'''
         self.client.login(username="fieraferoz", password="feroz")
-        url = reverse('relate-writeit-popit', kwargs={'slug': self.writeitinstance.slug})
+        url = reverse('relate-writeit-popit', subdomain=self.writeitinstance.slug)
         response = self.client.post(url, data=self.data)
         self.assertEquals(response.status_code, 302)
-        basic_update_url = reverse('writeitinstance_basic_update', kwargs={'slug': self.writeitinstance.slug})
+        basic_update_url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
 
         self.assertRedirects(response, basic_update_url)
 
@@ -153,7 +153,7 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
     def test_post_to_the_url_shows_includes_something_about_the_result(self):
         '''Posting to relate the popit and writetiinstances returns something abotu the result'''
         self.client.login(username="fieraferoz", password="feroz")
-        url = reverse('relate-writeit-popit', kwargs={'slug': self.writeitinstance.slug})
+        url = reverse('relate-writeit-popit', subdomain=self.writeitinstance.slug)
         data = self.data
         data['popit_url'] = 'http://nonexistingurl.org'
         response = self.client.post(url, data=data, follow=True)
@@ -164,7 +164,7 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
     def test_insights_about_pulling_popit_even_if_everything_goes_ok(self):
         '''Return some insights even if everything goes ok'''
         self.client.login(username="fieraferoz", password="feroz")
-        url = reverse('relate-writeit-popit', kwargs={'slug': self.writeitinstance.slug})
+        url = reverse('relate-writeit-popit', subdomain=self.writeitinstance.slug)
         data = self.data
         response = self.client.post(url, data=data, follow=True)
         messages = list(response.context['messages'])
@@ -177,7 +177,7 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         form.relate()
 
         self.client.login(username="fieraferoz", password="feroz")
-        url = reverse('relate-writeit-popit', kwargs={'slug': self.writeitinstance.slug})
+        url = reverse('relate-writeit-popit', subdomain=self.writeitinstance.slug)
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         self.assertIn('relations', response.context)

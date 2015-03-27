@@ -1,5 +1,6 @@
-{% extends "base_edit.html" %}
+{% extends "base_manager.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% load staticfiles %}
 {% load pagination_tags %}
 
@@ -13,36 +14,12 @@ $(".chosen-person-select").chosen();
 {% endblock extrajs %}
 
 {% block header %}
-{% include 'nuntium/profiles/breadcrumbs.html' with writeitinstance=writeitinstance %}
 
 {% include 'nuntium/profiles/per_instance_top_menu.html' with section='relate-writeit-popit' %}
 
 {% endblock header %}
 
 {% block content %}
-
-
-<!-- Modal -->
-<div class="modal fade" id="relate" >
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">{% trans 'Relate a new PopIt' %}</h4>
-      </div>
-      <div class="modal-body">
-        <form action="{% url 'relate-writeit-popit' slug=writeitinstance.slug %}" method="POST" role="form">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
-            <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 
 {% if messages %}
   <div class="alert alert-info" role="alert">
@@ -52,57 +29,43 @@ $(".chosen-person-select").chosen();
   </div>
 {% endif %}
 
-
-<div class="tab-content profile-page-tab-content">
-  <div class="tab-pane active row" id="instances">
-
-    <div class="col-md-4">
-      <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#relate">
-        {% trans 'Relate a new PopIt' %}
-      </button>
-    </div>
-    <div class="col-md-8">
+  <div class="page-header">
+    <h2>{% trans "Data Sources" %}</h2>
+  </div>
+  <div class="add-new-data-source">
+    <form action="{% url 'relate-writeit-popit' subdomain=writeitinstance.slug %}" method="POST" role="form">
+    <h3>{% trans "Add a new data source" %}</h3>
+      {% csrf_token %}
+      <div class="form-element">
+        <div class="form-inline">
+          {{ form.popit_url.label_tag }}
+          {{ form.popit_url }}
+          <button type="submit" class="btn btn-primary">{% trans 'Add' %}</button>
+        </div>
+      </div>
+    </form>
+  </div>
       {% autopaginate relations %}
       {% paginate %}
-      <table>
-        <thead>
-          <tr>
-            <th>
-              {% trans 'PopIt' %}
-            </th>
-            <th>
-              {% trans 'created' %}
-            </th>
-            <th>
-              {% trans 'updated' %}
-            </th>
-            <th>
-              {% trans 'status' %}
-            </th>
-            <th>
-              {% trans 'notes' %}
-            </th>
-            <th>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
           {% for record in relations %}
-            <tr>
-              <td>{{ record.popitapiinstance.url }}</td>
-              <td>{{ record.created }}</td>
-              <td>{{ record.updated }}</td>
-              <td>{{ record.status }}</td>
-              <td>{{ record.status_explanation }}</td>
-            </tr>
+            <ul class="list-of-data-sources">
+              <li class="list-of-data-sources__data-source">
+                <h3 class="data-source__title"><a href="{{ record.popitapiinstance.url }}">{{ record.popitapiinstance.url }}</a></h3>
+                <p class="data-source__info">{{ record.status }} &mdash; last updated {{ record.updated }}</p>
+                <div class="data-source__controls">
+                  {% comment %}
+                  <ul>
+                    <li><a href="#">Edit</a></li>
+                    <li><a href="#">Disconnect</a></li>
+                    <li><a href="#">Delete</a></li>
+                  </ul>
+                  {% endcomment %}
+                </div>
+              </li>
+            </ul>
           {% endfor %}
         </table>
         {% paginate %}
       </tbody>
-    </div>
-  </div>
-
-</div>
-
 
 {% endblock content %}

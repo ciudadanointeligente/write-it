@@ -1,7 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, SearchIndexTestCase
 from ..search_indexes import AnswerIndex
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from ..models import Answer, Message
 from haystack import indexes
 

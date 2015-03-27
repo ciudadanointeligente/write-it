@@ -6,7 +6,6 @@ from tastypie.api import Api
 
 from nuntium.views import RootRedirectView
 from nuntium.api import WriteItInstanceResource, MessageResource, AnswerCreationResource, HandleBouncesResource, PersonResource
-from nuntium.urls import managepatterns
 
 
 # Uncomment the next two lines to enable the admin:
@@ -32,11 +31,11 @@ urlpatterns = patterns('',
 
 urlpatterns += i18n_patterns('',
 
-    url(r'^(?P<slug>[-\w]+)/manage/', include(managepatterns)),
     url(r'^', include('nuntium.urls')),
 
     url(r'^', include('nuntium.user_section.urls')),
-    url(r'^writeit_instances/', include('nuntium.subdomain_urls')),
 
+    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', kwargs={'next_page': '/'}, name='logout'),
     (r'accounts/', include('django.contrib.auth.urls')),
+
 )

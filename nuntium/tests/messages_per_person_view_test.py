@@ -1,6 +1,6 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from ..models import WriteItInstance, Message
 from django.test.client import Client
 from popit.models import Person
@@ -17,9 +17,9 @@ class MessagesPerPersonViewTestCase(TestCase):
     def test_has_an_url(self):
         url = reverse(
             'messages_per_person',
+            subdomain=self.writeitinstance.slug,
             kwargs={
                 'pk': self.pedro.id,
-                'slug': self.writeitinstance.slug,
                 }
             )
 
@@ -28,9 +28,9 @@ class MessagesPerPersonViewTestCase(TestCase):
     def test_it_is_reachable(self):
         url = reverse(
             'messages_per_person',
+            subdomain=self.writeitinstance.slug,
             kwargs={
                 'pk': self.pedro.id,
-                'slug': self.writeitinstance.slug,
                 },
             )
         response = self.client.get(url)
@@ -69,9 +69,9 @@ class MessagesPerPersonViewTestCase(TestCase):
 
         url = reverse(
             'messages_per_person',
+            subdomain=self.writeitinstance.slug,
             kwargs={
                 'pk': self.pedro.id,
-                'slug': self.writeitinstance.slug,
                 },
             )
 
@@ -94,9 +94,9 @@ class MessagesPerPersonViewTestCase(TestCase):
             )
         url = reverse(
             'messages_per_person',
+            subdomain=self.writeitinstance.slug,
             kwargs={
                 'pk': self.pedro.id,
-                'slug': self.writeitinstance.slug
                 },
             )
 

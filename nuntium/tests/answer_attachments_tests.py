@@ -2,7 +2,7 @@ from global_test_case import GlobalTestCase as TestCase
 from nuntium.models import Message, Answer, AnswerAttachment
 from popit.models import Person
 from django.core.files import File
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 
 
 class AnswerAttachmentsTest(TestCase):

@@ -1,5 +1,5 @@
 # coding=utf-8
-from django.forms import ModelForm, ModelMultipleChoiceField, SelectMultiple, URLField
+from django.forms import ModelForm, ModelMultipleChoiceField, SelectMultiple, URLField, Form, Textarea, TextInput, EmailInput
 from .models import Message, WriteItInstance, Confirmation
 
 from contactos.models import Contact
@@ -36,7 +36,7 @@ class PersonSelectMultipleWidget(SelectMultiple):
 
 
 class PersonMultipleChoiceField(ModelMultipleChoiceField):
-    widget = PersonSelectMultipleWidget(attrs={'class': 'chosen-person-select form-control'})
+    widget = PersonSelectMultipleWidget(attrs={'class': 'chosen-person-select'})
 
     def label_from_instance(self, obj):
         return obj.name
@@ -88,6 +88,32 @@ class MessageCreateForm(ModelForm):
     class Meta:
         model = Message
         exclude = ("writeitinstance", "status", "slug", "moderated", "confirmated", "public")
+
+
+class WhoForm(Form):
+    persons = PersonMultipleChoiceField(queryset=Person.objects.none())
+
+    def __init__(self, persons_queryset, *args, **kwargs):
+        super(WhoForm, self).__init__(*args, **kwargs)
+        self.fields['persons'].queryset = persons_queryset
+
+
+class DraftForm(ModelForm):
+    class Meta:
+        model = Message
+        fields = ['content', 'subject', 'author_name', 'author_email']
+        widgets = {
+            'content': Textarea(attrs={'class': 'form-control'}),
+            'subject': TextInput(attrs={'class': 'form-control'}),
+            'author_name': TextInput(attrs={'class': 'form-control'}),
+            'author_email': EmailInput(attrs={'class': 'form-control'}),
+        }
+
+
+class PreviewForm(ModelForm):
+    class Meta:
+        model = Message
+        fields = []
 
 
 class MessageSearchForm(SearchForm):

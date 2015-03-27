@@ -1,5 +1,6 @@
-{% extends "base_edit.html" %}
+{% extends "base_manager.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% load pagination_tags %}
 {% load nuntium_tags %}
 {% load staticfiles %}
@@ -13,15 +14,15 @@
 {% endblock extrascripts %}
 
 {% block header %}
-{% include 'nuntium/profiles/breadcrumbs.html' with writeitinstance=writeitinstance %}
 
 {% include 'nuntium/profiles/per_instance_top_menu.html' with section='stats' %}
 
 {% endblock header %}
 
 {% block content %}
-<div class="tab-content profile-page-tab-content edit-profile-tab-content">
-  <div class="tab-pane active">
+    <div class="page-header">
+        <h2>{% trans "Statistics" %}</h2>
+    </div>
     <table class="table">
       {% for stat_name, stat_value in stats.get_stats %}
       <tr>
@@ -30,7 +31,4 @@
       </tr>
       {% endfor %}
     </table>
-
-  </div>
-</div>
 {% endblock content %}

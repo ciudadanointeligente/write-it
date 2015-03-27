@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load subdomainurls %}
 {% for contact in contacts %}
 <ul>
 <li  data-toggle="tooltip" data-placement="top" title="{{ contact.contact_type.name }} : {{ contact.value }}">{{ contact.value }} <input class="toggle-enable" contact-id="{{ contact.id }}" {% if contact.enabled %}checked{% endif %} data-toggle="toggle" type="checkbox"></li>

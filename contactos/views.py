@@ -5,7 +5,7 @@ from django.http import HttpResponse
 import simplejson as json
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from nuntium.models import WriteItInstance
 from popit.models import Person
 from django.http import Http404
@@ -42,7 +42,7 @@ class ContactCreateView(CreateView):
     form_class = ContactCreateForm
 
     def get_success_url(self):
-        return reverse('contacts-per-writeitinstance', kwargs={'slug': self.writeitinstance.slug})
+        return reverse('contacts-per-writeitinstance', subdomain=self.writeitinstance.slug)
 
     def get_form_kwargs(self):
         kwargs = super(ContactCreateView, self).get_form_kwargs()

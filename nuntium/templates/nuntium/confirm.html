@@ -1,12 +1,24 @@
-{% extends "base.html" %}
+{% extends "base_instance.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 
 {% block content %}
-<div class="jumbotron">
-	<div class="container">
-		<h1>{% trans "Confirmed!" %}</h1>
-		<p>{% trans "Thanks for using Write-it, your message will be sent very soon." %}</p>
-		<p><a href="{% url 'instance_detail' slug=confirmation.message.writeitinstance.slug %}" class="btn btn-primary btn-lg">{% blocktrans with confirmation.message.writeitinstance.name as name %}More messages at {{name}} <i class="icon-double-angle-right"></i>{% endblocktrans %}</a></p>
-	</div>
-</div>
+
+    <ol class="writing-progress">
+        <li>{% trans "Select recipients" %}</li>
+        <li>{% trans "Draft message" %}</li>
+        <li>{% trans "Preview message" %}</li>
+        <li class="writing-progress__current-step">{% trans "Message sent" %}</li>
+    </ol>
+
+    <h1>{% trans "Your message has been sent!" %}</h1>
+
+    <div class="message message--sent">
+        <p><strong>TODO:</strong> Display sent message here.</p>
+    </div>
+
+    <a href="{% url 'instance_detail' slug=confirmation.message.writeitinstance.slug %}">
+        {% trans "Go back to all messages" %}
+    </a>
+
 {% endblock content %}

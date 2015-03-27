@@ -3,7 +3,7 @@ from global_test_case import GlobalTestCase as TestCase
 from ..models import Confirmation, send_confirmation_email
 from ..models import Message, WriteItInstance, ConfirmationTemplate
 from django.core import mail
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from django.contrib.auth.models import User
 from django.forms import ValidationError
 from django.template import Context, Template
@@ -218,7 +218,7 @@ class ConfirmationTemplateFormTestCase(TestCase):
 
     def test_update_url(self):
         """Updating the template using the web"""
-        url = reverse('edit_confirmation_template', kwargs={'slug': self.writeitinstance.slug})
+        url = reverse('edit_confirmation_template', subdomain=self.writeitinstance.slug)
         self.assertTrue(url)
         c = Client()
         c.login(username="admin", password="admin")

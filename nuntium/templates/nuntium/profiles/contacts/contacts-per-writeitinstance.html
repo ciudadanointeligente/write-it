@@ -1,21 +1,22 @@
-{% extends "base_edit.html" %}
+{% extends "base_manager.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% load pagination_tags %}
 {% load nuntium_tags %}
 {% load staticfiles %}
 
 {% block extrajs %}
-$(function() { 
-  $('.toggle-enable').change(function() { 
-    
+$(function() {
+  $('.toggle-enable').change(function() {
+
     var csrftoken = $.cookie('csrftoken');
-    $.post("{% url 'toggle-enabled' %}",{
+    $.post("{% url 'toggle-enabled' subdomain=None %}",{
       "csrfmiddlewaretoken":csrftoken,
       'id': $(this).attr('contact-id')
     }, function(data){
-      
+
     })
-  }) 
+  })
 })
 {% endblock extrajs %}
 
@@ -28,17 +29,16 @@ $(function() {
 {% endblock extrascripts %}
 
 {% block header %}
-{% include 'nuntium/profiles/breadcrumbs.html' with writeitinstance=writeitinstance %}
 
 {% include 'nuntium/profiles/per_instance_top_menu.html' with section='contacts-per-writeitinstance' %}
 
 {% endblock header %}
 
 {% block content %}
-<div class="tab-content profile-page-tab-content">
-  <div class="tab-pane active row">
+  <div class="page-header">
+    <h2>{% trans "Recipients" %}</h2>
+  </div>
 
-    <div class="col-md-12">
       {% autopaginate people %}
       {% paginate %}
       <table class="table table-striped">
@@ -52,18 +52,15 @@ $(function() {
           {% for person in people %}
           <tr>
             <td>{{ person.name }}</td>
-            <td>{% show_contacts_for person writeitinstance %}</td>            
+            <td>{% show_contacts_for person writeitinstance %}</td>
           </tr>
           {% empty %}
-          <tr><td colspan="3" class="text-center">{% trans "You have no contacts" %}</td></tr>
+          <tr><td colspan="3" class="text-center">{% trans "There are no recipients" %}</td></tr>
           {% endfor %}
         </tbody>
       </table>
       {% paginate %}
-    </div>
 
-  </div>
-</div>
 
 <!-- Modal -->
 <div class="modal fade" id="addNewContact" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

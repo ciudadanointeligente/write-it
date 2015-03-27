@@ -1,0 +1,155 @@
+.writing-breadcrumb {
+  text-align: center;
+  list-style: none;
+  padding-left: 0;
+  margin-top: 2em;
+
+  @media (min-height: 700px) {
+    margin-top: 3em;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    display: none;
+  }
+}
+
+.writing-breadcrumb__step {
+  display: inline-block;
+
+  &:before {
+    content: "\00BB";
+    display: inline-block;
+    margin: 0 1.1em 0 1em; // more margin on right to compensate for whitespace on left
+  }
+
+  &:first-child {
+    &:before {
+      display: none;
+    }
+  }
+}
+
+.writing-breadcrumb__step--current {
+  font-weight: bold;
+}
+
+.writing-step {
+  max-width: 720px;
+  margin: 1em auto;
+
+  @media (min-width: $screen-sm) {
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+
+  @media (min-height: 700px) {
+    margin-top: 3em;
+    margin-bottom: 3em;
+  }
+
+  @media (min-height: 800px) {
+    margin-bottom: 5em;
+  }
+
+  @media (min-height: 900px) {
+    margin-bottom: 6em;
+  }
+
+  label {
+    font-weight: normal; // Stupid Bootstap and its bold labels
+    margin-bottom: 0.5em;
+  }
+
+  select {
+    width: 100%;
+    height: 6em;
+  }
+
+  h2 {
+    font-size: 1.2em;
+  }
+
+  @media (min-width: $screen-sm){
+    .form-group {
+      margin-bottom: 2em;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+// A special version of the standard writing-step,
+// which is much simpler and more spaced out.
+.writing-step--confirm-email {
+  text-align: center;
+
+  h2 {
+    margin-bottom: 1em;
+  }
+
+  p {
+    margin-bottom: 1.5em;
+  }
+}
+
+.writing-step__congratulations {
+  margin-bottom: 1em;
+  text-align: center;
+
+  @media (min-width: $screen-sm) {
+    margin-bottom: 2em;
+  }
+
+  @media (min-height: 700px) {
+    margin-bottom: 3em;
+  }
+}
+
+.label-with-hint {
+  display: block; // override default Bootstrap inline-block
+
+  small {
+    float: right;
+    color: $gray-light;
+    font-size: 0.8em;
+    margin-top: 0.2em;
+  }
+}
+
+.writing-buttons {
+  @include clearfix();
+  margin: 1em 0 2em 0;
+
+  @media (min-width: $screen-sm) {
+    margin-top: 2em;
+  }
+}
+
+.writing-buttons__button--next {
+  @extend .btn;
+  @extend .btn-primary;
+
+  float: right;
+
+  &:after {
+    @extend .fa;
+    content: $fa-var-chevron-right;
+    margin-left: 0.5em;
+    vertical-align: -1px;
+  }
+}
+
+.writing-buttons__button--previous {
+  @extend .btn;
+
+  float: left;
+
+  &:before {
+    @extend .fa;
+    content: $fa-var-chevron-left;
+    margin-right: 0.5em;
+    vertical-align: -1px;
+  }
+}

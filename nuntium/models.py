@@ -13,7 +13,7 @@ import datetime
 from djangoplugins.models import Plugin
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 import uuid
 from django.template.defaultfilters import slugify
 import re
@@ -109,8 +109,7 @@ class WriteItInstance(models.Model):
         return pull_from_popit.delay(self, popit_api_instance)
 
     def get_absolute_url(self):
-        return reverse('instance_detail', kwargs={
-            'slug': self.slug})
+        return reverse('instance_detail', subdomain=self.slug)
 
     @property
     def pulling_from_popit_status(self):
@@ -206,7 +205,10 @@ class MessagesQuerySet(QuerySet):
 
         queryset = super(MessagesQuerySet, self).filter(*args, **kwargs)
         if person:
-            queryset = queryset.filter(outboundmessage__contact__person=person)
+            queryset = queryset.filter(
+                Q(outboundmessage__contact__person=person) |
+                Q(nocontactom__person=person)
+                ).distinct()
         return queryset
 
 
@@ -313,10 +315,10 @@ class Message(models.Model):
 
     def get_absolute_url(self):
         return reverse(
-            'message_detail',
+            'thread_read',
+            subdomain=self.writeitinstance.slug,
             kwargs={
                 'slug': self.slug,
-                'instance_slug': self.writeitinstance.slug,
                 },
             )
 
@@ -471,8 +473,7 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
         connection = writeitinstance.config.get_mail_connection()
         new_answer_template = writeitinstance.new_answer_notification_template
 
-        current_site = Site.objects.get_current()
-        message_url = 'http://' + current_site.domain + reverse('message_detail', kwargs={'instance_slug': writeitinstance.slug, 'slug': answer.message.slug})
+        message_url = reverse('thread_read', subdomain=writeitinstance.slug, kwargs={'slug': answer.message.slug})
 
         context = {
             'author_name': answer.message.author_name,

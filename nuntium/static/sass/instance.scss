@@ -1,0 +1,20 @@
+// Put your variables (like common colours and lengths) in here.
+// You can override Bootstrap/Font-Awesome variables here, but you can’t read them.
+@import "instance/variables";
+
+// Use this file to specify which bits of Bootstrap you want.
+@import "instance/bootstrap";
+
+// Use this file to specify which bits of Font-Awesome you want.
+@import "instance/font-awesome";
+
+// Styling for the jQuery Chosen plugin
+@import "bootstrap-chosen/_bootstrap-chosen";
+
+// Structural styles that are common across all themes.
+// You can access Bootstrap/Font-Awesome variables and mixins in here.
+@import "instance/layout";
+
+// Applied on top of structure, to add visual style.
+// You can access Bootstrap/Font-Awesome variables and mixins in here.
+@import "instance/style";

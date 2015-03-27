@@ -69,11 +69,13 @@ MEDIA_ROOT = ''
 # Examples: "http://example.com/media/", "http://media.example.com/"
 MEDIA_URL = ''
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -86,13 +88,48 @@ STATICFILES_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'pipeline.finders.PipelineFinder',
 )
+
+PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
+PIPELINE_YUI_BINARY = '/usr/bin/env yui-compressor'
+PIPELINE_COMPILERS = (
+    'pipeline.compilers.sass.SASSCompiler',
+    )
+PIPELINE_SASS_BINARY = '/usr/bin/env sassc'  # Libsass, via libsass-python
+PIPELINE_CSS = {
+    'writeit-instance': {
+        'source_filenames': (
+            'sass/instance.scss',
+        ),
+        'output_filename': 'css/instance.css',
+    },
+    'writeit-admin': {
+        'source_filenames': (
+            'sass/admin.scss',
+        ),
+        'output_filename': 'css/admin.css',
+    },
+    'writeit-manager': {
+        'source_filenames': (
+            'sass/manager.scss',
+        ),
+        'output_filename': 'css/manager.css',
+    },
+    'writeit-writeinpublic': {
+        'source_filenames': (
+            'sass/writeinpublic.scss',
+        ),
+        'output_filename': 'css/writeinpublic.css',
+    }
+}
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '^1rqg8ctiq=#11c*=1mz5pyyry%)t%z^%nrhmh=q%g@r@bej1_'
@@ -127,9 +164,16 @@ MIDDLEWARE_CLASSES = (
     'pagination.middleware.PaginationMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'subdomains.middleware.SubdomainURLRoutingMiddleware',
 )
 
-ROOT_URLCONF = 'writeit.urls'
+ROOT_URLCONF = 'nuntium.subdomain_urls'
+
+# A dictionary of urlconf module paths, keyed by their subdomain.
+SUBDOMAIN_URLCONFS = {
+    None: 'writeit.urls',  # no subdomain, e.g. ``example.com``
+    'www': 'writeit.urls',
+}
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'writeit.wsgi.application'
@@ -140,6 +184,8 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 TESTING = 'test' in sys.argv
+
+STATICFILES_STORAGE = 'pipeline.storage.NonPackagingPipelineStorage' if TESTING else 'pipeline.storage.PipelineCachedStorage'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -165,12 +211,17 @@ INSTALLED_APPS = (
     # Searching.
     'haystack',
     'djcelery',
+    'pipeline',
     # Uncomment the next line to enable the admin:
     'django_admin_bootstrapped',
     'django.contrib.admin',
     'django_object_actions',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+
+    # Multi-page form wizard
+    'django.contrib.formtools',
+    'subdomains',
 )
 
 if TESTING:
@@ -306,6 +357,8 @@ AUTHENTICATION_BACKENDS = (
     'social.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
     )
+
+SESSION_COOKIE_DOMAIN = '.127.0.0.1.xip.io'
 
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_ENABLE_UTC = True

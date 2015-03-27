@@ -1,6 +1,6 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from nuntium.models import WriteItInstance, Message, Membership, Confirmation
 from nuntium.views import MessageCreateForm, PerInstanceSearchForm
 from popit.models import ApiInstance, Person
@@ -371,4 +371,4 @@ class InstanceDetailView(TestCase):
         url = instance.get_absolute_url()
         response = self.client.get(url)
 
-        self.assertIn('there is no-one to write to', response.content)
+        self.assertIn('There is no-one to write to yet', response.content)

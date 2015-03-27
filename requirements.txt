@@ -11,6 +11,8 @@ django-markdown-deux
 requests
 django-extensions
 django-haystack
+django-pipeline
+libsass
 elasticsearch
 celery
 pyyaml
@@ -41,3 +43,4 @@ django-annoying
 celery-haystack==0.8
 django-celery-transactions<0.2.0
 django-downloadview==1.6
+django-subdomains==2.0.4

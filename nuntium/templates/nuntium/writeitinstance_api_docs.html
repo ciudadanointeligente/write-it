@@ -1,11 +1,12 @@
-{% extends "base_edit.html" %}
+{% extends "base_manager.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 
 {% block header %}
   <ul class="breadcrumb">
-    <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
-    <li><a href="{% url 'account' %}">{% trans "Your profile" %}</a></li>
-    <li><a href="{% url 'your-instances' %}">{% trans "Your instances" %}</a></li>
+    <li><a href="{% url 'home' subdomain=None %}">{% trans "Home" %}</a></li>
+    <li><a href="{% url 'account' subdomain=None %}">{% trans "Your profile" %}</a></li>
+    <li><a href="{% url 'your-instances' subdomain=None %}">{% trans "Your instances" %}</a></li>
     <li class="active">{{ writeitinstance }}</li>
   </ul>
 
@@ -13,10 +14,6 @@
 {% endblock header %}
 
 {% block content %}
-  <div class="tab-content profile-page-tab-content">
-    <div class="tab-pane active row" id="instances">
-      <div class="tab-content">
-        <div class="tab-pane active" id="basic-update">
           <div class="page-header">
             <h2>{% trans "Creating a message using the API" %}</h2>
             <p>{% trans "To create a message using the API, send a POST request to" %}<br>
@@ -37,8 +34,4 @@
             </code>
             </p>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
 {% endblock content %}

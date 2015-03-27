@@ -1,5 +1,6 @@
-{% extends "base_edit.html" %}
+{% extends "base_manager.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% load staticfiles %}
 
 {% block extrajs %}
@@ -11,9 +12,6 @@
 
 
 {% block header %}
-{% include 'nuntium/profiles/breadcrumbs.html' with writeitinstance=writeitinstance %}
-
-
 {% endblock header %}
 
 {% block content %}

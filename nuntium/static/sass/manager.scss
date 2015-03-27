@@ -1,0 +1,17 @@
+// Put your variables (like common colours and lengths) in here.
+// You can override Bootstrap/Font-Awesome variables here, but you can’t read them.
+@import "manager/variables";
+
+// Use this file to specify which bits of Bootstrap you want.
+@import "manager/bootstrap";
+
+// Use this file to specify which bits of Font-Awesome you want.
+@import "manager/font-awesome";
+
+// Structural styles that are common across all themes.
+// You can access Bootstrap/Font-Awesome variables and mixins in here.
+@import "manager/layout";
+
+// Applied on top of structure, to add visual style.
+// You can access Bootstrap/Font-Awesome variables and mixins in here.
+@import "manager/style";

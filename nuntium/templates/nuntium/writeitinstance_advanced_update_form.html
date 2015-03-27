@@ -1,5 +1,6 @@
-{% extends "base_edit.html" %}
+{% extends "base_manager.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% load staticfiles %}
 
 
@@ -12,7 +13,6 @@ $(".chosen-person-select").chosen();
 {% endblock extrajs %}
 
 {% block header %}
-{% include 'nuntium/profiles/breadcrumbs.html' with writeitinstance=writeitinstance %}
 
 {% include 'nuntium/profiles/per_instance_top_menu.html' with section='writeitinstance_advanced_update' %}
 
@@ -20,10 +20,6 @@ $(".chosen-person-select").chosen();
 
 {% block content %}
 
-<div class="tab-content profile-page-tab-content">
-  <div class="tab-pane active row" id="instances">
-<div class="tab-content">
-  <div class="tab-pane active" id="advanced-update">
     <div class="page-header">
         <h2>{% blocktrans with writeitinstance=writeitinstance %}Editing the advanced parts of {{ writeitinstance }}{% endblocktrans %}</h2>
     </div>
@@ -58,20 +54,11 @@ $(".chosen-person-select").chosen();
         {{form.maximum_recipients.label_tag}}
         {{form.maximum_recipients}}
       </div>
-      <div class="text-right">
-        <input type="button" onclick="javascript:history.back();" class='btn btn-default' value="{% trans 'Cancel' %}" />
-        <input type="submit" class='btn btn-primary' value="{% trans 'Update' %}" />
+      <div class="save-bar">
+        <input type="submit" class='btn btn-primary' value="{% trans 'Save changes' %}" />
       </div>
       {% csrf_token %}
     </form>
-  </div>
-  <!-- <div class="tab-pane" id="webhooks">I'm not implemented</div>
-  <div class="tab-pane" id="advanced-update">I'm not implemented</div>
-  <div class="tab-pane" id="templates">I'm not implemented</div>
-  <div class="tab-pane" id="nothing"><a href="https://s3-sa-east-1.amazonaws.com/candideitstatic/fiera_trabajando.jpg">Really nothing, don't click!</a></div> -->
-</div>
-</div>
-</div>
 
 
 

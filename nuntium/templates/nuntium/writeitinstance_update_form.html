@@ -1,5 +1,6 @@
-{% extends "base_edit.html" %}
+{% extends "base_manager.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% load staticfiles %}
 
 
@@ -12,29 +13,21 @@ $(".chosen-person-select").chosen();
 {% endblock extrajs %}
 
 {% block header %}
-{% include 'nuntium/profiles/breadcrumbs.html' with writeitinstance=writeitinstance %}
 
 {% include 'nuntium/profiles/per_instance_top_menu.html' with section='writeitinstance_basic_update' %}
 
 {% endblock header %}
 
 {% block content %}
-<div class="tab-content profile-page-tab-content">
-  <div class="tab-pane active row" id="instances">
 
-
-<div class="tab-content">
-  <div class="tab-pane active" id="basic-update">
     <div class="page-header">
         <h2>{% blocktrans with writeitinstance=writeitinstance %}Editing {{ writeitinstance }}{% endblocktrans %}</h2>
     </div>
-    <div>
       <span>
         {% if writeitinstance.pulling_from_popit_status.inprogress > 0 %}
         {% blocktrans with writeitinstance=writeitinstance %}We are getting information from popit about the people and contacts in this instance{% endblocktrans %}
         {% endif %}
       </span>
-    </div>
 
     <form role="form" action="" method="post">
       <div class="form-group">
@@ -45,17 +38,14 @@ $(".chosen-person-select").chosen();
         {{form.persons.label_tag}}
         {{form.persons}}
       </div>
-      <div class="text-right">
-        <input type="button" onclick="javascript:history.back();" class='btn btn-default' value="{% trans 'Cancel' %}" />
-        <input type="submit" class='btn btn-primary' value="{% trans 'Update' %}" />
+
+      <div class="save-bar">
+        <input type="submit" class='btn btn-primary' value="{% trans 'Save changes' %}" />
       </div>
+
       {% csrf_token %}
     </form>
-  </div>
-</div>
 
-</div>
-</div>
 
 
 {% endblock content %}

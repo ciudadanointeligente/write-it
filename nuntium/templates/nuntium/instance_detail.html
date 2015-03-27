@@ -1,127 +1,47 @@
-{% extends "base.html" %}
+{% extends "base_instance.html" %}
 {% load i18n %}
-{% load staticfiles %}
-{% load pagination_tags %}
-
-{% block extrascripts %}
-<link rel="stylesheet" href="{% static 'css/chosen.css' %}">
-<script src="{% static 'js/chosen.jquery.min.js' %}"></script>
-{% endblock extrascripts %}
-{% block extrajs %}
-$(".chosen-person-select").chosen();
-{% endblock extrajs %}
-
+{% load subdomainurls %}
 
 {% block content %}
-{% load markdown_deux_tags %}
 
-{% if messages %}
-  <ul class="flash-messages">
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-{% endif %}
+    <div class="site-content">
+        <div class="container">
+            <div class="instance-hero">
+                <p class="instance-hero__welcome">Welcome to {{ writeitinstance.name }}</p>
+                <h2 class="instance-hero__heading">
+                    {% trans "This is a description of your WriteIt instance. Click the pencil to edit it." %}
+                    <a class="instance-hero__edit" href="#"><i class="fa fa-pencil">{% trans "Edit" %}</i></a>
+                </h2>
+                <a class="btn btn-primary btn-lg" href="{% url 'write_message' subdomain=writeitinstance.slug %}">{% trans "Send a message" %}</a>
+            </div>
+        </div>
 
-
-{% if writeitinstance.config.testing_mode %}
-  <div class="alert alert-info" role="alert">
-
-      {% blocktrans %}
-      <i class="fa fa-info-circle"></i> This instance is in testing mode which means that all mails will go to the owner and not to the person that you are writing to.
-      {% endblocktrans %}
-      {% trans 'To change it you can go to ' %}
-      <a href="{% url 'writeitinstance_advanced_update' slug=writeitinstance.slug %}">{% trans "advanced update" %}</a>.
-
-  </div>
-{% endif %}
-
-{% if not writeitinstance.config.allow_messages_using_form %}
-  <div class="panel panel-default">
-      <div class="panel-heading">
-          <h2 class="panel-title">{% trans "Sorry, currently you can not create new messages using this web" %}</h2>
-      </div>
-  </div>
-{% elif not writeitinstance.persons.exists %}
-  <div class="panel panel-default">
-      <div class="panel-heading">
-          <h2 class="panel-title">{% trans "Sorry, there is no-one to write to yet. Please check back soon." %}</h2>
-      </div>
-  </div>
-{% else %}
-  <div class="panel panel-default writing-panel">
-    <div class="panel-heading">
-        <h2 class="panel-title">{% trans "You can now write your question" %}</h2>
-    </div>
-    <div class="panel-body">
-        <form method='post' class='form-horizontal message-form' action="{% url 'instance_detail' slug=writeitinstance.slug %}" role="form">{% csrf_token %}
-            <div ng-controller="message-form">
-                {{ form.non_field_errors }}
-            	<div class="form-group{% if form.author_name.errors %} has-error{% endif %}">
-
-                    <label for="id_author_name">{% trans "Your name" %}</label>
-                    {{ form.author_name.errors }}
-                        <input id="id_author_name" maxlength="512" placeholder="{% trans 'Felipe' %}" value="{% if form.author_name.value %}{{ form.author_name.value }}{% endif %}" name="author_name" class="form-control" type="text" />
+      {% if writeitinstance.message_set %}
+        <div class="instance-summary">
+            <div class="container">
+                <div class="instance-summary__recent">
+                    <h2>{% trans "Recent messages" %}</h2>
+                    <p><strong>TODO:</strong> Show recent messages here.</p>
                 </div>
-                <div class="form-group{% if form.author_email.errors %} has-error{% endif %}">
-
-                    <label for="id_author_email">{% trans "Your email" %}</label>
-                    {{ form.author_email.errors }}
-                    <input id="id_author_email" maxlength="75" placeholder="{% trans 'copy@paste.org' %}" value="{% if form.author_email.value %}{{ form.author_email.value }}{% endif %}" class="form-control" name="author_email" type="text" />
-                </div>
-                <div class="form-group{% if form.persons.errors %} has-error{% endif %}">
-
-                    <label for="id_persons">{% trans "To whom" %}</label>
-                    {{ form.persons.errors }}
-                    <ul>
-                        {{ form.persons }}
-
-                    </ul>
-                        <span>{% trans "Trailing * means that we don't have how to contact the person" %}</span>
-                </div>
-                <div class="form-group{% if form.subject.errors %} has-error{% endif %}">
-
-                    <label for="id_subject">{% trans "Subject" %}</label>
-                    {{ form.subject.errors }}
-                        <input id="id_subject" class="form-control" value="{% if form.subject.value %}{{ form.subject.value }}{% endif %}" placeholder="{% trans 'About the new thing' %}" maxlength="255" name="subject" type="text" />
-                </div>
-
-                <div class="form-group{% if form.content.errors %} has-error{% endif %}">
-
-                    <label for="id_content">{% trans "Content" %}</label>
-                    {{ form.content.errors }}
-                        <textarea cols="40" id="id_content" name="content" value="{% if form.content.value %}{{ form.content.value }}{% endif %}" placeholder="{% trans 'Tell me please about the new thing ...' %}" class="form-control" rows="10"></textarea/>
-                </div>
-                <div class="form-group">
-                  <input type='submit' class='btn btn-primary' value= "{% trans 'Submit Message' %}"/>
+                <div class="instance-summary__popular">
+                    <h2>{% trans "Most popular representatives" %}</h2>
+                    <p><strong>TODO:</strong> Show representatives here.</p>
                 </div>
             </div>
-        </form>
+        </div>
+      {% endif %}
     </div>
-  </div>
-{% endif %}
-{% if writeitinstance.message_set.count == 0 %}
-    <h2>{% trans "There are no messages" %}</h2>
-{% else %}
 
-    <h2>{% trans "Messages" %}</h2>
-    {% autopaginate public_messages %}
-    {% paginate %}
-
-    {% for message in public_messages %}
-        {% include "nuntium/message/message_in_list.html" with message=message %}
-    {% endfor %}
-    {% paginate %}
-{% endif %}
-
-{% endblock content%}
+{% endblock content %}
 
 {% block search_form %}
-<form action="{% url 'instance_search' slug=writeitinstance.slug %}" class="navbar-form navbar-right" method="get"  role="form">
-    <div class="form-group">
-        <label class="sr-only" for="exampleInputEmail2">Search within messages</label>
-        <input type="text" class="form-control" name="q" id="id_q" placeholder="{% trans 'Search within messages' %}">
-    </div>
-    <button type="submit" class="btn btn-success" >{% trans 'Search' %}</button>
-</form>
+
+    <form action="{% url 'instance_search' subdomain=writeitinstance.slug %}" class="navbar-form navbar-right" method="get"  role="form">
+        <div class="form-group">
+            <label class="sr-only" for="exampleInputEmail2">Search within messages</label>
+            <input type="text" class="form-control" name="q" id="id_q" placeholder="{% trans 'Search within messages' %}">
+        </div>
+        <button type="submit" class="btn btn-success" >{% trans 'Search' %}</button>
+    </form>
+
 {% endblock search_form%}

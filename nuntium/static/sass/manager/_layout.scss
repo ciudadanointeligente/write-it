@@ -1,0 +1,89 @@
+// An example of a layout style, using two bootstrap variables.
+@media(min-width: $screen-sm-min){
+  #some-element { padding: $nav-link-padding; }
+}
+
+.sidebar {
+    @include make-lg-column(2);
+}
+
+.sidebar__inner {
+    background-color: $gray-darker;
+    padding: 1.5em 0 1.5em 2em;
+}
+
+.content-area {
+    @include make-lg-column(12);
+}
+
+.page-with-sidebar .content-area {
+    @include make-lg-column(10);
+}
+
+.content-area__inner {
+    padding: 1.5em 3em 2em 3em;
+    min-height: 250px;
+    & > .page-header {
+        margin-top: 0;
+    }
+}
+
+.navigation__list {
+    list-style-type: none outside none;
+    padding-left: 0;
+    li {
+        line-height: 1.5em;
+        margin-bottom: 0.3em;
+    }
+}
+
+.save-bar {
+    border-top: 1px solid $gray-lighter;
+    padding-top: 1em;
+    margin-top: 3em;
+}
+
+.add-new-data-source {
+    h3 {
+        font-size: 1.125em;
+    }
+    margin-bottom: 2em;
+}
+
+
+.list-of-data-sources {
+    @extend .list-unstyled;
+    margin-top: 3em;
+}
+
+.list-of-data-sources__data-source {
+   border-bottom: 1px solid $gray-lighter;
+   padding-bottom: 1em;
+   margin-top: 1em;
+   position: relative;
+}
+
+.data-source__controls {
+    position: absolute;
+    right: 0;
+    top: 1em;
+    ul {
+        @extend .list-unstyled;
+        @extend .list-inline;
+    }
+}
+
+.accounts-box {
+    @include make-md-column(12);
+    @include make-lg-column(10);
+    @include make-lg-column-offset(1);
+    padding: 0;
+}
+
+.accounts-box__login-register-forms {
+    @include make-md-column(7);
+}
+
+.accounts-box__instructions {
+    @include make-md-column(5);
+}

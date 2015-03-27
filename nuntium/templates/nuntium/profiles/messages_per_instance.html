@@ -1,5 +1,6 @@
-{% extends "base_edit.html" %}
+{% extends "base_manager.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 {% load staticfiles %}
 {% load pagination_tags %}
 {% block extrajs %}
@@ -11,20 +12,16 @@
 
 
 {% block header %}
-{% include 'nuntium/profiles/breadcrumbs.html' with writeitinstance=writeitinstance %}
 
 {% include 'nuntium/profiles/per_instance_top_menu.html' with section='messages_per_writeitinstance' %}
 
 {% endblock header %}
 
 {% block content %}
-
-<!-- Tab panes -->
-<div class="tab-content profile-page-tab-content">
-  <div class="tab-pane active row">
+  <div class="page-header">
+    <h2>{% trans "Messages" %}</h2>
+  </div>
     {% autopaginate message_list %}
-
-    <div class="col-md-12">
       {% paginate %}
       <table class="table table-striped">
         <thead>
@@ -62,7 +59,7 @@
               {% endif %}
 
             {% endif %}
-            <td><a href="{% url 'message_detail_private' slug=writeitinstance.slug pk=message.pk %}"><i class="fa fa-cogs"></i></a></td>
+            <td><a href="{% url 'message_detail_private' subdomain=writeitinstance.slug pk=message.pk %}"><i class="fa fa-cogs"></i></a></td>
             <td>
               {% blocktrans count answer_count=message.answers.count %}
                 {{ answer_count }} answer
@@ -70,10 +67,10 @@
                 {{ answer_count }} answers
               {% endblocktrans %}
               {% if writeitinstance.config.can_create_answer %}
-                <a data-toggle="modal" data-target="#modal" href="{% url 'create_answer' slug=writeitinstance.slug pk=message.pk %}" alt="{% trans "Add"%}"><i class="fa fa-plus"></i></a>
+                <a data-toggle="modal" data-target="#modal" href="{% url 'create_answer' subdomain=writeitinstance.slug pk=message.pk %}" alt="{% trans "Add"%}"><i class="fa fa-plus"></i></a>
               {% endif %}
             </td>
-            <td><a data-toggle="modal" data-target="#modal" class="deleteMessage" href="{% url 'message_delete' slug=writeitinstance.slug pk=message.pk %}"><i class="fa fa-times"></i></a></td>
+            <td><a data-toggle="modal" data-target="#modal" class="deleteMessage" href="{% url 'message_delete' subdomain=writeitinstance.slug pk=message.pk %}"><i class="fa fa-times"></i></a></td>
 
           </tr>
           {% empty %}
@@ -82,10 +79,7 @@
         </tbody>
       </table>
       {% paginate %}
-    </div>
 
-  </div>
-</div>
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content b-color">

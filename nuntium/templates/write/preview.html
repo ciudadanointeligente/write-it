@@ -1,0 +1,21 @@
+{% extends "base_instance.html" %}
+{% load i18n %}
+
+{% block content_inner %}
+
+    {% include "write/breadcrumb.html" with current_step=3 %}
+
+    <div class="writing-step">
+        <!-- :TODO: break this out into separate template, so we can re-use it on message/thread viewing pages -->
+        {% include "thread/message.html" with message=message %}
+        <form action="" method="post">{% csrf_token %}
+            {{ wizard.management_form }}
+
+            <p class="writing-buttons">
+                <a class="writing-buttons__button--previous" href="{% url 'write_message_step' step=wizard.steps.prev %}">{% trans "Edit message" %}</a>
+                    <input class="writing-buttons__button--next" type="submit" value="{% trans "Send message" %}"/>
+            </p>
+        </form>
+    </div>
+
+{% endblock content_inner %}

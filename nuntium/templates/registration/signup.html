@@ -1,0 +1,41 @@
+{% extends "base_manager.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load subdomainurls %}
+
+{% block content %}
+<div class="accounts-box">
+    <div class="accounts-box__instructions">
+        <h1>{% trans 'Sign up' %}</h1>
+        <p>If you've got an account sign in with it here. If not, it's quick and easy to <a href="#">sign up</a></p>
+        <hr />
+        <p>{% trans 'You can also&hellip;' %}</p>
+        <a class="btn btn-primary btn-full-width btn-google" href="{% url 'social:begin' 'google-oauth2' %}">
+            <i class="fa fa-google"></i> Sign in with Google
+        </a>
+    </div>
+    <div class="accounts-box__login-register-forms">
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                <p><strong>{% trans 'Sorry' %}</strong>{% trans ", the username and password you entered did not match our records. Please double-check and try again." %}</p>
+            </div>
+        {% endif %}
+
+        <form role="form" method="post" action="{% url 'django.contrib.auth.views.login' %}">
+            <div class="form-group">
+                <label for="username">{% trans 'Username' %}</label>
+                <input type="text" class="form-control" id="username" name="username">
+            </div>
+            <div class="form-group">
+                <label for="password">{% trans 'Password' %}</label>
+                <input type="password" class="form-control" id="password" name="password">
+            </div>
+            <button type="submit" class="btn btn-primary">{% trans 'Sign In' %}</button>
+            <input type="hidden" name="next" value="{{ next }}">
+            {% csrf_token %}
+        </form>
+
+
+    </div>
+</div>
+{% endblock content%}

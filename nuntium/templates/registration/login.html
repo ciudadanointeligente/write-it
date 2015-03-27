@@ -1,49 +1,43 @@
-{% extends "base.html" %}
+{% extends "base_manager.html" %}
 {% load staticfiles %}
 {% load i18n %}
-{% block extracss %}
-{% endblock extracss %}
-
-{% block extrajs %}
-{% endblock extrajs %}
-
-{% block menu-login-active %} class="active"{% endblock menu-login-active %}
+{% block bodyclass %}login-screen page-with-centered-box{% endblock bodyclass %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default">
-          <div class="panel-body">
-            <div class="text-center">
-                <span class="fa-stack fa-lg">
-                  <i class="fa fa-circle fa-stack-2x"></i>
-                  <i class="fa fa-user fa-stack-1x fa-inverse"></i>
-                </span>
-            </div>
-            {% if form.errors %}
+<div class="accounts-box">
+    <div class="accounts-box__instructions">
+        <h1>{% trans 'Sign in' %}</h1>
+        <p>If you've got an account sign in with it here. If not, it's quick and easy to <a href="#">sign up</a></p>
+        <hr />
+        <p>{% trans 'You can also&hellip;' %}</p>
+        <a class="btn btn-primary btn-full-width btn-google" href="{% url 'social:begin' 'google-oauth2' %}">
+            <i class="fa fa-google"></i> Sign in with Google
+        </a>
+    </div>
+    {% block sidebar %}
+    {% endblock sidebar %}
+    <div class="accounts-box__login-register-forms">
+        {% if form.errors %}
             <div class="alert alert-danger">
-                <p><strong>{% trans 'Oh snap!' %}</strong> {% trans "Your username and password didn't match. Please try again." %}</p>
+                <p><strong>{% trans 'Sorry' %}</strong>{% trans ", the username and password you entered did not match our records. Please double-check and try again." %}</p>
             </div>
-            {% endif %}
-            <form role="form" method="post" action="{% url 'django.contrib.auth.views.login' %}">
-              <div class="form-group">
-                <input type="text" class="form-control" id="username" name="username" placeholder="{% trans 'Username' %}">
-              </div>
-              <div class="form-group">
-                <input type="password" class="form-control" id="password" name="password" placeholder="{% trans 'Password' %}">
-              </div>
-              <button type="submit" class="btn btn-primary btn-lg btn-block">{% trans 'Sign In' %}</button>
-              <input type="hidden" name="next" value="{{ next }}" />
-              {% csrf_token %}
-            </form>
-          </div>
-          <div class="panel-body">
-            {% trans 'Or you can also ...' %}
-            <a class="btn btn-block btn-social btn-google" href="{% url 'social:begin' 'google-oauth2' %}">
-              <i class="fa fa-google"></i> Sign in with Google
-            </a>
-          </div>
-        </div>
+        {% endif %}
+
+        <form role="form" method="post" action="{% url 'django.contrib.auth.views.login' %}">
+            <div class="form-group">
+                <label for="username">{% trans 'Username' %}</label>
+                <input type="text" class="form-control" id="username" name="username">
+            </div>
+            <div class="form-group">
+                <label for="password">{% trans 'Password' %}</label>
+                <input type="password" class="form-control" id="password" name="password">
+            </div>
+            <button type="submit" class="btn btn-primary">{% trans 'Sign In' %}</button>
+            <input type="hidden" name="next" value="{{ next }}">
+            {% csrf_token %}
+        </form>
+
+
     </div>
 </div>
 {% endblock content%}

@@ -1,5 +1,5 @@
 from global_test_case import GlobalTestCase as TestCase
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from django.test.client import Client
 from nuntium.models import WriteItInstance
 
