@@ -355,6 +355,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     )
 
+SESSION_COOKIE_DOMAIN = '.127.0.0.1.xip.io'
+
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_ENABLE_UTC = True
 CELERY_CREATE_MISSING_QUEUES = True
