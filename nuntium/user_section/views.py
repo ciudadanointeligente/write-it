@@ -182,7 +182,7 @@ class WriteItInstanceCreateView(CreateView):
     def get_success_url(self):
         return reverse(
             'writeitinstance_basic_update',
-            kwargs={'slug': self.object.slug},
+            subdomain=self.object.slug
             )
 
     def get_form_kwargs(self):
