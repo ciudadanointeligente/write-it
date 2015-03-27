@@ -18,7 +18,7 @@ class MailitTemplateUpdateView(UpdateView):
         return super(MailitTemplateUpdateView, self).dispatch(*args, **kwargs)
 
     def get_object(self):
-        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.kwargs['slug'])
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.request.subdomain)
         if not self.writeitinstance.owner.__eq__(self.request.user):
             raise Http404
         self.object = self.writeitinstance.mailit_template
