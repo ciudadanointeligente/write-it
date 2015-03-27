@@ -1,12 +1,12 @@
-{% extends "base_manager.html" %}
+{% extends "base_writeinpublic.html" %}
 {% load i18n %}
 {% load pagination_tags %}
 {% block sidebar %}
 {% endblock sidebar %}
 {% block bodyclass %}page-without-sidebar{% endblock bodyclass %}
 {% block content %}
-
-    <h2 class="text-center">{% trans "Current instances of WriteIt" %}</h2>
+<div class="container">
+    <h2 class="text-center">{% trans "WriteIts" %}</h2>
 
   {% if object_list %}
     {% autopaginate object_list %}
@@ -23,8 +23,8 @@
     </div>
     {% paginate %}
   {% else %}
-    <p>{% trans "There are no instances yet!" %}</p>
-    <p><a href="#" class="btn btn-primary">{% trans "Create a WriteIt instance" %}</a></p>
+    <p>{% trans "There are no WriteIts yet!" %}</p>
+    <p><a href="#" class="btn btn-primary">{% trans "Create a WriteIt" %}</a></p>
   {% endif %}
-
+</div>
 {% endblock content %}

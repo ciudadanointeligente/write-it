@@ -67,21 +67,16 @@
 
 .accounts-box {
     background-color: $brand_primary;
-    background-image: url("../img/front-write-it-background.jpg");
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
     margin-top: 2em;
     margin-bottom: 4em;
-    border-radius: $border-radius-base;
-    box-shadow: 0 2px 3px rgba(0,0,0,0.2);
 }
 
 .accounts-box__login-register-forms {
     background-color: #fff;
     padding: 4em 4em 3.5em;
-    border-top-right-radius: $border-radius-base;
-    border-bottom-right-radius : $border-radius-base;
 }
 
 .accounts-box__instructions {

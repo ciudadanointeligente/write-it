@@ -139,7 +139,7 @@ label {
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
-    margin-top: 2em;
+    margin-top: 4em;
     margin-bottom: 4em;
     border-radius: $border-radius-base;
     box-shadow: 0 2px 3px rgba(0,0,0,0.2);
@@ -147,13 +147,13 @@ label {
 
 .accounts-box__login-register-forms {
     background-color: #fff;
-    padding: 4em 4em 3.5em;
+    padding: 4em 4em 4.5em;
     border-top-right-radius: $border-radius-base;
     border-bottom-right-radius : $border-radius-base;
 }
 
 .accounts-box__instructions {
-    padding: 2em 4em;
+    padding: 1em 4em 2em;
     color: #fff;
     hr {
         opacity: 0.33;
