@@ -1,6 +1,6 @@
 {% load i18n %}
 {% load staticfiles %}
-  <ul class="navigation__list">
+  <ul class="navigation__list navigation__instance-section" >
     <li class="{% if section == 'writeitinstance_basic_update' %}active{% endif %}"><a href="{% url 'writeitinstance_basic_update' slug=writeitinstance.slug %}">{% trans "Basic Update" %}</a></li>
     <li class="{% if section == 'writeitinstance_advanced_update' %}active{% endif %}"><a href="{% url 'writeitinstance_advanced_update' slug=writeitinstance.slug %}">{% trans "Advanced Update" %}</a></li>
     <li class="{% if section == 'writeitinstance_template_update' %}active{% endif %}"><a href="{% url 'writeitinstance_template_update' slug=writeitinstance.slug %}">{% trans "Templates" %}</a></li>

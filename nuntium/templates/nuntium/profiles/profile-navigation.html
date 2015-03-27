@@ -6,7 +6,7 @@
   <li{% if section == 'your-instances' %} class="active"{% endif %}><a href="{% url 'your-instances' %}">{% trans "Your WriteIts" %}</a></li>
   {% if writeitinstance %}
     <li>
-      {{ writeitinstance.name }}
+      <h2 class="navigation__instance-name">{{ writeitinstance.name }}</h2>
       {% include 'nuntium/profiles/manager-navigation.html' %}
     </li>
   {% endif %}
