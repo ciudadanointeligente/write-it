@@ -1,11 +1,9 @@
-{% extends "base.html" %}
+{% extends "base_instance.html" %}
 {% load i18n %}
 {% load subdomainurls %}
 
-
-{% block content %}
-<h1>{% blocktrans with person_name=person.name%}Messages sent to {{person_name}} {% endblocktrans %}</h1>
-{% for message in message_list %}
-    {% include "nuntium/message/message_in_list.html" with message=message %}
-{% endfor %}
-{% endblock content %}
+{% block content_inner %}
+    {% for message in message_list %}
+        {% include "nuntium/message/message_in_list.html" with message=message %}
+    {% endfor %}
+{% endblock content_inner %}

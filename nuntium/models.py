@@ -311,10 +311,10 @@ class Message(models.Model):
 
     def get_absolute_url(self):
         return reverse(
-            'message_detail',
+            'thread_read',
+            subdomain=self.writeitinstance.slug,
             kwargs={
                 'slug': self.slug,
-                'instance_slug': self.writeitinstance.slug,
                 },
             )
 

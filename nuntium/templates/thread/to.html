@@ -5,12 +5,14 @@
 
     <div class="person-profile">
         <img class="person-profile__photo" src="http://placehold.it/128x128" width="128" height="128">
-        <h2 class="person-profile__name">Alice Brown</h2>
+        <h2 class="person-profile__name">{{ person.name }}</h2>
         <p class="person-profile__context">Department of Internal Affairs</p>
     </div>
 
     <div class="person-messages">
-        <p><strong>TODO:</strong> Messages to/from this person.</p>
+        {% for message in message_list %}
+            {% include "nuntium/message/message_in_list.html" with message=message %}
+        {% endfor %}
     </div>
 
 {% endblock content_inner %}

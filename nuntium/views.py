@@ -231,13 +231,12 @@ class PerInstanceSearchView(SearchView):
 
 class MessagesPerPersonView(ListView):
     model = Message
-    template_name = "nuntium/message/per_person.html"
+    template_name = "thread/to.html"
 
-    def dispatch(self, *args, **kwargs):
-        self.person = Person.objects.get(id=self.kwargs['pk'])
-        self.subdomain = self.kwargs['slug']
-        self.writeitinstance = WriteItInstance.objects.get(slug=self.subdomain)
-        return super(MessagesPerPersonView, self).dispatch(*args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        self.person = Person.objects.get(pk=self.kwargs['pk'])
+        self.writeitinstance = WriteItInstance.objects.get(slug=request.subdomain)
+        return super(MessagesPerPersonView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         qs = Message.public_objects.filter(
