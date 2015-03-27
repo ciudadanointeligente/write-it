@@ -9,8 +9,7 @@
             <div class="instance-hero">
                 <p class="instance-hero__welcome">Welcome to {{ writeitinstance.name }}</p>
                 <h2 class="instance-hero__heading">
-                    {% trans "This is a description of your WriteIt instance. Click the pencil to edit it." %}
-                    <a class="instance-hero__edit" href="#"><i class="fa fa-pencil">{% trans "Edit" %}</i></a>
+                    {{ description|default:_("Write to the people in power. Get answers. Be heard.") }}
                 </h2>
                 <a class="btn btn-primary btn-lg" href="{% url 'write_message' subdomain=writeitinstance.slug %}">{% trans "Send a message" %}</a>
             </div>
