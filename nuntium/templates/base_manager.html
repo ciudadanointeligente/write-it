@@ -60,7 +60,7 @@
                 <ul class="dropdown-menu">
                   <li><a href="{% url 'account' subdomain=None %}"><span class="glyphicon glyphicon-cog"></span> {% trans "Your Profile" %}</a></li>
                   <li><a href="{% url 'your-instances' subdomain=None %}"><span class="glyphicon glyphicon-tasks"></span> {% trans "Your WriteIts" %}</a></li>
-                  <li><a href="{% url 'django.contrib.auth.views.logout' subdomain=None %}"><span class="glyphicon glyphicon-log-out"></span> Sign out</a></li>
+                  <li><a href="{% url 'django.contrib.auth.views.logout' %}"><span class="glyphicon glyphicon-log-out"></span> Sign out</a></li>
                 </ul>
               </li>
               {% endif %}

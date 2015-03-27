@@ -35,6 +35,7 @@ urlpatterns += i18n_patterns('',
 
     url(r'^', include('nuntium.user_section.urls')),
 
+    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', kwargs={'next_page': '/'}, name='logout'),
     (r'accounts/', include('django.contrib.auth.urls')),
 
 )
