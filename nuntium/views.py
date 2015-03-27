@@ -255,6 +255,10 @@ class MessageThreadsView(ListView):
     model = Message
     template_name = 'thread/all.html'
 
+    def get_queryset(self):
+        queryset = super(MessageThreadsView, self).get_queryset()
+        return queryset.filter(writeitinstance__slug=self.request.subdomain)
+
 
 class MessageThreadView(DetailView):
     model = Message
