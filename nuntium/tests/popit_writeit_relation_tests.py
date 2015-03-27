@@ -38,7 +38,6 @@ class PopitWriteitRelationRecord(TestCase):
         self.assertEquals(record.popitapiinstance, self.api_instance)
         self.assertTrue(record.updated)
         self.assertTrue(record.created)
-        self.assertTrue(record.autosync)
         self.assertEquals(record.status, 'nothing')
         self.assertEquals(record.periodicity, '1W')  # Weekly
         self.assertFalse(record.status_explanation)

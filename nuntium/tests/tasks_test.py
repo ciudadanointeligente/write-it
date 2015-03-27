@@ -116,7 +116,8 @@ class PeriodicallyPullFromPopitClass(TestCase):
             writeitinstance=self.writeitinstance,
             popitapiinstance=self.popit_api_instance
         )
-        writeitinstance_popit_record.autosync = False
+        # Periodicity = 0  means that it is never going to send anything
+        writeitinstance_popit_record.periodicity = 0
         writeitinstance_popit_record.save()
 
         # The record has been set to autosync False

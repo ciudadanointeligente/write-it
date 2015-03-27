@@ -924,7 +924,6 @@ class WriteitInstancePopitInstanceRecord(models.Model):
         )
     writeitinstance = models.ForeignKey(WriteItInstance)
     popitapiinstance = models.ForeignKey(ApiInstance)
-    autosync = models.BooleanField(default=True)
     periodicity = models.CharField(
         max_length="2",
         choices=PERIODICITY,
