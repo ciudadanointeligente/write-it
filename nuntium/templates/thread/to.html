@@ -11,7 +11,7 @@
 
     <div class="person-messages">
         {% for message in message_list %}
-            {% include "nuntium/message/message_in_list.html" with message=message %}
+            {% include "thread/message.html" with recently_sent=True person_links=True message=message %}
         {% endfor %}
     </div>
 
