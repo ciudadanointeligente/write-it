@@ -204,7 +204,10 @@ class MessagesQuerySet(QuerySet):
 
         queryset = super(MessagesQuerySet, self).filter(*args, **kwargs)
         if person:
-            queryset = queryset.filter(outboundmessage__contact__person=person)
+            queryset = queryset.filter(
+                    Q(outboundmessage__contact__person=person)|
+                    Q(nocontactom__person=person)
+                    ).distinct()
         return queryset
 
 
