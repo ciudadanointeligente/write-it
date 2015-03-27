@@ -222,8 +222,7 @@ class WriteItInstanceOwnerMixin(LoginRequiredMixin):
 # as it does its own owner checking.
 class UpdateTemplateWithWriteitBase(LoginRequiredMixin, UpdateView):
     def get_object(self):
-        slug = self.kwargs.pop('slug')
-        return get_object_or_404(self.model, writeitinstance__slug=slug, writeitinstance__owner=self.request.user)
+        return get_object_or_404(self.model, writeitinstance__slug=self.request.subdomain, writeitinstance__owner=self.request.user)
 
     def get_form_kwargs(self):
         kwargs = super(UpdateTemplateWithWriteitBase, self).get_form_kwargs()
@@ -233,7 +232,7 @@ class UpdateTemplateWithWriteitBase(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse(
             'writeitinstance_template_update',
-            kwargs={'slug': self.object.writeitinstance.slug},
+            subdomain=self.object.writeitinstance.slug,
             )
 
 
