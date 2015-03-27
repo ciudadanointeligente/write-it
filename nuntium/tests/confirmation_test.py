@@ -79,15 +79,11 @@ class ConfirmationTestCase(TestCase):
             )
         confirmation_full_url = url
 
-        message_full_url = self.message.get_absolute_url()
-
         self.assertEquals(len(mail.outbox), 1)  # it is sent to one person pointed in the contact
         self.assertEquals(mail.outbox[0].subject, u'Please confirm your WriteIt message to Felipe')
         self.assertTrue(self.message.author_name in mail.outbox[0].body)
         self.assertIn(confirmation_full_url, mail.outbox[0].body)
         self.assertTrue(url in mail.outbox[0].body)
-        self.assertTrue(self.message.get_absolute_url() in mail.outbox[0].body)
-        self.assertIn(message_full_url, mail.outbox[0].body)
 
         self.assertEquals(len(mail.outbox[0].to), 1)
         self.assertTrue(self.message.author_email in mail.outbox[0].to)

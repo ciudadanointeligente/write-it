@@ -302,49 +302,31 @@ class SendConfirmationEmailTestCase(TestCase):
         expected_body = u"""Hello Message Author
 
 
-You just submitted a message to
-
-Test Person
-
-via Test WriteIt Instance.
-
-
-Please visit the following link to confirm you want to send this message
+You just submitted a message via Test WriteIt Instance. Please visit
+the following link to confirm you want to send this message
 
 http://test-writeit-instance.127.0.0.1.xip.io:8000/en/write/sign/fakekey/
 
-(If you can’t click the link, try copying and pasting it into your
-browser’s address bar)
+(If you can\u2019t click the link, try copying and pasting it into your
+browser\u2019s address bar)
 
+**IMPORTANT** Once confirmed and sent, the message will also be
+published on Test WriteIt Instance, where your name, your message, and
+any replies, will be public and online for anyone to read, and will
+also appear in search engine results.
 
-Once you have confirmed the message, you can access it by going to
+If this message didn\u2019t come from you (or you\u2019ve changed your mind and
+don\u2019t want to send it after all) please just ignore this email.
 
-http://test-writeit-instance.127.0.0.1.xip.io:8000/en/thread/test-message/
-
-
-**IMPORTANT** Once confirmed, this message, will be sent to
-
-Test Person.
-
-It will also be published on Test WriteIt Instance,
-where your name, your message, and any replies, will be public and
-online for anyone to read, and will also probably appear in search
-engine results.
-
-
-If this message didn’t come from you (or you’ve changed your mind and
-don’t want to send it after all) please just ignore this email.
-
-
-Thanks for using Test WriteIt Instance, and
-here is a copy of your message for your records:
+Thanks for using Test WriteIt Instance, and here is a copy of your
+message for your records:
 
 
 To: Test Person
 Subject: Test Message
 
-Test Content
-"""
+Test Content"""
+
         self.assertEqual(email.body, expected_body)
         self.assertEqual(email.content_subtype, u'plain')
         self.assertEqual(email.from_email, u'from@example.com')
