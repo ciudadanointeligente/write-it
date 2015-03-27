@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>This is WriteIt </title>
+    <title>{{ page.title }} | Write-It </title>
     <link href="/atom.xml" rel="alternate" title="Write-It" type="application/atom+xml">
     <link href="/css/help-pages.css" rel="stylesheet" type="text/css" />
     <link rel="icon" type="image/png" href="{{ site.baseurl }}/images/favicon.png" />
@@ -11,34 +11,38 @@
   </head>
   <body>
     <div class="site-header">
+      <ul class="menu">
+        <li><a href="http://writeit.ciudadanointeligente.org/es/">Instances</a></li>
+        <li class="poplus-logo"><a href="http://poplus.org/">Poplus</a></li>
+      </ul>
       <a class="site-logo" href="/">
         <img alt="Writeit" src="/images/writeit.png">
       </a>
-      <ul class="menu">
-        <li><a href="http://writeit.ciudadanointeligente.org/es/">Instances</a></li>
-        <li><a href="/help">Help</a></li>
-        <li class="poplus-logo"><a href="http://poplus.org/">Poplus</a></li>
-      </ul>
       <div style="clear:both"></div>
     </div>
-    <div class="main-content home-page">
-      <div id="hero-left">
-        <h1>You writeit, we&nbsp;deliver&nbsp;it</h1>
-        <p>
-          <strong>Public person messaging tool</strong>.
-          Avoid the hassle of mail servers, creating special gmail accounts
-          for your website, get blacklisted, etc. If you want your users to
-          send messages, you&rsquo;re in the right place.
-        </p>
-        <a class="button" href="http://poplus.org/join/group.html">Do you want
-          to try it? just ask.</a>
+    <div class="page-wrapper">
+      <div class="page">
+        <div class="main-content-column">
+          <main role="main" class="main-content">
+            {{ content }}
+          </main>
+        </div>
+        <div class="secondary-content-column">
+          <nav class="sidebar">
+            <ul>
+              <li><a href="{{ site.baseurl }}/">WriteIt</a></li>
+              <li><a href="{{ site.baseurl }}/help/">Documentation</a>
+              <li><a href="{{ site.baseurl }}/glossary.html">Glossary</a></li>
+            </ul>
+          </nav>
+        </div>
       </div>
     </div>
     <div class="site-footer">
       <div class="footer footer-right">
         Proudly hosted on
         <a target="_blank" href="https://github.com/ciudadanointeligente/write-it">
-          <img alt="Poplus" src="./images/github-logo.png">
+          <img alt="Poplus" src="/images/github-logo.png">
         </a>
       </div>
     </div>
