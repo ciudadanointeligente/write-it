@@ -46,6 +46,10 @@ class WriteItInstanceDetailBaseView(DetailView):
 class WriteItInstanceContactDetailView(WriteItInstanceDetailBaseView):
     template_name = 'nuntium/profiles/contacts/contacts-per-writeitinstance.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        self.kwargs['slug'] = request.subdomain
+        return super(WriteItInstanceContactDetailView, self).dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(WriteItInstanceContactDetailView, self).get_context_data(**kwargs)
         context['people'] = self.object.persons.all()
@@ -77,8 +81,9 @@ class WriteItInstanceTemplateUpdateView(DetailView):
     template_name = 'nuntium/profiles/templates.html'
 
     @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(WriteItInstanceTemplateUpdateView, self).dispatch(*args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        self.kwargs['slug'] = request.subdomain
+        return super(WriteItInstanceTemplateUpdateView, self).dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         self.object = super(WriteItInstanceTemplateUpdateView, self).get_object(queryset=queryset)
@@ -111,8 +116,9 @@ class WriteItInstanceUpdateView(UpdateView):
     model = WriteItInstance
 
     @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(WriteItInstanceUpdateView, self).dispatch(*args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        self.kwargs['slug'] = request.subdomain
+        return super(WriteItInstanceUpdateView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         queryset = super(WriteItInstanceUpdateView, self).get_queryset().filter(owner=self.request.user)
@@ -131,8 +137,9 @@ class WriteItInstanceAdvancedUpdateView(UpdateView):
     model = WriteItInstanceConfig
 
     @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(WriteItInstanceAdvancedUpdateView, self).dispatch(*args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        self.kwargs['slug'] = request.subdomain
+        return super(WriteItInstanceAdvancedUpdateView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         return super(WriteItInstanceAdvancedUpdateView, self).get_queryset().filter(writeitinstance__owner=self.request.user)
