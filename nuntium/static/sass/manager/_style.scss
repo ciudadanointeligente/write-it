@@ -2,6 +2,14 @@
 .thankyou-message { color: $font-family-serif; }
 .foobar { background-color: darken($brand-primary, 10%); }
 
+.muted {
+    color: lighten($gray-light, 13%);
+}
+
+label {
+    font-weight: normal;
+}
+
 .manager-page {
         border-radius: 5px;
         margin-bottom: 3em;
