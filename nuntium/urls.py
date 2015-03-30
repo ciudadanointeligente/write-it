@@ -2,6 +2,8 @@ from django.conf.urls import patterns, url
 
 from nuntium.views import (
     AcceptModerationView,
+    ConfirmView,
+    HelpView,
     HomeTemplateView,
     MessageSearchView,
     RejectModerationView,
@@ -19,4 +21,6 @@ urlpatterns = patterns('',
     url(r'^moderation_accept/(?P<slug>[-\w]+)/?$', AcceptModerationView.as_view(), name='moderation_accept'),
     url(r'^moderation_reject/(?P<slug>[-\w]+)/?$', RejectModerationView.as_view(), name='moderation_rejected'),
 
+    url(r'^help/(?P<section_name>\w+)/?$', HelpView.as_view(), name='help_section'),
+    url(r'^help/?$', HelpView.as_view()),
 )

@@ -1,0 +1,68 @@
+{% extends "base_manager.html" %}
+{% load i18n %}
+{% block sidebar %}
+{% endblock sidebar %}
+{% block bodyclass %}page-without-sidebar{% endblock bodyclass %}
+{% load subdomainurls %}
+
+{% block content %}
+
+<h1>Glossary</h1>
+
+<h2>Definitions</h2>
+
+<ul class="definitions">
+  <li><a href="#ipsum">ipsum</a></li>
+  <li><a href="#lorem">lorem</a></li>
+</ul>
+
+<dl class="glossary">
+
+  <dt>
+    <a name="ipsum">ipsum</a> (also foobar)
+  </dt>
+  <dd id="help-ipsum">
+    <p>
+      Ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. See also <a
+      href="#lorem" class="glossary__link">lorem</a> just because.
+    </p>
+    <div class="more-info">
+      <p>More information:</p>
+      <ul>
+        <li>
+          See <a href="{{ site.baseurl }}help/">the help pages</a> for more about
+           ipsum.
+        </li>
+      </ul>
+    </div>
+  </dd>
+
+  <dt>
+    <a name="lorem">lorem</a>
+  </dt>
+  <dd id="help-lorem">
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Consectetur adipisicing
+      elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+      ut aliquip ex ea commodo consequat. Duis aute irure dolor.
+    </p>
+    <div class="more-info">
+      <p>More information:</p>
+      <ul>
+        <li>
+          Read <a href="{{ site.baseurl }}help/">something else</a>.
+        </li>
+        <li>
+          Lorem ipsum dolor sit amet <a href="{{ site.baseurl }}help/">the help pags</a> for more about
+           lorem.
+        </li>
+      </ul>
+    </div>
+  </dd>
+</dl>
+
+
+{% endblock content %}
