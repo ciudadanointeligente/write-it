@@ -1,0 +1,69 @@
+{% extends "base_manager.html" %}
+{% load i18n %}
+{% block sidebar %}
+{% endblock sidebar %}
+{% block bodyclass %}page-without-sidebar{% endblock bodyclass %}
+{% load subdomainurls %}
+
+{% block content %}
+
+<h1>
+  How WriteIt works
+</h1>
+<p>
+  <strong>
+    WriteIt is a zero-config factory for building sites that empower citizens
+    to send emails to representatives and politicians.
+  </strong>
+</p>
+<p>
+  If you've got a list of the representatives' names and email addresses, 
+  WriteIt makes it easy for people to send them emails. In its simplest form,
+  it's a website where a user chooses the representative's name, types their
+  message in the box, and clicks to send it.
+</p>
+<h3>
+  Isn't that just... email?
+</h3>
+<p>
+  Yes, WriteIt <em>uses</em> email. But there are some important things here:
+  first, your users don't need to know the email address of the representative
+  you're sending to (it might be hard to find, or it might keep changing). But if
+  your WriteIt database has it, they can send the message. Secondly, WriteIt 
+  can be configured to run as a <em>strong</em> public service. We call this
+  WriteInPublic, and it published both the outgoing message and any replies.
+</p>
+<h3>
+  How does it work?
+</h3>
+<h4>
+  Non-technical answer
+</h4>
+<p>
+  When a WriteIt site sends an email on behalf of a user, it makes a <em>totally
+  unique</em> email address and sends the message <strong>from</strong> that.
+  This means that when someone (maybe the politician it was sent to, or their
+  staff) replies, WriteIt knows it's the response to that message, and no others.
+  WriteIt can then forward the reply to the user who sent the message to start
+  with. 
+</p>
+<p>
+  Often the hardest part of this is getting the names and addresses of all the 
+  people to write to in the first place (for example, all the politicians in your country's top-level
+  legislature). We believe that if you can do that, letting people use that data
+  ought to be easy. So WriteIt is very easy to set up: all you need is that list
+  of names and email addresses. 
+</p>
+<h4>
+  Technical answer
+</h4>
+<p>
+  WriteIt is a Django application with a database of contact details. It usually
+  runs as a website, but also has an API so you can drive it programmatically too.
+  It has a web interface for administrative tasks, including importing data
+  (WriteIt likes data in the Popolo format).
+</p>
+<p>
+  WriteIt is a <a href="http://www.poplus.org/">Poplus component</a>.
+</p>
+{% endblock content %}
