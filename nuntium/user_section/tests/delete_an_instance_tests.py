@@ -2,6 +2,7 @@ from subdomains.utils import reverse
 from ...models import WriteItInstance
 from django.test.client import Client
 from .user_section_views_tests import UserSectionTestCase
+from nuntium.user_section.views import WriteItDeleteView
 
 
 class DeleteAnInstanceTestCase(UserSectionTestCase):
@@ -19,9 +20,9 @@ class DeleteAnInstanceTestCase(UserSectionTestCase):
     def test_get_to_url(self):
         '''Get the delete a WriteItInstance url returns a check if deleting'''
         url = reverse('delete_an_instance', subdomain=self.writeitinstance.slug)
-        c = Client()
-        c.login(username="fiera", password="feroz")
-        response = c.get(url)
+        request = self.factory.get(url)
+        request.user = self.writeitinstance.owner
+        response = WriteItDeleteView.as_view()(request)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'nuntium/profiles/writeitinstance_check_delete.html')
@@ -31,14 +32,16 @@ class DeleteAnInstanceTestCase(UserSectionTestCase):
     def test_post_to_url(self):
         '''When I post to the URL then it deletes the writeitinstance'''
         url = reverse('delete_an_instance', subdomain=self.writeitinstance.slug)
-        c = Client()
-        c.login(username="fiera", password="feroz")
-        response = c.post(url)
+        request = self.factory.post(url)
+        request.user = self.writeitinstance.owner
+        response = WriteItDeleteView.as_view()(request)
         # Now it should be deleted
         self.assertFalse(WriteItInstance.objects.filter(id=self.writeitinstance.id))
 
         your_instances_url = reverse('your-instances')
-        self.assertRedirects(response, your_instances_url)
+        self.assertTrue(response)
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.url, your_instances_url)
 
     def test_get_if_not_logged_in(self):
         '''If I'm not logged in I cannot get the writeit instance delete url'''

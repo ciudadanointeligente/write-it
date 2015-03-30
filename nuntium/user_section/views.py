@@ -375,6 +375,11 @@ class WriteitPopitRelatingView(FormView):
 class WriteItDeleteView(DeleteView):
     model = WriteItInstance
 
+    # @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.kwargs['slug'] = request.subdomain
+        return super(WriteItDeleteView, self).dispatch(request, *args, **kwargs)
+
     def get_object(self, queryset=None):
         obj = super(WriteItDeleteView, self).get_object(queryset=queryset)
         if not obj.owner == self.request.user:
