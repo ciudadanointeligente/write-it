@@ -4,6 +4,6 @@
 
 {% block content_inner %}
     {% for message in message_list %}
-        {% include "thread/message.html" with recently_sent=True person_links=True message=message %}
+        {% include "thread/message.html" with person_links=True message=message %}
     {% endfor %}
 {% endblock content_inner %}
