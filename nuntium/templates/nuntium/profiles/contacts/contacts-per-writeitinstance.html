@@ -38,7 +38,7 @@ $(function() {
   <div class="page-header">
     <h2>{% trans "Recipients" %}</h2>
   </div>
-
+  <p>{% trans "There are" %} <strong>{{ writeitinstance.persons.count }}</strong> {% trans "recipients in your WriteIt" %}</p>
       {% autopaginate people %}
       {% paginate %}
       <table class="table table-striped recipients-table">
