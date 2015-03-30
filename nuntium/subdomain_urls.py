@@ -25,7 +25,6 @@ from nuntium.user_section.views import (
     MessagesPerWriteItInstance,
     NewAnswerNotificationTemplateUpdateView,
     WriteItDeleteView,
-    WriteItInstanceAdvancedUpdateView,
     WriteItInstanceApiDocsView,
     WriteItInstanceContactDetailView,
     WriteItInstanceStatusView,
@@ -42,7 +41,6 @@ download_attachment_view = ObjectDownloadView.as_view(model=AnswerAttachment, fi
 
 managepatterns = patterns('',
     url(r'^$', WriteItInstanceUpdateView.as_view(), name='writeitinstance_basic_update'),
-    url(r'^settings/$', WriteItInstanceAdvancedUpdateView.as_view(), name='writeitinstance_advanced_update'),
     url(r'^settings/api/$', WriteItInstanceApiDocsView.as_view(), name='writeitinstance_api_docs'),
     url(r'^settings/sources/$', WriteitPopitRelatingView.as_view(), name='relate-writeit-popit'),
     url(r'^settings/templates/$', WriteItInstanceTemplateUpdateView.as_view(), name='writeitinstance_template_update'),

@@ -153,7 +153,7 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         self.assertIn("testing_mode", form.fields)
 
     def test_writeitinstance_advanced_form_save(self):
-        url = reverse('writeitinstance_advanced_update', subdomain=self.writeitinstance.slug)
+        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
         c = Client()
         c.login(username=self.owner.username, password='admin')
         response = c.post(url, data=self.data, follow=True)
@@ -169,7 +169,7 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
     @override_settings(OVERALL_MAX_RECIPIENTS=10)
     def test_max_recipients_cannot_rise_more_than_settings(self):
         '''The max number of recipients in an instance cannot be changed using this form'''
-        url = reverse('writeitinstance_advanced_update', kwargs={'slug': self.writeitinstance.slug})
+        url = reverse('writeitinstance_basic_update', kwargs={'slug': self.writeitinstance.slug})
         modified_data = self.data
         modified_data['maximum_recipients'] = 11
         self.client.login(username=self.owner.username, password='admin')
@@ -179,7 +179,7 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         self.assertTrue(response.context['form'].errors['maximum_recipients'])
 
     def test_update_view_is_not_reachable_by_a_non_user(self):
-        url = reverse('writeitinstance_advanced_update', subdomain=self.writeitinstance.slug)
+        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
         client = Client()
         response = client.get(url)
         self.assertRedirectToLogin(response, next_url=url)
@@ -193,7 +193,7 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
             email="fiera@votainteligente.cl",
             password="feroz",
             )
-        url = reverse('writeitinstance_advanced_update', subdomain=self.writeitinstance.slug)
+        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
         c = Client()
         c.login(username=fiera.username, password='feroz')
 
