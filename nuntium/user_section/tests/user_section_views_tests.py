@@ -14,6 +14,7 @@ from nuntium.user_section.forms import WriteItInstanceBasicForm, \
     WriteItInstanceAdvancedUpdateForm, WriteItInstanceCreateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
 from django.test.utils import override_settings
+from urlparse import urlparse
 
 
 class UserSectionTestCase(TestCase):
@@ -26,11 +27,9 @@ class UserSectionTestCase(TestCase):
     # rigth after login it should go to that url
     def assertRedirectToLogin(self, response, next_url=None):
         self.assertEquals(response.status_code, 302)
-        self.assertEquals(response['Location'], reverse('django.contrib.auth.views.login'))
+        parsed_uri = urlparse(response.url)
 
-    # this code smels not nice
-    # but it serves its porpouse for now if there is anyone that can improve it
-    # feel free to do so
+        self.assertIn(parsed_uri.path, reverse('django.contrib.auth.views.login'))
 
 
 class UserViewTestCase(UserSectionTestCase):
