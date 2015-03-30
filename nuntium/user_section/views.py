@@ -272,7 +272,7 @@ class MessageDelete(WriteItInstanceOwnerMixin, DeleteView):
     def get_success_url(self):
         success_url = reverse(
             'messages_per_writeitinstance',
-            kwargs={'slug': self.object.writeitinstance.slug},
+            subdomain=self.object.writeitinstance.slug,
             )
         return success_url
 
@@ -291,7 +291,8 @@ class AnswerEditMixin(View):
     def get_success_url(self):
         return reverse(
             'message_detail_private',
-            kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk},
+            subdomain=self.message.writeitinstance.slug,
+            kwargs={'pk': self.message.pk},
             )
 
 
@@ -333,7 +334,7 @@ class AcceptMessageView(View):
 
         url = reverse(
             'messages_per_writeitinstance',
-            kwargs={'slug': self.message.writeitinstance.slug},
+            subdomain=self.message.writeitinstance.slug,
             )
         return redirect(url)
 
@@ -356,7 +357,7 @@ class WriteitPopitRelatingView(FormView):
         return kwargs
 
     def get_success_url(self):
-        return reverse('writeitinstance_basic_update', kwargs={'slug': self.kwargs.get('slug')})
+        return reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
 
     def form_valid(self, form):
         form.relate()
