@@ -3,7 +3,9 @@
 
 {% block content_inner %}
 
-    <!-- We should only show this the first time they see this page -->
+  {# ConfirmView() should set this variable, to provide the user with a nice end to the writing experience #}
+  {% if user_came_via_confirmation_link %}
+
     {% include "write/breadcrumb.html" with current_step=5 %}
 
     <div class="writing-step">
@@ -18,5 +20,11 @@
             <a href="{% url 'message_threads' %}" class="post-message-actions__back">{% trans "Back to all messages" %}</a>
         </div>
     </div>
+
+  {% else %}
+
+    {% include "thread/message.html" with person_links=True message=message %}
+
+  {% endif %}
 
 {% endblock content_inner %}

@@ -4,21 +4,8 @@
 
 {% block content %}
 
-    <ol class="writing-progress">
-        <li>{% trans "Select recipients" %}</li>
-        <li>{% trans "Draft message" %}</li>
-        <li>{% trans "Preview message" %}</li>
-        <li class="writing-progress__current-step">{% trans "Message sent" %}</li>
-    </ol>
+    <p><strong>TODO:</strong> <code>ConfirmView()</code> should show <code>/threads/read.html</code> rather than this template, <code>/nuntium/confirm.html</code>. And the URL in the browser’s URL bar should be the final URL of the new message thread, including the thread slug.</p>
 
-    <h1>{% trans "Your message has been sent!" %}</h1>
-
-    <div class="message message--sent">
-        <p><strong>TODO:</strong> Display sent message here.</p>
-    </div>
-
-    <a href="{% url 'instance_detail' slug=confirmation.message.writeitinstance.slug %}">
-        {% trans "Go back to all messages" %}
-    </a>
+    <p>If you weren’t expecting to see this, <a href="{% url 'message_threads' %}">click here to go back to all messages</a>.</p>
 
 {% endblock content %}
