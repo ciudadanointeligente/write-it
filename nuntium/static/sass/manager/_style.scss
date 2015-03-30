@@ -82,6 +82,52 @@ th {
     color: $gray;
 }
 
+.data-source__status-indicator {
+    display: inline-block;
+    height: 0.5em;
+    width: 0.5em;
+    background-color: $gray-dark;
+    text-indent: -1000%;
+    margin-right: 0.66em;
+    border-radius: 1em;
+}
+
+.data-source__status-indicator--nothing {
+    background-color: $gray-lighter;
+}
+
+.data-source__status-indicator--error {
+    background-color: $brand-danger;
+}
+
+.data-source__status-indicator--success {
+    background-color: $brand-success;
+}
+
+.data-source__status-indicator--waiting {
+    background-color: $brand-info;
+}
+
+.data-source__status-indicator--inprogress {
+    background-color: $brand-warning;
+}
+
+.data-source__edit {
+    background-color: #f4f4f4;
+    margin-bottom: 3em;
+    border-radius: $border-radius-base;
+    h3 {
+        font-size: 1.125em;
+        font-weight: bold;
+        margin-top: 0;
+    }
+    .save-bar {
+        margin-top: 1.5em;
+    }
+    .glyphicon {
+        color: lighten($gray-light, 15%);
+    }
+}
 
 .factory-hero {
   padding-top: 3em;
