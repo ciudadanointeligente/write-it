@@ -104,9 +104,14 @@ from urlparse import urlparse
 
 def get_path_and_subdomain(path, **extra):
     parsed_uri = urlparse(path)
-    # if parsed_uri.hostname is None:
-    #     full_path = extra['wsgi.url_scheme'] + "://" + extra['SERVER_NAME'] + ":" + extra['SERVER_PORT'] + path
-    #     parsed_uri = urlparse(full_path)
+    # parsed_uri.hostname is None when we say for a request to follow=True
+    # and because django.test.Client in the method _handle_redirects(self, response, **extra)
+    # does a self.get(url.path, QueryDict(url.query), follow=False, **extra)
+    # which cuts the full url but adds the server_name and port to the extra dictionary.
+    # We can still override the _handle_redirects in the class WriteItClient
+    if parsed_uri.hostname is None:
+        full_path = extra['wsgi.url_scheme'] + "://" + extra['SERVER_NAME'] + ":" + extra['SERVER_PORT'] + path
+        parsed_uri = urlparse(full_path)
     subdomain = parsed_uri.hostname.split('.')[0]
     domain = parsed_uri.netloc
 
