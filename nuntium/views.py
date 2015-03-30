@@ -170,6 +170,7 @@ class ConfirmView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ConfirmView, self).get_context_data(**kwargs)
+        context['writeitinstance'] = self.object.message.writeitinstance
         return context
 
     def get(self, *args, **kwargs):
@@ -255,6 +256,7 @@ class MessagesPerPersonView(ListView):
     def get_context_data(self, **kwargs):
         context = super(MessagesPerPersonView, self).get_context_data(**kwargs)
         context['person'] = self.person
+        context['writeitinstance'] = self.writeitinstance
         return context
 
 
@@ -263,7 +265,7 @@ class MessagesFromPersonView(ListView):
     template_name = 'nuntium/message/from_person.html'
 
     def dispatch(self, *args, **kwargs):
-        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.kwargs['slug'])
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.request.subdomain)
         self.message = get_object_or_404(Message, slug=self.kwargs['message_slug'])
         return super(MessagesFromPersonView, self).dispatch(*args, **kwargs)
 
@@ -292,3 +294,17 @@ class MessageThreadsView(ListView):
 class MessageThreadView(DetailView):
     model = Message
     template_name = 'thread/read.html'
+
+    def get_object(self):
+        the_message = super(MessageThreadView, self).get_object()
+        if not the_message.public:
+            raise Http404
+        if not (the_message.confirmated or the_message.confirmation.is_confirmed):
+            raise Http404
+        return the_message
+
+    def get_context_data(self, **kwargs):
+        context = super(MessageThreadView, self).get_context_data(**kwargs)
+
+        context['writeitinstance'] = self.object.writeitinstance
+        return context

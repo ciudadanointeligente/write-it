@@ -11,22 +11,12 @@ class HomeViewTestCase(TestCase):
         url = reverse("home")
 
         response = self.client.get(url)
-        self.assertTemplateUsed(response, "home.html")
         self.assertEquals(response.status_code, 200)
 
     def test_it_translates_correctly(self):
         activate('es')
         url = reverse("home")
         self.assertTrue("/es/" in url)
-
-    def test_it_redirects_correctly(self):
-        activate('es')
-        url = "/"
-        response = self.client.get(url)
-        self.assertEquals(response.status_code, 301)
-
-        expected_redirection = reverse("home")
-        self.assertTrue(response['Location'], expected_redirection)
 
     def test_list_instances(self):
         activate('en')
@@ -53,7 +43,6 @@ class HomeViewTestCase(TestCase):
         self.assertEquals(len(response.context['object_list']), WriteItInstance.objects.count())
 
         self.assertTemplateUsed(response, 'nuntium/template_list.html')
-        self.assertTemplateUsed(response, 'base.html')
 
     def test_testing_mode_instances_not_displayed(self):
         '''Test Mode instances are not displayed if a user is not logged in'''

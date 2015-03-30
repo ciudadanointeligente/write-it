@@ -1,6 +1,5 @@
 from subdomains.utils import reverse
 from ...models import WriteItInstance
-from django.test.client import Client
 from .user_section_views_tests import UserSectionTestCase
 from nuntium.user_section.views import WriteItDeleteView
 
@@ -46,7 +45,7 @@ class DeleteAnInstanceTestCase(UserSectionTestCase):
     def test_get_if_not_logged_in(self):
         '''If I'm not logged in I cannot get the writeit instance delete url'''
         url = reverse('delete_an_instance', subdomain=self.writeitinstance.slug)
-        c = Client()
+        c = self.client
         # this line is intentionally commented so I can show that I'm not logged in
         # c.login(username="fiera", password="feroz")
         # this line is intentionally commented so I can show that I'm not logged in
@@ -56,7 +55,7 @@ class DeleteAnInstanceTestCase(UserSectionTestCase):
     def test_post_if_not_logged_in(self):
         '''If I'm not logged in I cannot post to the writeit instance delete url'''
         url = reverse('delete_an_instance', subdomain=self.writeitinstance.slug)
-        c = Client()
+        c = self.client
         # this line is intentionally commented so I can show that I'm not logged in
         # c.login(username="fiera", password="feroz")
         # this line is intentionally commented so I can show that I'm not logged in

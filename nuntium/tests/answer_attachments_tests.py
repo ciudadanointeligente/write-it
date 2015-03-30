@@ -30,7 +30,7 @@ class AnswerAttachmentsTest(TestCase):
     def test_there_is_a_url_for_this_attachment(self):
         '''There is a url for an attachment'''
         attachment = AnswerAttachment.objects.create(answer=self.answer, content=self.photo_fiera)
-        url = reverse('attachment', kwargs={
+        url = reverse('attachment', subdomain=self.message.writeitinstance.slug, kwargs={
             'pk': attachment.pk,
             })
         response = self.client.get(url)
@@ -41,7 +41,7 @@ class AnswerAttachmentsTest(TestCase):
     def test_using_a_pdf(self):
         '''Downloading a PDF file'''
         attachment = AnswerAttachment.objects.create(answer=self.answer, content=self.pdf_file)
-        url = reverse('attachment', kwargs={
+        url = reverse('attachment', subdomain=self.message.writeitinstance.slug, kwargs={
             'pk': attachment.pk,
             })
         response = self.client.get(url)

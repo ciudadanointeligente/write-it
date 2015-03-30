@@ -185,7 +185,7 @@ class ConfirmationTestCase(TestCase):
 
     def test_i_cannot_access_a_non_confirmed_message(self):
         Confirmation.objects.create(message=self.message)
-        url = reverse('message_detail', kwargs={'slug': self.message.slug, 'instance_slug': self.message.writeitinstance.slug})
+        url = reverse('thread_read', subdomain=self.message.writeitinstance.slug, kwargs={'slug': self.message.slug})
         response = self.client.get(url)
 
         self.assertEquals(response.status_code, 404)

@@ -18,7 +18,7 @@
     </div>
   </div>
   <div class="panel-footer row">
-    {% url 'all-messages-from-the-same-author-as' slug=message.writeitinstance.slug message_slug=message.slug as other_messages_by %}
+    {% url 'all-messages-from-the-same-author-as' subdomain=message.writeitinstance.slug message_slug=message.slug as other_messages_by %}
     {% blocktrans with message.author_name as name %}Asked by 
     <a href="{{other_messages_by}}">{{ name }}</a>.{% endblocktrans %}</small></span>
     <div class='col-md-4 col-md-offset-4'>
@@ -44,5 +44,5 @@
 {% endfor %}
 
 
-<div class="getbacktotheinstance"> <a href="{% url 'instance_detail' slug=message.writeitinstance.slug %}"><i class="icon-chevron-left"></i> {% blocktrans %} Get back to the messages.{% endblocktrans %} </a></div>
+<div class="getbacktotheinstance"> <a href="{% url 'instance_detail' subdomain=message.writeitinstance.slug %}"><i class="icon-chevron-left"></i> {% blocktrans %} Get back to the messages.{% endblocktrans %} </a></div>
 {% endblock %}
