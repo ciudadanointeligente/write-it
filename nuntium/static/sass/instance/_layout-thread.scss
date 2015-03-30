@@ -1,0 +1,41 @@
+.thread {
+  @extend .row;
+  margin-top: 1em;
+  margin-bottom: 1em;
+
+  @media (min-width: $screen-sm) {
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+}
+
+.thread__messages {
+  @extend .col-sm-8;
+
+  @media (max-width: $screen-sm-max) {
+    margin-bottom: 1em;
+  }
+}
+
+.thread__actions {
+  @extend .col-sm-3;
+  @extend .col-sm-push-1;
+
+  ul {
+    @extend .list-unstyled;
+
+    li {
+      border-top: 1px solid #eee;
+      padding: 0.5em 0;
+    }
+  }
+}
+
+.thead__actions__heading {
+  font-size: 0.8em;
+  line-height: 1em;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #bbb;
+  margin: 0 0 0.8em 0;
+}

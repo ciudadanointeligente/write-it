@@ -23,7 +23,23 @@
 
   {% else %}
 
-    {% include "thread/message.html" with person_links=True message=message %}
+    <div class="thread">
+        <div class="thread__messages">
+            {% include "thread/message.html" with person_links=True message=message %}
+
+          {% for answer in message.answers.all %}
+            {% include "thread/answer.html" with person_links=True answer=answer original=answer.message %}
+            {% include "thread/answer.html" with person_links=True answer=answer original=answer.message %}
+          {% endfor %}
+        </div>
+        <div class="thread__actions">
+          <h3 class="thead__actions__heading">Actions</h3>
+            <ul>
+              <li>Actions go in here</li>
+              <li>Like, <a href="{% url 'message_threads' %}">back to all messages</a></li>
+            </ul>
+        </div>
+    </div>
 
   {% endif %}
 

@@ -5,11 +5,18 @@
   @media (min-width: $screen-sm) {
     padding: 2em;
   }
+
+  & + & {
+    margin-top: 1em;
+
+    @media (min-width: $screen-sm) {
+      margin-top: 2em;
+    }
+  }
 }
 
 .message__meta {
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 1.5em;
+  margin-bottom: 0;
 
   dt {
     float: left;
@@ -23,10 +30,6 @@
   dd {
     margin-left: 5em;
     margin-bottom: 0.5em;
-
-    &:last-child {
-      margin-bottom: 1.5em;
-    }
   }
 
   .text-muted {
@@ -44,8 +47,47 @@
 }
 
 .message__content {
+  border-top: 1px solid #ddd;
+  margin-top: 1em;
+  padding-top: 1em;
+
+  @media (min-width: $screen-sm) {
+    margin-top: 1.5em;
+    padding-top: 1.5em;
+  }
+
   p:last-child {
     margin-bottom: 0;
+  }
+}
+
+.message--reply {
+  position: relative;
+  margin-left: 2em;
+
+  &:before {
+    @extend .fa;
+    content: $fa-var-share;
+    position: absolute;
+    top: 1.2em;
+    left: -1.7em;
+    opacity: 0.4;
+  }
+
+  @media (min-width: $screen-sm) {
+    margin-left: 5em;
+
+    &:before {
+      font-size: 2em;
+      top: 1em;
+      left: -1.8em;
+    }
+
+    // On desktop mode, only show the first reply arrow,
+    // the margin-left will make it clear they're all replies.
+    & + &:before {
+      display: none;
+    }
   }
 }
 
