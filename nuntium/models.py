@@ -48,6 +48,7 @@ class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people
     for usability purposes. E.g. 'Candidates running for president'"""
     name = models.CharField(max_length=255)
+    description = models.CharField(max_length=512, blank=True)
     slug = AutoSlugField(populate_from='name', unique=True)
     persons = models.ManyToManyField(Person,
         related_name='writeit_instances',
@@ -161,6 +162,7 @@ class WriteItInstanceConfig(models.Model):
     email_use_tls = models.NullBooleanField()
     email_use_ssl = models.NullBooleanField()
     can_create_answer = models.BooleanField(default=False, help_text="Can create an answer using the WebUI")
+    maximum_recipients = models.PositiveIntegerField(default=5)
 
     def get_mail_connection(self):
         connection = mail.get_connection()
@@ -205,9 +207,9 @@ class MessagesQuerySet(QuerySet):
         queryset = super(MessagesQuerySet, self).filter(*args, **kwargs)
         if person:
             queryset = queryset.filter(
-                    Q(outboundmessage__contact__person=person)|
-                    Q(nocontactom__person=person)
-                    ).distinct()
+                Q(outboundmessage__contact__person=person) |
+                Q(nocontactom__person=person)
+                ).distinct()
         return queryset
 
 

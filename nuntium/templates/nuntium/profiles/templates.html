@@ -25,38 +25,39 @@ $(".chosen-person-select").chosen();
         <h2>{% trans "Templates"  %}</h2>
     </div>
 
-    <h3>{% trans "Mail Template" %}</h3>
-    <h4>{% trans "This is the mail template that the person gets when a new message exists" %}</h4>
 
     <form class="template-update" role="form" action="{% url 'mailit-template-update' subdomain=writeitinstance.slug %}" method="post">
-
+         <h3 class="template__title">{% trans "Mail Template" %}</h3>
+          <p class="template__description">{% trans "This is the mail template that the person gets when a new message exists" %}</p>
+      <div class="template-container">
         {{ mailit_template_form.as_p }}
         <div class="save-bar">
           <input type="submit" class='btn btn-primary' value="{% trans 'Save changes' %}" />
         </div>
-
+      </div>
       {% csrf_token %}
 
-    <h3>{% trans "Confirmation Template" %}</h3>
-    <h4>{% trans "This is the mail template that the person who creates a message gets in order to confirm their email" %}</h4>
+    <h3 class="template__title">{% trans "Confirmation Template" %}</h3>
+    <p class="template__description">{% trans "This is the mail template that the person who creates a message gets in order to confirm their email" %}</p>
 
     <form class="template-update" role="form" action="{% url 'edit_confirmation_template' subdomain=writeitinstance.slug %}" method="post">
-
+      <div class="template-container">
         {{ confirmation_template_form.as_p }}
         <div class="save-bar">
           <input type="submit" class='btn btn-primary' value="{% trans 'Save changes' %}" />
         </div>
-
+        </div>
       {% csrf_token %}
     </form>
 
-    <h3>{% trans "New answer notification template" %}</h3>
-    <h4>{% trans "When a new answer comes in it will notify all the subscribers with this template" %}</h4>
+    <h3 class="template__title">{% trans "New answer notification template" %}</h3>
+    <p class="template__description">{% trans "When a new answer comes in it will notify all the subscribers with this template" %}</p>
     <form class="template-update" role="form" action="{% url 'edit_new_answer_notification_template' subdomain=writeitinstance.slug %}" method="post">
-
+      <div class="template-container">
         {{ new_answer_template_form.as_p }}
         <div class="save-bar">
           <input type="submit" class='btn btn-primary' value="{% trans 'Save changes' %}" />
+        </div>
       </div>
 
       {% csrf_token %}

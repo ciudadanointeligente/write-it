@@ -2,9 +2,6 @@ from django.conf.urls import patterns, url, include
 from django.conf.urls.i18n import i18n_patterns
 from django.views.generic import TemplateView
 
-from .views import PerInstanceSearchView, \
-    MessagesPerPersonView
-
 from django_downloadview import ObjectDownloadView
 
 from mailit.views import MailitTemplateUpdateView
@@ -12,6 +9,9 @@ from nuntium.models import AnswerAttachment
 from nuntium.views import (
     MessageThreadView,
     MessageThreadsView,
+    MessagesFromPersonView,
+    MessagesPerPersonView,
+    PerInstanceSearchView,
     WriteMessageView,
     WriteItInstanceDetailView,
     )
@@ -75,7 +75,8 @@ urlpatterns = i18n_patterns('',
     # url(r'^write/sign/(?P<token>[-\w]+)/$', SignTokenView.as_view(), name='write_sign_token'),
     url(r'^threads/$', MessageThreadsView.as_view(), name='message_threads'),
     url(r'^thread/(?P<slug>[-\w]+)/$', MessageThreadView.as_view(), name='thread_read'),
-    url(r'^from/(?P<pk>[-\d]+)/$', TemplateView.as_view(template_name='thread/from.html'), name='thread_from'),
+    url(r'^per_person/(?P<pk>[-\d]+)/$', MessagesPerPersonView.as_view(), name='messages_per_person'),
+    url(r'^from/(?P<message_slug>[-\w]+)/?$', MessagesFromPersonView.as_view(), name='all-messages-from-the-same-author-as'),
     url(r'^to/(?P<pk>[-\d]+)/$', MessagesPerPersonView.as_view(), name='thread_to'),
 
     url(r'^search/$', PerInstanceSearchView(), name='instance_search'),

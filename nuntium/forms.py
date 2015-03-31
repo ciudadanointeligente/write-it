@@ -4,7 +4,7 @@ from .models import Message, WriteItInstance, Confirmation
 
 from contactos.models import Contact
 from django.forms import ValidationError
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ungettext
 from popit.models import Person
 from haystack.forms import SearchForm
 from django.utils.html import format_html
@@ -75,6 +75,14 @@ class MessageCreateForm(ModelForm):
 
         if not self.writeitinstance.config.allow_messages_using_form:
             raise ValidationError("")
+        if len(cleaned_data['persons']) > self.writeitinstance.config.maximum_recipients:
+            error_messages = ungettext(
+                'You can send messages to at most %(count)d person',
+                'You can send messages to at most %(count)d people',
+                self.writeitinstance.config.maximum_recipients) % {
+                'count': self.writeitinstance.config.maximum_recipients,
+            }
+            raise ValidationError(error_messages)
         return cleaned_data
 
     class Meta:

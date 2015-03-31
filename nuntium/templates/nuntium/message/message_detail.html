@@ -18,7 +18,9 @@
     </div>
   </div>
   <div class="panel-footer row">
-    <span class="author_name col-md-4"><small>{% blocktrans with message.author_name as name %}Asked by {{ name }}.{% endblocktrans %}</small></span>
+    {% url 'all-messages-from-the-same-author-as' slug=message.writeitinstance.slug message_slug=message.slug as other_messages_by %}
+    {% blocktrans with message.author_name as name %}Asked by 
+    <a href="{{other_messages_by}}">{{ name }}</a>.{% endblocktrans %}</small></span>
     <div class='col-md-4 col-md-offset-4'>
       {% if message.created %}
       {{ message.created }}

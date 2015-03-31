@@ -1,10 +1,14 @@
 # coding=utf-8
+from datetime import datetime
+from mock import patch
+
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from nuntium.models import WriteItInstance
 from contactos.models import Contact, ContactType
 from django.utils.unittest import skipUnless
 from django.conf import settings
 from django.contrib.auth.models import User
+from nuntium.popit_api_instance import is_current_membership
 
 
 @skipUnless(settings.LOCAL_POPIT, "No local popit running")
@@ -114,3 +118,59 @@ class EmailCreationWhenPullingFromPopit(TestCase):
         # I'm prefering the one with popit_id and stuff
         the_contact = contacts[0]
         self.assertTrue(the_contact.popit_identifier)
+
+    def test_if_memberships_are_no_longer_active(self):
+        '''
+        If all memberships are no longer active then the
+        contacts should be disabled.
+        Related to #419.
+        '''
+        with patch('nuntium.popit_api_instance.datetime') as mock_datetime:
+            mock_datetime.today.return_value = datetime(2015, 1, 1)
+            mock_datetime.strptime = lambda *args, **kw: datetime.strptime(*args, **kw)
+
+            popit_load_data(fixture_name='persons_with_memberships')
+
+            self.instance.load_persons_from_a_popit_api(
+                settings.TEST_POPIT_API_URL
+            )
+            # Benito was the boss between 1987-03-21
+            # and 2007-03-20
+            benito = self.instance.persons.get(name="Benito")
+            contacts = Contact.objects.filter(person=benito)
+            self.assertFalse(contacts.filter(enabled=True))
+
+            # Fiera has been the boss since 2011-03-21
+            # And she was the boss of another NGO before between 2005-03-21
+            # and 2009-03-21
+            fiera = self.instance.persons.get(name="Fiera Feroz")
+            contacts = Contact.objects.filter(person=fiera)
+            self.assertTrue(contacts.filter(enabled=True))
+
+            # raton has been the noboss between 1987-03-21 and
+            # will keep on being until 2045-03-20
+            raton = self.instance.persons.get(name="Ratón Inteligente")
+            contacts = Contact.objects.filter(person=raton)
+            self.assertTrue(contacts.filter(enabled=True))
+
+
+class IsActiveTestCase(TestCase):
+    def test_validating_if_a_membership_is_active(self):
+        with patch('nuntium.popit_api_instance.datetime') as mock_datetime:
+            mock_datetime.today.return_value = datetime(2000, 1, 1)
+            mock_datetime.strptime = lambda *args, **kw: datetime.strptime(*args, **kw)
+
+            far_past = "1900-01-01"
+            past = "1999-01-01"
+            future = "2020-01-01"
+            far_future = "2525-01-01"
+
+            self.assertFalse(is_current_membership({'start_date': far_past, 'end_date': past}))
+            self.assertFalse(is_current_membership({'end_date': past}))
+            self.assertTrue(is_current_membership({'start_date': past}))
+            self.assertTrue(is_current_membership({'start_date': past, 'end_date': future}))
+            self.assertTrue(is_current_membership({'end_date': future}))
+            self.assertFalse(is_current_membership({'start_date': future, 'end_date': far_future}))
+
+            # If there's neither a start date or an end date, that's current.
+            self.assertTrue(is_current_membership({}))

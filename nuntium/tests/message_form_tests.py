@@ -2,7 +2,7 @@
 from global_test_case import GlobalTestCase as TestCase
 from popit.models import Person
 from contactos.models import Contact
-from ..models import Message, Confirmation, WriteItInstance, OutboundMessage
+from ..models import Message, Confirmation, WriteItInstance, OutboundMessage, Membership
 from ..forms import MessageCreateForm, PersonMultipleChoiceField
 
 from django.forms import ValidationError, SelectMultiple
@@ -179,6 +179,25 @@ class MessageFormTestCase(TestCase):
     # there should be a test to prove that it does something when like sending
     # a mental message or save it for later when we save the message
     # we save it
+
+    def test_maximum_recipients(self):
+        '''When creating a message that includes more than maximum_recipients'''
+        self.writeitinstance1.config.maximum_recipients = 1
+        self.writeitinstance1.config.save()
+        person2 = Person.objects.get(id=2)
+        Membership.objects.create(writeitinstance=self.writeitinstance1, person=person2)
+        data = {
+            'subject': u'Amor a la fiera',
+            'content': u'Todos sabemos que quieres mucho a la Fiera pero... es verdad?',
+            'author_name': u"Felipe",
+            'author_email': u"falvarez@votainteligente.cl",
+            'persons': [self.person1.id, person2.id],
+            }
+        form = MessageCreateForm(data, writeitinstance=self.writeitinstance1)
+        form.full_clean()
+        self.assertFalse(form.is_valid())
+
+        self.assertTrue(form.errors)
 
 
 class RateLimitingInForm(TestCase):

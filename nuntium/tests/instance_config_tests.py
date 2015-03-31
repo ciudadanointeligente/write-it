@@ -42,6 +42,7 @@ class WriteItInstanceConfigTestCase(TestCase):
         self.assertIsNone(config.email_use_tls)
         self.assertIsNone(config.email_use_ssl)
         self.assertFalse(config.can_create_answer)
+        self.assertEquals(config.maximum_recipients, 5)
 
     def test_a_writeitinstance_has_a_config_model(self):
         '''A WriteItInstance has a config'''

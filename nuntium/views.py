@@ -14,6 +14,7 @@ from popit.models import Person
 from django.db.models import Q
 from .models import WriteItInstance, Confirmation, Message, Moderation
 from .forms import MessageSearchForm, PerInstanceSearchForm
+
 from nuntium import forms
 
 
@@ -249,6 +250,28 @@ class MessagesPerPersonView(ListView):
     def get_context_data(self, **kwargs):
         context = super(MessagesPerPersonView, self).get_context_data(**kwargs)
         context['person'] = self.person
+        return context
+
+
+class MessagesFromPersonView(ListView):
+    model = Message
+    template_name = 'nuntium/message/from_person.html'
+
+    def dispatch(self, *args, **kwargs):
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.kwargs['slug'])
+        self.message = get_object_or_404(Message, slug=self.kwargs['message_slug'])
+        return super(MessagesFromPersonView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        qs = super(MessagesFromPersonView, self).get_queryset()
+        qs = qs.filter(writeitinstance=self.writeitinstance).\
+            filter(public=True).filter(confirmated=True).\
+            filter(author_email=self.message.author_email)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(MessagesFromPersonView, self).get_context_data(**kwargs)
+        context['author_name'] = self.message.author_name
         return context
 
 

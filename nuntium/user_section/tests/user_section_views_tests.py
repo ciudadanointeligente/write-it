@@ -13,6 +13,7 @@ from nuntium.user_section.views import WriteItInstanceUpdateView, WriteItInstanc
 from nuntium.user_section.forms import WriteItInstanceBasicForm, \
     WriteItInstanceAdvancedUpdateForm, WriteItInstanceCreateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
+from django.test.utils import override_settings
 
 
 class UserSectionTestCase(TestCase):
@@ -134,6 +135,7 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
             'rate_limiter': 3,
             'notify_owner_when_new_answer': 1,
             'autoconfirm_api_messages': 1,
+            'maximum_recipients': 7,
             }
 
     def test_writeitinstance_basic_form(self):
@@ -162,6 +164,19 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         self.assertEquals(writeitinstance.config.rate_limiter, 3)
         self.assertEquals(writeitinstance.config.notify_owner_when_new_answer, 1)
         self.assertEquals(writeitinstance.config.autoconfirm_api_messages, 1)
+        self.assertEquals(writeitinstance.config.maximum_recipients, 7)
+
+    @override_settings(OVERALL_MAX_RECIPIENTS=10)
+    def test_max_recipients_cannot_rise_more_than_settings(self):
+        '''The max number of recipients in an instance cannot be changed using this form'''
+        url = reverse('writeitinstance_advanced_update', kwargs={'slug': self.writeitinstance.slug})
+        modified_data = self.data
+        modified_data['maximum_recipients'] = 11
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+
+        self.assertTrue(response.context['form'].errors)
+        self.assertTrue(response.context['form'].errors['maximum_recipients'])
 
     def test_update_view_is_not_reachable_by_a_non_user(self):
         url = reverse('writeitinstance_advanced_update', subdomain=self.writeitinstance.slug)
