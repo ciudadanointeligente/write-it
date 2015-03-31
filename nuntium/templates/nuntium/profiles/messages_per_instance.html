@@ -21,56 +21,76 @@
   <div class="page-header">
     <h2>{% trans "Messages" %}</h2>
   </div>
+  <div class="manager-overview">
+    {% blocktrans count message_count=writeitinstance.message_set.count %}
+    <strong>1</strong> message in your WriteIt
+    {% plural %}
+    There are <strong>{{ message_count }}</strong> messages in your WriteIt
+    {% endblocktrans %}
+  </div>
     {% autopaginate message_list %}
       {% paginate %}
       <table class="table table-striped">
         <thead>
           <tr>
-            <th>{% trans "Subject" %}</th>
-            <th>{% trans "Content" %}</th>
-            <th>{% trans "Public?" %}</th>
-            <th>{% trans "Confirmed" %}</th>
+            <th>{% trans "Message" %}</th>
+            <th class="text-center">{% trans "Public" %}</th>
+            <th class="text-center">{% trans "Confirmed" %}</th>
             {% if writeitinstance.config.moderation_needed_in_all_messages %}
-            	<th>{% trans "Moderated" %}</th>
-
+            	<th class="text-center">{% trans "Moderated" %}</th>
             {% endif %}
-            <th>{% trans "Details" %}</th>
-            <th>{% trans "Answers"%}</th>
-            <th>{% trans "Delete"%}</th>
+            <th class="text-center">{% trans "Answers"%}</th>
+            <th class="text-center">{% trans "Delete"%}</th>
           </tr>
         </thead>
         <tbody>
           {% for message in message_list %}
-          <tr>
+          <tr class="message-in-message-list">
             <td>
-              {{ message.subject }}
-              {% if message.public and message.confirmated %}
-              <a target="_blank" href="{% url 'message_detail' slug=message.slug instance_slug=writeitinstance.slug %}"><i class="fa fa-external-link"></i></a>
+              <h3><a href="{% url 'message_detail_private' subdomain=writeitinstance.slug pk=message.pk %}">{{ message.subject }}</a></h3>
+              <p class="message-in-message-list__meta">
+                {% blocktrans with created=message.created|timesince author_name=message.author_name %}
+                  Sent <strong>{{ created }}</strong> ago to <strong>{{ author_name }}</strong> from <strong>{{ author_name }}</strong>
+                {% endblocktrans %}
+              </p>
+            </td>
+            <td class="text-center">
+              {% if message.public %}
+              <div class="explanation" data-toggle="tooltip" data-placement="left" title="{% trans 'This message can be seen by everyone' %}">
+                <i class="glyphicon glyphicon-ok"></i>
+              </div>
               {% endif %}
             </td>
-            <td>{{ message.content|truncatechars:50|linebreaksbr }}</td>
-            <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% if message.public %}{% trans 'This message can be seen by everyone' %}{% else %}{% trans 'TThis message can be seen by you only' %}{% endif %}"><i class="fa {% if message.public %}fa-eye{% else %}fa-eye-slash{% endif %}"></i></div></td>
-            <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% if message.confirmated %}{% trans 'The author of this email has confirmed that this was sent from her/his email' %}{% else %}{% trans 'The author of this email has not  confirmed that this was sent from her/his email' %}{% endif %}"><i class="fa {% if message.confirmated %}fa-check-circle-o{% else %}fa-times-circle-o{% endif %}"></i></div></td>
+            <td class="text-center">
+            {% if message.confirmated %}
+              <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'The author has confirmed that this was sent from their email' %}">
+                <i class="glyphicon glyphicon-ok"></i>
+              </div>
+            {% endif %}
+            </td>
             {% if writeitinstance.config.moderation_needed_in_all_messages %}
               {% if message.moderated %}
-              <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has been moderated' %}"><i class="fa fa-check-circle-o"></i></div></td>
+              <td class="text-center">
+                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has been moderated' %}"><i class="glyphicon glyphicon-ok"></i></div>
+              </td>
               {% else %}
-              <td><div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated and you can moderate it by clicking here' %}"><i class="fa fa-times-circle-o"></i> <a class="moderate" href="{% url 'accept_message' pk=message.pk %}">{% trans "Moderate"%}</a></div></td>
+              <td class="text-center">
+                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated' %}"><a class="btn btn-default btn-sm moderate" href="{% url 'accept_message' pk=message.pk %}">{% trans "Moderate"%}</a>
+                </div>
+              </td>
               {% endif %}
 
             {% endif %}
-            <td><a href="{% url 'message_detail_private' subdomain=writeitinstance.slug pk=message.pk %}"><i class="fa fa-cogs"></i></a></td>
-            <td>
-              {% blocktrans count answer_count=message.answers.count %}
-                {{ answer_count }} answer
-              {% plural %}
-                {{ answer_count }} answers
-              {% endblocktrans %}
+
+            <td class="text-center">
+              {{ message.answers.count  }}
               {% if writeitinstance.config.can_create_answer %}
                 <a data-toggle="modal" data-target="#modal" href="{% url 'create_answer' subdomain=writeitinstance.slug pk=message.pk %}" alt="{% trans "Add"%}"><i class="fa fa-plus"></i></a>
               {% endif %}
             </td>
-            <td><a data-toggle="modal" data-target="#modal" class="deleteMessage" href="{% url 'message_delete' subdomain=writeitinstance.slug pk=message.pk %}"><i class="fa fa-times"></i></a></td>
+            <td class="text-center">
+              <a data-toggle="modal" data-target="#modal" class="deleteMessage" href="{% url 'message_delete' subdomain=writeitinstance.slug pk=message.pk %}"><i class="fa fa-times"></i></a>
+            </td>
 
           </tr>
           {% empty %}
@@ -81,8 +101,19 @@
       {% paginate %}
 
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content b-color">
+  <div class="modal-dialog">
+    <div class="modal-content">
+     <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{% trans "Delete this message?"%}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{% trans "Are you sure you want to delete this message? This can't be undone."%}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "No, keep it"%}</button>
+        <button type="button" class="btn btn-primary">{% trans "Yes, delete it"%}</button>
+      </div>
     </div>
   </div>
 </div>

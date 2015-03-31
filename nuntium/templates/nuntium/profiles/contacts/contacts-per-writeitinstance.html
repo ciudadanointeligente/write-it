@@ -38,13 +38,13 @@ $(function() {
   <div class="page-header">
     <h2>{% trans "Recipients" %}</h2>
   </div>
-  <p>
+  <div class="manager-overview">
     {% blocktrans count person_count=writeitinstance.persons.count %}
-    There is 1 recipient in your WriteIt
+    There is <strong>1</strong> recipient in your WriteIt
     {% plural %}
-    There are {{ person_count }} recipients in your WriteIt
+    There are <strong>{{ person_count }}</strong> recipients in your WriteIt
     {% endblocktrans %}
-  </p>
+  </div>
       {% autopaginate people %}
       {% paginate %}
       <table class="table table-striped recipients-table">
