@@ -225,7 +225,8 @@ class PerInstanceSearchView(SearchView):
         self.template = 'nuntium/instance_search.html'
 
     def __call__(self, *args, **kwargs):
-        self.slug = kwargs.pop('slug')
+        request = args[0]
+        self.slug = request.subdomain
         return super(PerInstanceSearchView, self).__call__(*args, **kwargs)
 
     def build_form(self, form_kwargs=None):
