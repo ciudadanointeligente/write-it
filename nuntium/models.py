@@ -753,9 +753,8 @@ def send_confirmation_email(sender, instance, created, **kwargs):
         url = reverse('confirm', kwargs={
             'slug': confirmation.key
             })
-        current_site = Site.objects.get_current()
-        confirmation_full_url = "http://" + current_site.domain + url
-        message_full_url = "http://" + current_site.domain + confirmation.message.get_absolute_url()
+        confirmation_full_url = url
+        message_full_url = confirmation.message.get_absolute_url()
         plaintext = confirmation.message.writeitinstance.confirmationtemplate.content_text
         htmly = confirmation.message.writeitinstance.confirmationtemplate.content_html
         subject = confirmation.message.writeitinstance.confirmationtemplate.subject

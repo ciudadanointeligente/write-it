@@ -77,10 +77,9 @@ class ConfirmationTestCase(TestCase):
             'confirm',
             kwargs={'slug': confirmation.key},
             )
-        current_site = Site.objects.get_current()
-        confirmation_full_url = "http://" + current_site.domain + url
+        confirmation_full_url = url
 
-        message_full_url = 'http://' + current_site.domain + self.message.get_absolute_url()
+        message_full_url = self.message.get_absolute_url()
 
         self.assertEquals(len(mail.outbox), 1)  # it is sent to one person pointed in the contact
         self.assertEquals(mail.outbox[0].subject, u'Please confirm your WriteIt message to Felipe')
