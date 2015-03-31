@@ -60,7 +60,7 @@ $(".chosen-person-select").chosen();
 
                       </div>
                       <div class="save-bar">
-                       <button class="btn btn-default"><i class="glyphicon glyphicon-refresh"></i> {% trans 'Fetch new data now' %}</button>
+                       <button class="btn btn-default resync" href="{% url 'resync-from-popit' subdomain=record.writeitinstance.slug popit_api_pk=record.popitapiinstance.pk %}"><i class="glyphicon glyphicon-refresh"></i> {% trans 'Fetch new data now' %}</button>
                        <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
                       </div>
                       </form>
@@ -85,4 +85,17 @@ $(".chosen-person-select").chosen();
       </div>
     </form>
   </div>
+<script type="text/javascript">
+$(function(){
+  $('.resync').click(function(event){
+    event.preventDefault();
+    var url = $(event.target).attr('href');
+    $.post(url, function(data){
+      location.reload();
+    })
+
+  })
+})
+</script>
+
 {% endblock content %}

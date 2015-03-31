@@ -376,11 +376,12 @@ class ReSyncFromPopit(View):
 
     def post(self, request, *args, **kwargs):
         writeitinstance = get_object_or_404(WriteItInstance,
-            slug=self.kwargs['slug'],
+            slug=self.request.subdomain,
             owner=self.request.user)
         popits_previously_related = PopitApiInstance.objects.filter(
             writeitinstancepopitinstancerecord__writeitinstance=writeitinstance)
-        popit_api_instance = get_object_or_404(popits_previously_related, pk=self.kwargs['popit_api_pk'])
+
+        popit_api_instance = get_object_or_404(popits_previously_related, pk=kwargs['popit_api_pk'])
         pull_from_popit.delay(writeitinstance, popit_api_instance)
         return HttpResponse()
 

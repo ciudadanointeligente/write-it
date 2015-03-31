@@ -11,8 +11,12 @@ from datetime import timedelta
 from django.utils import timezone
 from mock import patch, call
 from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from nuntium.user_section.forms import WriteItPopitUpdateForm
+from django.test import RequestFactory
+from nuntium.user_section.views import ReSyncFromPopit
+from django.contrib.auth.models import AnonymousUser
+from django.http import Http404
 
 
 class PopitWriteitRelationRecord(TestCase):
@@ -251,16 +255,19 @@ class UpdateStatusOfPopitWriteItRelation(WriteItPopitTestCase):
     '''
     def setUp(self):
         super(UpdateStatusOfPopitWriteItRelation, self).setUp()
+        self.request_factory = RequestFactory()
 
     def test_post_to_the_url_for_manual_resync(self):
         '''Resyncing can be done by posting to a url'''
         # This is just a symbolism but it is to show how this popit api is empty
         self.assertFalse(self.popit_api_instance.person_set.all())
-
-        url = reverse('resync-from-popit', kwargs={'slug': self.writeitinstance.slug,
+        url = reverse('resync-from-popit', subdomain=self.writeitinstance.slug, kwargs={
             'popit_api_pk': self.popit_api_instance.pk})
-        self.client.login(username=self.owner.username, password="feroz")
-        response = self.client.post(url)
+        request = self.request_factory.post(url)
+        request.subdomain = self.writeitinstance.slug
+        request.user = self.owner
+        response = ReSyncFromPopit.as_view()(request, popit_api_pk=self.popit_api_instance.pk)
+
         self.assertEquals(response.status_code, 200)
         # It should have been updated
         self.assertTrue(self.popit_api_instance.person_set.all())
@@ -274,23 +281,31 @@ class UpdateStatusOfPopitWriteItRelation(WriteItPopitTestCase):
         self.assertNotIn(another_popit_api_instance,
             self.writeitinstance.writeitinstancepopitinstancerecord_set.all())
 
-        url = reverse('resync-from-popit', kwargs={'slug': self.writeitinstance.slug,
+        url = reverse('resync-from-popit', subdomain=self.writeitinstance.slug, kwargs={
             'popit_api_pk': another_popit_api_instance.pk})
-        self.client.login(username=self.owner.username, password="feroz")
-        response = self.client.post(url)
-        self.assertEquals(response.status_code, 404)
+        request = self.request_factory.post(url)
+        request.subdomain = self.writeitinstance.slug
+        request.user = self.owner
+        with self.assertRaises(Http404):
+            ReSyncFromPopit.as_view()(request, popit_api_pk=another_popit_api_instance.pk)
 
     def test_post_has_to_be_the_owner_of_the_instance(self):
         '''Only the owner of an instance can resync'''
-        url = reverse('resync-from-popit', kwargs={'slug': self.writeitinstance.slug,
+        url = reverse('resync-from-popit', subdomain=self.writeitinstance.slug, kwargs={
             'popit_api_pk': self.popit_api_instance.pk})
-        response = self.client.post(url)
-        self.assertEquals(response.status_code, 404)
+        request = self.request_factory.post(url)
+        request.subdomain = self.writeitinstance.slug
+        request.user = AnonymousUser()
+        with self.assertRaises(Http404):
+            ReSyncFromPopit.as_view()(request, popit_api_pk=self.popit_api_instance.pk)
 
         other_user = User.objects.create_user(username="other_user", password="s3cr3t0")
-        self.client.login(username=other_user.username, password='s3cr3t0')
-        response = self.client.post(url)
-        self.assertEquals(response.status_code, 404)
+
+        request = self.request_factory.post(url)
+        request.subdomain = self.writeitinstance.slug
+        request.user = other_user
+        with self.assertRaises(Http404):
+            ReSyncFromPopit.as_view()(request, popit_api_pk=self.popit_api_instance.pk)
 
 
 class UpdateRecordFormTestCase(WriteItPopitTestCase):
