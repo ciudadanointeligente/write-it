@@ -17,6 +17,7 @@ from django.test import RequestFactory
 from nuntium.user_section.views import ReSyncFromPopit
 from django.contrib.auth.models import AnonymousUser
 from django.http import Http404
+import json
 
 
 class PopitWriteitRelationRecord(TestCase):
@@ -244,6 +245,7 @@ class WriteItPopitTestCase(TestCase):
             writeitinstance=self.writeitinstance,
             popitapiinstance=self.popit_api_instance
             )
+        self.request_factory = RequestFactory()
 
 
 class UpdateStatusOfPopitWriteItRelation(WriteItPopitTestCase):
@@ -255,7 +257,6 @@ class UpdateStatusOfPopitWriteItRelation(WriteItPopitTestCase):
     '''
     def setUp(self):
         super(UpdateStatusOfPopitWriteItRelation, self).setUp()
-        self.request_factory = RequestFactory()
 
     def test_post_to_the_url_for_manual_resync(self):
         '''Resyncing can be done by posting to a url'''
@@ -307,6 +308,8 @@ class UpdateStatusOfPopitWriteItRelation(WriteItPopitTestCase):
         with self.assertRaises(Http404):
             ReSyncFromPopit.as_view()(request, popit_api_pk=self.popit_api_instance.pk)
 
+from nuntium.user_section.views import WriteItPopitUpdateView
+
 
 class UpdateRecordFormTestCase(WriteItPopitTestCase):
     '''
@@ -320,3 +323,56 @@ class UpdateRecordFormTestCase(WriteItPopitTestCase):
         form = WriteItPopitUpdateForm(data, instance=self.popit_writeit_record)
         self.assertIn('periodicity', form.fields)
         self.assertTrue(form.is_valid())
+
+    def test_posting_a_new_value_to_the_url_updates_the_value(self):
+        url = reverse('update-popit-writeit-relation',
+                subdomain=self.writeitinstance.slug,
+                kwargs={
+                    'pk': self.popit_writeit_record.pk
+                }
+            )
+        request = self.request_factory.post(url)
+        request.subdomain = self.writeitinstance.slug
+        request.user = self.owner
+        request.POST = {'periodicity': '1D'}
+        # This is the result of posting
+        response = WriteItPopitUpdateView.as_view()(request, pk=self.popit_writeit_record.pk)
+        # I'm hoping this to be an ajax call
+        self.assertEquals(response.status_code, 200)
+        response_object = json.loads(response.content)
+        self.assertEquals(response_object['id'], self.popit_writeit_record.pk)
+        self.assertEquals(response_object['periodicity'], '1D')
+        # This is the expected result
+        record = WriteitInstancePopitInstanceRecord.objects.get(id=self.popit_writeit_record.pk)
+        self.assertEquals(record.periodicity, '1D')
+
+    def test_form_invalid(self):
+        url = reverse('update-popit-writeit-relation',
+                subdomain=self.writeitinstance.slug,
+                kwargs={
+                    'pk': self.popit_writeit_record.pk
+                }
+            )
+        request = self.request_factory.post(url)
+        request.subdomain = self.writeitinstance.slug
+        request.user = self.owner
+        request.POST = {'periodicity': 'invalid'}
+        response = WriteItPopitUpdateView.as_view()(request, pk=self.popit_writeit_record.pk)
+        # I'm hoping this to be an ajax call
+        self.assertEquals(response.status_code, 200)
+        response_object = json.loads(response.content)
+        self.assertTrue(response_object['errors'])
+
+    def test_cannot_get_it_should_return_405(self):
+        url = reverse('update-popit-writeit-relation',
+                subdomain=self.writeitinstance.slug,
+                kwargs={
+                    'pk': self.popit_writeit_record.pk
+                }
+            )
+        request = self.request_factory.get(url)
+        request.subdomain = self.writeitinstance.slug
+        request.user = self.owner
+        request.GET = {'periodicity': 'invalid'}
+        response = WriteItPopitUpdateView.as_view()(request, pk=self.popit_writeit_record.pk)
+        self.assertEquals(response.status_code, 405)

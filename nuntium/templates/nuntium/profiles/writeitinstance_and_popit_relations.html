@@ -8,6 +8,7 @@
 {% block extrascripts %}
 <link rel="stylesheet" href="{% static 'css/chosen.css' %}">
 <script src="{% static 'js/chosen.jquery.min.js' %}"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script> 
 {% endblock extrascripts %}
 {% block extrajs %}
 $(".chosen-person-select").chosen();
@@ -48,14 +49,14 @@ $(".chosen-person-select").chosen();
               <div class="collapse data-source__edit" id="collapseExample">
                 <div class="well">
                   <h3>{% trans 'Polling interval' %}</h3>
-                  <form class="form-inline">
+                  <form class="form-inline update-popit-form" action="{% url 'update-popit-writeit-relation' subdomain=record.writeitinstance.slug pk=record.pk %}" method='POST'>
                     <div class="form-group">
                       <label for="polling-interval-select">{% trans 'Fetch new data from this source' %}</label>
-                      <select class="form-control" id="polling-interval-select">
-                        <option>{% trans 'Never' %}</option>
-                        <option>{% trans 'Twice a day' %}</option>
-                        <option>{% trans 'Daily' %}</option>
-                        <option>{% trans 'Weekly' %}</option>
+                      <select class="form-control" id="polling-interval-select" name="periodicity">
+                        <option value="--" {% if record.periodicity == "--" %}selected{% endif %}>{% trans 'Never' %}</option>
+                        <option value="2D" {% if record.periodicity == "2D" %}selected{% endif %}>{% trans 'Twice a day' %}</option>
+                        <option value="1D" {% if record.periodicity == "1D" %}selected{% endif %}>{% trans 'Daily' %}</option>
+                        <option value="1W" {% if record.periodicity == "1W" %}selected{% endif %}>{% trans 'Weekly' %}</option>
                       </select>
 
                       </div>
@@ -95,7 +96,14 @@ $(function(){
     })
 
   })
+  $(document).ready(function() { 
+      // bind 'myForm' and provide a simple callback function 
+      $('.update-popit-form').ajaxForm({
+        success: function(data){
+          location.reload();
+        }
+      }); 
+  });
 })
 </script>
-
 {% endblock content %}
