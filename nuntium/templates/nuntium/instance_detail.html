@@ -20,7 +20,9 @@
             <div class="container">
                 <div class="instance-summary__recent">
                     <h2>{% trans "Recent messages" %}</h2>
-                    {% include 'thread/message_mini.html' %}
+                    {% for message in recent_messages %}
+                        {% include 'thread/message_mini.html' %}
+                    {% endfor %}
                 </div>
                 <div class="instance-summary__popular">
                     <h2>{% trans "Most popular representatives" %}</h2>
