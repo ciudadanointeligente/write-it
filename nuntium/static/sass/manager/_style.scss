@@ -2,6 +2,13 @@
 .thankyou-message { color: $font-family-serif; }
 .foobar { background-color: darken($brand-primary, 10%); }
 
+
+th {
+    font-weight: normal;
+    color: $gray-light;
+    font-size: 0.875em;
+}
+
 .manager-page {
         border-radius: 5px;
         margin-bottom: 3em;
@@ -153,4 +160,33 @@
 
 .template__title {
     font-weight: bold;
+}
+
+
+//recipients
+
+.recipients-table__person-row {
+    ul {
+        @extend .list-unstyled;
+        margin-bottom: 0;
+    }
+    li {
+        margin-bottom: 0.5em;
+        position: relative;
+        padding: 0.5em 0;
+        color: $gray-light;
+        &:hover {
+            color: $gray-dark;
+        }
+    }
+    .toggle {
+        position: absolute;
+        right: 1em;
+        top: 0.25em;
+    }
+}
+
+.person-row__name {
+    display: inline-block;
+    padding-top: 0.5em;
 }
