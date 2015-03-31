@@ -63,6 +63,11 @@ class WriteItInstanceDetailView(DetailView):
         self.kwargs['slug'] = request.subdomain
         return super(WriteItInstanceDetailView, self).dispatch(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
+        context['recent_messages'] = self.object.message_set.filter(public=True).order_by('created')[:5]
+        return context
+
 FORMS = [("who", forms.WhoForm),
          ("draft", forms.DraftForm),
          ("preview", forms.PreviewForm)]
