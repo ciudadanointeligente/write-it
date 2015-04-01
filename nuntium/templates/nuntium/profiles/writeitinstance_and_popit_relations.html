@@ -8,6 +8,7 @@
 {% block extrascripts %}
 <link rel="stylesheet" href="{% static 'css/chosen.css' %}">
 <script src="{% static 'js/chosen.jquery.min.js' %}"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script> 
 {% endblock extrascripts %}
 {% block extrajs %}
 $(".chosen-person-select").chosen();
@@ -32,6 +33,46 @@ $(".chosen-person-select").chosen();
   <div class="page-header">
     <h2>{% trans "Data Sources" %}</h2>
   </div>
+
+      {% autopaginate relations %}
+      {% paginate %}
+        {% for record in relations %}
+          <ul class="list-of-data-sources">
+            <li class="list-of-data-sources__data-source">
+              <h3 class="data-source__title"><a href="{{ record.popitapiinstance.url }}">{{ record.popitapiinstance.url }}</a></h3>
+              <p class="data-source__info"><i class="data-source__status-indicator data-source__status-indicator--{{ record.status }}"></i>{{ record.status }} <span class="muted">&mdash; last updated {{ record.updated }}</span></p>
+              <div class="data-source__controls">
+                <ul>
+                  <li><a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">{% trans 'Edit' %}</a></li>
+                </ul>
+              </div>
+              <div class="collapse data-source__edit" id="collapseExample">
+                <div class="well">
+                  <h3>{% trans 'Polling interval' %}</h3>
+                  <form class="form-inline update-popit-form" action="{% url 'update-popit-writeit-relation' subdomain=record.writeitinstance.slug pk=record.pk %}" method='POST'>
+                    <div class="form-group">
+                      <label for="polling-interval-select">{% trans 'Fetch new data from this source' %}</label>
+                      <select class="form-control" id="polling-interval-select" name="periodicity">
+                        <option value="--" {% if record.periodicity == "--" %}selected{% endif %}>{% trans 'Never' %}</option>
+                        <option value="2D" {% if record.periodicity == "2D" %}selected{% endif %}>{% trans 'Twice a day' %}</option>
+                        <option value="1D" {% if record.periodicity == "1D" %}selected{% endif %}>{% trans 'Daily' %}</option>
+                        <option value="1W" {% if record.periodicity == "1W" %}selected{% endif %}>{% trans 'Weekly' %}</option>
+                      </select>
+
+                      </div>
+                      <div class="save-bar">
+                       <button class="btn btn-default resync" href="{% url 'resync-from-popit' subdomain=record.writeitinstance.slug popit_api_pk=record.popitapiinstance.pk %}"><i class="glyphicon glyphicon-refresh"></i> {% trans 'Fetch new data now' %}</button>
+                       <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
+                      </div>
+                      </form>
+
+                </div>
+              </div>
+            </li>
+          </ul>
+        {% endfor %}
+      {% paginate %}
+
   <div class="add-new-data-source">
     <form action="{% url 'relate-writeit-popit' subdomain=writeitinstance.slug %}" method="POST" role="form">
     <h3>{% trans "Add a new data source" %}</h3>
@@ -45,27 +86,24 @@ $(".chosen-person-select").chosen();
       </div>
     </form>
   </div>
-      {% autopaginate relations %}
-      {% paginate %}
-          {% for record in relations %}
-            <ul class="list-of-data-sources">
-              <li class="list-of-data-sources__data-source">
-                <h3 class="data-source__title"><a href="{{ record.popitapiinstance.url }}">{{ record.popitapiinstance.url }}</a></h3>
-                <p class="data-source__info">{{ record.status }} &mdash; last updated {{ record.updated }}</p>
-                <div class="data-source__controls">
-                  {% comment %}
-                  <ul>
-                    <li><a href="#">Edit</a></li>
-                    <li><a href="#">Disconnect</a></li>
-                    <li><a href="#">Delete</a></li>
-                  </ul>
-                  {% endcomment %}
-                </div>
-              </li>
-            </ul>
-          {% endfor %}
-        </table>
-        {% paginate %}
-      </tbody>
+<script type="text/javascript">
+$(function(){
+  $('.resync').click(function(event){
+    event.preventDefault();
+    var url = $(event.target).attr('href');
+    $.post(url, function(data){
+      location.reload();
+    })
 
+  })
+  $(document).ready(function() { 
+      // bind 'myForm' and provide a simple callback function 
+      $('.update-popit-form').ajaxForm({
+        success: function(data){
+          location.reload();
+        }
+      }); 
+  });
+})
+</script>
 {% endblock content %}

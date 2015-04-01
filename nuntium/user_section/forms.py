@@ -5,7 +5,8 @@ from django.core import validators
 
 from nuntium.models import WriteItInstance, \
     NewAnswerNotificationTemplate, \
-    ConfirmationTemplate, Answer, WriteItInstanceConfig
+    ConfirmationTemplate, Answer, WriteItInstanceConfig, \
+    WriteitInstancePopitInstanceRecord
 
 from django.forms import ValidationError, ModelChoiceField, Form, URLField
 
@@ -162,3 +163,9 @@ class RelatePopitInstanceWithWriteItInstance(Form):
             self.cleaned_data['popit_url']
             )
         return result
+
+
+class WriteItPopitUpdateForm(ModelForm):
+    class Meta:
+        model = WriteitInstancePopitInstanceRecord
+        fields = ['periodicity', ]

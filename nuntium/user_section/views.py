@@ -10,7 +10,7 @@ from mailit.forms import MailitTemplateForm
 
 from ..models import WriteItInstance, Message,\
     NewAnswerNotificationTemplate, ConfirmationTemplate, \
-    Answer, WriteItInstanceConfig
+    Answer, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
     WriteItInstanceCreateForm, AnswerForm, \
@@ -18,6 +18,9 @@ from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, 
 from django.contrib import messages as view_messages
 from django.utils.translation import ugettext as _
 import json
+from nuntium.popit_api_instance import PopitApiInstance
+from nuntium.tasks import pull_from_popit
+from nuntium.user_section.forms import WriteItPopitUpdateForm
 
 
 class UserAccountView(TemplateView):
@@ -364,6 +367,57 @@ class WriteitPopitRelatingView(FormView):
         context['writeitinstance'] = self.writeitinstance
         context['relations'] = self.writeitinstance.writeitinstancepopitinstancerecord_set.all()
         return context
+
+
+class ReSyncFromPopit(View):
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_authenticated():
+            raise Http404
+        return super(ReSyncFromPopit, self).dispatch(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        writeitinstance = get_object_or_404(WriteItInstance,
+            slug=self.request.subdomain,
+            owner=self.request.user)
+        popits_previously_related = PopitApiInstance.objects.filter(
+            writeitinstancepopitinstancerecord__writeitinstance=writeitinstance)
+
+        popit_api_instance = get_object_or_404(popits_previously_related, pk=kwargs['popit_api_pk'])
+        pull_from_popit.delay(writeitinstance, popit_api_instance)
+        return HttpResponse()
+
+
+class WriteItPopitUpdateView(UpdateView):
+    form_class = WriteItPopitUpdateForm
+    model = WriteitInstancePopitInstanceRecord
+
+    def get_writeitinstance(self):
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.request.subdomain, owner=self.request.user)
+
+    def dispatch(self, *args, **kwargs):
+        self.get_writeitinstance()
+        if self.request.method != 'POST':
+            return self.http_method_not_allowed(*args, **kwargs)
+        return super(WriteItPopitUpdateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):
+        form.save()
+        return HttpResponse(
+            json.dumps({
+                'id': form.instance.id,
+                'periodicity': form.instance.periodicity
+                }),
+            content_type='application/json'
+        )
+
+    def form_invalid(self, form):
+        super(WriteItPopitUpdateView, self).form_invalid(form)
+        return HttpResponse(
+            json.dumps({
+                'errors': form.errors
+                }),
+            content_type='application/json'
+        )
 
 
 class WriteItDeleteView(DeleteView):
