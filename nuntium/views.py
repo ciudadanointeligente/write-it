@@ -310,3 +310,10 @@ class MessageThreadView(DetailView):
 
         context['writeitinstance'] = self.object.writeitinstance
         return context
+
+class WriteSignView(TemplateView):
+    template_name = 'write/sign.html'
+    def get_context_data(self, **kwargs):
+        context = super(WriteSignView, self).get_context_data(**kwargs)
+        context['writeitinstance'] = WriteItInstance.objects.get(slug=self.request.subdomain)
+        return context

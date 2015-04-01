@@ -13,6 +13,7 @@ from nuntium.views import (
     MessagesPerPersonView,
     PerInstanceSearchView,
     WriteMessageView,
+    WriteSignView,
     WriteItInstanceDetailView,
     )
 from nuntium.user_section.views import (
@@ -65,7 +66,7 @@ write_message_wizard = WriteMessageView.as_view(url_name='write_message_step')
 
 urlpatterns = i18n_patterns('',
     url(r'^$', WriteItInstanceDetailView.as_view(), name='instance_detail'),
-    url(r'^write/sign/$', TemplateView.as_view(template_name='write/sign.html'), name='write_message_sign'),
+    url(r'^write/sign/$', WriteSignView.as_view(), name='write_message_sign'),
     url(r'^write/(?P<step>.+)/$', write_message_wizard, name='write_message_step'),
     url(r'^write/$', write_message_wizard, name='write_message'),
     # url(r'^write/draft/$', TemplateView.as_view(template_name='write/draft.html'), name='write_draft'),
