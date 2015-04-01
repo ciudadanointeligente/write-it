@@ -6,6 +6,7 @@ from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Answer
 from mock import patch
 from django.core import mail
 from django.test.utils import override_settings
+from mailit.models import RawIncomingEmail
 
 
 class ManagementCommandAnswer(TestCase):
@@ -82,28 +83,23 @@ class ManagementCommandAnswerBehaviour(TestCase):
         self.assertEquals(the_answer.person, self.outbound_message.contact.person)
 
 
-def readlines1_mock():
-    file_name = 'mailit/tests/fixture/mail.txt'
+def read_lines(file_name):
     f = open(file_name)
     lines = f.readlines()
     f.close()
     return lines
+
+
+def readlines1_mock():
+    return read_lines('mailit/tests/fixture/mail.txt')
 
 
 def readlines2_mock():
-    file_name = 'mailit/tests/fixture/mail_with_identifier_in_the_content.txt'
-    f = open(file_name)
-    lines = f.readlines()
-    f.close()
-    return lines
+    return read_lines('mailit/tests/fixture/mail_with_identifier_in_the_content.txt')
 
 
 def readlines3_mock():
-    file_name = 'mailit/tests/fixture/mail_for_no_message.txt'
-    f = open(file_name)
-    lines = f.readlines()
-    f.close()
-    return lines
+    return read_lines('mailit/tests/fixture/mail_for_no_message.txt')
 
 
 class HandleIncomingEmailCommand(TestCase):
@@ -146,7 +142,8 @@ class HandleIncomingEmailCommand(TestCase):
             content_text = ''
             for line in readlines3_mock():
                 content_text += line
-            self.assertEquals(len(mail.outbox), 1)
-            self.assertNotIn(content_text, mail.outbox[0].body)
-            self.assertEquals(mail.outbox[0].to[0], 'falvarez@admins.org')
-            self.assertEquals(len(mail.outbox[0].attachments), 1)
+            # Admins don't get an email
+            self.assertEquals(len(mail.outbox), 0)
+            # but the email gets registered
+            self.assertTrue(RawIncomingEmail.objects.
+                filter(content__contains='<CAA5PczfGfdhf29wgK=8t6j7hm8HYsBy8Qg87iTU2pF42Ez3VcQ@mail.gmail.com>'))

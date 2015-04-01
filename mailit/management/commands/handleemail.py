@@ -64,6 +64,8 @@ class Command(BaseCommand):
         try:
             answer = handler.handle(lines)
             answer.send_back()
+        except AttributeError:
+            pass
         except:
             tb = traceback.format_exc()
             text_content = "Error the traceback was:\n" + tb
