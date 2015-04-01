@@ -41,7 +41,7 @@
             	<th class="text-center">{% trans "Moderated" %}</th>
             {% endif %}
             <th class="text-center">{% trans "Answers"%}</th>
-            <th class="text-center">{% trans "Delete"%}</th>
+            <th class="text-center">{% trans "Make private/public"%}</th>
           </tr>
         </thead>
         <tbody>
@@ -90,7 +90,7 @@
               {% endif %}
             </td>
             <td class="text-center">
-              <a data-toggle="modal" data-target="#modal" class="deleteMessage" href="{% url 'message_delete' subdomain=writeitinstance.slug pk=message.pk %}"><i class="fa fa-times"></i></a>
+              <a class="deleteMessage toggle-public" href="{% url 'toggle_public' subdomain=writeitinstance.slug pk=message.pk %}"><i class="fa {% if message.public %}fa-eye{% else %}fa-eye-slash{% endif %}"></i></a>
             </td>
 
           </tr>
@@ -123,6 +123,9 @@ $('.explanation').tooltip({})
 var postToUrlAndReload = function(event){
   event.preventDefault();
   var url = $(event.target).attr('href');
+  if (!(typeof url !== typeof undefined && url !== false)){
+    url = $(event.target).parent().attr('href');
+  }
   $.post(url, function(data){
     location.reload();
   })
