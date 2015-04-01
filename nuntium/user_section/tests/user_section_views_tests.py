@@ -129,6 +129,7 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         self.pedro = Person.objects.get(name="Pedro")
         self.marcel = Person.objects.get(name="Marcel")
         self.data = {
+            'name': 'test 1',
             'moderation_needed_in_all_messages': 1,
             'allow_messages_using_form': 1,
             'rate_limiter': 3,
@@ -153,9 +154,9 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
 
     def test_writeitinstance_advanced_form_save(self):
         url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
-        c = Client()
+        c = self.client
         c.login(username=self.owner.username, password='admin')
-        response = c.post(url, data=self.data, follow=True)
+        response = c.post(url, data=self.data)
         self.assertRedirects(response, url)
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
         self.assertTrue(writeitinstance.config.moderation_needed_in_all_messages)
@@ -174,12 +175,12 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         self.client.login(username=self.owner.username, password='admin')
         response = self.client.post(url, data=modified_data, follow=True)
 
-        self.assertTrue(response.context['form'].errors)
-        self.assertTrue(response.context['form'].errors['maximum_recipients'])
+        self.assertTrue(response.context['advanced_form'].errors)
+        self.assertTrue(response.context['advanced_form'].errors['maximum_recipients'])
 
     def test_update_view_is_not_reachable_by_a_non_user(self):
         url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
-        client = Client()
+        client = self.client
         response = client.get(url)
         self.assertRedirectToLogin(response, next_url=url)
 
@@ -193,7 +194,7 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
             password="feroz",
             )
         url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
-        c = Client()
+        c = self.client
         c.login(username=fiera.username, password='feroz')
 
         response = c.post(url, data=self.data, follow=True)
