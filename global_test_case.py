@@ -11,6 +11,7 @@ import threading
 from django.db import DEFAULT_DB_ALIAS
 from django.test import RequestFactory
 from django.test.client import Client
+import logging
 
 _LOCALS = threading.local()
 
@@ -198,4 +199,9 @@ from django_nose import NoseTestSuiteRunner
 
 
 class WriteItTestRunner(CeleryTestSuiteRunner, NoseTestSuiteRunner):
-    pass
+    def run_tests(self, test_labels, extra_tests=None, **kwargs):
+
+        # don't show logging messages while testing
+        logging.disable(logging.CRITICAL)
+
+        return super(WriteItTestRunner, self).run_tests(test_labels, extra_tests, **kwargs)
