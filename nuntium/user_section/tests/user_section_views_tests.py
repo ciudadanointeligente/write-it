@@ -17,6 +17,7 @@ from django.test.utils import override_settings
 from urlparse import urlparse
 from nuntium.popit_api_instance import PopitApiInstance
 import json
+from nuntium.user_section.views import WriteItInstanceCreateView
 
 
 class UserSectionTestCase(TestCase):
@@ -510,17 +511,14 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         response = c.get(url)
         self.assertRedirectToLogin(response)
 
-    def test_it_redirects_to_your_instances(self):
-        '''When get to create an instance it redirects to your instances'''
+    def test_get_url(self):
+        '''Get the url for creating a new instance (it doesn't redrect anywhere)'''
         url = reverse('create_writeit_instance')
-        c = self.client
-
-        response = c.get(url)
-        c.login(username=self.user.username, password='admin')
-
-        response = c.get(url)
-        your_instances_url = reverse('your-instances')
-        self.assertRedirects(response, your_instances_url)
+        request = self.factory.get(url)
+        request.user = self.user
+        response = WriteItInstanceCreateView.as_view()(request)
+        # print response.render()
+        self.assertEquals(response.status_code, 200)
 
     def test_your_instances_carries_a_create_form(self):
         '''Your instances has a form for creating an instance'''

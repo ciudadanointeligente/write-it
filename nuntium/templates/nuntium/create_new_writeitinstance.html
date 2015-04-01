@@ -1,0 +1,18 @@
+{% extends "base_manager.html" %}
+{% load i18n %}
+{% block sidebar %}
+{% endblock sidebar %}
+{% block bodyclass %}page-without-sidebar{% endblock bodyclass %}
+{% load subdomainurls %}
+
+{% block content %}
+<div class="page-header">
+    <h2>{% trans "Create a new WriteIt" %}</h2>
+</div>
+<form method="POST">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button class='btn btn-primary'>{% trans 'Create' %}</button>
+</form>
+
+{% endblock content %}

@@ -169,7 +169,7 @@ class UserSectionListView(ListView):
 class WriteItInstanceCreateView(CreateView):
     model = WriteItInstance
     form_class = WriteItInstanceCreateForm
-    template_name = 'nuntium/profiles/your-instances.html'
+    template_name = 'nuntium/create_new_writeitinstance.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
@@ -185,10 +185,6 @@ class WriteItInstanceCreateView(CreateView):
         kwargs = super(WriteItInstanceCreateView, self).get_form_kwargs()
         kwargs['owner'] = self.request.user
         return kwargs
-
-    def get(self, request, *args, **kwargs):
-        url = reverse('your-instances')
-        return redirect(url)
 
 
 class YourInstancesView(UserSectionListView):
