@@ -290,19 +290,7 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
 
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
         self.assertEquals(writeitinstance.name, data['name'])
-
-    def test_removing_a_person_from_writeitinstance_basic_form_save(self):
-        data = {
-            'name': 'new name 1'
-            }
-        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
-        c = self.client
-        c.login(username=self.owner.username, password='admin')
-
-        c.post(url, data=data, follow=True)
-
-        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
-        self.assertEquals(writeitinstance.name, 'new name 1')
+        self.assertEquals(writeitinstance.config.maximum_recipients, data['maximum_recipients'])
 
     def test_when_a_non_owner_saves_it_does_not_get_200_status_code(self):
         # I think that this test is unnecesary but
