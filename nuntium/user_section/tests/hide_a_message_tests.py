@@ -1,5 +1,5 @@
 from nuntium.user_section.tests.user_section_views_tests import UserSectionTestCase
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 from nuntium.models import Message
 import json
 from django.contrib.auth.models import User
@@ -19,7 +19,7 @@ class HideAMessageTestCase(UserSectionTestCase):
         self.message.public = True
         self.message.save()
 
-        url = reverse('toggle_public', kwargs={'slug': self.message.writeitinstance.slug,
+        url = reverse('toggle_public', subdomain=self.message.writeitinstance.slug, kwargs={
             'pk': self.message.pk})
 
         self.client.login(username=self.owner.username, password='feroz')
@@ -45,7 +45,7 @@ class HideAMessageTestCase(UserSectionTestCase):
         self.message.public = True
         self.message.save()
 
-        url = reverse('toggle_public', kwargs={'slug': self.message.writeitinstance.slug,
+        url = reverse('toggle_public', subdomain=self.message.writeitinstance.slug, kwargs={
             'pk': self.message.pk})
 
         response = self.client.post(url)

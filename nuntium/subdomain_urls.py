@@ -32,6 +32,8 @@ from nuntium.user_section.views import (
     WriteItInstanceTemplateUpdateView,
     WriteItInstanceUpdateView,
     WriteitPopitRelatingView,
+    MessageTogglePublic,
+
 )
 from nuntium.user_section.stats import StatsView
 
@@ -60,6 +62,7 @@ managepatterns = patterns('',
     url(r'^delete/$',
         WriteItDeleteView.as_view(template_name="nuntium/profiles/writeitinstance_check_delete.html"),
         name='delete_an_instance'),
+    url(r'^messages/(?P<pk>[-\d]+)/toggle-public/$', MessageTogglePublic.as_view(), name='toggle_public'),
 )
 
 write_message_wizard = WriteMessageView.as_view(url_name='write_message_step')

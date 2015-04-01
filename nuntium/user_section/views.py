@@ -387,6 +387,7 @@ class WriteItDeleteView(DeleteView):
 
 class MessageTogglePublic(View):
     def dispatch(self, *args, **kwargs):
+        self.kwargs['slug'] = self.request.subdomain
         if not self.request.user.is_authenticated():
             raise Http404
         return super(MessageTogglePublic, self).dispatch(*args, **kwargs)
