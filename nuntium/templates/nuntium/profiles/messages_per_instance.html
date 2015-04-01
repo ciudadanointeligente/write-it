@@ -45,7 +45,7 @@
             <td>
               {{ message.subject }}
               {% if message.public and message.confirmated %}
-              <a target="_blank" href="{% url 'message_detail' slug=message.slug instance_slug=writeitinstance.slug %}"><i class="fa fa-external-link"></i></a>
+              <a target="_blank" href="{% url 'thread_read' slug=message.slug subdomain=writeitinstance.slug %}"><i class="fa fa-external-link"></i></a>
               {% endif %}
             </td>
             <td>{{ message.content|truncatechars:50|linebreaksbr }}</td>

@@ -213,7 +213,7 @@ class LoginRequiredMixin(View):
 
 class WriteItInstanceOwnerMixin(LoginRequiredMixin):
     def get_object(self):
-        slug = self.kwargs.pop('slug')
+        slug = self.request.subdomain
         pk = self.kwargs.get('pk')
         return get_object_or_404(self.model, writeitinstance__slug=slug, writeitinstance__owner=self.request.user, pk=pk)
 
@@ -272,7 +272,7 @@ class MessageDelete(WriteItInstanceOwnerMixin, DeleteView):
     def get_success_url(self):
         success_url = reverse(
             'messages_per_writeitinstance',
-            kwargs={'slug': self.object.writeitinstance.slug},
+            subdomain=self.object.writeitinstance.slug,
             )
         return success_url
 
@@ -291,7 +291,8 @@ class AnswerEditMixin(View):
     def get_success_url(self):
         return reverse(
             'message_detail_private',
-            kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk},
+            subdomain=self.message.writeitinstance.slug,
+            kwargs={'pk': self.message.pk},
             )
 
 
@@ -333,7 +334,8 @@ class AcceptMessageView(View):
 
         url = reverse(
             'messages_per_writeitinstance',
-            kwargs={'slug': self.message.writeitinstance.slug},
+            # kwargs={'slug': self.message.writeitinstance.slug},
+            subdomain=self.message.writeitinstance.slug
             )
         return redirect(url)
 
@@ -356,7 +358,7 @@ class WriteitPopitRelatingView(FormView):
         return kwargs
 
     def get_success_url(self):
-        return reverse('writeitinstance_basic_update', kwargs={'slug': self.kwargs.get('slug')})
+        return reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
 
     def form_valid(self, form):
         form.relate()
@@ -374,6 +376,11 @@ class WriteitPopitRelatingView(FormView):
 
 class WriteItDeleteView(DeleteView):
     model = WriteItInstance
+
+    # @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.kwargs['slug'] = request.subdomain
+        return super(WriteItDeleteView, self).dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         obj = super(WriteItDeleteView, self).get_object(queryset=queryset)
