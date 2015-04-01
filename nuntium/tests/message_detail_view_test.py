@@ -17,6 +17,7 @@ class MessageDetailView(TestCase):
             subject='Subject 1',
             writeitinstance=self.writeitinstance1,
             persons=[self.person1],
+            confirmated=True,
             )
         Confirmation.objects.create(message=self.message, confirmated_at=datetime.datetime.now())
 
