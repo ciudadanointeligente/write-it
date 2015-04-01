@@ -131,33 +131,26 @@ class WriteItInstanceUpdateView(UpdateView):
             subdomain=self.object.slug,
             )
 
+    def get_advanced_form(self):
+        advanced_form_kwargs = self.get_form_kwargs()
+        advanced_form_kwargs['instance'] = self.object.config
+        return WriteItInstanceAdvancedUpdateForm(**advanced_form_kwargs)
 
-class WriteItInstanceAdvancedUpdateView(UpdateView):
-    form_class = WriteItInstanceAdvancedUpdateForm
-    template_name = 'nuntium/writeitinstance_advanced_update_form.html'
-    model = WriteItInstanceConfig
-
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        self.kwargs['slug'] = request.subdomain
-        return super(WriteItInstanceAdvancedUpdateView, self).dispatch(request, *args, **kwargs)
-
-    def get_queryset(self):
-        return super(WriteItInstanceAdvancedUpdateView, self).get_queryset().filter(writeitinstance__owner=self.request.user)
-
-    def get_context_data(self, **kwargs):
-        context = super(WriteItInstanceAdvancedUpdateView, self).get_context_data(**kwargs)
-        context['writeitinstance'] = self.object.writeitinstance
+    def get_context_data(self, form):
+        context = super(WriteItInstanceUpdateView, self).get_context_data(form=form)
+        context['advanced_form'] = self.get_advanced_form()
         return context
 
-    def get_slug_field(self):
-        return 'writeitinstance__slug'
-
-    def get_success_url(self):
-        return reverse(
-            'writeitinstance_advanced_update',
-            subdomain=self.object.writeitinstance.slug,
-            )
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        advanced_form = self.get_advanced_form()
+        if advanced_form.is_valid():
+            advanced_form.save()
+            return super(WriteItInstanceUpdateView, self).post(request, *args, **kwargs)
+        else:
+            form_class = self.get_form_class()
+            form = self.get_form(form_class)
+            return self.form_invalid(form)
 
 
 class UserSectionListView(ListView):
@@ -213,7 +206,7 @@ class LoginRequiredMixin(View):
 
 class WriteItInstanceOwnerMixin(LoginRequiredMixin):
     def get_object(self):
-        slug = self.kwargs.pop('slug')
+        slug = self.request.subdomain
         pk = self.kwargs.get('pk')
         return get_object_or_404(self.model, writeitinstance__slug=slug, writeitinstance__owner=self.request.user, pk=pk)
 
@@ -272,7 +265,7 @@ class MessageDelete(WriteItInstanceOwnerMixin, DeleteView):
     def get_success_url(self):
         success_url = reverse(
             'messages_per_writeitinstance',
-            kwargs={'slug': self.object.writeitinstance.slug},
+            subdomain=self.object.writeitinstance.slug,
             )
         return success_url
 
@@ -291,7 +284,8 @@ class AnswerEditMixin(View):
     def get_success_url(self):
         return reverse(
             'message_detail_private',
-            kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk},
+            subdomain=self.message.writeitinstance.slug,
+            kwargs={'pk': self.message.pk},
             )
 
 
@@ -333,7 +327,7 @@ class AcceptMessageView(View):
 
         url = reverse(
             'messages_per_writeitinstance',
-            kwargs={'slug': self.message.writeitinstance.slug},
+            subdomain=self.message.writeitinstance.slug,
             )
         return redirect(url)
 
@@ -356,7 +350,7 @@ class WriteitPopitRelatingView(FormView):
         return kwargs
 
     def get_success_url(self):
-        return reverse('writeitinstance_basic_update', kwargs={'slug': self.kwargs.get('slug')})
+        return reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
 
     def form_valid(self, form):
         form.relate()
@@ -374,6 +368,11 @@ class WriteitPopitRelatingView(FormView):
 
 class WriteItDeleteView(DeleteView):
     model = WriteItInstance
+
+    # @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.kwargs['slug'] = request.subdomain
+        return super(WriteItDeleteView, self).dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         obj = super(WriteItDeleteView, self).get_object(queryset=queryset)

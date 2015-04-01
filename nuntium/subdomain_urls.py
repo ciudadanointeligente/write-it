@@ -13,6 +13,7 @@ from nuntium.views import (
     MessagesPerPersonView,
     PerInstanceSearchView,
     WriteMessageView,
+    WriteSignView,
     WriteItInstanceDetailView,
     )
 from nuntium.user_section.views import (
@@ -25,7 +26,6 @@ from nuntium.user_section.views import (
     MessagesPerWriteItInstance,
     NewAnswerNotificationTemplateUpdateView,
     WriteItDeleteView,
-    WriteItInstanceAdvancedUpdateView,
     WriteItInstanceApiDocsView,
     WriteItInstanceContactDetailView,
     WriteItInstanceStatusView,
@@ -42,7 +42,6 @@ download_attachment_view = ObjectDownloadView.as_view(model=AnswerAttachment, fi
 
 managepatterns = patterns('',
     url(r'^$', WriteItInstanceUpdateView.as_view(), name='writeitinstance_basic_update'),
-    url(r'^settings/$', WriteItInstanceAdvancedUpdateView.as_view(), name='writeitinstance_advanced_update'),
     url(r'^settings/api/$', WriteItInstanceApiDocsView.as_view(), name='writeitinstance_api_docs'),
     url(r'^settings/sources/$', WriteitPopitRelatingView.as_view(), name='relate-writeit-popit'),
     url(r'^settings/templates/$', WriteItInstanceTemplateUpdateView.as_view(), name='writeitinstance_template_update'),
@@ -67,7 +66,7 @@ write_message_wizard = WriteMessageView.as_view(url_name='write_message_step')
 
 urlpatterns = i18n_patterns('',
     url(r'^$', WriteItInstanceDetailView.as_view(), name='instance_detail'),
-    url(r'^write/sign/$', TemplateView.as_view(template_name='write/sign.html'), name='write_message_sign'),
+    url(r'^write/sign/$', WriteSignView.as_view(), name='write_message_sign'),
     url(r'^write/(?P<step>.+)/$', write_message_wizard, name='write_message_step'),
     url(r'^write/$', write_message_wizard, name='write_message'),
     # url(r'^write/draft/$', TemplateView.as_view(template_name='write/draft.html'), name='write_draft'),

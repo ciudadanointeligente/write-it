@@ -4,6 +4,8 @@ from ..search_indexes import AnswerIndex
 from subdomains.utils import reverse
 from ..models import Answer, Message
 from haystack import indexes
+import urllib
+import urlparse
 
 
 class AnswerIndexTestCase(TestCase):
@@ -48,9 +50,17 @@ class SearchAnswerAccess(SearchIndexTestCase):
         # public messages
         # if it ever fails
         # well then I'll fix it
-        url = reverse('search_messages')
-        data = {'q': 'Public Answer'}
-        response = self.client.get(url, data=data)
+
+        # Based on
+        # http://stackoverflow.com/questions/2506379/add-params-to-given-url-in-python
+        url = reverse('search_messages', subdomain=None)
+        url += "/"
+        params = {'q': 'Public Answer'}
+
+        url_parts = list(urlparse.urlparse(url))
+        url_parts[4] = urllib.urlencode(params)
+        url_with_parameters = urlparse.urlunparse(url_parts)
+        response = self.client.get(url_with_parameters)
         self.assertEquals(response.status_code, 200)
 
         #the first one the one that says "Public Answer" in example_data.yml

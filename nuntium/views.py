@@ -63,6 +63,12 @@ class WriteItInstanceDetailView(DetailView):
         self.kwargs['slug'] = request.subdomain
         return super(WriteItInstanceDetailView, self).dispatch(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
+        recent_messages = Message.public_objects.filter(writeitinstance=self.object).order_by('created')[:5]
+        context['recent_messages'] = recent_messages
+        return context
+
 FORMS = [("who", forms.WhoForm),
          ("draft", forms.DraftForm),
          ("preview", forms.PreviewForm)]
@@ -165,6 +171,7 @@ class ConfirmView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ConfirmView, self).get_context_data(**kwargs)
+        context['writeitinstance'] = self.object.message.writeitinstance
         return context
 
     def get(self, *args, **kwargs):
@@ -219,7 +226,8 @@ class PerInstanceSearchView(SearchView):
         self.template = 'nuntium/instance_search.html'
 
     def __call__(self, *args, **kwargs):
-        self.slug = kwargs.pop('slug')
+        request = args[0]
+        self.slug = request.subdomain
         return super(PerInstanceSearchView, self).__call__(*args, **kwargs)
 
     def build_form(self, form_kwargs=None):
@@ -250,6 +258,7 @@ class MessagesPerPersonView(ListView):
     def get_context_data(self, **kwargs):
         context = super(MessagesPerPersonView, self).get_context_data(**kwargs)
         context['person'] = self.person
+        context['writeitinstance'] = self.writeitinstance
         return context
 
 
@@ -258,7 +267,7 @@ class MessagesFromPersonView(ListView):
     template_name = 'nuntium/message/from_person.html'
 
     def dispatch(self, *args, **kwargs):
-        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.kwargs['slug'])
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.request.subdomain)
         self.message = get_object_or_404(Message, slug=self.kwargs['message_slug'])
         return super(MessagesFromPersonView, self).dispatch(*args, **kwargs)
 
@@ -287,3 +296,24 @@ class MessageThreadsView(ListView):
 class MessageThreadView(DetailView):
     model = Message
     template_name = 'thread/read.html'
+
+    def get_object(self):
+        the_message = super(MessageThreadView, self).get_object()
+        if not the_message.public:
+            raise Http404
+        if not (the_message.confirmated or the_message.confirmation.is_confirmed):
+            raise Http404
+        return the_message
+
+    def get_context_data(self, **kwargs):
+        context = super(MessageThreadView, self).get_context_data(**kwargs)
+
+        context['writeitinstance'] = self.object.writeitinstance
+        return context
+
+class WriteSignView(TemplateView):
+    template_name = 'write/sign.html'
+    def get_context_data(self, **kwargs):
+        context = super(WriteSignView, self).get_context_data(**kwargs)
+        context['writeitinstance'] = WriteItInstance.objects.get(slug=self.request.subdomain)
+        return context

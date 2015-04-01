@@ -9,6 +9,9 @@ import os
 import subprocess
 import threading
 from django.db import DEFAULT_DB_ALIAS
+from django.test import RequestFactory
+from django.test.client import Client
+import logging
 
 _LOCALS = threading.local()
 
@@ -97,11 +100,74 @@ def popit_load_data(fixture_name='default'):
         raise Exception("Error loading fixtures for '%s'" % fixture_name)
 
 
+from urlparse import urlparse
+
+
+def get_path_and_subdomain(path, **extra):
+    parsed_uri = urlparse(path)
+    # parsed_uri.hostname is None when we say for a request to follow=True
+    # and because django.test.Client in the method _handle_redirects(self, response, **extra)
+    # does a self.get(url.path, QueryDict(url.query), follow=False, **extra)
+    # which cuts the full url but adds the server_name and port to the extra dictionary.
+    # We can still override the _handle_redirects in the class WriteItClient
+    if parsed_uri.hostname is None:
+        full_path = extra['wsgi.url_scheme'] + "://" + extra['SERVER_NAME'] + ":" + extra['SERVER_PORT'] + path
+        parsed_uri = urlparse(full_path)
+    subdomain = parsed_uri.hostname.split('.')[0]
+    domain = parsed_uri.netloc
+
+    if subdomain:
+        subdomain = subdomain
+        path = path.replace(subdomain + ".", '')
+    else:
+        subdomain = None
+    return path, subdomain, domain
+
+
+class WriteItRequestFactory(RequestFactory):
+    '''
+    This is pretty much the same django RequestFactory
+    but in order to work with subdomains it returns the same
+    request as the SubdomainMiddleware would. In other words
+    it determines from the url what the subdomain is.
+    '''
+
+    def get(self, path, data={}, secure=False, **extra):
+        path, subdomain, domain = get_path_and_subdomain(path, **extra)
+        extra.update({
+            'SERVER_NAME': str(domain),
+            })
+        request = super(WriteItRequestFactory, self).get(path, data=data, secure=secure, **extra)
+        if subdomain:
+            request.subdomain = subdomain
+        return request
+
+    def post(self, path, data={}, secure=False, **extra):
+        path, subdomain, domain = get_path_and_subdomain(path)
+        extra.update({
+            'SERVER_NAME': str(domain),
+            })
+        request = super(WriteItRequestFactory, self).post(path, data=data, secure=secure, **extra)
+        if subdomain:
+            request.subdomain = subdomain
+        return request
+
+
+class WriteItClient(WriteItRequestFactory, Client):
+    pass
+
+
 class WriteItTestCaseMixin(object):
+    client_class = WriteItClient
     fixtures = ['example_data.yaml']
 
     def setUp(self):
         self.site = Site.objects.get_current()
+        self.factory = WriteItRequestFactory()
+
+    def assertRedirects(self, response, expected_url, status_code=302, target_status_code=200, host=None, msg_prefix=''):
+        self.assertEquals(response.status_code, status_code)
+        self.assertEquals(response.url, expected_url)
 
     def assertModerationMailSent(self, message, moderation_mail):
         self.assertEquals(moderation_mail.to[0], message.writeitinstance.owner.email)
@@ -133,4 +199,9 @@ from django_nose import NoseTestSuiteRunner
 
 
 class WriteItTestRunner(CeleryTestSuiteRunner, NoseTestSuiteRunner):
-    pass
+    def run_tests(self, test_labels, extra_tests=None, **kwargs):
+
+        # don't show logging messages while testing
+        logging.disable(logging.CRITICAL)
+
+        return super(WriteItTestRunner, self).run_tests(test_labels, extra_tests, **kwargs)

@@ -2,9 +2,9 @@
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from subdomains.utils import reverse
 from nuntium.models import WriteItInstance, Message, Membership, Confirmation
-from nuntium.views import MessageCreateForm, PerInstanceSearchForm
+from nuntium.views import PerInstanceSearchForm
 from popit.models import ApiInstance, Person
-from django.utils.unittest import skipUnless
+from django.utils.unittest import skipUnless, skip
 from django.contrib.auth.models import User
 from django.utils.translation import activate
 from django.utils.translation import ugettext as _
@@ -64,7 +64,7 @@ class InstanceTestCase(TestCase):
         writeitinstance1 = WriteItInstance.objects.get(id=1)
         expected_url = reverse(
             'instance_detail',
-            kwargs={'slug': writeitinstance1.slug},
+            subdomain=writeitinstance1.slug,
             )
 
         self.assertEquals(expected_url, writeitinstance1.get_absolute_url())
@@ -72,13 +72,14 @@ class InstanceTestCase(TestCase):
     def test_get_absolute_url_i18n(self):
         activate("es")
         writeitinstance1 = WriteItInstance.objects.get(id=1)
-        self.assertTrue(writeitinstance1.get_absolute_url().startswith('/es/'))
+        self.assertTrue(writeitinstance1.get_absolute_url().endswith('/es/'))
         response = self.client.get(writeitinstance1.get_absolute_url())
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'nuntium/instance_detail.html')
 
     def test_get_non_existing_instance(self):
-        url = reverse('instance_detail', kwargs={'slug': "non-existing-slug"})
+        url = reverse('instance_detail',
+            subdomain="non-existing-slug")
         response = self.client.get(url)
         self.assertEquals(response.status_code, 404)
 
@@ -201,18 +202,7 @@ class InstanceDetailView(TestCase):
         response = self.client.get(self.url)
         self.assertTemplateUsed(response, 'nuntium/instance_detail.html')
         self.assertEquals(response.context['writeitinstance'], self.writeitinstance1)
-        self.assertTrue(response.context['form'])
-        self.assertTrue(isinstance(response.context['form'], MessageCreateForm))
         self.assertEquals(response.status_code, 200)
-
-    def test_instance_view_has_a_search_form(self):
-        response = self.client.get(self.url)
-
-        self.assertIn('search_form', response.context)
-
-        self.assertIsInstance(response.context['search_form'], PerInstanceSearchForm)
-
-        self.assertEquals(response.context['search_form'].writeitinstance, self.writeitinstance1)
 
     def test_list_only_public_messages(self):
         private_message = Message.objects.create(
@@ -224,8 +214,8 @@ class InstanceDetailView(TestCase):
             )
         response = self.client.get(self.url)
 
-        self.assertTrue('public_messages' in response.context)
-        self.assertTrue(private_message not in response.context['public_messages'])
+        self.assertTrue('recent_messages' in response.context)
+        self.assertTrue(private_message not in response.context['recent_messages'])
 
     def test_in_moderation_needed_instances_does_not_show_a_confirmated_but_not_moderated(self):
         self.writeitinstance1.config.moderation_needed_in_all_messages = True
@@ -247,7 +237,7 @@ class InstanceDetailView(TestCase):
         url = self.writeitinstance1.get_absolute_url()
         response = self.client.get(url)
 
-        self.assertNotIn(message, response.context['public_messages'])
+        self.assertNotIn(message, response.context['recent_messages'])
 
     def test_list_only_confirmed_and_public_messages(self):
         message1 = self.writeitinstance1.message_set.all()[0]
@@ -284,11 +274,12 @@ class InstanceDetailView(TestCase):
         # private_message is not in the list either
         # only message 2 is in the list because is public and confirmed
 
-        self.assertIn(message2, response.context['public_messages'])
-        self.assertNotIn(message1, response.context['public_messages'])
-        self.assertIn(message3, response.context['public_messages'])
-        self.assertNotIn(private_message, response.context["public_messages"])
+        self.assertIn(message2, response.context['recent_messages'])
+        self.assertNotIn(message1, response.context['recent_messages'])
+        self.assertIn(message3, response.context['recent_messages'])
+        self.assertNotIn(private_message, response.context["recent_messages"])
 
+    @skip('Message creation is no longer in the instance detail view')
     def test_message_creation_on_post_form(self):
         # Spanish
         data = {
@@ -304,6 +295,7 @@ class InstanceDetailView(TestCase):
         self.assertTrue(new_messages.count() > 0)
         self.assertEquals(len(response.context["form"].errors), 0)
 
+    @skip('Message creation is no longer in the instance detail view')
     def test_I_get_an_acknoledgement_for_creating_a_message(self):
         # Spanish
         data = {
@@ -326,6 +318,7 @@ class InstanceDetailView(TestCase):
         self.assertEquals(len(all_messages), 1)
         self.assertEquals(all_messages[0].__str__(), expected_acknoledgments)
 
+    @skip('Message creation is no longer in the instance detail view')
     def test_after_the_creation_of_a_message_it_redirects(self):
         data = {
             'subject': u'Fiera no está',
@@ -339,6 +332,7 @@ class InstanceDetailView(TestCase):
 
         self.assertRedirects(response, url)
 
+    @skip('Message creation is no longer in the instance detail view')
     def test_if_the_instance_needs_moderation_in_all_messages(self):
         self.writeitinstance1.config.moderation_needed_in_all_messages = True
         self.writeitinstance1.config.save()

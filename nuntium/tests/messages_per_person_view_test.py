@@ -12,7 +12,6 @@ class MessagesPerPersonViewTestCase(TestCase):
         self.writeitinstance = WriteItInstance.objects.get(id=1)
         self.pedro = Person.objects.get(name="Pedro")
         self.marcel = Person.objects.get(name="Marcel")
-        self.client = Client()
 
     def test_has_an_url(self):
         url = reverse(
@@ -27,7 +26,7 @@ class MessagesPerPersonViewTestCase(TestCase):
 
     def test_it_is_reachable(self):
         url = reverse(
-            'messages_per_person',
+            'thread_to',
             subdomain=self.writeitinstance.slug,
             kwargs={
                 'pk': self.pedro.id,
@@ -49,8 +48,6 @@ class MessagesPerPersonViewTestCase(TestCase):
             expected_messages,
             [repr(r) for r in response.context['message_list']],
             )
-        self.assertTemplateUsed(response, 'nuntium/message/per_person.html')
-        self.assertTemplateUsed(response, 'base.html')
 
     def test_it_does_not_show_private_messages(self):
         private_message = Message.objects.create(
@@ -68,7 +65,7 @@ class MessagesPerPersonViewTestCase(TestCase):
         # this private message should not be shown
 
         url = reverse(
-            'messages_per_person',
+            'thread_to',
             subdomain=self.writeitinstance.slug,
             kwargs={
                 'pk': self.pedro.id,
@@ -76,7 +73,7 @@ class MessagesPerPersonViewTestCase(TestCase):
             )
 
         response = self.client.get(url)
-
+        self.assertEquals(response.status_code, 200)
         self.assertNotIn(private_message, response.context['message_list'])
 
     def test_show_only_messages_that_are_related_to_the_writeitinstance(self):
@@ -93,7 +90,7 @@ class MessagesPerPersonViewTestCase(TestCase):
             persons=[self.pedro],
             )
         url = reverse(
-            'messages_per_person',
+            'thread_to',
             subdomain=self.writeitinstance.slug,
             kwargs={
                 'pk': self.pedro.id,

@@ -7,7 +7,6 @@ from subdomains.utils import reverse
 from django.core.mail.message import EmailMultiAlternatives
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.test.client import Client
 from django.forms import ValidationError
 from django.test.utils import override_settings
 from django.utils.translation import activate
@@ -557,7 +556,7 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
 
         self.assertTrue(url)
 
-        c = Client()
+        c = self.client
         c.login(username="fiera", password="feroz")
 
         data = {
@@ -583,7 +582,7 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
         User.objects.create_user(username="not_owner", password="secreto")
 
         url = reverse('mailit-template-update', subdomain=self.writeitinstance.slug)
-        c = Client()
+        c = self.client
         c.login(username="not_owner", password="secreto")
 
         data = {
@@ -598,7 +597,7 @@ class MailitTemplateUpdateTestCase(UserSectionTestCase):
 
     def test_a_non_logged_user_is_told_to_login(self):
         url = reverse('mailit-template-update', subdomain=self.writeitinstance.slug)
-        c = Client()
+        c = self.client
 
         data = {
             'subject_template': 'Hello there you have a new mail this is subject',

@@ -38,9 +38,35 @@ $(".chosen-person-select").chosen();
         {{ form.description.label_tag }}
         {{ form.description }}
       </div>
+
       <div class="form-group">
-        {{form.persons.label_tag}}
-        {{form.persons}}
+          {{advanced_form.testing_mode.label_tag}}
+          {{advanced_form.testing_mode}}
+      </div>
+      <div class="form-group">
+          {{advanced_form.moderation_needed_in_all_messages.label_tag}}
+          {{advanced_form.moderation_needed_in_all_messages}}
+      </div>
+      <div class="form-group">
+          {{advanced_form.allow_messages_using_form.label_tag}}
+          {{advanced_form.allow_messages_using_form}}
+      </div>
+      <div class="form-group">
+          {{advanced_form.rate_limiter.label_tag}}
+          {{advanced_form.rate_limiter}}
+      </div>
+      <div class="form-group">
+          {{advanced_form.notify_owner_when_new_answer.label_tag}}
+          {{advanced_form.notify_owner_when_new_answer}}
+      </div>
+      <div class="form-group">
+          {{advanced_form.autoconfirm_api_messages.label_tag}}
+          {{advanced_form.autoconfirm_api_messages}}
+      </div>
+      <div class="form-group">
+          {{advanced_form.maximum_recipients.errors}}
+          {{advanced_form.maximum_recipients.label_tag}}
+          {{advanced_form.maximum_recipients}}
       </div>
 
       <div class="save-bar">
