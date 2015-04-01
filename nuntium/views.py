@@ -284,13 +284,8 @@ class MessageThreadView(DetailView):
     model = Message
     template_name = 'thread/read.html'
 
-    def get_object(self):
-        the_message = super(MessageThreadView, self).get_object()
-        if not the_message.public:
-            raise Http404
-        if not (the_message.confirmated or the_message.confirmation.is_confirmed):
-            raise Http404
-        return the_message
+    def get_queryset(self):
+        return self.model.objects.filter(confirmated=True, public=True)
 
     def get_context_data(self, **kwargs):
         context = super(MessageThreadView, self).get_context_data(**kwargs)
