@@ -744,15 +744,15 @@ class Confirmation(models.Model):
         return str(uuid.uuid1().hex)
 
     def get_absolute_url(self):
-        return reverse('confirm', kwargs={'slug': self.key})
+        return reverse('confirm', subdomain=self.message.writeitinstance.slug, kwargs={'slug': self.key})
 
 
 def send_confirmation_email(sender, instance, created, **kwargs):
     confirmation = instance
     if created:
-        url = reverse('confirm', kwargs={
-            'slug': confirmation.key
-            })
+        url = reverse('confirm',
+            subdomain=confirmation.message.writeitinstance.slug,
+            kwargs={'slug': confirmation.key})
         confirmation_full_url = url
         message_full_url = confirmation.message.get_absolute_url()
         plaintext = confirmation.message.writeitinstance.confirmationtemplate.content_text

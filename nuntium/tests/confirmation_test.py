@@ -75,6 +75,7 @@ class ConfirmationTestCase(TestCase):
         confirmation = Confirmation.objects.create(message=self.message)
         url = reverse(
             'confirm',
+            subdomain=self.message.writeitinstance.slug,
             kwargs={'slug': confirmation.key},
             )
         confirmation_full_url = url
@@ -140,6 +141,7 @@ class ConfirmationTestCase(TestCase):
         confirmation = Confirmation.objects.create(message=self.message)
         expected_url = reverse(
             'confirm',
+            subdomain=self.message.writeitinstance.slug,
             kwargs={'slug': confirmation.key},
             )
         self.assertEquals(expected_url, confirmation.get_absolute_url())
@@ -148,6 +150,7 @@ class ConfirmationTestCase(TestCase):
         confirmation = Confirmation.objects.create(message=self.message)
         url = reverse(
             'confirm',
+            subdomain=self.message.writeitinstance.slug,
             kwargs={'slug': confirmation.key},
             )
         response = self.client.get(url)
@@ -174,6 +177,7 @@ class ConfirmationTestCase(TestCase):
         confirmation = Confirmation.objects.create(message=self.message)
         url = reverse(
             'confirm',
+            subdomain=self.message.writeitinstance.slug,
             kwargs={'slug': confirmation.key},
             )
         response1 = self.client.get(url)

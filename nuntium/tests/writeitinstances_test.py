@@ -265,7 +265,9 @@ class InstanceDetailView(TestCase):
         self.client.get(private_message.moderation.get_success_url())
 
         confirmation_for_private_message = Confirmation.objects.create(message=private_message)
-        self.client.get(reverse('confirm', kwargs={'slug': confirmation_for_private_message.key}))
+        self.client.get(reverse('confirm',
+            subdomain=private_message.writeitinstance.slug,
+            kwargs={'slug': confirmation_for_private_message.key}))
 
         url = self.writeitinstance1.get_absolute_url()
         response = self.client.get(url)

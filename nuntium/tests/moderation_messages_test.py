@@ -53,6 +53,7 @@ class ModerationMessagesTestCase(TestCase):
         moderation, created = Moderation.objects.get_or_create(message=self.private_message)
         url = reverse(
             'confirm',
+            subdomain=self.private_message.writeitinstance.slug,
             kwargs={
                 'slug': self.confirmation.key
                 },
