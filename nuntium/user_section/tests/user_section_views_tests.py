@@ -275,7 +275,9 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
 
     def test_writeitinstance_basic_form_save(self):
         data = {
-            'name': 'name 1'
+            'name': 'name 1',
+            'maximum_recipients': 5,
+            'rate_limiter': 0,
             }
         url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
         c = self.client
