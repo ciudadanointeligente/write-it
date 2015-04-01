@@ -131,33 +131,24 @@ class WriteItInstanceUpdateView(UpdateView):
             subdomain=self.object.slug,
             )
 
+    def get_advanced_form(self):
+        advanced_form_kwargs = self.get_form_kwargs()
+        advanced_form_kwargs['instance'] = self.object.config
+        return WriteItInstanceAdvancedUpdateForm(**advanced_form_kwargs)
 
-class WriteItInstanceAdvancedUpdateView(UpdateView):
-    form_class = WriteItInstanceAdvancedUpdateForm
-    template_name = 'nuntium/writeitinstance_advanced_update_form.html'
-    model = WriteItInstanceConfig
-
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        self.kwargs['slug'] = request.subdomain
-        return super(WriteItInstanceAdvancedUpdateView, self).dispatch(request, *args, **kwargs)
-
-    def get_queryset(self):
-        return super(WriteItInstanceAdvancedUpdateView, self).get_queryset().filter(writeitinstance__owner=self.request.user)
-
-    def get_context_data(self, **kwargs):
-        context = super(WriteItInstanceAdvancedUpdateView, self).get_context_data(**kwargs)
-        context['writeitinstance'] = self.object.writeitinstance
+    def get_context_data(self, form):
+        context = super(WriteItInstanceUpdateView, self).get_context_data(form=form)
+        context['advanced_form'] = self.get_advanced_form()
         return context
 
-    def get_slug_field(self):
-        return 'writeitinstance__slug'
-
-    def get_success_url(self):
-        return reverse(
-            'writeitinstance_advanced_update',
-            subdomain=self.object.writeitinstance.slug,
-            )
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        advanced_form = self.get_advanced_form()
+        if advanced_form.is_valid():
+            advanced_form.save()
+            return super(WriteItInstanceUpdateView, self).post(request, *args, **kwargs)
+        else:
+            return self.form_invalid(advanced_form)
 
 
 class UserSectionListView(ListView):
@@ -334,8 +325,7 @@ class AcceptMessageView(View):
 
         url = reverse(
             'messages_per_writeitinstance',
-            # kwargs={'slug': self.message.writeitinstance.slug},
-            subdomain=self.message.writeitinstance.slug
+            subdomain=self.message.writeitinstance.slug,
             )
         return redirect(url)
 

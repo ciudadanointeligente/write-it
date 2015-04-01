@@ -14,7 +14,7 @@
 {% if writeitinstance.config.testing_mode %}
   <div class="alert alert-info" role="alert">
 
-      <a href="{% url 'writeitinstance_advanced_update' subdomain=writeitinstance.slug %}">{% blocktrans %}
+      <a href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{% blocktrans %}
       <i class="fa fa-info-circle"></i> This instance is in testing mode which means that all mails will go to you.
       {% endblocktrans %}</a>
   </div>
