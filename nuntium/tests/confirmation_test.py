@@ -153,9 +153,12 @@ class ConfirmationTestCase(TestCase):
             subdomain=self.message.writeitinstance.slug,
             kwargs={'slug': confirmation.key},
             )
+        message_url = reverse('thread_read',
+            subdomain=self.message.writeitinstance.slug,
+            kwargs={'slug': self.message.slug}
+            )
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'nuntium/confirm.html')
+        self.assertRedirects(response, message_url)
 
         confirmation = Confirmation.objects.get(id=confirmation.id)
         self.assertTrue(confirmation.confirmated_at is not None)
@@ -183,7 +186,7 @@ class ConfirmationTestCase(TestCase):
         response1 = self.client.get(url)
         response2 = self.client.get(url)
 
-        self.assertEquals(response1.status_code, 200)
+        self.assertEquals(response1.status_code, 302)
         self.assertEquals(response2.status_code, 404)
 
     def test_i_cannot_access_a_non_confirmed_message(self):

@@ -153,33 +153,17 @@ class MessageDetailView(DetailView):
         return the_message
 
 
-class ConfirmView(DetailView):
-    template_name = 'nuntium/confirm.html'
-    model = Confirmation
-    slug_field = 'key'
+class ConfirmView(RedirectView):
+    permanent = False
 
-    def dispatch(self, *args, **kwargs):
-        confirmation = super(ConfirmView, self).get_object()
-        if confirmation.confirmated_at is not None:
-            raise Http404
-        return super(ConfirmView, self).dispatch(*args, **kwargs)
-
-    def get_object(self, queryset=None):
-        confirmation = super(ConfirmView, self).get_object(queryset)
-
-        return confirmation
-
-    def get_context_data(self, **kwargs):
-        context = super(ConfirmView, self).get_context_data(**kwargs)
-        context['writeitinstance'] = self.object.message.writeitinstance
-        return context
-
-    def get(self, *args, **kwargs):
-        confirmation = self.get_object()
+    def get_redirect_url(self, *args, **kwargs):
+        confirmation = get_object_or_404(Confirmation, key=kwargs['slug'], confirmated_at=None)
         confirmation.confirmated_at = datetime.now()
         confirmation.save()
         confirmation.message.recently_confirmated()
-        return super(ConfirmView, self).get(*args, **kwargs)
+        return reverse('thread_read',
+            subdomain=confirmation.message.writeitinstance.slug,
+            kwargs={'slug': confirmation.message.slug})
 
 
 class ModerationView(DetailView):
