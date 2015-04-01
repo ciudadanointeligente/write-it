@@ -1,5 +1,6 @@
 {% extends "base_instance.html" %}
 {% load i18n %}
+{% load subdomainurls %}
 
 {% block content_inner %}
 
@@ -17,7 +18,7 @@
         {% include "thread/message.html" with recently_sent=True person_links=True message=message %}
 
         <div class="post-message-actions">
-            <a href="{% url 'message_threads' %}" class="post-message-actions__back">{% trans "Back to all messages" %}</a>
+            <a href="{% url 'message_threads' subdomain=writeitinstance.slug %}" class="post-message-actions__back">{% trans "Back to all messages" %}</a>
         </div>
     </div>
 
@@ -34,7 +35,7 @@
         <div class="thread__actions">
           <h3 class="thead__actions__heading">Actions</h3>
             <ul>
-              <li><a href="{% url 'message_threads' %}">{% trans "Back to all messages" %}</a></li>
+              <li><a href="{% url 'message_threads' subdomain=writeitinstance.slug %}">{% trans "Back to all messages" %}</a></li>
               <li><a href="#">{% trans "Report for abuse" %}</a></li>
             </ul>
         </div>
