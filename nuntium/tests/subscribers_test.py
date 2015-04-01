@@ -149,7 +149,7 @@ class NewAnswerNotificationToSubscribers(TestCase):
             'subject': 'Subject 1',
             'content': self.answer_content,
             'writeit_name': 'instance 1',
-            'message_url_part': 'messages/subject-1',
+            'message_url_part': 'thread/subject-1',
             }
 
         self.assertEquals(len(mail.outbox), 1)

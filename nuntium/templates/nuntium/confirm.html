@@ -17,7 +17,7 @@
         <p><strong>TODO:</strong> Display sent message here.</p>
     </div>
 
-    <a href="{% url 'instance_detail' slug=confirmation.message.writeitinstance.slug %}">
+    <a href="{% url 'instance_detail' subdomain=confirmation.message.writeitinstance.slug %}">
         {% trans "Go back to all messages" %}
     </a>
 

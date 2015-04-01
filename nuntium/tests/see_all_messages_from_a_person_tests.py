@@ -1,7 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
 from nuntium.models import WriteItInstance, Message
-from django.core.urlresolvers import reverse
+from subdomains.utils import reverse
 
 
 class SeeAllMessagesFromAPersonTestCase(TestCase):
@@ -23,9 +23,9 @@ class SeeAllMessagesFromAPersonTestCase(TestCase):
 
     def test_get_all_messages_from_a_person_view(self):
         '''There is a view that displays all messages written by that person'''
-        url = reverse('all-messages-from-the-same-author-as', kwargs={
-            'slug': self.writeitinstance.slug,
-            'message_slug': self.message.slug
+        url = reverse('all-messages-from-the-same-author-as', subdomain=self.message.writeitinstance.slug,
+            kwargs={
+                'message_slug': self.message.slug
             })
 
         # According to the fixture data Fiera (fiera@ciudadanointeligente.org)
@@ -46,16 +46,14 @@ class SeeAllMessagesFromAPersonTestCase(TestCase):
 
     def test_get_messages_404(self):
         '''Gets a 404 if the slug of an instance does not exist'''
-        url = reverse('all-messages-from-the-same-author-as', kwargs={
-            'slug': 'non-existing-instance',  # This slug does not exist
+        url = reverse('all-messages-from-the-same-author-as', subdomain='non-existing', kwargs={
             'message_slug': self.message.slug,  # This slug does not exists
             })
         self.assertEquals(self.client.get(url).status_code, 404)
 
     def test_get_message_slug_404(self):
         '''Gets a 404 if the slug of the message does not exists'''
-        url = reverse('all-messages-from-the-same-author-as', kwargs={
-            'slug': self.writeitinstance.slug,  # This slug is ok!
+        url = reverse('all-messages-from-the-same-author-as', subdomain=self.writeitinstance.slug, kwargs={
             'message_slug': 'i-am-a-slug-and-i-do-not-exist',  # This is the problem
             })
         self.assertEquals(self.client.get(url).status_code, 404)

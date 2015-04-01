@@ -204,7 +204,7 @@ class LoginRequiredMixin(View):
 
 class WriteItInstanceOwnerMixin(LoginRequiredMixin):
     def get_object(self):
-        slug = self.kwargs.pop('slug')
+        slug = self.request.subdomain
         pk = self.kwargs.get('pk')
         return get_object_or_404(self.model, writeitinstance__slug=slug, writeitinstance__owner=self.request.user, pk=pk)
 
@@ -366,6 +366,11 @@ class WriteitPopitRelatingView(FormView):
 
 class WriteItDeleteView(DeleteView):
     model = WriteItInstance
+
+    # @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.kwargs['slug'] = request.subdomain
+        return super(WriteItDeleteView, self).dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         obj = super(WriteItDeleteView, self).get_object(queryset=queryset)

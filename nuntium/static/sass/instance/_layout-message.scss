@@ -68,3 +68,87 @@
     margin-right: 0.5em;
   }
 }
+
+.mini-thread {
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  overflow: hidden; // hide the box shadow on children
+  margin-top: 1.5em;
+  background-color: #f3f3f3;
+}
+
+.mini-thread__message {
+  display: block;
+
+  // We assume messages are greyed out,
+  // unless we're told they're --selected
+  color: $gray-light;
+  padding: 0.8em 1em;
+
+  &:hover, &:focus {
+    text-decoration: none;
+    color: $link-color;
+  }
+
+  // The reply in a thread
+  .mini-thread__message + & {
+    position: relative;
+    padding-left: 3em;
+
+    &:before {
+      @extend .fa;
+      content: $fa-var-share;
+      position: absolute;
+      font-size: 1.2em;
+      left: 0.9em;
+      top: 1.1em;
+    }
+  }
+
+  * {
+    margin: 3px 0;
+  }
+
+  & > :first-child {
+    margin-top: 0;
+  }
+
+  & > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.mini-thread__message__summary,
+.mini-thread__message__person,
+.mini-thread__message__date {
+  font-size: 0.8em;
+  line-height: 1.4em;
+  color: inherit;
+}
+
+// The message we actually care about in a thread
+.mini-thread__message--selected {
+  color: $gray-dark;
+  padding: 1em;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 1; // Stack above the other messages in this thread
+
+  &:hover, &:focus {
+    color: $link-color;
+  }
+
+  // Make the summary nice and big
+  .mini-thread__message__summary {
+    font-size: 1em;
+  }
+
+  .mini-thread__message + & {
+    // Replies have no summary, so we style
+    // the person name like a summary instead
+    .mini-thread__message__person {
+      font-size: 1em;
+      font-weight: $headings-font-weight;
+    }
+  }
+}

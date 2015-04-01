@@ -166,7 +166,10 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         self.client.login(username="fieraferoz", password="feroz")
         url = reverse('relate-writeit-popit', subdomain=self.writeitinstance.slug)
         data = self.data
-        response = self.client.post(url, data=data, follow=True)
+        response = self.client.post(url, data=data)
+        expected_follow_url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
+        self.assertRedirects(response, expected_follow_url)
+        response = self.client.get(expected_follow_url)
         messages = list(response.context['messages'])
         self.assertTrue(messages)
         self.assertEquals(messages[0].message, _("We are now getting the people from popit"))

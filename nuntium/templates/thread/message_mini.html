@@ -1,0 +1,60 @@
+{% load i18n %}
+
+<div class="mini-thread">
+    <a href="{% url 'thread_read' slug=message.slug %}" class="mini-thread__message mini-thread__message--selected">
+        <h3 class="mini-thread__message__summary">{{ message.subject }}</h3>
+        <p class="mini-thread__message__person">To:
+        {% for person in message.people %}{% if not forloop.first and forloop.last %} and {% elif not forloop.first %}, {% endif %}{{ person.name }}{% endfor %}
+        </p>
+        {% if message.created %}
+        <p class="mini-thread__message__date">{{ message.created }}</p>
+        {% endif %}
+    </a>
+
+    {% for answer in message.answers.all %}
+    <a href="{% url 'thread_read' slug=message.slug %}" class="mini-thread__message mini-thread__message--reply">
+        <p class="mini-thread__message__person">Reply from {{ answer.person.name }}</p>
+        {% if answer.created %}
+        <p class="mini-thread__message__date">{{ answer.created }}</p>
+        {% endif %}
+    </a>
+    {% endfor %}
+</div>
+
+{% comment %}
+
+<!-- A thread where the message of interest is the opening message -->
+<div class="mini-thread">
+  <a href="#" class="mini-thread__message mini-thread__message--selected">
+    <h3 class="mini-thread__message__summary">Request for 2015 expenses</h3>
+    <p class="mini-thread__message__person">To: Alice Brown, Bob Black</p>
+    <p class="mini-thread__message__date">14 March 2015</p>
+  </a>
+  <a href="#" class="mini-thread__message mini-thread__message--reply">
+    <p class="mini-thread__message__person">Reply from Bob Black</p>
+    <p class="mini-thread__message__date">21 March 2015</p>
+  </a>
+</div>
+
+<!-- A thread where the message of interest is one of the replies -->
+<div class="mini-thread">
+  <a href="#" class="mini-thread__message">
+    <h3 class="mini-thread__message__summary">Request for 2015 expenses</h3>
+    <p class="mini-thread__message__person">To: Alice Brown, Bob Black</p>
+  </a>
+  <a href="#" class="mini-thread__message mini-thread__message--reply mini-thread__message--selected">
+    <p class="mini-thread__message__person">Reply from Bob Black</p>
+    <p class="mini-thread__message__date">21 March 2015</p>
+  </a>
+</div>
+
+<!-- A thread where the message of interest is the opening message and it hasn't been replied to -->
+<div class="mini-thread">
+  <a href="#" class="mini-thread__message mini-thread__message--selected">
+    <h3 class="mini-thread__message__summary">Request for 2015 expenses</h3>
+    <p class="mini-thread__message__person">To: Alice Brown, Bob Black</p>
+    <p class="mini-thread__message__date">14 March 2015</p>
+  </a>
+</div>
+
+{% endcomment %}

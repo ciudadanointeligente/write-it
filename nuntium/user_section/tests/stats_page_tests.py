@@ -1,7 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
 from nuntium.models import WriteItInstance
 from subdomains.utils import reverse
-from django.test.client import Client
 from nuntium.user_section.stats import StatsPerInstance
 
 
@@ -29,7 +28,7 @@ class StatsPageTestCase(TestCase):
     def test_it_brings_some_stats_as_well(self):
         '''It brings some stats as well'''
         url = reverse('stats', subdomain=self.writeitinstance.slug)
-        client = Client()
+        client = self.client
         client.login(username=self.writeitinstance.owner, password="feroz")
         response = client.get(url)
         self.assertIn('stats', response.context)
