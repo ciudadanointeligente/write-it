@@ -271,7 +271,8 @@ class MessageThreadsView(ListView):
 
     def get_queryset(self):
         queryset = super(MessageThreadsView, self).get_queryset()
-        return queryset.filter(writeitinstance__slug=self.request.subdomain)
+        return queryset.filter(writeitinstance__slug=self.request.subdomain,
+            public=True, confirmated=True)
 
     def get_context_data(self, **kwargs):
         context = super(MessageThreadsView, self).get_context_data(**kwargs)
