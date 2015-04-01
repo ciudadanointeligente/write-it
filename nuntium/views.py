@@ -157,6 +157,7 @@ class ConfirmView(RedirectView):
         confirmation.confirmated_at = datetime.now()
         confirmation.save()
         confirmation.message.recently_confirmated()
+        self.request.session['user_came_via_confirmation_link'] = True
         return reverse('thread_read',
             subdomain=confirmation.message.writeitinstance.slug,
             kwargs={'slug': confirmation.message.slug})
@@ -292,6 +293,9 @@ class MessageThreadView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(MessageThreadView, self).get_context_data(**kwargs)
+        if self.request.session.get('user_came_via_confirmation_link', False):
+            context['user_came_via_confirmation_link'] = True
+            del self.request.session['user_came_via_confirmation_link']
 
         context['writeitinstance'] = self.object.writeitinstance
         return context

@@ -4,7 +4,6 @@
 
 {% block content_inner %}
 
-  {# ConfirmView() should set this variable, to provide the user with a nice end to the writing experience #}
   {% if user_came_via_confirmation_link %}
 
     {% include "write/breadcrumb.html" with current_step=5 %}
