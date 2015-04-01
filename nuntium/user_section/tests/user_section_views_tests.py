@@ -15,6 +15,8 @@ from nuntium.user_section.forms import WriteItInstanceBasicForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
 from django.test.utils import override_settings
 from urlparse import urlparse
+from nuntium.popit_api_instance import PopitApiInstance
+import json
 
 
 class UserSectionTestCase(TestCase):
@@ -200,9 +202,6 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         response = c.post(url, data=self.data, follow=True)
 
         self.assertEquals(response.status_code, 404)
-
-from nuntium.popit_api_instance import PopitApiInstance
-import json
 
 
 class WriteItInstancePullingDetailViewTestCase(UserSectionTestCase):
