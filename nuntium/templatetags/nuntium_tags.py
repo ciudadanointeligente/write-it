@@ -14,7 +14,6 @@ def show_contacts_for(person, writeitinstance):
     }
 register.inclusion_tag('nuntium/profiles/contacts/show_contacts_in.html')(show_contacts_for)
 
-
 @register.filter
 def join_with_commas(obj_list):
     """Takes a list of objects and returns their unicode representations,
@@ -30,3 +29,10 @@ def join_with_commas(obj_list):
         return u"%s" % obj_list[0]
     else:
         return u", ".join(unicode(obj) for obj in obj_list[:list_len - 1]) + u" and " + unicode(obj_list[list_len - 1])
+
+@register.simple_tag
+def help_hint(help_url, help_target=""):
+    if help_target:
+        help_target = " data-target=\"%s\"" % help_target
+    return "<a href=\"%s\" %sclass=\"help-loader\">[?]</a>" % (help_url, help_target)
+

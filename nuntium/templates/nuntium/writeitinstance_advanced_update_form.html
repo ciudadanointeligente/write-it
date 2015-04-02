@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load subdomainurls %}
 {% load staticfiles %}
-
+{% load nuntium_tags %}
 
 {% block extrascripts %}
 <link rel="stylesheet" href="{% static 'css/chosen.css' %}">
@@ -27,12 +27,12 @@ $(".chosen-person-select").chosen();
     <form role="form" action="" method="post">
       <div class="form-group">
         {{form.testing_mode.label_tag}}
-        <a href="/en/help/glossary/#testing-mode" class="help-loader">[?]</a>
+        {% help_hint "/en/help/glossary/#testing-mode" %}
         {{form.testing_mode}}
       </div>
       <div class="form-group">
         {{form.moderation_needed_in_all_messages.label_tag}}
-        <a href="/en/help/glossary/#help-moderation" class="help-loader">[?]</a>
+        {% help_hint "/en/help/glossary/#help-moderation" %}
         {{form.moderation_needed_in_all_messages}}
       </div>
       <div class="form-group">
