@@ -76,7 +76,10 @@
               </td>
               {% else %}
               <td class="text-center">
-                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated and you can moderate it by clicking here' %}"><i class="fa fa-times-circle-o"></i> <a class="btn btn-default btn-sm moderate" href="{% url 'accept_message' pk=message.pk %}">{% trans "Moderate"%}</a>
+                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated and you can moderate it by clicking here' %}">
+                    <form action="{% url 'accept_message' pk=message.pk %}" method="post">{% csrf_token %}
+                        <button class="btn btn-default btn-sm moderate">{% trans "Moderate"%}</button>
+                    </form>
                 </div>
               </td>
               {% endif %}
@@ -90,7 +93,9 @@
               {% endif %}
             </td>
             <td class="text-center">
-              <a class="deleteMessage toggle-public" href="{% url 'toggle_public' subdomain=writeitinstance.slug pk=message.pk %}"><i class="fa {% if message.public %}fa-eye{% else %}fa-eye-slash{% endif %}"></i></a>
+                <form action="{% url 'toggle_public' pk=message.pk %}" method="post">{% csrf_token %}
+                    <button class="btn btn-default btn-sm toggle-public"><i class="fa {% if message.public %}fa-eye{% else %}fa-eye-slash{% endif %}"></i></button>
+                </form>
             </td>
 
           </tr>
@@ -120,20 +125,5 @@
 </div>
 <script type="text/javascript">
 $('.explanation').tooltip({})
-var postToUrlAndReload = function(event){
-  event.preventDefault();
-  var url = $(event.target).attr('href');
-  if (!(typeof url !== typeof undefined && url !== false)){
-    url = $(event.target).parent().attr('href');
-  }
-  $.post(url, function(data){
-    location.reload();
-  })
-}
-$(function(){
-  $('.moderate').click(postToUrlAndReload)
-  $('.toggle-public').click(postToUrlAndReload)
-})
-
 </script>
 {% endblock content %}
