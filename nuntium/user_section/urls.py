@@ -1,7 +1,6 @@
 from django.conf.urls import patterns, url
 from django.views.generic import TemplateView
 
-from contactos.views import ToggleContactEnabledView
 from .views import (
     UserAccountView,
     YourInstancesView,
@@ -11,10 +10,6 @@ from .views import (
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
     url(r'^accounts/your_instances/?$', YourInstancesView.as_view(), name='your-instances'),
-
-    url(r'^contactos/contacto/toggle-enabled/?$',
-        ToggleContactEnabledView.as_view(),
-        name='toggle-enabled'),
 
     url(r'^writeitinstance/create/?$',
         WriteItInstanceCreateView.as_view(),
