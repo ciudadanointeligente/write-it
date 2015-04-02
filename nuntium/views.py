@@ -90,8 +90,7 @@ class WriteMessageView(NamedUrlSessionWizardView):
 
     def get_form_kwargs(self, step):
         if step == 'who':
-            # FIXME: Do we actually want .all() here?
-            return {'persons_queryset': self.writeitinstance.persons.all()}
+            return {'persons_queryset': self.writeitinstance.persons_with_contacts}
         else:
             return {}
 
@@ -311,8 +310,10 @@ class MessageThreadView(DetailView):
         context['writeitinstance'] = self.object.writeitinstance
         return context
 
+
 class WriteSignView(TemplateView):
     template_name = 'write/sign.html'
+
     def get_context_data(self, **kwargs):
         context = super(WriteSignView, self).get_context_data(**kwargs)
         context['writeitinstance'] = WriteItInstance.objects.get(slug=self.request.subdomain)
