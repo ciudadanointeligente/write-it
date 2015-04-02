@@ -32,6 +32,10 @@ body, .site-footer {
   .site-header {
     background-color: #fff;
   }
+  .writing-buttons__button--previous {
+    background-color: mix(#fff, $color-bluegrey-50, 50%);
+    border-color: $color-bluegrey-100;
+  }
 }
 
 .site-alert {
