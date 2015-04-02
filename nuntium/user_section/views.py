@@ -317,6 +317,8 @@ class AnswerUpdateView(AnswerEditMixin, UpdateView):
 
 
 class AcceptMessageView(RedirectView):
+    permanent = False
+
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(AcceptMessageView, self).dispatch(*args, **kwargs)
@@ -440,6 +442,7 @@ class WriteItDeleteView(DeleteView):
 
 
 class MessageTogglePublic(RedirectView):
+    permanent = False
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
