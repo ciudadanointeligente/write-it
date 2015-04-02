@@ -3,6 +3,7 @@ from global_test_case import GlobalTestCase as TestCase
 from ..models import Message, WriteItInstance, Confirmation
 from popit.models import Person
 import datetime
+from nuntium.views import MessageThreadView
 
 
 class MessageDetailView(TestCase):
@@ -67,3 +68,20 @@ class MessageDetailView(TestCase):
         url = message.get_absolute_url()
         response = self.client.get(url)
         self.assertEquals(response.status_code, 404)
+
+    def test_get_user_came_via_confirmation_link(self):
+        message = Message.objects.create(
+            content='Content 1',
+            author_name='Felipe',
+            author_email="falvarez@votainteligente.cl",
+            subject='Subject 1',
+            writeitinstance=self.writeitinstance1,
+            confirmated=True,
+            persons=[self.person1],
+            )
+        request = self.factory.get(message.get_absolute_url())
+        request.session = {'user_came_via_confirmation_link': True}
+        view = MessageThreadView(request=request)
+        view.object = message
+        context = view.get_context_data()
+        self.assertTrue(context['user_came_via_confirmation_link'])
