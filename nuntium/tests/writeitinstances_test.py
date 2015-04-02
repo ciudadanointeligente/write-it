@@ -141,6 +141,21 @@ class InstanceTestCase(TestCase):
         popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
 
 
+class PersonsWithContactsTestCase(TestCase):
+    def setUp(self):
+        self.owner = User.objects.get(id=1)
+        super(PersonsWithContactsTestCase, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.create(
+            name='instance 1',
+            slug='instance-1',
+            owner=self.owner)
+        self.person = Person.objects.first()
+
+    def test_instance_add_person(self):
+        self.writeitinstance.add_person(self.person)
+        self.assertIn(self.person, self.writeitinstance.persons.all())
+
+
 @skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
     def setUp(self):
