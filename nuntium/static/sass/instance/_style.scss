@@ -58,6 +58,10 @@ body, .site-footer {
 
 .writing-breadcrumb__step--current {
   color: $text-color;
+
+  &:before {
+    color: mix($body-bg, $text-color, 60%);
+  }
 }
 
 .writing-buttons__button--previous {
