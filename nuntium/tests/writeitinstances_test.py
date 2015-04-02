@@ -12,6 +12,7 @@ from django.conf import settings
 from mock import patch
 from nuntium.popit_api_instance import PopitApiInstance
 from requests.exceptions import ConnectionError
+from contactos.models import Contact, ContactType
 
 
 class InstanceTestCase(TestCase):
@@ -149,11 +150,39 @@ class PersonsWithContactsTestCase(TestCase):
             name='instance 1',
             slug='instance-1',
             owner=self.owner)
-        self.person = Person.objects.first()
+        self.person1 = Person.objects.get(id=1)
+        self.person2 = Person.objects.get(id=2)
 
     def test_instance_add_person(self):
-        self.writeitinstance.add_person(self.person)
-        self.assertIn(self.person, self.writeitinstance.persons.all())
+        self.writeitinstance.add_person(self.person1)
+        self.assertIn(self.person1, self.writeitinstance.persons.all())
+
+    def test_writeitinstance_people_with_contacts(self):
+        '''A ẂriteitInstance has a property that returns only the persons with contacts'''
+        email_type = ContactType.objects.get(id=1)
+        Contact.objects.create(
+            person=self.person2,
+            contact_type=email_type,
+            writeitinstance=self.writeitinstance,
+            value='email@mail.com',
+            )
+        Contact.objects.create(
+            person=self.person2,
+            contact_type=email_type,
+            writeitinstance=self.writeitinstance,
+            value='email2@mail.com',
+            )
+        # self.person1 does not have contacts
+        # self.person2 has contacts
+        self.writeitinstance.add_person(self.person1)
+        self.writeitinstance.add_person(self.person2)
+
+        self.assertNotIn(self.person1,
+            self.writeitinstance.persons_with_contacts)
+        self.assertIn(self.person2,
+            self.writeitinstance.persons_with_contacts)
+
+        self.assertEquals(self.writeitinstance.persons_with_contacts.count(), 1)
 
 
 @skipUnless(settings.LOCAL_POPIT, "No local popit running")
