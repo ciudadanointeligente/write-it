@@ -5,6 +5,7 @@
 {% load pagination_tags %}
 {% block extrajs %}
 {% endblock extrajs %}
+{% load nuntium_tags %}
 
 
 
@@ -49,8 +50,8 @@
             <td>
               <h3><a href="{% url 'message_detail_private' subdomain=writeitinstance.slug pk=message.pk %}">{{ message.subject }}</a></h3>
               <p class="message-in-message-list__meta">
-                {% blocktrans with created=message.created|timesince author_name=message.author_name %}
-                  Sent <strong>{{ created }}</strong> ago to <strong>{{ author_name }}</strong> from <strong>{{ author_name }}</strong>
+                {% blocktrans with created=message.created|timesince author_name=message.author_name to=message.people|join_with_commas %}
+                  Sent <strong>{{ created }}</strong> ago to <strong>{{ to }}</strong> from <strong>{{ author_name }}</strong>
                 {% endblocktrans %}
               </p>
             </td>
