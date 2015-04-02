@@ -19,7 +19,7 @@
         <dt>{% trans "To" %}</dt>
         <dd>
           {% if person_links %}
-            <a href="#" title="{% blocktrans %}Show all messages from {{ original.author_name }}{% endblocktrans %}">{{ original.author_name }}</a>
+            <a href="#" title="{% blocktrans with name=original.author_name %}Show all messages from {{ name }}{% endblocktrans %}">{{ original.author_name }}</a>
           {% else %}
             {{ original.author_name }}
           {% endif %}
