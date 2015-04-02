@@ -10,7 +10,7 @@ from mailit.forms import MailitTemplateForm
 
 from ..models import WriteItInstance, Message,\
     NewAnswerNotificationTemplate, ConfirmationTemplate, \
-    Answer, WriteItInstanceConfig
+    Answer, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
     WriteItInstanceCreateForm, AnswerForm, \
@@ -18,6 +18,9 @@ from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, 
 from django.contrib import messages as view_messages
 from django.utils.translation import ugettext as _
 import json
+from nuntium.popit_api_instance import PopitApiInstance
+from nuntium.tasks import pull_from_popit
+from nuntium.user_section.forms import WriteItPopitUpdateForm
 
 
 class UserAccountView(TemplateView):
@@ -131,33 +134,26 @@ class WriteItInstanceUpdateView(UpdateView):
             subdomain=self.object.slug,
             )
 
+    def get_advanced_form(self):
+        advanced_form_kwargs = self.get_form_kwargs()
+        advanced_form_kwargs['instance'] = self.object.config
+        return WriteItInstanceAdvancedUpdateForm(**advanced_form_kwargs)
 
-class WriteItInstanceAdvancedUpdateView(UpdateView):
-    form_class = WriteItInstanceAdvancedUpdateForm
-    template_name = 'nuntium/writeitinstance_advanced_update_form.html'
-    model = WriteItInstanceConfig
-
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        self.kwargs['slug'] = request.subdomain
-        return super(WriteItInstanceAdvancedUpdateView, self).dispatch(request, *args, **kwargs)
-
-    def get_queryset(self):
-        return super(WriteItInstanceAdvancedUpdateView, self).get_queryset().filter(writeitinstance__owner=self.request.user)
-
-    def get_context_data(self, **kwargs):
-        context = super(WriteItInstanceAdvancedUpdateView, self).get_context_data(**kwargs)
-        context['writeitinstance'] = self.object.writeitinstance
+    def get_context_data(self, form):
+        context = super(WriteItInstanceUpdateView, self).get_context_data(form=form)
+        context['advanced_form'] = self.get_advanced_form()
         return context
 
-    def get_slug_field(self):
-        return 'writeitinstance__slug'
-
-    def get_success_url(self):
-        return reverse(
-            'writeitinstance_advanced_update',
-            subdomain=self.object.writeitinstance.slug,
-            )
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        advanced_form = self.get_advanced_form()
+        if advanced_form.is_valid():
+            advanced_form.save()
+            return super(WriteItInstanceUpdateView, self).post(request, *args, **kwargs)
+        else:
+            form_class = self.get_form_class()
+            form = self.get_form(form_class)
+            return self.form_invalid(form)
 
 
 class UserSectionListView(ListView):
@@ -213,7 +209,7 @@ class LoginRequiredMixin(View):
 
 class WriteItInstanceOwnerMixin(LoginRequiredMixin):
     def get_object(self):
-        slug = self.kwargs.pop('slug')
+        slug = self.request.subdomain
         pk = self.kwargs.get('pk')
         return get_object_or_404(self.model, writeitinstance__slug=slug, writeitinstance__owner=self.request.user, pk=pk)
 
@@ -272,7 +268,7 @@ class MessageDelete(WriteItInstanceOwnerMixin, DeleteView):
     def get_success_url(self):
         success_url = reverse(
             'messages_per_writeitinstance',
-            kwargs={'slug': self.object.writeitinstance.slug},
+            subdomain=self.object.writeitinstance.slug,
             )
         return success_url
 
@@ -291,7 +287,8 @@ class AnswerEditMixin(View):
     def get_success_url(self):
         return reverse(
             'message_detail_private',
-            kwargs={'slug': self.message.writeitinstance.slug, 'pk': self.message.pk},
+            subdomain=self.message.writeitinstance.slug,
+            kwargs={'pk': self.message.pk},
             )
 
 
@@ -333,7 +330,7 @@ class AcceptMessageView(View):
 
         url = reverse(
             'messages_per_writeitinstance',
-            kwargs={'slug': self.message.writeitinstance.slug},
+            subdomain=self.message.writeitinstance.slug,
             )
         return redirect(url)
 
@@ -356,7 +353,7 @@ class WriteitPopitRelatingView(FormView):
         return kwargs
 
     def get_success_url(self):
-        return reverse('writeitinstance_basic_update', kwargs={'slug': self.kwargs.get('slug')})
+        return reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
 
     def form_valid(self, form):
         form.relate()
@@ -372,8 +369,64 @@ class WriteitPopitRelatingView(FormView):
         return context
 
 
+class ReSyncFromPopit(View):
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_authenticated():
+            raise Http404
+        return super(ReSyncFromPopit, self).dispatch(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        writeitinstance = get_object_or_404(WriteItInstance,
+            slug=self.request.subdomain,
+            owner=self.request.user)
+        popits_previously_related = PopitApiInstance.objects.filter(
+            writeitinstancepopitinstancerecord__writeitinstance=writeitinstance)
+
+        popit_api_instance = get_object_or_404(popits_previously_related, pk=kwargs['popit_api_pk'])
+        pull_from_popit.delay(writeitinstance, popit_api_instance)
+        return HttpResponse()
+
+
+class WriteItPopitUpdateView(UpdateView):
+    form_class = WriteItPopitUpdateForm
+    model = WriteitInstancePopitInstanceRecord
+
+    def get_writeitinstance(self):
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.request.subdomain, owner=self.request.user)
+
+    def dispatch(self, *args, **kwargs):
+        self.get_writeitinstance()
+        if self.request.method != 'POST':
+            return self.http_method_not_allowed(*args, **kwargs)
+        return super(WriteItPopitUpdateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):
+        form.save()
+        return HttpResponse(
+            json.dumps({
+                'id': form.instance.id,
+                'periodicity': form.instance.periodicity
+                }),
+            content_type='application/json'
+        )
+
+    def form_invalid(self, form):
+        super(WriteItPopitUpdateView, self).form_invalid(form)
+        return HttpResponse(
+            json.dumps({
+                'errors': form.errors
+                }),
+            content_type='application/json'
+        )
+
+
 class WriteItDeleteView(DeleteView):
     model = WriteItInstance
+
+    # @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.kwargs['slug'] = request.subdomain
+        return super(WriteItDeleteView, self).dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         obj = super(WriteItDeleteView, self).get_object(queryset=queryset)
@@ -384,3 +437,22 @@ class WriteItDeleteView(DeleteView):
     def get_success_url(self):
         url = reverse('your-instances')
         return url
+
+
+class MessageTogglePublic(View):
+    def dispatch(self, *args, **kwargs):
+        self.kwargs['slug'] = self.request.subdomain
+        if not self.request.user.is_authenticated():
+            raise Http404
+        return super(MessageTogglePublic, self).dispatch(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        writeitinstance = get_object_or_404(WriteItInstance, slug=self.kwargs['slug'],
+            owner=self.request.user)
+        message = get_object_or_404(writeitinstance.message_set.all(), pk=self.kwargs['pk'])
+        message.public = not message.public
+        message.save()
+        return HttpResponse(
+            json.dumps({'pk': message.id, 'public': message.public}),
+            content_type="application/json"
+        )

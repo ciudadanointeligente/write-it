@@ -75,12 +75,12 @@ class ConfirmationTestCase(TestCase):
         confirmation = Confirmation.objects.create(message=self.message)
         url = reverse(
             'confirm',
+            subdomain=self.message.writeitinstance.slug,
             kwargs={'slug': confirmation.key},
             )
-        current_site = Site.objects.get_current()
-        confirmation_full_url = "http://" + current_site.domain + url
+        confirmation_full_url = url
 
-        message_full_url = 'http://' + current_site.domain + self.message.get_absolute_url()
+        message_full_url = self.message.get_absolute_url()
 
         self.assertEquals(len(mail.outbox), 1)  # it is sent to one person pointed in the contact
         self.assertEquals(mail.outbox[0].subject, u'Please confirm your WriteIt message to Felipe')
@@ -141,6 +141,7 @@ class ConfirmationTestCase(TestCase):
         confirmation = Confirmation.objects.create(message=self.message)
         expected_url = reverse(
             'confirm',
+            subdomain=self.message.writeitinstance.slug,
             kwargs={'slug': confirmation.key},
             )
         self.assertEquals(expected_url, confirmation.get_absolute_url())
@@ -149,11 +150,15 @@ class ConfirmationTestCase(TestCase):
         confirmation = Confirmation.objects.create(message=self.message)
         url = reverse(
             'confirm',
+            subdomain=self.message.writeitinstance.slug,
             kwargs={'slug': confirmation.key},
             )
+        message_url = reverse('thread_read',
+            subdomain=self.message.writeitinstance.slug,
+            kwargs={'slug': self.message.slug}
+            )
         response = self.client.get(url)
-        self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'nuntium/confirm.html')
+        self.assertRedirects(response, message_url)
 
         confirmation = Confirmation.objects.get(id=confirmation.id)
         self.assertTrue(confirmation.confirmated_at is not None)
@@ -175,17 +180,18 @@ class ConfirmationTestCase(TestCase):
         confirmation = Confirmation.objects.create(message=self.message)
         url = reverse(
             'confirm',
+            subdomain=self.message.writeitinstance.slug,
             kwargs={'slug': confirmation.key},
             )
         response1 = self.client.get(url)
         response2 = self.client.get(url)
 
-        self.assertEquals(response1.status_code, 200)
+        self.assertEquals(response1.status_code, 302)
         self.assertEquals(response2.status_code, 404)
 
     def test_i_cannot_access_a_non_confirmed_message(self):
         Confirmation.objects.create(message=self.message)
-        url = reverse('message_detail', kwargs={'slug': self.message.slug, 'instance_slug': self.message.writeitinstance.slug})
+        url = reverse('thread_read', subdomain=self.message.writeitinstance.slug, kwargs={'slug': self.message.slug})
         response = self.client.get(url)
 
         self.assertEquals(response.status_code, 404)

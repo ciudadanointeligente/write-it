@@ -12,7 +12,7 @@ class DocumentationTestCase(TestCase):
     def test_I_can_access_the_docs(self):
         url = reverse('user_section_documentation')
         self.assertTrue(url)
-        c = Client()
+        c = self.client
         c.login(username=self.writeitinstance.owner.username, password='admin')
 
         response = c.get(url)

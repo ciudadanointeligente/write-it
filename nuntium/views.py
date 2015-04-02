@@ -63,6 +63,12 @@ class WriteItInstanceDetailView(DetailView):
         self.kwargs['slug'] = request.subdomain
         return super(WriteItInstanceDetailView, self).dispatch(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
+        recent_messages = Message.public_objects.filter(writeitinstance=self.object).order_by('created')[:5]
+        context['recent_messages'] = recent_messages
+        return context
+
 FORMS = [("who", forms.WhoForm),
          ("draft", forms.DraftForm),
          ("preview", forms.PreviewForm)]
@@ -114,10 +120,6 @@ class WriteMessageView(NamedUrlSessionWizardView):
         message.save()
         Confirmation.objects.create(message=message)
         moderations = Moderation.objects.filter(message=message)
-        if moderations.count() > 0 or self.writeitinstance.config.moderation_needed_in_all_messages:
-            messages.success(self.request, _("Please confirm your email address. We have sent a confirmation link to %(email)s. After that your message will be waiting for moderation.") % {'email': message.author_email})
-        else:
-            messages.success(self.request, _("Please confirm your email address. We have sent a confirmation link to %(email)s.") % {'email': message.author_email})
         return HttpResponseRedirect(reverse('write_message_sign', subdomain=self.writeitinstance.slug))
 
     def get_context_data(self, form, **kwargs):
@@ -147,32 +149,18 @@ class MessageDetailView(DetailView):
         return the_message
 
 
-class ConfirmView(DetailView):
-    template_name = 'nuntium/confirm.html'
-    model = Confirmation
-    slug_field = 'key'
+class ConfirmView(RedirectView):
+    permanent = False
 
-    def dispatch(self, *args, **kwargs):
-        confirmation = super(ConfirmView, self).get_object()
-        if confirmation.confirmated_at is not None:
-            raise Http404
-        return super(ConfirmView, self).dispatch(*args, **kwargs)
-
-    def get_object(self, queryset=None):
-        confirmation = super(ConfirmView, self).get_object(queryset)
-
-        return confirmation
-
-    def get_context_data(self, **kwargs):
-        context = super(ConfirmView, self).get_context_data(**kwargs)
-        return context
-
-    def get(self, *args, **kwargs):
-        confirmation = self.get_object()
+    def get_redirect_url(self, *args, **kwargs):
+        confirmation = get_object_or_404(Confirmation, key=kwargs['slug'], confirmated_at=None)
         confirmation.confirmated_at = datetime.now()
         confirmation.save()
         confirmation.message.recently_confirmated()
-        return super(ConfirmView, self).get(*args, **kwargs)
+        self.request.session['user_came_via_confirmation_link'] = True
+        return reverse('thread_read',
+            subdomain=confirmation.message.writeitinstance.slug,
+            kwargs={'slug': confirmation.message.slug})
 
 
 class ModerationView(DetailView):
@@ -219,7 +207,8 @@ class PerInstanceSearchView(SearchView):
         self.template = 'nuntium/instance_search.html'
 
     def __call__(self, *args, **kwargs):
-        self.slug = kwargs.pop('slug')
+        request = args[0]
+        self.slug = request.subdomain
         return super(PerInstanceSearchView, self).__call__(*args, **kwargs)
 
     def build_form(self, form_kwargs=None):
@@ -250,6 +239,7 @@ class MessagesPerPersonView(ListView):
     def get_context_data(self, **kwargs):
         context = super(MessagesPerPersonView, self).get_context_data(**kwargs)
         context['person'] = self.person
+        context['writeitinstance'] = self.writeitinstance
         return context
 
 
@@ -258,7 +248,7 @@ class MessagesFromPersonView(ListView):
     template_name = 'nuntium/message/from_person.html'
 
     def dispatch(self, *args, **kwargs):
-        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.kwargs['slug'])
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.request.subdomain)
         self.message = get_object_or_404(Message, slug=self.kwargs['message_slug'])
         return super(MessagesFromPersonView, self).dispatch(*args, **kwargs)
 
@@ -281,9 +271,34 @@ class MessageThreadsView(ListView):
 
     def get_queryset(self):
         queryset = super(MessageThreadsView, self).get_queryset()
-        return queryset.filter(writeitinstance__slug=self.request.subdomain)
+        return queryset.filter(writeitinstance__slug=self.request.subdomain,
+            public=True, confirmated=True)
+
+    def get_context_data(self, **kwargs):
+        context = super(MessageThreadsView, self).get_context_data(**kwargs)
+        context['writeitinstance'] = WriteItInstance.objects.get(slug=self.request.subdomain)
+        return context
 
 
 class MessageThreadView(DetailView):
     model = Message
     template_name = 'thread/read.html'
+
+    def get_queryset(self):
+        return self.model.objects.filter(confirmated=True, public=True)
+
+    def get_context_data(self, **kwargs):
+        context = super(MessageThreadView, self).get_context_data(**kwargs)
+        if self.request.session.get('user_came_via_confirmation_link', False):
+            context['user_came_via_confirmation_link'] = True
+            del self.request.session['user_came_via_confirmation_link']
+
+        context['writeitinstance'] = self.object.writeitinstance
+        return context
+
+class WriteSignView(TemplateView):
+    template_name = 'write/sign.html'
+    def get_context_data(self, **kwargs):
+        context = super(WriteSignView, self).get_context_data(**kwargs)
+        context['writeitinstance'] = WriteItInstance.objects.get(slug=self.request.subdomain)
+        return context

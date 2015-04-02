@@ -744,18 +744,17 @@ class Confirmation(models.Model):
         return str(uuid.uuid1().hex)
 
     def get_absolute_url(self):
-        return reverse('confirm', kwargs={'slug': self.key})
+        return reverse('confirm', subdomain=self.message.writeitinstance.slug, kwargs={'slug': self.key})
 
 
 def send_confirmation_email(sender, instance, created, **kwargs):
     confirmation = instance
     if created:
-        url = reverse('confirm', kwargs={
-            'slug': confirmation.key
-            })
-        current_site = Site.objects.get_current()
-        confirmation_full_url = "http://" + current_site.domain + url
-        message_full_url = "http://" + current_site.domain + confirmation.message.get_absolute_url()
+        url = reverse('confirm',
+            subdomain=confirmation.message.writeitinstance.slug,
+            kwargs={'slug': confirmation.key})
+        confirmation_full_url = url
+        message_full_url = confirmation.message.get_absolute_url()
         plaintext = confirmation.message.writeitinstance.confirmationtemplate.content_text
         htmly = confirmation.message.writeitinstance.confirmationtemplate.content_html
         subject = confirmation.message.writeitinstance.confirmationtemplate.subject
@@ -907,6 +906,13 @@ from tastypie.models import create_api_key
 
 models.signals.post_save.connect(create_api_key, sender=User)
 
+PERIODICITY = (
+    ('--', 'Never'),
+    ('2D', 'Twice every Day'),
+    ('1D', 'Daily'),
+    ('1W', 'Weekly'),
+)
+
 
 class WriteitInstancePopitInstanceRecord(models.Model):
     STATUS_CHOICES = (
@@ -918,7 +924,11 @@ class WriteitInstancePopitInstanceRecord(models.Model):
         )
     writeitinstance = models.ForeignKey(WriteItInstance)
     popitapiinstance = models.ForeignKey(ApiInstance)
-    autosync = models.BooleanField(default=True)
+    periodicity = models.CharField(
+        max_length="2",
+        choices=PERIODICITY,
+        default='1W',
+        )
     status = models.CharField(
         max_length="20",
         choices=STATUS_CHOICES,

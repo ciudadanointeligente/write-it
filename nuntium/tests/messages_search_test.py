@@ -13,6 +13,8 @@ from ..views import MessageSearchView, PerInstanceSearchView
 from ..models import WriteItInstance
 from haystack.views import SearchView
 from popit.models import Person
+import urllib
+import urlparse
 
 
 class MessagesSearchTestCase(TestCase):
@@ -122,6 +124,7 @@ class MessageSearchViewTestCase(TestCase):
 
     def test_access_the_search_url(self):
         url = reverse('search_messages')
+        url += '/'
         response = self.client.get(url)
 
         self.assertEquals(response.status_code, 200)
@@ -146,8 +149,14 @@ class SearchMessageAccess(SearchIndexTestCase):
         # if it ever fails
         # well then I'll fix it
         url = reverse('search_messages')
+        url += "/"
         data = {'q': 'Content'}
-        response = self.client.get(url, data=data)
+
+        url_parts = list(urlparse.urlparse(url))
+        url_parts[4] = urllib.urlencode(data)
+        url_with_parameters = urlparse.urlunparse(url_parts)
+
+        response = self.client.get(url_with_parameters)
         self.assertEquals(response.status_code, 200)
 
         # the first one the one that says "Public Answer" in example_data.yml

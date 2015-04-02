@@ -7,7 +7,7 @@
   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
   <h4 class="modal-title" id="myModalLabel">{% blocktrans with person=answer.person message=answer.message.subject|linebreaksbr %}Update answer by {{person}} for message "{{ message }}"{% endblocktrans %}</h4>
 </div>
-<form action="{% url 'update_answer' slug=answer.message.writeitinstance.slug message_pk=answer.message.pk pk=answer.pk %}" method="POST">{% csrf_token %}
+<form action="{% url 'update_answer' subdomain=answer.message.writeitinstance.slug message_pk=answer.message.pk pk=answer.pk %}" method="POST">{% csrf_token %}
 	<div class="modal-body">
 		{{ form.non_field_errors }}
         <div class="fieldWrapper">

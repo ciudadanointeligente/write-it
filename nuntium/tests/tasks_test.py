@@ -8,7 +8,7 @@ from nuntium.popit_api_instance import PopitApiInstance
 from django.contrib.auth.models import User
 from django.utils.unittest import skipUnless
 from django.conf import settings
-from nuntium.tasks import pull_from_popit
+from nuntium.tasks import pull_from_popit, update_all_popits
 
 
 class TasksTestCase(TestCase):
@@ -80,8 +80,6 @@ class PullFromPopitTask(TestCase):
         pull_from_popit.delay(writeitinstance, self.api_instance1)  # Returns result
         self.assertTrue(writeitinstance.persons.all())
 
-from nuntium.tasks import update_all_popits
-
 
 @skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class PeriodicallyPullFromPopitClass(TestCase):
@@ -106,6 +104,7 @@ class PeriodicallyPullFromPopitClass(TestCase):
         popit_load_data("other_persons")
 
         # This means that if I run the task then it should update the persons
+        # I'm running the weekly job by default
         update_all_popits.delay()
 
         persons_after_updating = list(self.writeitinstance.persons.all())
@@ -117,7 +116,8 @@ class PeriodicallyPullFromPopitClass(TestCase):
             writeitinstance=self.writeitinstance,
             popitapiinstance=self.popit_api_instance
         )
-        writeitinstance_popit_record.autosync = False
+        # Periodicity = 0  means that it is never going to send anything
+        writeitinstance_popit_record.periodicity = 0
         writeitinstance_popit_record.save()
 
         # The record has been set to autosync False
@@ -127,3 +127,25 @@ class PeriodicallyPullFromPopitClass(TestCase):
         persons_after_updating = list(self.writeitinstance.persons.all())
         # It should not have updated our writeit instance
         self.assertEquals(self.previously_created_persons, persons_after_updating)
+
+    def test_autosyncs_receiving_a_parameter_with_the_periodicity(self):
+        '''It can receive a parameter refering to the periodicity'''
+        writeitinstance_popit_record = WriteitInstancePopitInstanceRecord.objects.get(
+            writeitinstance=self.writeitinstance,
+            popitapiinstance=self.popit_api_instance
+        )
+        writeitinstance_popit_record.periodicity = '1D'  # Daily
+        writeitinstance_popit_record.save()
+        popit_load_data("other_persons")
+        # Now because it is receiving the default value = '1W'
+        # it should not pull anyone
+        update_all_popits.delay()
+
+        persons_after_updating = list(self.writeitinstance.persons.all())
+        self.assertEquals(self.previously_created_persons, persons_after_updating)
+
+        # But If I tell the runner that I'm running the daily
+        # process then it should change it
+        update_all_popits.delay(periodicity="1D")
+        persons_after_updating = list(self.writeitinstance.persons.all())
+        self.assertNotEquals(self.previously_created_persons, persons_after_updating)

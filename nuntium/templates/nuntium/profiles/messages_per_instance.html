@@ -75,7 +75,7 @@
               </td>
               {% else %}
               <td class="text-center">
-                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated' %}"><a class="btn btn-default btn-sm moderate" href="{% url 'accept_message' pk=message.pk %}">{% trans "Moderate"%}</a>
+                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated and you can moderate it by clicking here' %}"><i class="fa fa-times-circle-o"></i> <a class="btn btn-default btn-sm moderate" href="{% url 'accept_message' pk=message.pk %}">{% trans "Moderate"%}</a>
                 </div>
               </td>
               {% endif %}
@@ -119,15 +119,16 @@
 </div>
 <script type="text/javascript">
 $('.explanation').tooltip({})
-$(function(){
-  $('.moderate').click(function(event){
-    event.preventDefault();
-    var url = $(event.target).attr('href');
-    $.post(url, function(data){
-      location.reload();
-    })
-
+var postToUrlAndReload = function(event){
+  event.preventDefault();
+  var url = $(event.target).attr('href');
+  $.post(url, function(data){
+    location.reload();
   })
+}
+$(function(){
+  $('.moderate').click(postToUrlAndReload)
+  $('.toggle-public').click(postToUrlAndReload)
 })
 
 </script>

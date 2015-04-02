@@ -1,0 +1,32 @@
+{% load i18n %}
+
+{# :TODO: Might want to merge this into /thread/message.html? #}
+
+<div class="message message--reply">
+    <dl class="message__meta">
+
+        <dt>{% trans "From" %}</dt>
+        <dd>
+          {% with answer.person as person %}
+            {% if person_links %}
+              <a href="{% url 'thread_to' pk=person.pk %}" title="{% blocktrans with name=person.name %}Show all messages to {{ name }}{% endblocktrans %}">{{ person.name }}</a>{% if not forloop.last %},{% endif %}
+            {% else %}
+              {{ person.name }}{% if not forloop.last %},{% endif %}
+            {% endif %}
+          {% endwith %}
+        </dd>
+
+        <dt>{% trans "To" %}</dt>
+        <dd>
+          {% if person_links %}
+            <a href="#" title="{% blocktrans %}Show all messages from {{ original.author_name }}{% endblocktrans %}">{{ original.author_name }}</a>
+          {% else %}
+            {{ original.author_name }}
+          {% endif %}
+        </dd>
+
+    </dl>
+    <div class="message__content">
+        {{ answer.content }}
+    </div>
+</div>

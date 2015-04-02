@@ -11,6 +11,13 @@ from datetime import timedelta
 from django.utils import timezone
 from mock import patch, call
 from django.utils.translation import ugettext_lazy as _
+from subdomains.utils import reverse
+from nuntium.user_section.forms import WriteItPopitUpdateForm
+from django.test import RequestFactory
+from nuntium.user_section.views import ReSyncFromPopit
+from django.contrib.auth.models import AnonymousUser
+from django.http import Http404
+import json
 
 
 class PopitWriteitRelationRecord(TestCase):
@@ -37,8 +44,8 @@ class PopitWriteitRelationRecord(TestCase):
         self.assertEquals(record.popitapiinstance, self.api_instance)
         self.assertTrue(record.updated)
         self.assertTrue(record.created)
-        self.assertTrue(record.autosync)
         self.assertEquals(record.status, 'nothing')
+        self.assertEquals(record.periodicity, '1W')  # Weekly
         self.assertFalse(record.status_explanation)
 
     def test_unicode(self):
@@ -220,3 +227,152 @@ class PopitWriteitRelationRecord(TestCase):
         calls = [call('inprogress'), call('error', _('We could not connect with the URL'))]
 
         set_status.assert_has_calls(calls)
+
+
+class WriteItPopitTestCase(TestCase):
+    def setUp(self):
+        super(WriteItPopitTestCase, self).setUp()
+        self.writeitinstance = WriteItInstance.objects.get(id=1)
+        self.owner = self.writeitinstance.owner
+        self.owner.set_password('feroz')
+        self.owner.save()
+        self.popit_api_instance = PopitApiInstance.objects.first()
+        # Empty the popit_api_instance
+        self.popit_api_instance.person_set.all().delete()
+        self.popit_api_instance.url = settings.TEST_POPIT_API_URL
+        self.popit_api_instance.save()
+        self.popit_writeit_record = WriteitInstancePopitInstanceRecord.objects.create(
+            writeitinstance=self.writeitinstance,
+            popitapiinstance=self.popit_api_instance
+            )
+        self.request_factory = RequestFactory()
+
+
+class UpdateStatusOfPopitWriteItRelation(WriteItPopitTestCase):
+    '''
+    This test cases should deal with users wanting to:
+    * Manually resync their instances
+    * How often they want their instances to be resynced
+    * Disable syncing of the instance
+    '''
+    def setUp(self):
+        super(UpdateStatusOfPopitWriteItRelation, self).setUp()
+
+    def test_post_to_the_url_for_manual_resync(self):
+        '''Resyncing can be done by posting to a url'''
+        # This is just a symbolism but it is to show how this popit api is empty
+        self.assertFalse(self.popit_api_instance.person_set.all())
+        url = reverse('resync-from-popit', subdomain=self.writeitinstance.slug, kwargs={
+            'popit_api_pk': self.popit_api_instance.pk})
+        request = self.request_factory.post(url)
+        request.subdomain = self.writeitinstance.slug
+        request.user = self.owner
+        response = ReSyncFromPopit.as_view()(request, popit_api_pk=self.popit_api_instance.pk)
+
+        self.assertEquals(response.status_code, 200)
+        # It should have been updated
+        self.assertTrue(self.popit_api_instance.person_set.all())
+
+    def test_doesnt_add_another_relation_w_p(self):
+        '''
+        If a user posts to the server using another popit_api that has not previously been related
+        it does not add another relation
+        '''
+        another_popit_api_instance = PopitApiInstance.objects.last()
+        self.assertNotIn(another_popit_api_instance,
+            self.writeitinstance.writeitinstancepopitinstancerecord_set.all())
+
+        url = reverse('resync-from-popit', subdomain=self.writeitinstance.slug, kwargs={
+            'popit_api_pk': another_popit_api_instance.pk})
+        request = self.request_factory.post(url)
+        request.subdomain = self.writeitinstance.slug
+        request.user = self.owner
+        with self.assertRaises(Http404):
+            ReSyncFromPopit.as_view()(request, popit_api_pk=another_popit_api_instance.pk)
+
+    def test_post_has_to_be_the_owner_of_the_instance(self):
+        '''Only the owner of an instance can resync'''
+        url = reverse('resync-from-popit', subdomain=self.writeitinstance.slug, kwargs={
+            'popit_api_pk': self.popit_api_instance.pk})
+        request = self.request_factory.post(url)
+        request.subdomain = self.writeitinstance.slug
+        request.user = AnonymousUser()
+        with self.assertRaises(Http404):
+            ReSyncFromPopit.as_view()(request, popit_api_pk=self.popit_api_instance.pk)
+
+        other_user = User.objects.create_user(username="other_user", password="s3cr3t0")
+
+        request = self.request_factory.post(url)
+        request.subdomain = self.writeitinstance.slug
+        request.user = other_user
+        with self.assertRaises(Http404):
+            ReSyncFromPopit.as_view()(request, popit_api_pk=self.popit_api_instance.pk)
+
+from nuntium.user_section.views import WriteItPopitUpdateView
+
+
+class UpdateRecordFormTestCase(WriteItPopitTestCase):
+    '''
+    This deals with a Form to update the periodicity of syncronization of an instance
+    '''
+    def setUp(self):
+        super(UpdateRecordFormTestCase, self).setUp()
+
+    def test_validate_the_form(self):
+        data = {'periodicity': '1D'}
+        form = WriteItPopitUpdateForm(data, instance=self.popit_writeit_record)
+        self.assertIn('periodicity', form.fields)
+        self.assertTrue(form.is_valid())
+
+    def test_posting_a_new_value_to_the_url_updates_the_value(self):
+        url = reverse('update-popit-writeit-relation',
+                subdomain=self.writeitinstance.slug,
+                kwargs={
+                    'pk': self.popit_writeit_record.pk
+                }
+            )
+        request = self.request_factory.post(url)
+        request.subdomain = self.writeitinstance.slug
+        request.user = self.owner
+        request.POST = {'periodicity': '1D'}
+        # This is the result of posting
+        response = WriteItPopitUpdateView.as_view()(request, pk=self.popit_writeit_record.pk)
+        # I'm hoping this to be an ajax call
+        self.assertEquals(response.status_code, 200)
+        response_object = json.loads(response.content)
+        self.assertEquals(response_object['id'], self.popit_writeit_record.pk)
+        self.assertEquals(response_object['periodicity'], '1D')
+        # This is the expected result
+        record = WriteitInstancePopitInstanceRecord.objects.get(id=self.popit_writeit_record.pk)
+        self.assertEquals(record.periodicity, '1D')
+
+    def test_form_invalid(self):
+        url = reverse('update-popit-writeit-relation',
+                subdomain=self.writeitinstance.slug,
+                kwargs={
+                    'pk': self.popit_writeit_record.pk
+                }
+            )
+        request = self.request_factory.post(url)
+        request.subdomain = self.writeitinstance.slug
+        request.user = self.owner
+        request.POST = {'periodicity': 'invalid'}
+        response = WriteItPopitUpdateView.as_view()(request, pk=self.popit_writeit_record.pk)
+        # I'm hoping this to be an ajax call
+        self.assertEquals(response.status_code, 200)
+        response_object = json.loads(response.content)
+        self.assertTrue(response_object['errors'])
+
+    def test_cannot_get_it_should_return_405(self):
+        url = reverse('update-popit-writeit-relation',
+                subdomain=self.writeitinstance.slug,
+                kwargs={
+                    'pk': self.popit_writeit_record.pk
+                }
+            )
+        request = self.request_factory.get(url)
+        request.subdomain = self.writeitinstance.slug
+        request.user = self.owner
+        request.GET = {'periodicity': 'invalid'}
+        response = WriteItPopitUpdateView.as_view()(request, pk=self.popit_writeit_record.pk)
+        self.assertEquals(response.status_code, 405)

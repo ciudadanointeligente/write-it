@@ -12,6 +12,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.test.utils import override_settings
+from django.utils.unittest import skip
 
 
 class ModerationMessagesTestCase(TestCase):
@@ -52,6 +53,7 @@ class ModerationMessagesTestCase(TestCase):
         moderation, created = Moderation.objects.get_or_create(message=self.private_message)
         url = reverse(
             'confirm',
+            subdomain=self.private_message.writeitinstance.slug,
             kwargs={
                 'slug': self.confirmation.key
                 },
@@ -313,6 +315,7 @@ class ModerationMessagesTestCase(TestCase):
         self.assertTrue(message.moderated)
 
     # this test is for the issue https://github.com/ciudadanointeligente/write-it/issues/186
+    @skip('Message creation is no longer in the instance detail view')
     def test_confirmated_but_not_moderated_message_in_a_moderable_instance_is_in_needs_moderation_status(self):
         self.writeitinstance1.config.moderation_needed_in_all_messages = True
         self.writeitinstance1.config.save()

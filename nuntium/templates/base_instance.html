@@ -21,7 +21,7 @@
                 </button>
                 <h1>
                   {% if writeitinstance %}
-                    <a href="{% url 'instance_detail' %}">{{ writeitinstance.name }}</a>
+                    <a href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{{ writeitinstance.name }}</a>
                     <small>{% trans "A WriteIt instance" %}</small>
                   {% else %}
                     <a href="{% url 'home' subdomain=None %}">WriteIt</a>
@@ -31,8 +31,8 @@
             </div>
             <div class="site-header__nav" id="navbar" role="navigation">
                 <ul>
-                    <li class="site-header__nav__link"><a href="{% url 'instance_detail' %}">Home</a></li>
-                    <li class="site-header__nav__link"><a href="{% url 'message_threads' %}">Messages</a></li>
+                    <li class="site-header__nav__link"><a href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">Home</a></li>
+                    <li class="site-header__nav__link"><a href="{% url 'message_threads' subdomain=writeitinstance.slug %}">Messages</a></li>
                     <li class="site-header__nav__link"><a href="#">Search</a></li>
                   {% if not user.is_authenticated %}
                     <li class="site-header__nav__link site-header__nav__link--sign-in"><a href="{% url 'login' subdomain=None %}">{% trans "Sign in" %}</a></li>
@@ -82,7 +82,7 @@
             <p class="site-alert__description">{% trans "Nobody but you can access this instance, and any messages you send will be sent to your email address rather than real representatives." %}</p>
 
             {% if user.is_authenticated %}
-              <a class="site-alert__cta" href="{% url 'writeitinstance_advanced_update' subdomain=writeitinstance.slug %}">{% trans "Disable Test Mode in Settings" %}</a>
+              <a class="site-alert__cta" href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{% trans "Disable Test Mode in Settings" %}</a>
             {% endif %}
         </div>
     </div>
@@ -94,7 +94,7 @@
             <h3 class="site-alert__heading">{% trans "This instance is read-only." %}</h3>
             <p class="site-alert__description">{% trans "You can’t currently create new messages using this WriteIt." %}</p>
           {% if user.is_authenticated %}
-            <a class="site-alert__cta" href="{% url 'writeitinstance_advanced_update' subdomain=writeitinstance.slug %}">{% trans "Change this in Settings" %}</a>
+            <a class="site-alert__cta" href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{% trans "Change this in Settings" %}</a>
           {% endif %}
         </div>
     </div>
@@ -104,18 +104,10 @@
             <h3 class="site-alert__heading">{% trans "This instance has no recipients." %}</h3>
             <p class="site-alert__description">{% trans "There is no-one to write to yet. Please check back soon." %}</p>
           {% if user.is_authenticated %}
-            <a class="site-alert__cta" href="{% url 'writeitinstance_advanced_update' subdomain=writeitinstance.slug %}">{% trans "Import people from PopIt" %}</a>
+            <a class="site-alert__cta" href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{% trans "Import people from PopIt" %}</a>
           {% endif %}
         </div>
     </div>
-  {% endif %}
-
-  {% if messages %}
-    <ul class="flash-messages">
-      {% for message in messages %}
-        <li>{{ message }}</li>
-      {% endfor %}
-    </ul>
   {% endif %}
 
 {% endblock header %}

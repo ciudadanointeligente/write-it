@@ -7,7 +7,6 @@ from subdomains.utils import reverse
 from django.contrib.auth.models import User
 from django.forms import ValidationError
 from django.template import Context, Template
-from django.test.client import Client
 from django.test.utils import override_settings
 
 from contactos.models import Contact, ContactType
@@ -220,7 +219,7 @@ class ConfirmationTemplateFormTestCase(TestCase):
         """Updating the template using the web"""
         url = reverse('edit_confirmation_template', subdomain=self.writeitinstance.slug)
         self.assertTrue(url)
-        c = Client()
+        c = self.client
         c.login(username="admin", password="admin")
         data = {
             "content_text": "text",
@@ -229,7 +228,7 @@ class ConfirmationTemplateFormTestCase(TestCase):
         response = c.post(url, data=data)
         your_instances_url = reverse(
             'writeitinstance_template_update',
-            kwargs={"slug": self.writeitinstance.slug},
+            subdomain=self.writeitinstance.slug,
             )
         self.assertRedirects(response, your_instances_url)
         # it was updated
@@ -312,7 +311,7 @@ via Test WriteIt Instance.
 
 Please visit the following link to confirm you want to send this message
 
-http://127.0.0.1.xip.io:8000/en/confirm_message/fakekey
+http://test-writeit-instance.127.0.0.1.xip.io:8000/en/write/sign/fakekey/
 
 (If you can’t click the link, try copying and pasting it into your
 browser’s address bar)
@@ -320,7 +319,7 @@ browser’s address bar)
 
 Once you have confirmed the message, you can access it by going to
 
-http://127.0.0.1.xip.io:8000/en/writeit_instances/test-writeit-instance/messages/test-message/
+http://test-writeit-instance.127.0.0.1.xip.io:8000/en/thread/test-message/
 
 
 **IMPORTANT** Once confirmed, this message, will be sent to
@@ -346,7 +345,6 @@ Subject: Test Message
 
 Test Content
 """
-
         self.assertEqual(email.body, expected_body)
         self.assertEqual(email.content_subtype, u'plain')
         self.assertEqual(email.from_email, u'from@example.com')

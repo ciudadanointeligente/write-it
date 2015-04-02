@@ -328,14 +328,34 @@ from celery.schedules import crontab
 djcelery.setup_loader()
 
 CELERYBEAT_SCHEDULE = {
-    # Executes every Monday morning at 7:30 A.M
+    # Sends emails every 2 minutes
     'send-mails-every-2-minutes': {
         'task': 'nuntium.tasks.send_mails_task',
         'schedule': crontab(minute='*/2'),
     },
-    'repsync-popit-apis-every-day': {
+    # Resyncs popit every week
+    'resync-popit-apis-every-week': {
         'task': 'nuntium.tasks.pull_from_popit',
+        'kwargs': {
+            'periodicity': '1W'
+        },
         'schedule': crontab(hour=5, minute=30, day_of_week=1),
+    },
+    # Resyncs popit every day
+    'resync-popit-apis-every-day': {
+        'task': 'nuntium.tasks.pull_from_popit',
+        'kwargs': {
+            'periodicity': '1D'
+        },
+        'schedule': crontab(hour=5, minute=30),
+    },
+    # Resyncs popit twice every day
+    'resync-popit-apis-twice-every-day': {
+        'task': 'nuntium.tasks.pull_from_popit',
+        'kwargs': {
+            'periodicity': '2D'
+        },
+        'schedule': crontab(hour='*/12'),
     },
 }
 # the biggest number of recipients a user can
