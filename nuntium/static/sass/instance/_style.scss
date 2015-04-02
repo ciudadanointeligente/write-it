@@ -1,7 +1,3 @@
-.btn-google {
-  @include button-variant(#ffffff, $color-google-blue, darken($color-google-blue, 5%));
-}
-
 // Give the illusion of infinitely long footer,
 // by matching footer background to body background.
 body, .site-footer {
