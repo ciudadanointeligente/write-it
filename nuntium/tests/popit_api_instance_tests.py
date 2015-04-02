@@ -172,5 +172,8 @@ class IsActiveTestCase(TestCase):
             self.assertTrue(is_current_membership({'end_date': future}))
             self.assertFalse(is_current_membership({'start_date': future, 'end_date': far_future}))
 
+            # Handles empty strings as dates
+            self.assertTrue(is_current_membership({'start_date': past, 'end_date': ""}))
+
             # If there's neither a start date or an end date, that's current.
             self.assertTrue(is_current_membership({}))

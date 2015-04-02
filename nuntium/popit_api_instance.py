@@ -5,8 +5,11 @@ from datetime import datetime
 
 
 def get_date_or_none(membership_doc, key, format="%Y-%m-%d"):
+    date = membership_doc.get(key, "")
+    if not date:
+        return None
     try:
-        return datetime.strptime(membership_doc.get(key, None), format)
+        return datetime.strptime(date, format)
     except TypeError:
         return None
 
