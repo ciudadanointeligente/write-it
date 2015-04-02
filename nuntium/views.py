@@ -132,23 +132,6 @@ class WriteMessageView(NamedUrlSessionWizardView):
         return context
 
 
-class MessageDetailView(DetailView):
-    template_name = 'nuntium/message/message_detail.html'
-    model = Message
-
-    def get_queryset(self):
-        qs = Message.objects.filter(slug__iexact=self.kwargs['slug'])
-        return qs
-
-    def get_object(self):
-        the_message = super(MessageDetailView, self).get_object()
-        if not the_message.public:
-            raise Http404
-        if not (the_message.confirmated or the_message.confirmation.is_confirmed):
-            raise Http404
-        return the_message
-
-
 class ConfirmView(RedirectView):
     permanent = False
 
@@ -280,12 +263,26 @@ class MessageThreadsView(ListView):
         return context
 
 
-class MessageThreadView(DetailView):
+class MessageDetailView(DetailView):
+    template_name = 'nuntium/message/message_detail.html'
     model = Message
-    template_name = 'thread/read.html'
 
     def get_queryset(self):
-        return self.model.objects.filter(confirmated=True, public=True)
+        qs = Message.objects.filter(slug__iexact=self.kwargs['slug'])
+        return qs
+
+    def get_object(self):
+        the_message = super(MessageDetailView, self).get_object()
+        if not the_message.public:
+            raise Http404
+        if not (the_message.confirmated or the_message.confirmation.is_confirmed):
+            raise Http404
+        return the_message
+
+
+class MessageThreadView(MessageDetailView):
+    model = Message
+    template_name = 'thread/read.html'
 
     def get_context_data(self, **kwargs):
         context = super(MessageThreadView, self).get_context_data(**kwargs)
