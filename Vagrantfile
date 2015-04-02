@@ -24,4 +24,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.post_up_message = $post_up_message
 
   config.ssh.forward_agent = true
+
+  config.vm.provider :virtualbox do |v|
+    v.memory = 1024
+  end
 end
