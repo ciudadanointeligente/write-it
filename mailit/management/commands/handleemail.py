@@ -8,6 +8,7 @@ from django.conf import settings
 from django.core.mail.message import EmailMultiAlternatives
 import traceback
 from django.core.files import File
+from mailit.exceptions import CouldNotFindIdentifier
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
@@ -64,7 +65,7 @@ class Command(BaseCommand):
         try:
             answer = handler.handle(lines)
             answer.send_back()
-        except AttributeError:
+        except CouldNotFindIdentifier:
             pass
         except:
             tb = traceback.format_exc()
