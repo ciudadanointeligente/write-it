@@ -116,6 +116,11 @@
   overflow: hidden; // hide the box shadow on children
   margin-top: 1.5em;
   background-color: #f3f3f3;
+
+  &:hover {
+    @include translate(0, -2px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.08);
+  }
 }
 
 .mini-thread__message {
