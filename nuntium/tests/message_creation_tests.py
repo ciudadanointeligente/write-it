@@ -38,6 +38,9 @@ class MessageCreationTestCase(TestCase):
         self.assertIn(self.person1, who_form.fields['persons'].queryset)
         self.assertNotIn(self.person2, who_form.fields['persons'].queryset)
 
+        self.assertIn('writeitinstance', response.context)
+        self.assertEquals(response.context['writeitinstance'], self.writeitinstance)
+
     # def test_step_who_with_requestfactory(self):
     #     request = self.factory.get(url)
     #     add_session_to_request(request)
