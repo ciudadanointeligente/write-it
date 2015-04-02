@@ -65,10 +65,12 @@ body, .site-footer {
   background: none;
 }
 
-.thead__actions__heading {
+.thead__actions__heading,
+.results__actions__heading {
   color: $color-bluegrey-300;
 }
 
-.thread__actions li {
+.thread__actions li,
+.results__actions li {
   border-top-color: $color-bluegrey-100;
 }
