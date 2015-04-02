@@ -1,4 +1,4 @@
-.thread {
+.results {
   @extend .row;
   margin-top: 1em;
   margin-bottom: 1em;
@@ -9,17 +9,18 @@
   }
 }
 
-.thread__messages {
+.results__messages {
   @extend .col-sm-8;
+  @extend .col-sm-push-4;
 
-  @media (max-width: $screen-sm-max) {
-    margin-bottom: 1em;
+  & > :first-child {
+    margin-top: 0;
   }
 }
 
-.thread__actions {
+.results__actions {
   @extend .col-sm-3;
-  @extend .col-sm-push-1;
+  @extend .col-sm-pull-8;
 
   ul {
     @extend .list-unstyled;
@@ -31,11 +32,19 @@
   }
 }
 
-.thead__actions__heading {
+.results__actions__heading {
   font-size: 0.8em;
   line-height: 1em;
   font-weight: bold;
   text-transform: uppercase;
   color: #bbb;
-  margin: 0 0 0.8em 0;
+  margin: 2em 0 0.8em 0;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.results__actions label {
+  font-weight: normal;
 }

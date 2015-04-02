@@ -31,6 +31,10 @@
 
 .writing-breadcrumb__step--current {
   font-weight: bold;
+
+  &:before {
+    font-weight: normal;
+  }
 }
 
 .writing-step {
