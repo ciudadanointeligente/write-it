@@ -18,6 +18,12 @@ class HomeViewTestCase(TestCase):
         url = reverse("home")
         self.assertTrue("/es/" in url)
 
+    def test_it_redirects_if_hitting_root(self):
+        '''It redirects if we hit / '''
+        response = Client().get('/')
+        self.assertEquals(response.status_code, 301)
+        self.assertEquals(response.url, reverse('home'))
+
     def test_list_instances(self):
         activate('en')
         instance1 = WriteItInstance.objects.get(id=1)
