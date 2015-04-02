@@ -3,6 +3,7 @@ from django.conf.urls.i18n import i18n_patterns
 
 from django_downloadview import ObjectDownloadView
 
+from contactos.views import ToggleContactEnabledView
 from mailit.views import MailitTemplateUpdateView
 from nuntium.models import AnswerAttachment
 from nuntium.views import (
@@ -53,6 +54,9 @@ managepatterns = patterns('',
     url(r'^settings/templates/new_answer_notification/$', NewAnswerNotificationTemplateUpdateView.as_view(), name='edit_new_answer_notification_template'),
     url(r'^settings/templates/confirmation_template/$', ConfirmationTemplateUpdateView.as_view(), name='edit_confirmation_template'),
     url(r'^settings/templates/mailit_template/$', MailitTemplateUpdateView.as_view(), name='mailit-template-update'),
+    url(r'^recipients/toggle-enabled/$',
+        ToggleContactEnabledView.as_view(),
+        name='toggle-enabled'),
     url(r'^recipients/$', WriteItInstanceContactDetailView.as_view(), name='contacts-per-writeitinstance'),
     url(r'^messages/$', MessagesPerWriteItInstance.as_view(), name='messages_per_writeitinstance'),
     url(r'^messages/(?P<pk>[-\d]+)/answers/$', MessageDetail.as_view(), name='message_detail_private'),
@@ -66,6 +70,7 @@ managepatterns = patterns('',
         WriteItDeleteView.as_view(template_name="nuntium/profiles/writeitinstance_check_delete.html"),
         name='delete_an_instance'),
     url(r'^messages/(?P<pk>[-\d]+)/toggle-public/$', MessageTogglePublic.as_view(), name='toggle_public'),
+
 )
 
 write_message_wizard = WriteMessageView.as_view(url_name='write_message_step')

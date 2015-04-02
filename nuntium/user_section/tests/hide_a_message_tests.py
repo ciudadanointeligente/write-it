@@ -21,22 +21,21 @@ class HideAMessageTestCase(UserSectionTestCase):
 
         url = reverse('toggle_public', subdomain=self.message.writeitinstance.slug, kwargs={
             'pk': self.message.pk})
+        messages_url = reverse('messages_per_writeitinstance', subdomain=self.message.writeitinstance.slug)
 
         self.client.login(username=self.owner.username, password='feroz')
+
+        # Set to private
         response = self.client.post(url)
-        self.assertTrue(response.status_code, 200)
-        the_message_again = Message.objects.get(id=self.message.id)
-        self.assertFalse(the_message_again.public)
-        # Because I'm hoping that this url is an ajax call I should receive
-        # something that tells the UI that the message has turned into private now
-        response_object = json.loads(response.content)
-        # I think it should probably return the id of the
-        # recently changed and the public status
-        self.assertEquals(response_object['pk'], self.message.id)
-        self.assertFalse(response_object['public'])
-        # toggling Hidden
-        response_public = json.loads(self.client.post(url).content)
-        self.assertTrue(response_public['public'])
+        self.assertRedirects(response, messages_url)
+        message = Message.objects.get(pk=self.message.pk)
+        self.assertFalse(message.public)
+
+        # Set to public again
+        response = self.client.post(url)
+        self.assertRedirects(response, messages_url)
+        message = Message.objects.get(pk=self.message.pk)
+        self.assertTrue(message.public)
 
     def test_non_logged_and_non_owner_toggling_public(self):
         '''
@@ -48,12 +47,10 @@ class HideAMessageTestCase(UserSectionTestCase):
         url = reverse('toggle_public', subdomain=self.message.writeitinstance.slug, kwargs={
             'pk': self.message.pk})
 
-        response = self.client.post(url)
-        self.assertEquals(response.status_code, 404)
+        self.client.post(url)
         self.assertTrue(Message.objects.get(id=self.message.id).public)
 
         other_user = User.objects.create_user(username="other", password='password')
         self.client.login(username=other_user.username, password='password')
-        response = self.client.post(url)
+        self.client.post(url)
         self.assertTrue(Message.objects.get(id=self.message.id).public)
-        self.assertEquals(response.status_code, 404)

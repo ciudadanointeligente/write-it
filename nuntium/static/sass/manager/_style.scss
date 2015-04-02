@@ -2,11 +2,14 @@
 .thankyou-message { color: $font-family-serif; }
 .foobar { background-color: darken($brand-primary, 10%); }
 
-
 th {
     font-weight: normal;
     color: $gray-light;
     font-size: 0.875em;
+}
+
+.modal-title {
+    font-weight: bold;
 }
 
 .muted {
@@ -194,6 +197,14 @@ label {
     }
 }
 
+.manager-overview {
+    background-color: #f4f4f4;
+    padding: 0.75em 1em;
+    margin-bottom: 1em;
+    border-radius: $border-radius-base;
+    color: lighten($gray, 10%);
+}
+
 // Template page
 
 .template-container {
@@ -244,3 +255,26 @@ label {
     display: inline-block;
     padding-top: 0.5em;
 }
+
+//messages
+
+.message-in-message-list {
+    h3 {
+        font-size: 1.142857143em;
+        margin-top: 0.3em;
+    }
+    td {
+        padding-top: 1em !important;
+        padding-bottom: 1em !important;
+    }
+}
+
+.message-in-message-list__meta {
+    @extend .text-muted;
+    font-size: 1em;
+    strong {
+        font-weight: normal;
+        color: $gray-dark;
+    }
+}
+

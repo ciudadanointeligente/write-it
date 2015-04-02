@@ -3,7 +3,7 @@ from subdomains.utils import reverse
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView, CreateView, DetailView, View, ListView
+from django.views.generic import TemplateView, CreateView, DetailView, View, ListView, RedirectView
 from django.views.generic.edit import UpdateView, DeleteView, FormView
 
 from mailit.forms import MailitTemplateForm
@@ -312,23 +312,25 @@ class AnswerUpdateView(AnswerEditMixin, UpdateView):
         return self.model.objects.get(id=self.kwargs['pk']).message
 
 
-class AcceptMessageView(View):
+class AcceptMessageView(RedirectView):
+    permanent = False
+
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        self.message = get_object_or_404(Message, id=kwargs['pk'])
-        if self.message.writeitinstance.owner != self.request.user:
-            raise Http404
         return super(AcceptMessageView, self).dispatch(*args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-
-        self.message.moderate()
-
-        url = reverse(
-            'messages_per_writeitinstance',
-            subdomain=self.message.writeitinstance.slug,
+    def get_redirect_url(self, *args, **kwargs):
+        message = get_object_or_404(Message,
+            pk=kwargs['pk'],
+            writeitinstance__slug=self.request.subdomain,
+            writeitinstance__owner=self.request.user
             )
-        return redirect(url)
+        message.moderate()
+        view_messages.info(self.request, _("This message has been moderated"))
+        return reverse(
+            'messages_per_writeitinstance',
+            subdomain=message.writeitinstance.slug,
+            )
 
 
 class WriteitPopitRelatingView(FormView):
@@ -435,20 +437,23 @@ class WriteItDeleteView(DeleteView):
         return url
 
 
-class MessageTogglePublic(View):
+class MessageTogglePublic(RedirectView):
+    permanent = False
+
+    @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        self.kwargs['slug'] = self.request.subdomain
-        if not self.request.user.is_authenticated():
-            raise Http404
         return super(MessageTogglePublic, self).dispatch(*args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        writeitinstance = get_object_or_404(WriteItInstance, slug=self.kwargs['slug'],
-            owner=self.request.user)
-        message = get_object_or_404(writeitinstance.message_set.all(), pk=self.kwargs['pk'])
+    def get_redirect_url(self, *args, **kwargs):
+        message = get_object_or_404(Message,
+            pk=kwargs['pk'],
+            writeitinstance__slug=self.request.subdomain,
+            writeitinstance__owner=self.request.user,
+            )
         message.public = not message.public
         message.save()
-        return HttpResponse(
-            json.dumps({'pk': message.id, 'public': message.public}),
-            content_type="application/json"
-        )
+        if message.public:
+            view_messages.info(self.request, _("This message has been marked as public"))
+        else:
+            view_messages.info(self.request, _("This message has been marked as private"))
+        return reverse('messages_per_writeitinstance', subdomain=self.request.subdomain)
