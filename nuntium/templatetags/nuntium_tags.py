@@ -14,6 +14,7 @@ def show_contacts_for(person, writeitinstance):
     }
 register.inclusion_tag('nuntium/profiles/contacts/show_contacts_in.html')(show_contacts_for)
 
+
 @register.filter
 def join_with_commas(obj_list):
     """Takes a list of objects and returns their unicode representations,
@@ -22,11 +23,10 @@ def join_with_commas(obj_list):
     [<Fruit: apples>,<Fruit: oranges>,<Fruit: pears>] -> 'apples, oranges and pears'
     """
 
-    l = len(obj_list)
-    if l == 0:
-        return ""
-    elif l == 1:
+    list_len = len(obj_list)
+    if list_len == 0:
+        return u""
+    elif list_len == 1:
         return u"%s" % obj_list[0]
     else:
-        return ", ".join(unicode(obj) for obj in obj_list[:l - 1]) \
-                + " and " + unicode(obj_list[l - 1])
+        return u", ".join(unicode(obj) for obj in obj_list[:list_len - 1]) + u" and " + unicode(obj_list[list_len - 1])

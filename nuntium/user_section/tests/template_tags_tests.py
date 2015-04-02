@@ -1,6 +1,7 @@
 from django.template import Context, Template
 from global_test_case import GlobalTestCase as TestCase
 from contactos.models import Contact
+from popit.models import Person
 
 
 class ListContactsTemplateTag(TestCase):
@@ -27,3 +28,15 @@ class ListContactsTemplateTag(TestCase):
             })
         rendered = t.render(c)
         self.assertIn(self.contact.value, rendered)
+
+    def test_join_with_commas(self):
+        '''
+        Join a list with commas
+        '''
+        t = Template('{% load nuntium_tags %}{{ people|join_with_commas }}')
+        people = Person.objects.all().order_by('id')
+        c = Context({
+            "people": people
+            })
+        rendered = t.render(c)
+        self.assertEquals(u'Pedro, Marcel and Felipe', rendered)

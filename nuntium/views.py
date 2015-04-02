@@ -3,8 +3,6 @@ from datetime import datetime
 from django.views.generic import TemplateView, DetailView, RedirectView, ListView
 from subdomains.utils import reverse
 from django.http import Http404, HttpResponseRedirect
-from django.utils.translation import ugettext as _
-from django.contrib import messages
 from django.contrib.formtools.wizard.views import NamedUrlSessionWizardView
 from django.shortcuts import get_object_or_404
 
@@ -119,7 +117,9 @@ class WriteMessageView(NamedUrlSessionWizardView):
         message = Message(writeitinstance=self.writeitinstance, **data)
         message.save()
         Confirmation.objects.create(message=message)
-        moderations = Moderation.objects.filter(message=message)
+        # Doing anything with the moderations?
+        Moderation.objects.filter(message=message)
+
         return HttpResponseRedirect(reverse('write_message_sign', subdomain=self.writeitinstance.slug))
 
     def get_context_data(self, form, **kwargs):
@@ -296,8 +296,10 @@ class MessageThreadView(DetailView):
         context['writeitinstance'] = self.object.writeitinstance
         return context
 
+
 class WriteSignView(TemplateView):
     template_name = 'write/sign.html'
+
     def get_context_data(self, **kwargs):
         context = super(WriteSignView, self).get_context_data(**kwargs)
         context['writeitinstance'] = WriteItInstance.objects.get(slug=self.request.subdomain)

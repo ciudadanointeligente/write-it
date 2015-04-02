@@ -2,7 +2,6 @@
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from subdomains.utils import reverse
 from nuntium.models import WriteItInstance, Message, Membership, Confirmation
-from nuntium.views import PerInstanceSearchForm
 from popit.models import ApiInstance, Person
 from django.utils.unittest import skipUnless, skip
 from django.contrib.auth.models import User
