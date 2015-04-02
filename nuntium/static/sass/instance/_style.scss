@@ -1,11 +1,20 @@
 // Give the illusion of infinitely long footer,
 // by matching footer background to body background.
 body, .site-footer {
-  background-color: #eee;
+  background-color: $color-bluegrey-700;
 }
 
 .site-footer {
-  border-top: 1px solid darken(#eee, 6%);
+  color: $color-bluegrey-300;
+
+  a {
+    color: $color-bluegrey-50;
+
+    &:hover,
+    &:focus {
+      color: #fff;
+    }
+  }
 }
 
 // Then give the main page wrapper the background colour
@@ -14,14 +23,29 @@ body, .site-footer {
   background-color: $body-bg;
 }
 
+// Pages with messages on them have a darker background,
+// so that the white messages stand out.
+.page-contains-messages {
+  .site-content {
+    background-color: $color-bluegrey-50;
+  }
+  .site-header {
+    background-color: #fff;
+  }
+}
+
 .site-alert {
-  background-color: $color-pale-orange;
-  border-bottom-color: mix(#000, $color-pale-orange, 6%);
+  background-color: $color-orange-100;
+  border-bottom-color: mix(#000, $color-orange-100, 6%);
 
   // 1px border to overlap navbar or previous site-alert
   position: relative;
   margin-top: -1px;
-  border-top: 1px solid mix(#000, $color-pale-orange, 6%);
+  border-top: 1px solid mix(#000, $color-orange-100, 6%);
+}
+
+.instance-summary {
+  background-color: $color-bluegrey-50;
 }
 
 .writing-breadcrumb__step {
@@ -39,4 +63,12 @@ body, .site-footer {
 .chosen-container .chosen-results li em {
   font-weight: bold;
   background: none;
+}
+
+.thead__actions__heading {
+  color: $color-bluegrey-300;
+}
+
+.thread__actions li {
+  border-top-color: $color-bluegrey-100;
 }

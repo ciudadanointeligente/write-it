@@ -2,6 +2,8 @@
 {% load i18n %}
 {% load subdomainurls %}
 
+{% block body_class %}page-contains-messages{% endblock %}
+
 {% block content_inner %}
     {% for message in message_list %}
         {% include "thread/message_mini.html" with person_links=True message=message %}

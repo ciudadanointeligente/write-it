@@ -2,6 +2,8 @@
 {% load i18n %}
 {% load subdomainurls %}
 
+{% block body_class %}page-contains-messages{% endblock %}
+
 {% block content_inner %}
 
   {% if user_came_via_confirmation_link %}

@@ -23,11 +23,11 @@
 
   ul {
     @extend .list-unstyled;
+  }
 
-    li {
-      border-top: 1px solid #eee;
-      padding: 0.5em 0;
-    }
+  li {
+    border-top: 1px solid #eee;
+    padding: 0.5em 0;
   }
 }
 
