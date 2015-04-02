@@ -11,6 +11,7 @@ from flufl.bounce import all_failures, scan_message
 from mailit.models import RawIncomingEmail
 from nuntium.models import Answer
 from mailit.bin.froide_email_utils import FroideEmailParser
+from mailit.exceptions import CouldNotFindIdentifier
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
@@ -151,8 +152,10 @@ class EmailHandler(FroideEmailParser):
         the_recipient = re.sub(r"\n", "", the_recipient)
 
         regex = re.compile(r".*[\+\-](.*)@.*")
-
-        answer.outbound_message_identifier = regex.match(the_recipient).groups()[0]
+        the_match = regex.match(the_recipient)
+        if the_match is None:
+            raise CouldNotFindIdentifier
+        answer.outbound_message_identifier = the_match.groups()[0]
         logging.info("Reading the parts")
         for part in msg.walk():
             logging.info("Part of type " + part.get_content_type())
