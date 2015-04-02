@@ -132,6 +132,7 @@ class WriteMessageView(NamedUrlSessionWizardView):
             context['persons'] = self.writeitinstance.persons.all()
         if self.steps.current == 'preview':
             context['message'] = self.get_form_values()
+            context['message']['people'] = context['message']['persons']
         return context
 
 
