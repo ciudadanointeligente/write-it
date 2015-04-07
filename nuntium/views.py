@@ -135,6 +135,11 @@ class WriteMessageView(NamedUrlSessionWizardView):
             context['message']['people'] = context['message']['persons']
         return context
 
+    def get_form_prefix(self, *args, **kwargs):
+        prefix = super(WriteMessageView, self).get_form_prefix(*args, **kwargs)
+        prefix += u"_" + self.writeitinstance.slug
+        return prefix
+
 
 class MessageDetailView(DetailView):
     template_name = 'nuntium/message/message_detail.html'
