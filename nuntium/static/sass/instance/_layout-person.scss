@@ -1,6 +1,7 @@
 .person-profile {
   padding: 1.5em 0;
   border-bottom: 1px solid $gray-lighter;
+  overflow: auto;
 }
 
 .person-profile__photo {

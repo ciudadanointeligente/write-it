@@ -1,10 +1,11 @@
 {% extends "base_instance.html" %}
 {% load i18n %}
+{% load staticfiles %}
 
 {% block content_inner %}
 
     <div class="person-profile">
-        <img class="person-profile__photo" src="{% if person.image %}{{person.image}}{% else %}http://placehold.it/128x128{% endif %}" width="128" height="128">
+        <img class="person-profile__photo" src="{% if person.image %}{{ person.image }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}">
         <h2 class="person-profile__name">{{ person.name }}</h2>
         <p class="person-profile__context">{{ person.summary }}</p>
     </div>
