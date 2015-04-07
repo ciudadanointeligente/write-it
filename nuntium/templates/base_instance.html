@@ -79,7 +79,7 @@
     <div class="site-alert">
         <div class="container">
             <h3 class="site-alert__heading">{% trans "This instance is in Test Mode." %}</h3>
-            <p class="site-alert__description">{% trans "Nobody but you can access this instance, and any messages you send will be sent to your email address rather than real representatives." %}</p>
+            <p class="site-alert__description">{% trans "Any messages you send will be sent to the site administrator rather than real representatives." %}</p>
 
             {% if user.is_authenticated %}
               <a class="site-alert__cta" href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{% trans "Disable Test Mode in Settings" %}</a>
