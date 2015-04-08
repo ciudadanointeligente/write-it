@@ -38,6 +38,7 @@ $(".chosen-person-select").chosen();
       </div>
       <div class="form-group">
         {{ form.description.label_tag }}
+        {% help_hint "/en/help/glossary/#help-instance-description" %}
         {{ form.description }}
       </div>
 
