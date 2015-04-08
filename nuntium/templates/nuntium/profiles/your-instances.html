@@ -44,10 +44,6 @@
     </div>
 
 
-      <button class="btn btn-primary" data-toggle="modal" data-target="#createNew">
-        {% trans 'Create a new Write-It' %}
-      </button>
-
     {% autopaginate object_list %}
     {% paginate %}
       <table class="table table-striped">
@@ -98,6 +94,11 @@
           {% endfor %}
         </tbody>
       </table>
+
+      <button class="btn btn-primary" data-toggle="modal" data-target="#createNew">
+        {% trans 'Create a new Write-It' %}
+      </button>
+
 <script type="text/javascript">
   var go_and_check_status_of_instance = function(url, class_){
     $.get(url, function(status){
