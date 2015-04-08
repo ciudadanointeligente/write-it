@@ -37,7 +37,9 @@
           <h3 class="thead__actions__heading">Actions</h3>
             <ul>
               <li><a href="{% url 'message_threads' subdomain=writeitinstance.slug %}">{% trans "Back to all messages" %}</a></li>
+              {% comment "Commenting out the report part until we know the best way to solve this" %}
               <li><a href="#">{% trans "Report for abuse" %}</a></li>
+              {% endcomment %}
             </ul>
         </div>
     </div>
