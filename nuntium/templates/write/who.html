@@ -8,7 +8,7 @@
 {% block extrajs %}
     $(".chosen-person-select").chosen({
       width: '100%',
-      max_selected_options: {{writeitinstance.config.maximum_recipients}},
+      max_selected_options: {{ writeitinstance.config.maximum_recipients }},
       no_results_text: '{% trans "No recipients match" %}',
       placeholder_text_multiple: ' ', // hide placeholder text
       placeholder_text_single: ' ', // hide placeholder text
@@ -23,7 +23,13 @@
     <form class="writing-step" action="" method="post">{% csrf_token %}
         {{ wizard.management_form }}
         <p class="form-group">
-            <label for="id_who-persons">{% trans "Search for recipients by name" %}</label>
+            <label for="id_who-persons">
+                {% blocktrans count counter=writeitinstance.config.maximum_recipients %}
+                    Search for recipient by name
+                {% plural %}
+                    Search for recipients by name
+                {% endblocktrans %}
+            </label>
             {{ form.persons.errors }}
             {{ form.persons }}
         </p>
