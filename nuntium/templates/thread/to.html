@@ -2,18 +2,30 @@
 {% load i18n %}
 {% load staticfiles %}
 
+{% block body_class %}page-contains-messages{% endblock %}
+
 {% block content_inner %}
 
-    <div class="person-profile">
-        <img class="person-profile__photo" src="{% if person.image %}{{ person.image }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}">
-        <h2 class="person-profile__name">{{ person.name }}</h2>
-        <p class="person-profile__context">{{ person.summary }}</p>
-    </div>
+    <div class="results person">
+        <div class="results__actions">
+            <h3 class="results__actions__heading">{% trans "Messages to" %}</h3>
 
-    <div class="person-messages">
-        {% for message in message_list %}
-            {% include "thread/message.html" with person_links=True message=message %}
-        {% endfor %}
+            <div class="person-profile">
+              {% if person.image %}
+                <img class="person-profile__photo" src="{{ person.image }}">
+              {% endif %}
+                <h2 class="person-profile__name">{{ person.name }}</h2>
+            </div>
+
+          {% if person.summary %}
+            <p class="results__actions__info">{{ person.summary }}</p>
+          {% endif %}
+        </div>
+        <div class="results__messages">
+          {% for message in message_list %}
+            {% include "thread/message_mini.html" with message=message %}
+          {% endfor %}
+        </div>
     </div>
 
 {% endblock content_inner %}

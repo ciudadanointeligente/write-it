@@ -11,7 +11,18 @@
 
 .results__messages {
   @extend .col-sm-8;
-  @extend .col-sm-push-4;
+
+  @media (min-width: $screen-sm) {
+    float: right !important;
+  }
+
+  &:first-child {
+    margin-bottom: 1em;
+  }
+
+  &:last-child {
+    margin-top: 1em;
+  }
 
   & > :first-child {
     margin-top: 0;
@@ -20,7 +31,6 @@
 
 .results__actions {
   @extend .col-sm-3;
-  @extend .col-sm-pull-8;
 
   ul {
     @extend .list-unstyled;
