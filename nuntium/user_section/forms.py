@@ -14,6 +14,7 @@ from django.utils.translation import ugettext as _
 from popit.models import Person
 from ..forms import WriteItInstanceCreateFormPopitUrl, PopitParsingFormMixin
 from django.conf import settings
+from nuntium.popit_api_instance import PopitApiInstance
 
 
 class WriteItInstanceBasicForm(ModelForm):
@@ -163,6 +164,12 @@ class RelatePopitInstanceWithWriteItInstance(Form, PopitParsingFormMixin):
             self.cleaned_data['popit_url']
             )
         return result
+
+    def clean(self, *args, **kwargs):
+        cleaned_data = super(RelatePopitInstanceWithWriteItInstance, self).clean(*args, **kwargs)
+        if self.writeitinstance.writeitinstancepopitinstancerecord_set.filter(popitapiinstance__url=cleaned_data.get('popit_url')):
+            raise ValidationError(_("You already have this popit instance related"))
+        return cleaned_data
 
 
 class WriteItPopitUpdateForm(ModelForm):

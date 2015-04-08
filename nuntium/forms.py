@@ -153,6 +153,10 @@ class PopitParsingFormMixin(object):
 
         return self.other_possible_popit_url_parsings(popit_url)
 
+    def clean_popit_url(self):
+        popit_url = self.cleaned_data.get('popit_url')
+        return self.get_popit_url_parsed(popit_url)
+
 
 class WriteItInstanceCreateFormPopitUrl(ModelForm, PopitParsingFormMixin):
     popit_url = URLField(
@@ -167,7 +171,7 @@ class WriteItInstanceCreateFormPopitUrl(ModelForm, PopitParsingFormMixin):
 
     def relate_with_people(self):
         if self.cleaned_data['popit_url']:
-            popit_url = self.get_popit_url_parsed(self.cleaned_data['popit_url'])
+            popit_url = self.cleaned_data['popit_url']
             self.instance.load_persons_from_a_popit_api(
                 popit_url
                 )
