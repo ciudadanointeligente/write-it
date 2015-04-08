@@ -63,7 +63,7 @@ class WriteItInstanceDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
-        recent_messages = Message.public_objects.filter(writeitinstance=self.object).order_by('created')[:5]
+        recent_messages = Message.public_objects.filter(writeitinstance=self.object).order_by('-created')[:5]
         context['recent_messages'] = recent_messages
         return context
 
