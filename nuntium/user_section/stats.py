@@ -8,13 +8,16 @@ class StatsPerInstance(object):
         self.writeitinstance = writeitinstance
 
     def get_stats(self):
-        return [
-            ('amount_of_messages', self.amount_of_messages),
-            ('amount_of_public_messages', self.amount_of_public_messages),
-            ('amount_of_private_messages', self.amount_of_private_messages),
-            ('public_messages_with_answers', self.public_messages_with_answers),
-            ('public_confirmed_messages', self.public_confirmed_messages),
+        stats = [
+            ('Confirmed public messages', self.public_confirmed_messages),
+            ('Public messages with answers', self.public_messages_with_answers),
+            ('Total messages', self.amount_of_messages),
+            ('Total public messages', self.amount_of_public_messages),
         ]
+        private_message_count = self.amount_of_private_messages
+        if private_message_count:
+            stats.append(('Total private messages', private_message_count))
+        return stats
 
     @property
     def amount_of_messages(self):
@@ -26,7 +29,9 @@ class StatsPerInstance(object):
 
     @property
     def amount_of_private_messages(self):
-        return self.writeitinstance.message_set.filter(public=False).count()
+        private_message_count = self.writeitinstance.message_set.filter(public=False).count()
+        if private_message_count:
+            return private_message_count
 
     @property
     def public_messages_with_answers(self):
