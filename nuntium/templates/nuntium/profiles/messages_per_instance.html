@@ -101,9 +101,19 @@
               {% endif %}
             </td>
             <td class="text-center">
-                <form action="{% url 'toggle_public' pk=message.pk %}" method="post">{% csrf_token %}
-                    <button class="btn btn-default btn-sm toggle-public"><i class="fa {% if message.public %}fa-eye{% else %}fa-eye-slash{% endif %}"></i></button>
-                </form>
+                {% if message.public %}
+                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message is public, you can make it private by clicking here' %}">
+                    <form action="{% url 'toggle_public' pk=message.pk %}" method="post">{% csrf_token %}
+                        <button class="btn btn-default btn-sm toggle-public"><i class="fa fa-eye"></i></button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message is private, you can make it public by clicking here' %}">
+                    <form action="{% url 'toggle_public' pk=message.pk %}" method="post">{% csrf_token %}
+                        <button class="btn btn-default btn-sm toggle-public"><i class="fa fa-eye-slash"></i></button>
+                    </form>
+                </div>
+                {% endif %}
             </td>
 
           </tr>
