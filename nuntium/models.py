@@ -512,7 +512,7 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
 
         for subscriber in subscribers:
             msg = EmailMultiAlternatives(
-                subject,
+                subject.strip(),
                 text_content,
                 from_email,
                 [subscriber.email],
