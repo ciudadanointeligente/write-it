@@ -7,7 +7,6 @@ from datetime import datetime
 from django.core import mail
 from plugin_mock.mental_message_plugin import MentalMessage
 from subdomains.utils import reverse
-from django.contrib.sites.models import Site
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.test.utils import override_settings

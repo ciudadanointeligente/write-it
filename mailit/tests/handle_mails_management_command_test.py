@@ -101,6 +101,9 @@ def readlines2_mock():
 def readlines3_mock():
     return read_lines('mailit/tests/fixture/mail_for_no_message.txt')
 
+def killer_mail():
+    return 'this should kill the parser!'
+
 
 class HandleIncomingEmailCommand(TestCase):
     def setUp(self):
@@ -147,3 +150,13 @@ class HandleIncomingEmailCommand(TestCase):
             # but the email gets registered
             self.assertTrue(RawIncomingEmail.objects.
                 filter(content__contains='<CAA5PczfGfdhf29wgK=8t6j7hm8HYsBy8Qg87iTU2pF42Ez3VcQ@mail.gmail.com>'))
+
+    @override_settings(ADMINS=(('Felipe', 'falvarez@admins.org'),))
+    def test_mail_admins_if_theres_a_problem(self):
+        with patch('sys.stdin') as stdin:
+            stdin.attach_mock(killer_mail, 'readlines')
+            call_command('handleemail', 'mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+            self.assertEquals(len(mail.outbox), 1)
+            self.assertNotIn(killer_mail(), mail.outbox[0].body)
+            self.assertEquals(mail.outbox[0].to[0], 'falvarez@admins.org')
+            self.assertEquals(len(mail.outbox[0].attachments), 1)

@@ -1,7 +1,6 @@
 from nuntium.user_section.tests.user_section_views_tests import UserSectionTestCase
 from subdomains.utils import reverse
 from nuntium.models import Message
-import json
 from django.contrib.auth.models import User
 
 
@@ -47,10 +46,12 @@ class HideAMessageTestCase(UserSectionTestCase):
         url = reverse('toggle_public', subdomain=self.message.writeitinstance.slug, kwargs={
             'pk': self.message.pk})
 
-        self.client.post(url)
+        response = self.client.post(url)
         self.assertTrue(Message.objects.get(id=self.message.id).public)
+        self.assertRedirectToLogin(response)
 
         other_user = User.objects.create_user(username="other", password='password')
         self.client.login(username=other_user.username, password='password')
-        self.client.post(url)
+        response = self.client.post(url)
+        self.assertEquals(response.status_code, 404)
         self.assertTrue(Message.objects.get(id=self.message.id).public)

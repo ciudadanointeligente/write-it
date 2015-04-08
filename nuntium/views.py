@@ -3,8 +3,6 @@ from datetime import datetime
 from django.views.generic import TemplateView, DetailView, RedirectView, ListView
 from subdomains.utils import reverse
 from django.http import Http404, HttpResponseRedirect
-from django.utils.translation import ugettext as _
-from django.contrib import messages
 from django.contrib.formtools.wizard.views import NamedUrlSessionWizardView
 from django.shortcuts import get_object_or_404
 
@@ -118,7 +116,9 @@ class WriteMessageView(NamedUrlSessionWizardView):
         message = Message(writeitinstance=self.writeitinstance, **data)
         message.save()
         Confirmation.objects.create(message=message)
-        moderations = Moderation.objects.filter(message=message)
+        # Doing anything with the moderations?
+        Moderation.objects.filter(message=message)
+
         return HttpResponseRedirect(reverse('write_message_sign', subdomain=self.writeitinstance.slug))
 
     def get_context_data(self, form, **kwargs):
@@ -130,23 +130,6 @@ class WriteMessageView(NamedUrlSessionWizardView):
             context['message'] = self.get_form_values()
             context['message']['people'] = context['message']['persons']
         return context
-
-
-class MessageDetailView(DetailView):
-    template_name = 'nuntium/message/message_detail.html'
-    model = Message
-
-    def get_queryset(self):
-        qs = Message.objects.filter(slug__iexact=self.kwargs['slug'])
-        return qs
-
-    def get_object(self):
-        the_message = super(MessageDetailView, self).get_object()
-        if not the_message.public:
-            raise Http404
-        if not (the_message.confirmated or the_message.confirmation.is_confirmed):
-            raise Http404
-        return the_message
 
 
 class ConfirmView(RedirectView):
@@ -280,12 +263,26 @@ class MessageThreadsView(ListView):
         return context
 
 
-class MessageThreadView(DetailView):
+class MessageDetailView(DetailView):
+    template_name = 'nuntium/message/message_detail.html'
     model = Message
-    template_name = 'thread/read.html'
 
     def get_queryset(self):
-        return self.model.objects.filter(confirmated=True, public=True)
+        qs = Message.objects.filter(slug__iexact=self.kwargs['slug'])
+        return qs
+
+    def get_object(self):
+        the_message = super(MessageDetailView, self).get_object()
+        if not the_message.public:
+            raise Http404
+        if not (the_message.confirmated or the_message.confirmation.is_confirmed):
+            raise Http404
+        return the_message
+
+
+class MessageThreadView(MessageDetailView):
+    model = Message
+    template_name = 'thread/read.html'
 
     def get_context_data(self, **kwargs):
         context = super(MessageThreadView, self).get_context_data(**kwargs)
