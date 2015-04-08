@@ -32,6 +32,11 @@
         <dt>{% trans "Subject" %}</dt>
         <dd>{{ message.subject }}</dd>
 
+        {% if message.created %}
+            <dt>{% trans "Date" %}</dt>
+            <dd>{{ message.created }}</dd>
+        {% endif %}
+
     </dl>
     <div class="message__content">
         {{ message.content|linebreaksbr }}
