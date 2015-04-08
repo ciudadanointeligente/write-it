@@ -24,5 +24,9 @@
 
   .results__actions {
     @extend .col-sm-4;
+
+    .btn-primary {
+      margin-top: 1em;
+    }
   }
 }

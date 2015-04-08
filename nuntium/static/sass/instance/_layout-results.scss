@@ -16,12 +16,14 @@
     float: right !important;
   }
 
-  &:first-child {
-    margin-bottom: 1em;
-  }
+  @media (max-width: $screen-xs-max) {
+    &:first-child {
+      margin-bottom: 1em;
+    }
 
-  &:last-child {
-    margin-top: 1em;
+    &:last-child {
+      margin-top: 1em;
+    }
   }
 
   & > :first-child {

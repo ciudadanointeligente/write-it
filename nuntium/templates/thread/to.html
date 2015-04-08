@@ -20,6 +20,13 @@
           {% if person.summary %}
             <p class="results__actions__info">{{ person.summary }}</p>
           {% endif %}
+
+            <form action="{% url 'write_message_step' step='who' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="write_message_view-current_step" value="who">
+                <input type="hidden" name="who-persons" value="{{ person.pk }}">
+                <button type="submit" class="btn btn-primary write-to-this-person">{% trans "Write to this person" %}</button>
+            </form>
         </div>
         <div class="results__messages">
           {% for message in message_list %}
