@@ -10,6 +10,10 @@
     <div class="writing-step">
         <!-- :TODO: break this out into separate template, so we can re-use it on message/thread viewing pages -->
         {% include "thread/message.html" with message=message %}
+        <div class="privacy-reminder">
+          <h2><i class="fa fa-question-circle"></i> {% trans "Are you happy for this message to be made public?" %}</h2>
+          <p>{% trans "Once you send this message, it will be available on the Internet for anyone to read. Your name will be included alongside the message, but your email address will be kept secret." %}</p>
+        </div>
         <form action="" method="post">{% csrf_token %}
             {{ wizard.management_form }}
 
