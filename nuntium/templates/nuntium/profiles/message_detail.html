@@ -29,8 +29,6 @@
   	<dl class="dl-horizontal">
 	  <dt>{% trans "Subject" %}</dt>
 	  <dd>{{ message.subject|linebreaksbr }}</dd>
-	  <dt>{% trans "Content" %}</dt>
-	  <dd>{{ message.content|linebreaksbr }}</dd>
 	  <dt>{% trans "Author" %}</dt>
 	  <dd>{{ message.author_name }}</dd>
           <dt>{% trans "Recipients" %}</dt>
@@ -53,6 +51,8 @@
 	  {% endif %}
 	  <dt>{% trans "Creation Date" %}</dt>
 	  <dd>{{ message.created|date }}</dd>
+      <dt>{% trans "Content" %}</dt>
+      <dd>{{ message.content|linebreaksbr }}</dd>
 	</dl>
 
 	<div class="col-md-4">
