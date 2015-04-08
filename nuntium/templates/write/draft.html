@@ -18,7 +18,10 @@
             {{ form.subject }}
         </p>
         <p class="form-group">
-            <label for="id_draft-content">{% trans "Your message" %}</label>
+            <label for="id_draft-content" class="label-with-hint">
+              {% trans "Your message" %}
+              <small>{% trans "This will be published, with your name, online." %}</small>
+            </label>
             {{ form.content.errors }}
             {{ form.content }}
         </p>
@@ -34,7 +37,7 @@
             <div class="col-sm-6">
                 <p class="form-group">
                     <label for="id_draft-author_email" class="label-with-hint">
-                        Your email
+                        {% trans "Your email" %}
                         <small>{% trans "Nobody will see this, ever." %}</small>
                     </label>
                     {{ form.author_email.errors }}

@@ -116,7 +116,7 @@
 
   small {
     float: right;
-    color: $gray-light;
+    color: $color-bluegrey-300;
     font-size: 0.8em;
     margin-top: 0.2em;
   }
@@ -155,5 +155,31 @@
     content: $fa-var-chevron-left;
     margin-right: 0.5em;
     vertical-align: -1px;
+  }
+}
+
+.privacy-reminder {
+  border-top: 1px solid $color-bluegrey-100;
+  border-bottom: 1px solid $color-bluegrey-100;
+  padding: 1em;
+  margin-top: 1em;
+
+  @media (min-width: $screen-sm) {
+    padding: 1.5em;
+    margin-top: 2em;
+  }
+
+  & > :first-child {
+    margin-top: 0;
+  }
+
+  & > :last-child {
+    margin-bottom: 0;
+  }
+
+  h2 {
+    .fa {
+      margin-right: 0.5em;
+    }
   }
 }
