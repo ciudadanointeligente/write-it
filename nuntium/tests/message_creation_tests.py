@@ -36,7 +36,7 @@ class MessageCreationTestCase(TestCase):
         self.assertEquals(response.context['writeitinstance'], self.writeitinstance)
         recipient1 = self.writeitinstance.persons.get(id=1)
         response = self.client.post(url, data={
-            'who-persons': [recipient1.id],
+            'who_instance1-persons': [recipient1.id],
             'write_message_view-current_step': 'who'
             })
         url2 = reverse('write_message_step',
@@ -48,10 +48,10 @@ class MessageCreationTestCase(TestCase):
         response = self.client.get(url2)
         self.assertIsInstance(response.context['form'], DraftForm)
         response = self.client.post(url2, data={
-            'draft-subject': 'This is the subjectand is very specific',
-            'draft-content': "This is the content",
-            'draft-author_name': "Feli",
-            'draft-author_email': 'email@mail.com',
+            'draft_instance1-subject': 'This is the subjectand is very specific',
+            'draft_instance1-content': "This is the content",
+            'draft_instance1-author_name': "Feli",
+            'draft_instance1-author_email': 'email@mail.com',
             'write_message_view-current_step': 'draft'
             })
 
@@ -83,3 +83,27 @@ class MessageCreationTestCase(TestCase):
 
         the_message = Message.objects.get(subject="This is the subjectand is very specific")
         self.assertTrue(the_message)
+
+    def test_passing_non_valid_forms_across_instances(self):
+        '''Described at #715'''
+        first_instance = WriteItInstance.objects.first()
+        first_recipient = Person.objects.get(id=2)
+
+        second_instance = WriteItInstance.objects.last()
+
+        url_who_first_instance = reverse('write_message_step',
+            subdomain=first_instance.slug,
+            kwargs={'step': 'who'})
+
+        url_who_second_instance = reverse('write_message_step',
+            subdomain=second_instance.slug,
+            kwargs={'step': 'who'})
+
+        self.client.post(url_who_first_instance, subdomain=first_instance.slug, data={
+            'who_instance_1-persons': [first_recipient.id],
+            'write_message_view-current_step': 'who'
+            })
+
+        response_get_to_draft_second_instance = self.client.get(url_who_second_instance, subdomain=second_instance.slug)
+        who_form_for_second_instance = response_get_to_draft_second_instance.context['form']
+        self.assertFalse(who_form_for_second_instance.errors)
