@@ -24,10 +24,12 @@
                         {% include 'thread/message_mini.html' %}
                     {% endfor %}
                 </div>
+                {% comment "Commenting Most popular representatives until we have them" %}
                 <div class="instance-summary__popular">
                     <h2>{% trans "Most popular representatives" %}</h2>
                     <p><strong>TODO:</strong> Show representatives here.</p>
                 </div>
+                {% endcomment %}
             </div>
         </div>
       {% endif %}
