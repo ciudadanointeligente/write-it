@@ -209,6 +209,11 @@ class WriteItInstanceOwnerMixin(LoginRequiredMixin):
         pk = self.kwargs.get('pk')
         return get_object_or_404(self.model, writeitinstance__slug=slug, writeitinstance__owner=self.request.user, pk=pk)
 
+    def get_context_data(self, **kwargs):
+        context = super(WriteItInstanceOwnerMixin, self).get_context_data(**kwargs)
+        context['writeitinstance'] = self.object.writeitinstance
+        return context
+
 
 # Note that there is no need for subclasses of this to also subclass WriteItInstanceOwnerMixin
 # as it does its own owner checking.

@@ -12,17 +12,6 @@
 
 {% endblock extrascripts %}
 
-{% block header %}
-<ul class="breadcrumb">
-    <li><a href="{% url 'home' subdomain=None %}">{% trans "Home" %}</a></li>
-    <li><a href="{% url 'account' subdomain=None %}">{% trans "Your profile" %}</a></li>
-    <li><a href="{% url 'your-instances' subdomain=None %}">{% trans "Your instances" %}</a></li>
-    <li><a href="{% url 'writeitinstance_basic_update' subdomain=message.writeitinstance.slug %}">{{ message.writeitinstance }}</a></li>
-    <li><a href="{% url 'messages_per_writeitinstance' subdomain=message.writeitinstance.slug %}">{% trans "Messages" %}</a></li>
-    <li class="active">{{ message }}</li>
-</ul>
-{% endblock header %}
-
 {% block content %}
 <div class="tab-content profile-page-tab-content">
   <div class="tab-pane active row">
