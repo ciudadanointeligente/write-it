@@ -28,6 +28,7 @@
   <li><a href="#instance-description">description</a></li>
   <li><a href="#moderation">moderation</a></li>
   <li><a href="#instance-name">name</a></li>
+  <li><a href="#rate-limit">rate limit</a></li>
   <li><a href="#testing-mode">testing mode</a></li>
 </ul>
 
@@ -76,6 +77,18 @@
       can see it. It's best to use names which only contain alphanumberic
       characters and hyphens. Don't use spaces in the name, because it may
       appear as the subdomain name in the URL.
+    </p>
+  </dd>
+
+  <dt>
+    <a name="rate-limit">rate limit</a>
+  </dt>
+  <dd id="help-rate-limit">
+    <p>
+      The number of messages a single author can send in one day is controlled
+      by the <strong>rate limit</strong>. If this is zero, then no limit is
+      applied. When the limit is exceeded, the user sees a message telling them
+      to try again tomorrow.
     </p>
   </dd>
 

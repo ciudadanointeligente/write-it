@@ -41,6 +41,7 @@ $(".chosen-person-select").chosen();
       </div>
       <div class="form-group">
         {{form.rate_limiter.label_tag}}
+        {% help_hint "/en/help/glossary/#help-rate-limit" %}
         {{form.rate_limiter}}
       </div>
       <div class="form-group">
