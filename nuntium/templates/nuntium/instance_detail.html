@@ -11,7 +11,9 @@
                 <h2 class="instance-hero__heading">
                     {{ writeitinstance.description|default:_("Write to the people in power. Get answers. Be heard.") }}
                 </h2>
-                <a class="btn btn-primary btn-lg" href="{% url 'write_message' subdomain=writeitinstance.slug %}">{% trans "Send a message" %}</a>
+                {% if writeitinstance.contacts.exists and writeitinstance.config.allow_messages_using_form %}
+                    <a class="btn btn-primary btn-lg" href="{% url 'write_message' subdomain=writeitinstance.slug %}">{% trans "Send a message" %}</a>
+                {% endif %}
             </div>
         </div>
 
