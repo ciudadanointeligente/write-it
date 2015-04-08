@@ -53,6 +53,7 @@
       <table class="table table-striped">
         <thead>
           <tr>
+            <th>{% trans 'Testing mode?' %}</th>
             <th width="50%">
               {% trans 'Name' %}
             </th>
@@ -66,6 +67,18 @@
         <tbody>
           {% for writeitinstance in object_list %}
           <tr>
+            <td class="text-center">
+              {% if writeitinstance.config.testing_mode %}
+              <div class="explanation" data-toggle="tooltip" data-placement="left" title="{% trans 'This is in testing mode' %}">
+                <i class="glyphicon glyphicon-ok"></i>
+              </div>
+              {% else %}
+              <div class="explanation" data-toggle="tooltip" data-placement="left" title="{% trans 'This is not in testing mode' %}">
+                <i class="glyphicon glyphicon-remove"></i>
+              </div>
+              {% endif %}
+            </td>
+
             <td><a href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{{ writeitinstance }}</a> {% if writeitinstance.pulling_from_popit_status.inprogress > 0 %}<i class="fa fa-spinner fa-pulse spinner_{{ writeitinstance.pk }}" data-toggle="tooltip" data-placement="left" title="{% trans 'We are currently getting information from popit' %}"></i>
               <script type="text/javascript">
               $(function(){
