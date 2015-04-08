@@ -3,11 +3,30 @@
 <ul class="writing-breadcrumb">
 
   {% if current_step == 1 %}
-    <li class="writing-breadcrumb__step writing-breadcrumb__step--current">{% trans "Select recipients" %}</li>
+    <li class="writing-breadcrumb__step writing-breadcrumb__step--current">
+        {% blocktrans count counter=writeitinstance.config.maximum_recipients %}
+            Select recipient
+        {% plural %}
+            Select recipients
+        {% endblocktrans %}
+    </li>
   {% elif current_step > 1 and current_step < 4 %}
-    <li class="writing-breadcrumb__step"><a href="{% url 'write_message_step' step='who' %}">{% trans "Select recipients" %}</a></li>
+    <li class="writing-breadcrumb__step">
+        <a href="{% url 'write_message_step' step='who' %}">
+            {% blocktrans count counter=writeitinstance.config.maximum_recipients %}
+                Select recipient
+            {% plural %}
+                Select recipients
+            {% endblocktrans %}
+        </a></li>
   {% else %}
-    <li class="writing-breadcrumb__step">{% trans "Select recipients" %}</li>
+    <li class="writing-breadcrumb__step">
+        {% blocktrans count counter=writeitinstance.config.maximum_recipients %}
+            Select recipient
+        {% plural %}
+            Select recipients
+        {% endblocktrans %}
+    </li>
   {% endif %}
 
   {% if current_step == 2 %}
