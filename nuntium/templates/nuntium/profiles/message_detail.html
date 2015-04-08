@@ -56,11 +56,13 @@
 
 	<div class="col-md-4">
           {% if message.writeitinstance.config.can_create_answer %}
-          <button class="btn btn-primary" data-toggle="modal" data-target="#editAnswer" class="editAnswer" href="{% url 'create_answer' subdomain=message.writeitinstance.slug pk=message.pk %}"><i class="fa fa-plus"></i> {% trans "Create an answer" %}</button>
+          <button class="btn btn-primary" data-toggle="modal" data-target="#editAnswer" class="editAnswer" href="{% url 'create_answer' subdomain=message.writeitinstance.slug pk=message.pk %}"><i class="fa fa-plus"></i> {% trans "Create a reply" %}</button>
           {% endif %}
 	</div>
 
 	<div class="col-md-8">
+        <h3>Replies</h3>
+        {% if message.answers.exists %}
 		<table class="table">
 		  <tr>
 		  	<th>{% trans "Person" %}</th>
@@ -71,7 +73,7 @@
 			  <tr>
 			  	<td>{{answer.person}}</td>
 			  	<td>{{answer.content|truncatechars:50|linebreaksbr}}</td>
-			  	<td><a data-toggle="modal" data-target="#updateAnswer-{{answer.id}}"  href="{% url 'update_answer' subdomain=message.writeitinstance.slug message_pk=message.pk pk=answer.pk %}" alt="{% trans 'Edit Answer' %}"><i class="fa fa-pencil"></i> </a></td>
+			  	<td><a data-toggle="modal" data-target="#updateAnswer-{{answer.id}}"  href="{% url 'update_answer' subdomain=message.writeitinstance.slug message_pk=message.pk pk=answer.pk %}" alt="{% trans 'Edit reply' %}"><i class="fa fa-pencil"></i> </a></td>
 			  </tr>
 
 			  	<div class="modal fade" id="updateAnswer-{{answer.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -82,6 +84,9 @@
 				</div>
 		  {% endfor %}
 		</table>
+        {% else %}
+            <p>There are no replies yet.</p>
+        {% endif %}
 	</div>
 </div>
 </div>
