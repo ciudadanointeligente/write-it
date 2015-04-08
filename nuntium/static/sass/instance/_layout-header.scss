@@ -33,4 +33,10 @@
     @extend .navbar-nav;
     @extend .navbar-right;
   }
+
+  .dropdown-menu .glyphicon {
+    margin-right: 0.3em;
+    vertical-align: -0.05em;
+  }
 }
+

@@ -14,7 +14,7 @@
         <div class="container">
             <div class="site-header__masthead">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
+                    <span class="sr-only">{% trans "Toggle navigation" %}</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -22,7 +22,6 @@
                 <h1>
                   {% if writeitinstance %}
                     <a href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{{ writeitinstance.name }}</a>
-                    <small>{% trans "A WriteIt instance" %}</small>
                   {% else %}
                     <a href="{% url 'home' subdomain=None %}">WriteIt</a>
                     <small>{% trans "A Poplus Component" %}</small>
@@ -31,12 +30,16 @@
             </div>
             <div class="site-header__nav" id="navbar" role="navigation">
                 <ul>
-                    <li class="site-header__nav__link"><a href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">Home</a></li>
-                    <li class="site-header__nav__link"><a href="{% url 'message_threads' subdomain=writeitinstance.slug %}">Messages</a></li>
+                    <li class="site-header__nav__link"><a href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{% trans "Home" %}</a></li>
+                    <li class="site-header__nav__link"><a href="{% url 'write_message' subdomain=writeitinstance.slug %}">{% trans "Send a message" %}</a></li>
+                    <li class="site-header__nav__link"><a href="{% url 'message_threads' subdomain=writeitinstance.slug %}">{% trans "Browse messages" %}</a></li>
+
+                  {% comment "Might want to bring these back at some point" %}
                     <li class="site-header__nav__link"><a href="#">Search</a></li>
-                  {% if not user.is_authenticated %}
                     <li class="site-header__nav__link site-header__nav__link--sign-in"><a href="{% url 'login' subdomain=None %}">{% trans "Sign in" %}</a></li>
-                  {% else %}
+                  {% endcomment %}
+
+                  {% if user.is_authenticated %}
                     <li class="site-header__nav__link site-header__nav__link--user dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                           <i class="glyphicon glyphicon-user"></i><b class="caret"></b>
