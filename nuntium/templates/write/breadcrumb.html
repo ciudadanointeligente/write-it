@@ -4,18 +4,24 @@
 
   {% if current_step == 1 %}
     <li class="writing-breadcrumb__step writing-breadcrumb__step--current">{% trans "Select recipients" %}</li>
+  {% elif current_step > 1 and current_step < 4 %}
+    <li class="writing-breadcrumb__step"><a href="{% url 'write_message_step' step='who' %}">{% trans "Select recipients" %}</a></li>
   {% else %}
     <li class="writing-breadcrumb__step">{% trans "Select recipients" %}</li>
   {% endif %}
 
   {% if current_step == 2 %}
     <li class="writing-breadcrumb__step writing-breadcrumb__step--current">{% trans "Draft message" %}</li>
+  {% elif current_step > 2 and current_step < 4 %}
+    <li class="writing-breadcrumb__step"><a href="{% url 'write_message_step' step='draft' %}">{% trans "Draft message" %}</a></li>
   {% else %}
     <li class="writing-breadcrumb__step">{% trans "Draft message" %}</li>
   {% endif %}
 
   {% if current_step == 3 %}
     <li class="writing-breadcrumb__step writing-breadcrumb__step--current">{% trans "Preview message" %}</li>
+  {% elif current_step > 3 and current_step < 4 %}
+    <li class="writing-breadcrumb__step"><a href="{% url 'write_message_step' step='preview' %}">{% trans "Preview message" %}</a></li>
   {% else %}
     <li class="writing-breadcrumb__step">{% trans "Preview message" %}</li>
   {% endif %}
