@@ -140,7 +140,7 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         url = reverse('relate-writeit-popit', subdomain=self.writeitinstance.slug)
         response = self.client.post(url, data=self.data)
         self.assertEquals(response.status_code, 302)
-        basic_update_url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
+        basic_update_url = reverse('relate-writeit-popit', subdomain=self.writeitinstance.slug)
 
         self.assertRedirects(response, basic_update_url)
 
@@ -167,7 +167,7 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         url = reverse('relate-writeit-popit', subdomain=self.writeitinstance.slug)
         data = self.data
         response = self.client.post(url, data=data)
-        expected_follow_url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
+        expected_follow_url = reverse('relate-writeit-popit', subdomain=self.writeitinstance.slug)
         self.assertRedirects(response, expected_follow_url)
         response = self.client.get(expected_follow_url)
         messages = list(response.context['messages'])
