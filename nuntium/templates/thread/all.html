@@ -9,6 +9,8 @@
         <div class="results__messages">
           {% for message in message_list %}
             {% include "thread/message_mini.html" with message=message %}
+          {% empty %}
+            <p>There are currently no public messages on this site.</p>
           {% endfor %}
         </div>
         <div class="results__actions">
