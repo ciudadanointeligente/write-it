@@ -123,6 +123,13 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         self.assertIsInstance(form.fields['popit_url'], URLField)
         self.assertTrue(form.is_valid())
 
+    def test_it_parses_the_popit_api(self):
+        data = {"popit_url": 'http://the-instance.popit.mysociety.org/api/'}
+        form = RelatePopitInstanceWithWriteItInstance(data=data, writeitinstance=self.writeitinstance)
+        popit_url = form.get_popit_url_parsed(data["popit_url"])
+        expected_url = 'http://the-instance.popit.mysociety.org/api/v0.1'
+        self.assertEquals(popit_url, expected_url)
+
     def test_form_relate(self):
         form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
         form.is_valid()

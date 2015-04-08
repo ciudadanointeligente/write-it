@@ -12,7 +12,7 @@ from django.forms import ValidationError, ModelChoiceField, Form, URLField
 
 from django.utils.translation import ugettext as _
 from popit.models import Person
-from ..forms import WriteItInstanceCreateFormPopitUrl
+from ..forms import WriteItInstanceCreateFormPopitUrl, PopitParsingFormMixin
 from django.conf import settings
 
 
@@ -148,7 +148,7 @@ class AnswerForm(ModelForm):
         return answer
 
 
-class RelatePopitInstanceWithWriteItInstance(Form):
+class RelatePopitInstanceWithWriteItInstance(Form, PopitParsingFormMixin):
     popit_url = URLField(
         label=_('PopIt API URL'),
         help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"),
