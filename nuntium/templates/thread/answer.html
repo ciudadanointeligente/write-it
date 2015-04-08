@@ -25,8 +25,13 @@
           {% endif %}
         </dd>
 
+        {% if answer.created %}
+            <dt>{% trans "Date" %}</dt>
+            <dd>{{ answer.created }}</dd>
+        {% endif %}
+
     </dl>
     <div class="message__content">
-        {{ answer.content }}
+        {{ answer.content|linebreaksbr }}
     </div>
 </div>
