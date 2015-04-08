@@ -37,7 +37,7 @@ class StatsPerInstance(object):
 
     @property
     def public_confirmed_messages(self):
-        return self.writeitinstance.message_set.filter(Q(public=False), Q(confirmated=True)).count()
+        return self.writeitinstance.message_set.filter(public=True, confirmated=True).count()
 
 
 class StatsView(WriteItInstanceDetailBaseView):
