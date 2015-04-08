@@ -55,6 +55,13 @@ class WriteItInstance(models.Model):
         through='Membership')
     owner = models.ForeignKey(User, related_name="writeitinstances")
 
+    def add_person(self, person):
+        Membership.objects.get_or_create(writeitinstance=self, person=person)
+
+    @property
+    def persons_with_contacts(self):
+        return self.persons.filter(contact__writeitinstance=self, contact__isnull=False).distinct()
+
     def relate_with_persons_from_popit_api_instance(self, popit_api_instance):
         try:
             popit_api_instance.fetch_all_from_api(writeitinstance=self)
