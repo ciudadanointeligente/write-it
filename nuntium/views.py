@@ -166,7 +166,12 @@ class RejectModerationView(ModerationView):
 
     def get(self, *args, **kwargs):
         get = super(RejectModerationView, self).get(*args, **kwargs)
-        self.get_object().message.delete()
+        self.object.message.public = False
+        # It is turned True to avoid users to
+        # mistakenly moderate this message
+        # in the admin section
+        self.object.message.moderated = True
+        self.object.message.save()
         return get
 
 
