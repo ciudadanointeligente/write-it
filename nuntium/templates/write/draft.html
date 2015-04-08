@@ -1,5 +1,6 @@
 {% extends "base_instance.html" %}
 {% load i18n %}
+{% load nuntium_tags %}
 
 {% block content_inner %}
 
@@ -8,6 +9,9 @@
     <form class="writing-step" action="" method="post">{% csrf_token %}
         {{ wizard.management_form }}
         {{ form.non_field_errors }}
+        <p class="form-group">
+            <p>{% trans "To" %}: {{ message.persons|join_with_commas }}</p>
+        </p>
         <p class="form-group">
             <label for="id_draft-subject">{% trans "Subject" %}</label>
             {{ form.subject.errors }}
