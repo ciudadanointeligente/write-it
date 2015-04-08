@@ -103,8 +103,9 @@ class WriteMessageView(NamedUrlSessionWizardView):
             form_obj = self.get_form(step=form_key,
                 data=self.storage.get_step_data(form_key),
                 files=self.storage.get_step_files(form_key))
-            form_obj.is_valid()
-            final_form_list.append(form_obj)
+            if form_obj.is_bound:
+                form_obj.is_valid()
+                final_form_list.append(form_obj)
         data = {}
         [data.update(form.cleaned_data) for form in final_form_list]
         return data
@@ -126,7 +127,7 @@ class WriteMessageView(NamedUrlSessionWizardView):
         context['writeitinstance'] = self.writeitinstance
         if self.steps.current == 'who':
             context['persons'] = self.writeitinstance.persons.all()
-        if self.steps.current == 'preview':
+        if self.steps.current == 'preview' or self.steps.current == 'draft':
             context['message'] = self.get_form_values()
             context['message']['people'] = context['message']['persons']
         return context
