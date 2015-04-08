@@ -61,7 +61,7 @@ class StatsPerInstanceTestCase(TestCase):
         stats = StatsPerInstance(writeitinstance=self.writeitinstance)
         #it is not explicit but this instance has 2 public messages
         self.assertEquals(stats.amount_of_public_messages, 2)
-        self.assertIn(('amount_of_public_messages', stats.amount_of_public_messages), stats.get_stats())
+        self.assertIn(('Total public messages', stats.amount_of_public_messages), stats.get_stats())
 
     def test_it_should_have_a_list_of_possible_stats(self):
         '''It should have a list of possible stats that can be calculated'''
@@ -69,7 +69,7 @@ class StatsPerInstanceTestCase(TestCase):
 
         statistics = stats.get_stats()
         self.assertTrue(statistics)
-        self.assertIn(('amount_of_messages', stats.amount_of_messages), statistics)
+        self.assertIn(('Total messages', stats.amount_of_messages), statistics)
 
     def test_private_messages(self):
         '''It should bring all the private messages'''
@@ -78,7 +78,7 @@ class StatsPerInstanceTestCase(TestCase):
 
         statistics = stats.get_stats()
         self.assertTrue(statistics)
-        self.assertIn(('amount_of_private_messages', stats.amount_of_private_messages), statistics)
+        self.assertIn(('Total private messages', stats.amount_of_private_messages), statistics)
 
     def test_messages_with_answers(self):
         '''It should bring the amount of messages that a person has responded to
@@ -91,7 +91,7 @@ class StatsPerInstanceTestCase(TestCase):
         # And the former should not count as it is not public
         self.assertEquals(stats.public_messages_with_answers, 1)
         statistics = stats.get_stats()
-        self.assertIn(('public_messages_with_answers', stats.public_messages_with_answers), statistics)
+        self.assertIn(('Public messages with answers', stats.public_messages_with_answers), statistics)
 
     def test_confirmed_messages(self):
         '''Listing the confirmed messages'''
@@ -101,4 +101,4 @@ class StatsPerInstanceTestCase(TestCase):
         # There is one private message that we are not taking into account
         self.assertEquals(stats.public_confirmed_messages, 1)
         statistics = stats.get_stats()
-        self.assertIn(('public_confirmed_messages', stats.public_confirmed_messages), statistics)
+        self.assertIn(('Confirmed public messages', stats.public_confirmed_messages), statistics)
