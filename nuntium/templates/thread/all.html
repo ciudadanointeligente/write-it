@@ -1,10 +1,13 @@
 {% extends "base_instance.html" %}
 {% load i18n %}
 {% load subdomainurls %}
+{% load pagination_tags %}
 
 {% block body_class %}page-contains-messages{% endblock %}
 
+
 {% block content_inner %}
+    {% autopaginate message_list %}
     <div class="results">
         <div class="results__messages">
           {% for message in message_list %}
@@ -12,6 +15,7 @@
           {% empty %}
             <p>There are currently no public messages on this site.</p>
           {% endfor %}
+          {% paginate %}
         </div>
         <div class="results__actions">
             {% comment "This is commented out as of #711 but it should probably come back to life once we finish #691 and #690" %}
