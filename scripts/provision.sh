@@ -10,17 +10,26 @@ echo "$now Running provision.sh"
 # Use the en_GB.utf8 locale
 sudo update-locale LANG=en_GB.utf8
 
-# Install the packages we need
-sudo apt-get update
-sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y git python-dev python-pip libffi-dev libssl-dev rabbitmq-server build-essential g++ yui-compressor
-
 # Instructions from: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup-repositories.html
 wget -qO - https://packages.elasticsearch.org/GPG-KEY-elasticsearch | sudo apt-key add -
 echo 'deb http://packages.elasticsearch.org/elasticsearch/0.90/debian stable main' | sudo tee /etc/apt/sources.list.d/elasticsearch.list
 
+# Instructions from: http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
+
+# Instructions from: https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager
+wget -qO - https://deb.nodesource.com/setup | sudo bash -
+
+# Install the packages we need
 sudo apt-get update
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-6-jre elasticsearch
+sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  git libffi-dev libssl-dev build-essential yui-compressor sqlite3 postfix \
+  python-dev python-pip \
+  rabbitmq-server \
+  openjdk-6-jre elasticsearch \
+  mongodb-org nodejs
 
 # :TODO: Set up a virtualenv, to protect us
 # from system python packages
