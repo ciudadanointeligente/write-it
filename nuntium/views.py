@@ -129,7 +129,7 @@ class WriteMessageView(NamedUrlSessionWizardView):
             context['persons'] = self.writeitinstance.persons.all()
         if self.steps.current == 'preview' or self.steps.current == 'draft':
             context['message'] = self.get_form_values()
-            context['message']['people'] = context['message']['persons']
+            context['message']['people'] = context['message'].get('persons')
         return context
 
     def get_form_prefix(self, *args, **kwargs):
