@@ -13,7 +13,7 @@ content_template = read_template_as_string(
 class MailItTemplate(models.Model):
     subject_template = models.CharField(
         max_length=255,
-        default="[WriteIT] Message: {subject}",
+        default="{subject}",
         help_text=_('You can use {subject}, {content}, {person}, {author}, {writeit_url}, {writeit_name}, and {owner_email}'),
         )
     content_template = models.TextField(

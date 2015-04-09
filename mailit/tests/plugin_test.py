@@ -74,7 +74,7 @@ class MailTemplateTestCase(TestCase):
 
         template = MailItTemplate.objects.create(writeitinstance=self.writeitinstance2)
 
-        self.assertEquals(template.subject_template, "[WriteIT] Message: {subject}")
+        self.assertEquals(template.subject_template, "{subject}")
         self.assertEquals(template.content_template, self.content_template)
 
     def test_when_creating_a_new_instance_then_a_new_template_is_created_automatically(self):
@@ -88,7 +88,7 @@ class MailTemplateTestCase(TestCase):
             )
 
         self.assertTrue(instance.mailit_template)
-        self.assertEquals(instance.mailit_template.subject_template, "[WriteIT] Message: {subject}")
+        self.assertEquals(instance.mailit_template.subject_template, "{subject}")
         self.assertEquals(instance.mailit_template.content_template, self.content_template)
         self.assertEquals(instance.mailit_template.content_html_template, '')
 
@@ -102,7 +102,7 @@ class MailTemplateTestCase(TestCase):
         instance.save()
 
         self.assertTrue(instance.mailit_template)
-        self.assertEquals(instance.mailit_template.subject_template, "[WriteIT] Message: {subject}")
+        self.assertEquals(instance.mailit_template.subject_template, "{subject}")
         self.assertEquals(instance.mailit_template.content_template, self.content_template)
 
 
@@ -143,7 +143,7 @@ class MailSendingTestCase(TestCase):
         message = mail.outbox[0]
         self.assertFalse(message.alternatives)
         self.assertIsInstance(message, EmailMultiAlternatives)
-        self.assertEquals(message.subject, '[WriteIT] Message: Subject 1')
+        self.assertEquals(message.subject, 'Subject 1')
 
         context = [
             'Subject 1',
@@ -175,7 +175,7 @@ class MailSendingTestCase(TestCase):
         message = mail.outbox[0]
         self.assertEquals(message.alternatives, [(u'<b>HTML here</b>', 'text/html')])
         self.assertIsInstance(message, EmailMultiAlternatives)
-        self.assertEquals(message.subject, '[WriteIT] Message: Subject 1')
+        self.assertEquals(message.subject, 'Subject 1')
 
         context = [
             'Subject 1',
