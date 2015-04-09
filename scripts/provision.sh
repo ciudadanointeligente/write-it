@@ -66,3 +66,9 @@ Run the tests with:
 
 -------------------------------------------------------
 " | sudo tee /etc/motd.tail > /dev/null
+
+# Add cd /vagrant to ~/.bashrc
+grep -qG "cd /vagrant" "$HOME/.bashrc" || echo "cd /vagrant" >> "$HOME/.bashrc"
+
+# Activate virtualenv in ~/.bashrc
+grep -qG "source $virtualenv_dir/bin/activate" "$HOME/.bashrc" || echo "source $virtualenv_dir/bin/activate" >> "$HOME/.bashrc"
