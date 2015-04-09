@@ -279,7 +279,7 @@ class MailSendingTestCase(TestCase):
 
     def test_template_string_keys(self):
         # template = self.writeitinstance2.mailit_template
-        self.writeitinstance2.mailit_template.content_template += "{author}"
+        self.writeitinstance2.mailit_template.content_template
         self.writeitinstance2.mailit_template.save()
 
         contact3 = Contact.objects.create(
