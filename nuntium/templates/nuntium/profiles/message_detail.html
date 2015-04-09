@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load subdomainurls %}
 {% load staticfiles %}
+{% load nuntium_tags %}
 
 {% block extrajs %}
 {% endblock extrajs %}
@@ -11,17 +12,6 @@
 
 {% endblock extrascripts %}
 
-{% block header %}
-<ul class="breadcrumb">
-    <li><a href="{% url 'home' subdomain=None %}">{% trans "Home" %}</a></li>
-    <li><a href="{% url 'account' subdomain=None %}">{% trans "Your profile" %}</a></li>
-    <li><a href="{% url 'your-instances' subdomain=None %}">{% trans "Your instances" %}</a></li>
-    <li><a href="{% url 'writeitinstance_basic_update' subdomain=message.writeitinstance.slug %}">{{ message.writeitinstance }}</a></li>
-    <li><a href="{% url 'messages_per_writeitinstance' subdomain=message.writeitinstance.slug %}">{% trans "Messages" %}</a></li>
-    <li class="active">{{ message }}</li>
-</ul>
-{% endblock header %}
-
 {% block content %}
 <div class="tab-content profile-page-tab-content">
   <div class="tab-pane active row">
@@ -29,15 +19,11 @@
   	<dl class="dl-horizontal">
 	  <dt>{% trans "Subject" %}</dt>
 	  <dd>{{ message.subject|linebreaksbr }}</dd>
-	  <dt>{% trans "Content" %}</dt>
-	  <dd>{{ message.content|linebreaksbr }}</dd>
 	  <dt>{% trans "Author" %}</dt>
-	  <dd>{{ message.author_name }}</dd>
+	  <dd><a href="{% url 'all-messages-from-the-same-author-as' message_slug=message.slug %}">{{ message.author_name }} &lt;{{ message.author_email }}&gt;</a></dd>
           <dt>{% trans "Recipients" %}</dt>
           <dd>
-            {% for person in message.people %}
-              <a class="label label-default" title="{% blocktrans with person_name=person.name %}See all messages sent to {{ person_name }}{% endblocktrans %}" href='{% url 'thread_to' pk=person.pk %}'>{{ person.name }}</a>
-            {% endfor %}
+            {% for person in message.people %}{% if not forloop.first and forloop.last %} and {% elif not forloop.first %}, {% endif %}<a class="label label-default" title="{% blocktrans with person_name=person.name %}See all messages sent to {{ person_name }}{% endblocktrans %}" href='{% url 'thread_to' pk=person.pk %}'>{{ person.name }}</a>{% endfor %}
           </dd>
 	  <dt>{% trans "Confirmed" %}</dt>
 	  <dd><i class="fa {% if message.confirmated %}fa-check{% else %}fa-times{% endif %}"></i></dd>
@@ -45,23 +31,29 @@
 	  	<dt>{% trans "Moderated" %}</dt>
         <dd><i class="fa {% if message.moderated %}fa-check{% else %}fa-times{% endif %}"></i></dd>
       {% endif %}
+      {% if message.public %}
 	  <dt>{% trans "Public" %}</dt>
 	  <dd><i class="fa {% if message.public %}fa-check{% else %}fa-times{% endif %}"></i></dd>
+      {% endif %}
 	  {% if message.public %}
 	  <dt>{% trans "Link" %}</dt>
 	  <dd><a href="{% url 'thread_read' slug=message.slug subdomain=message.writeitinstance.slug %}"><i class="fa fa-link"></i> {% trans "Public page" %}</a></dd>
 	  {% endif %}
 	  <dt>{% trans "Creation Date" %}</dt>
-	  <dd>{{ message.created|date }}</dd>
+	  <dd>{{ message.created }}</dd>
+      <dt>{% trans "Content" %}</dt>
+      <dd>{{ message.content|linebreaksbr }}</dd>
 	</dl>
 
 	<div class="col-md-4">
           {% if message.writeitinstance.config.can_create_answer %}
-          <button class="btn btn-primary" data-toggle="modal" data-target="#editAnswer" class="editAnswer" href="{% url 'create_answer' subdomain=message.writeitinstance.slug pk=message.pk %}"><i class="fa fa-plus"></i> {% trans "Create an answer" %}</button>
+          <button class="btn btn-primary" data-toggle="modal" data-target="#editAnswer" class="editAnswer" href="{% url 'create_answer' subdomain=message.writeitinstance.slug pk=message.pk %}"><i class="fa fa-plus"></i> {% trans "Create a reply" %}</button>
           {% endif %}
 	</div>
 
 	<div class="col-md-8">
+        <h3>Replies</h3>
+        {% if message.answers.exists %}
 		<table class="table">
 		  <tr>
 		  	<th>{% trans "Person" %}</th>
@@ -72,7 +64,7 @@
 			  <tr>
 			  	<td>{{answer.person}}</td>
 			  	<td>{{answer.content|truncatechars:50|linebreaksbr}}</td>
-			  	<td><a data-toggle="modal" data-target="#updateAnswer-{{answer.id}}"  href="{% url 'update_answer' subdomain=message.writeitinstance.slug message_pk=message.pk pk=answer.pk %}" alt="{% trans 'Edit Answer' %}"><i class="fa fa-pencil"></i> </a></td>
+			  	<td><a data-toggle="modal" data-target="#updateAnswer-{{answer.id}}"  href="{% url 'update_answer' subdomain=message.writeitinstance.slug message_pk=message.pk pk=answer.pk %}" alt="{% trans 'Edit reply' %}"><i class="fa fa-pencil"></i> </a></td>
 			  </tr>
 
 			  	<div class="modal fade" id="updateAnswer-{{answer.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -83,6 +75,9 @@
 				</div>
 		  {% endfor %}
 		</table>
+        {% else %}
+            <p>There are no replies yet.</p>
+        {% endif %}
 	</div>
 </div>
 </div>
