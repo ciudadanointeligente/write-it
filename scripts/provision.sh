@@ -36,13 +36,23 @@ sudo pip install --timeout=120 --use-mirrors -r requirements.txt
 ./manage.py migrate
 
 # Set shell login message
-echo "-----------------------------------------------
+echo "-------------------------------------------------------
 Welcome to the WriteIt vagrant machine
 
 Run the web server with:
-  cd /vagrant
   ./manage.py runserver 0.0.0.0:8000
 
-Then visit http://localhost:8000 to use WriteIt
------------------------------------------------
+Then visit http://127.0.0.1.xip.io:8000/ to use WriteIt
+
+Add some seed data to your instance with:
+  ./manage.py loaddata example_data.yaml
+
+Run a celery worker with:
+  ./manage.py celery worker
+
+Run the tests with:
+  ./start_local_popit_api.bash
+  ./manage.py test nuntium contactos mailit
+
+-------------------------------------------------------
 " | sudo tee /etc/motd.tail > /dev/null
