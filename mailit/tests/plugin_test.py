@@ -146,8 +146,7 @@ class MailSendingTestCase(TestCase):
         self.assertEquals(message.subject, 'Subject 1')
 
         context = [
-            'Subject 1',
-            'Content 1',
+            '    Content 1',
             'Pedro',
             'Fiera',
             'instance1',
@@ -160,6 +159,23 @@ class MailSendingTestCase(TestCase):
 
         self.assertEquals(len(message.to), 1)
         self.assertIn("pdaire@ciudadanointeligente.org", message.to)
+
+    @override_settings(EMAIL_SUBJECT_PREFIX='[WriteIT]')
+    def test_content_justification(self):
+        activate('en')
+        self.outbound_message1.message.content = """Ar un o lethrau'r Berwyn y ganwyd ac y magwyd Ceiriog.  Gadawodd ei gartref anghysbell a mynyddig pan yn fachgen; a'i hiraeth am fynyddoedd a bugeiliaid bro ei febyd, tra ym mwg a thwrw Manceinion, roddodd fod i'w gan pan ar ei thlysaf ac ar ei thyneraf.
++
++Mab Richard a Phoebe Hughes, Pen y Bryn, Llanarmon Dyffryn Ceiriog, oedd John Ceiriog Hughes.  Ganwyd ef Medi 25ain, 1832.  Aeth i'r ysgol yn Nant y Glog, ger y llan.  Yn lle aros gartref ym Mhen y Bryn i amaethu ac i fugeila wedi gadael yr ysgol, trodd tua Chroesoswallt yn 1848, i swyddfa argraffydd.  Oddiyno, yn 1849, aeth i Fanceinion; ac yno y bu nes y daeth ei enw yn adnabyddus trwy Gymru.  Deffrowyd ei awen gan gapel, a chyfarfod llenyddol, a chwmni rhai, fel Idris Vychan, oedd yn rhoddi pris ar draddodiadau ac alawon Cymru."""
+
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+
+        self.assertEquals(len(mail.outbox), 1)  # it is sent to one person pointed in the contact
+        message = mail.outbox[0]
+
+        self.assertIn(
+            u"\n    Ar un o lethrau'r Berwyn y ganwyd ac y magwyd Ceiriog.  Gadawodd\n    ei gartref anghysbell a mynyddig pan yn fachgen; a'i hiraeth am\n    fynyddoedd a bugeiliaid bro ei febyd, tra ym mwg a thwrw\n    Manceinion, roddodd fod i'w gan pan ar ei thlysaf ac ar ei\n    thyneraf.\n    +\n    +Mab Richard a Phoebe Hughes, Pen y Bryn, Llanarmon Dyffryn\n    Ceiriog, oedd John Ceiriog Hughes.  Ganwyd ef Medi 25ain, 1832.\n    Aeth i'r ysgol yn Nant y Glog, ger y llan.  Yn lle aros gartref ym\n    Mhen y Bryn i amaethu ac i fugeila wedi gadael yr ysgol, trodd tua\n    Chroesoswallt yn 1848, i swyddfa argraffydd.  Oddiyno, yn 1849,\n    aeth i Fanceinion; ac yno y bu nes y daeth ei enw yn adnabyddus\n    trwy Gymru.  Deffrowyd ei awen gan gapel, a chyfarfod llenyddol, a\n    chwmni rhai, fel Idris Vychan, oedd yn rhoddi pris ar draddodiadau\n    ac alawon Cymru.\n",
+            message.body,
+            )
 
     @override_settings(EMAIL_SUBJECT_PREFIX='[WriteIT]')
     def test_sending_email_with_html(self):
@@ -178,7 +194,6 @@ class MailSendingTestCase(TestCase):
         self.assertEquals(message.subject, 'Subject 1')
 
         context = [
-            'Subject 1',
             'Content 1',
             'Pedro',
             'Fiera',

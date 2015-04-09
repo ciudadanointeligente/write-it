@@ -1,4 +1,6 @@
+import itertools
 import logging
+import textwrap
 
 from django.conf import settings
 from django.core.mail import mail_admins
@@ -12,6 +14,16 @@ from contactos.models import ContactType
 from writeit_utils import escape_dictionary_values
 
 logging.basicConfig(filename="send_mails.log", level=logging.INFO)
+
+
+def process_content(content, indent='    ', width=66):
+    """Take the provided message content. Wrap it at 66 characters, and then
+    indent it by four spaces.
+    """
+    return u'\n'.join([indent + y
+                       for y
+                       in itertools.chain(*[textwrap.wrap(x, width) for x in content.splitlines()])]
+                      )
 
 
 class MailChannel(OutputPlugin):
@@ -39,9 +51,11 @@ class MailChannel(OutputPlugin):
         context = {
             'subject': outbound_message.message.subject,
             'content': outbound_message.message.content,
+            'content_indented': process_content(outbound_message.message.content),
             'person': outbound_message.contact.person.name,
             'author': author_name,
             'writeit_url': full_url,
+            'message_url': outbound_message.message.get_absolute_url(),
             'writeit_name': writeitinstance.name,
             'owner_email': writeitinstance.owner.email,
             }
