@@ -63,7 +63,7 @@ class WriteItInstanceDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(WriteItInstanceDetailView, self).get_context_data(**kwargs)
-        recent_messages = Message.public_objects.filter(writeitinstance=self.object).order_by('created')[:5]
+        recent_messages = Message.public_objects.filter(writeitinstance=self.object).order_by('-created')[:5]
         context['recent_messages'] = recent_messages
         return context
 
@@ -131,6 +131,11 @@ class WriteMessageView(NamedUrlSessionWizardView):
             context['message'] = self.get_form_values()
             context['message']['people'] = context['message']['persons']
         return context
+
+    def get_form_prefix(self, *args, **kwargs):
+        prefix = super(WriteMessageView, self).get_form_prefix(*args, **kwargs)
+        prefix += u"_" + self.writeitinstance.slug
+        return prefix
 
 
 class ConfirmView(RedirectView):
@@ -246,6 +251,7 @@ class MessagesFromPersonView(ListView):
     def get_context_data(self, **kwargs):
         context = super(MessagesFromPersonView, self).get_context_data(**kwargs)
         context['author_name'] = self.message.author_name
+        context['writeitinstance'] = self.writeitinstance
         return context
 
 

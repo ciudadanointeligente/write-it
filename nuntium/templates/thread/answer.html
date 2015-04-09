@@ -16,15 +16,6 @@
           {% endwith %}
         </dd>
 
-        <dt>{% trans "To" %}</dt>
-        <dd>
-          {% if person_links %}
-            <a href="#" title="{% blocktrans with name=original.author_name %}Show all messages from {{ name }}{% endblocktrans %}">{{ original.author_name }}</a>
-          {% else %}
-            {{ original.author_name }}
-          {% endif %}
-        </dd>
-
         {% if answer.created %}
             <dt>{% trans "Date" %}</dt>
             <dd>{{ answer.created }}</dd>

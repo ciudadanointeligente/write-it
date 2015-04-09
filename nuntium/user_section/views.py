@@ -356,7 +356,7 @@ class WriteitPopitRelatingView(FormView):
         return kwargs
 
     def get_success_url(self):
-        return reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
+        return reverse('relate-writeit-popit', subdomain=self.writeitinstance.slug)
 
     def form_valid(self, form):
         form.relate()

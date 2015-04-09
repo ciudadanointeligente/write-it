@@ -27,17 +27,25 @@
 
     <div class="thread">
         <div class="thread__messages">
+            <h1>{{ message.subject }}</h1>
+            <p>
+                <a href="{% url 'all-messages-from-the-same-author-as' message_slug=message.slug %}">{{ message.author_name }}</a> sent a message to {% for person in message.people %}{% if not forloop.first and forloop.last %} and {% elif not forloop.first %}, {% endif %}<a href="{% url 'messages_per_person' pk=person.pk %}">{{ person.name }}</a>{% endfor %}.
+            </p>
             {% include "thread/message.html" with person_links=True message=message %}
 
           {% for answer in message.answers.all %}
             {% include "thread/answer.html" with person_links=True answer=answer original=answer.message %}
+          {% empty %}
+            <p>{% trans "Future replies will be published here." %}</p>
           {% endfor %}
         </div>
         <div class="thread__actions">
           <h3 class="thead__actions__heading">Actions</h3>
             <ul>
               <li><a href="{% url 'message_threads' subdomain=writeitinstance.slug %}">{% trans "Back to all messages" %}</a></li>
+              {% comment "Commenting out the report part until we know the best way to solve this" %}
               <li><a href="#">{% trans "Report for abuse" %}</a></li>
+              {% endcomment %}
             </ul>
         </div>
     </div>
