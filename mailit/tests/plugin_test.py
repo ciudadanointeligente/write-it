@@ -81,19 +81,6 @@ class MailTemplateTestCase(TestCase):
         self.assertEquals(instance.mailit_template.content_template, self.content_template)
         self.assertEquals(instance.mailit_template.content_html_template, '')
 
-    def test_it_only_creates_templates_when_creating_not_when_updating(self):
-        instance = WriteItInstance.objects.create(
-            name=u'instance 234',
-            slug=u'instance-234',
-            owner=self.owner,
-            )
-
-        instance.save()
-
-        self.assertTrue(instance.mailit_template)
-        self.assertEquals(instance.mailit_template.subject_template, "{subject}")
-        self.assertEquals(instance.mailit_template.content_template, self.content_template)
-
 
 class MailSendingTestCase(TestCase):
     def setUp(self):
