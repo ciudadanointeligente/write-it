@@ -101,6 +101,7 @@ def readlines2_mock():
 def readlines3_mock():
     return read_lines('mailit/tests/fixture/mail_for_no_message.txt')
 
+
 def killer_mail():
     return 'this should kill the parser!'
 

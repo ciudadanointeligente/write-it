@@ -1,5 +1,4 @@
 from django.db.models import Count
-from django.db.models import Q
 from nuntium.user_section.views import WriteItInstanceDetailBaseView
 
 
