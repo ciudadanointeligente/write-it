@@ -11,12 +11,12 @@ class StatsPerInstance(object):
         stats = [
             ('Confirmed public messages', self.public_confirmed_messages),
             ('Public messages with answers', self.public_messages_with_answers),
-            ('Total messages', self.amount_of_messages),
-            ('Total public messages', self.amount_of_public_messages),
         ]
         private_message_count = self.amount_of_private_messages
         if private_message_count:
             stats.append(('Total private messages', private_message_count))
+            stats.append(('Total public messages', self.amount_of_public_messages))
+        stats.append(('Total messages', self.amount_of_messages))
         return stats
 
     @property
