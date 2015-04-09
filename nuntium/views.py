@@ -251,6 +251,7 @@ class MessagesFromPersonView(ListView):
     def get_context_data(self, **kwargs):
         context = super(MessagesFromPersonView, self).get_context_data(**kwargs)
         context['author_name'] = self.message.author_name
+        context['writeitinstance'] = self.writeitinstance
         return context
 
 
