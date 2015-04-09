@@ -75,6 +75,7 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
         self.content_html = ''
         self.outbound_message_identifier = ''
         self.email_from = ''
+        self.email_to = ''
         self.when = ''
         self.message_id = None  # http://en.wikipedia.org/wiki/Message-ID
         self.requests_session = requests.Session()
@@ -89,6 +90,8 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
         # pattern = '[\w\.-]+@[\w\.-]+'
         # expression = re.compile(pattern)
         # cleaned_content = re.sub(expression, '', cleaned_content)
+        if self.email_to:
+            cleaned_content = cleaned_content.replace(self.email_to, '')
         cleaned_content = re.sub(r'[\w\.-\.+]+@[\w\.-]+', '', cleaned_content)
 
         cleaned_content = cleaned_content.replace(self.outbound_message_identifier, '')
