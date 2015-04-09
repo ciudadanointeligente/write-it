@@ -122,6 +122,12 @@
   }
 }
 
+.writing-draft-recipients {
+  background-color: #f3f3f3;
+  color: #999;
+  height: auto; // override default .form-control height, so names can wrap onto multiple lines
+}
+
 .writing-buttons {
   @include clearfix();
   margin: 1em 0 2em 0;

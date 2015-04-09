@@ -10,7 +10,8 @@
         {{ wizard.management_form }}
         {{ form.non_field_errors }}
         <p class="form-group">
-            <p>{% trans "To" %}: {{ message.persons|join_with_commas }}</p>
+            <label>{% trans "To" %}</label>
+            <span class="form-control writing-draft-recipients">{{ message.persons|join_with_commas }}</span>
         </p>
         <p class="form-group">
             <label for="id_draft-subject">{% trans "Subject" %}</label>

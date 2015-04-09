@@ -1,24 +1,32 @@
 .person-profile {
-  padding: 1.5em 0;
-  border-bottom: 1px solid $gray-lighter;
-  overflow: auto;
+  @include clearfix();
+  margin-top: 1em;
 }
 
 .person-profile__photo {
   float: left;
-  height: 4em;
-  width: auto;
-  margin-right: 1em;
+  width: 48px;
+  height: auto;
+
+  + .person-profile__name {
+    padding-left: 64px;
+  }
 }
 
 .person-profile__name {
   margin: 0;
 }
 
-.person-profile__context {
-  margin: 0.4em 0 0 0;
-}
+.results.person {
+  .results__messages {
+    @extend .col-sm-7;
+  }
 
-.person-messages {
-  margin: 1.5em 0 2em;
+  .results__actions {
+    @extend .col-sm-4;
+
+    .btn-primary {
+      margin-top: 1em;
+    }
+  }
 }
