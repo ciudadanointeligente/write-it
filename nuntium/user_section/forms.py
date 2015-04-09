@@ -168,7 +168,8 @@ class RelatePopitInstanceWithWriteItInstance(Form, PopitParsingFormMixin):
     def clean(self, *args, **kwargs):
         cleaned_data = super(RelatePopitInstanceWithWriteItInstance, self).clean(*args, **kwargs)
         if self.writeitinstance.writeitinstancepopitinstancerecord_set.filter(popitapiinstance__url=cleaned_data.get('popit_url')):
-            raise ValidationError(_("You already have this popit instance related"))
+            self.relate()
+            raise ValidationError(_("You already have this popit instance relate. But we are updating the database anyway, to pull in any new contacts"))
         return cleaned_data
 
 

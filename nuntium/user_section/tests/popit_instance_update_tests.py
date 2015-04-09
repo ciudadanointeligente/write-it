@@ -145,6 +145,9 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         data = {"popit_url": settings.TEST_POPIT_API_URL}
         form = RelatePopitInstanceWithWriteItInstance(data=data, writeitinstance=self.writeitinstance)
         self.assertFalse(form.is_valid())
+        # Ok so because we know that you are trying to update from your previously related popit
+        # rather than creating a new one I now should just check that Benito is here
+        self.assertTrue(self.writeitinstance.persons.filter(name="Benito"))
 
     def test_form_relate(self):
         form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
