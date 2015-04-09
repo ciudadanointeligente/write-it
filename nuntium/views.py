@@ -4,7 +4,7 @@ from django.views.generic import TemplateView, DetailView, RedirectView, ListVie
 from subdomains.utils import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.contrib.formtools.wizard.views import NamedUrlSessionWizardView
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 
 from haystack.views import SearchView
 from itertools import chain
@@ -82,6 +82,18 @@ class WriteMessageView(NamedUrlSessionWizardView):
     def dispatch(self, request, *args, **kwargs):
         self.writeitinstance = get_object_or_404(WriteItInstance, slug=request.subdomain)
         return super(WriteMessageView, self).dispatch(request=request, *args, **kwargs)
+
+    def get(self, *args, **kwargs):
+        # Check that the form contains valid data
+        if self.steps.current == 'preview' or self.steps.current == 'draft':
+            message = self.get_form_values()
+            if not message.get('persons'):
+                # Form is missing persons, restart process
+                self.storage.reset()
+                self.storage.current_step = self.steps.first
+                return redirect(self.get_step_url(self.steps.first))
+        return super(WriteMessageView, self).get(*args, **kwargs)
+
 
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]
