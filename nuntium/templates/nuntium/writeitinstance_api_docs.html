@@ -2,17 +2,6 @@
 {% load i18n %}
 {% load subdomainurls %}
 
-{% block header %}
-  <ul class="breadcrumb">
-    <li><a href="{% url 'home' subdomain=None %}">{% trans "Home" %}</a></li>
-    <li><a href="{% url 'account' subdomain=None %}">{% trans "Your profile" %}</a></li>
-    <li><a href="{% url 'your-instances' subdomain=None %}">{% trans "Your instances" %}</a></li>
-    <li class="active">{{ writeitinstance }}</li>
-  </ul>
-
-  {% include 'nuntium/profiles/per_instance_top_menu.html' with section='writeitinstance_api_docs' %}
-{% endblock header %}
-
 {% block content %}
           <div class="page-header">
             <h2>{% trans "Creating a message using the API" %}</h2>
