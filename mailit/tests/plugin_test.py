@@ -58,17 +58,6 @@ class MailTemplateTestCase(TestCase):
         with codecs.open('mailit/templates/mailit/mails/content_template.txt', 'r', encoding='utf8') as f:
             self.content_template += f.read()
 
-    def test_it_has_a_template(self):
-        self.writeitinstance2.mailit_template.delete()
-        template = MailItTemplate.objects.create(
-            writeitinstance=self.writeitinstance2,
-            subject_template=u"hello somebody %(thing)s",
-            content_template=u"content thing %(another)s asdas",
-            )
-
-        self.assertTrue(template)
-        self.assertEquals(self.writeitinstance2.mailit_template, template)
-
     def test_mailit_template_has_some_default_data(self):
         self.writeitinstance2.mailit_template.delete()
 
