@@ -2,7 +2,7 @@
 from global_test_case import GlobalTestCase as TestCase
 from django.core.management import call_command
 from ..management.commands.handleemail import AnswerForManageCommand
-from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Answer
+from nuntium.models import OutboundMessage, Answer
 from mock import patch
 from django.core import mail
 from django.test.utils import override_settings
@@ -113,9 +113,10 @@ def readlines4_mock():
 class HandleIncomingEmailCommand(TestCase):
     def setUp(self):
         super(HandleIncomingEmailCommand, self).setUp()
+        self.outbound_message = OutboundMessage.objects.get(id=1)
 
     def test_call_command(self):
-        identifier = OutboundMessageIdentifier.objects.get(id=1)
+        identifier = self.outbound_message.outboundmessageidentifier
         identifier.key = '4aaaabbb'
         identifier.save()
 
@@ -129,7 +130,7 @@ class HandleIncomingEmailCommand(TestCase):
             self.assertEquals(the_answers[0].content, 'prueba4lafieri')
 
     def test_call_command_does_not_include_identifier_in_content(self):
-        identifier = OutboundMessageIdentifier.objects.get(id=1)
+        identifier = self.outbound_message.outboundmessageidentifier
         identifier.key = '4aaaabbb'
         identifier.save()
 
@@ -168,7 +169,7 @@ class HandleIncomingEmailCommand(TestCase):
 
     def test_it_correctly_parses_the_to_email(self):
         '''As described in #773 emails can contain odd parts'''
-        identifier = OutboundMessageIdentifier.objects.get(id=1)
+        identifier = self.outbound_message.outboundmessageidentifier
         identifier.key = '4aaaabbb'
         identifier.save()
         with patch('sys.stdin') as stdin:
