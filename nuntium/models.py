@@ -1,3 +1,5 @@
+import textwrap
+
 from django.db.models.signals import post_save, pre_save
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -757,10 +759,11 @@ class Confirmation(models.Model):
 def send_confirmation_email(sender, instance, created, **kwargs):
     confirmation = instance
     if created:
-        url = reverse('confirm',
+        confirmation_url = reverse(
+            'confirm',
             subdomain=confirmation.message.writeitinstance.slug,
-            kwargs={'slug': confirmation.key})
-        confirmation_full_url = url
+            kwargs={'slug': confirmation.key},
+        )
         message_full_url = confirmation.message.get_absolute_url()
         plaintext = confirmation.message.writeitinstance.confirmationtemplate.content_text
         htmly = confirmation.message.writeitinstance.confirmationtemplate.content_html
@@ -773,11 +776,14 @@ def send_confirmation_email(sender, instance, created, **kwargs):
             'subject': confirmation.message.subject,
             'content': confirmation.message.content,
             'recipients': u', '.join([x.name for x in confirmation.message.people]),
-            'confirmation_url': confirmation_full_url,
+            'confirmation_url': confirmation_url,
             'message_url': message_full_url,
             }
 
-        text_content = plaintext.format(**context)
+        wrapper = textwrap.TextWrapper(break_long_words=False, break_on_hyphens=False, replace_whitespace=False)
+        text_content = u'\n'.join(
+            [wrapper.fill(x) for x in plaintext.format(**context).splitlines()]
+            )
         subject = subject.format(**context)
         html_content = htmly.format(**escape_dictionary_values(context))
 
