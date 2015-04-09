@@ -26,23 +26,24 @@ sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
   git libffi-dev libssl-dev build-essential yui-compressor sqlite3 postfix \
-  python-dev python-pip \
+  python-dev python-pip python-virtualenv \
   rabbitmq-server \
   openjdk-6-jre elasticsearch \
   mongodb-org nodejs
 
-# :TODO: Set up a virtualenv, to protect us
-# from system python packages
+# Set virtualenv directory and create it if needed.
+virtualenv_dir="/home/vagrant/writeit-virtualenv"
+[[ -d "$virtualenv_dir" ]] || virtualenv "$virtualenv_dir"
 
 # Install the python requirements
 # We specify a long timeout and use-mirrors to avoid
 # errors like "SSLError: The read operation timed out"
 cd /vagrant
-sudo pip install --timeout=120 --use-mirrors -r requirements.txt
+"$virtualenv_dir/bin/pip" install --timeout=120 --use-mirrors --requirement /vagrant/requirements.txt
 
 # Set up the Django database
-./manage.py syncdb --noinput
-./manage.py migrate
+"$virtualenv_dir/bin/python" /vagrant/manage.py syncdb --noinput
+"$virtualenv_dir/bin/python" /vagrant/manage.py migrate
 
 # Set shell login message
 echo "-------------------------------------------------------
