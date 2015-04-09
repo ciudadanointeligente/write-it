@@ -101,8 +101,13 @@ def readlines2_mock():
 def readlines3_mock():
     return read_lines('mailit/tests/fixture/mail_for_no_message.txt')
 
+
 def killer_mail():
     return 'this should kill the parser!'
+
+
+def readlines4_mock():
+    return read_lines('mailit/tests/fixture/mail_from_tony.txt')
 
 
 class HandleIncomingEmailCommand(TestCase):
@@ -110,7 +115,7 @@ class HandleIncomingEmailCommand(TestCase):
         super(HandleIncomingEmailCommand, self).setUp()
 
     def test_call_command(self):
-        identifier = OutboundMessageIdentifier.objects.first()
+        identifier = OutboundMessageIdentifier.objects.get(id=1)
         identifier.key = '4aaaabbb'
         identifier.save()
 
@@ -124,7 +129,7 @@ class HandleIncomingEmailCommand(TestCase):
             self.assertEquals(the_answers[0].content, 'prueba4lafieri')
 
     def test_call_command_does_not_include_identifier_in_content(self):
-        identifier = OutboundMessageIdentifier.objects.first()
+        identifier = OutboundMessageIdentifier.objects.get(id=1)
         identifier.key = '4aaaabbb'
         identifier.save()
 
@@ -160,3 +165,16 @@ class HandleIncomingEmailCommand(TestCase):
             self.assertNotIn(killer_mail(), mail.outbox[0].body)
             self.assertEquals(mail.outbox[0].to[0], 'falvarez@admins.org')
             self.assertEquals(len(mail.outbox[0].attachments), 1)
+
+    def test_it_correctly_parses_the_to_email(self):
+        '''As described in #773 emails can contain odd parts'''
+        identifier = OutboundMessageIdentifier.objects.get(id=1)
+        identifier.key = '4aaaabbb'
+        identifier.save()
+        with patch('sys.stdin') as stdin:
+            stdin.attach_mock(readlines4_mock, 'readlines')
+            call_command('handleemail', 'mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+            the_answer = Answer.objects.get(message=identifier.outbound_message.message)
+            self.assertNotIn('Tony', the_answer.content)
+            self.assertNotIn('<eduskunta-', the_answer.content)
+            self.assertNotIn('>', the_answer.content)

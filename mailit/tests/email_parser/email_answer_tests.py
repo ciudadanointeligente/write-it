@@ -1,5 +1,4 @@
 # coding=utf8
-from django.utils.unittest import skip
 from django.contrib.auth.models import User
 
 from global_test_case import GlobalTestCase as TestCase
@@ -71,7 +70,9 @@ class AnswerHandlerTestCase(TestCase):
         email_answer.outbound_message_identifier = 'identifier123'
         email_answer.content_text = '''Thank you for your enquiry. I am completely in favour of this measure,
 and will certainly be voting for it.
-Tony <instance-2+identifier123@writeit.org>:'''
+Tony 
+<instance-2+identifier123@writeit.org>:'''
+        # There is an intended extra space after the word 'Tony'
         self.assertNotIn('<instance-', email_answer.content_text)
         self.assertNotIn('> :', email_answer.content_text)
         self.assertNotIn('Tony', email_answer.content_text)
