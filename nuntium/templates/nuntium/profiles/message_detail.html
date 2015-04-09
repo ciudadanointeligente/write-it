@@ -20,7 +20,7 @@
 	  <dt>{% trans "Subject" %}</dt>
 	  <dd>{{ message.subject|linebreaksbr }}</dd>
 	  <dt>{% trans "Author" %}</dt>
-	  <dd>{{ message.author_name }} &lt;{{ message.author_email }}&gt;</dd>
+	  <dd><a href="{% url 'all-messages-from-the-same-author-as' message_slug=message.slug %}">{{ message.author_name }} &lt;{{ message.author_email }}&gt;</a></dd>
           <dt>{% trans "Recipients" %}</dt>
           <dd>
             {% for person in message.people %}{% if not forloop.first and forloop.last %} and {% elif not forloop.first %}, {% endif %}<a class="label label-default" title="{% blocktrans with person_name=person.name %}See all messages sent to {{ person_name }}{% endblocktrans %}" href='{% url 'thread_to' pk=person.pk %}'>{{ person.name }}</a>{% endfor %}
