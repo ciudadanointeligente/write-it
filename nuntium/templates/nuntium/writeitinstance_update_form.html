@@ -52,6 +52,7 @@ $(".chosen-person-select").chosen();
           {{advanced_form.allow_messages_using_form}}
       </div>
       <div class="form-group">
+          {{advanced_form.rate_limiter.errors}}
           {{advanced_form.rate_limiter.label_tag}}
           {{advanced_form.rate_limiter}}
       </div>
