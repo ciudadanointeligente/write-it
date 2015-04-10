@@ -10,39 +10,65 @@ echo "$now Running provision.sh"
 # Use the en_GB.utf8 locale
 sudo update-locale LANG=en_GB.utf8
 
-# Install the packages we need
-sudo apt-get update
-sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y git python-dev python-pip libffi-dev libssl-dev rabbitmq-server build-essential g++ yui-compressor
-
 # Instructions from: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup-repositories.html
 wget -qO - https://packages.elasticsearch.org/GPG-KEY-elasticsearch | sudo apt-key add -
 echo 'deb http://packages.elasticsearch.org/elasticsearch/0.90/debian stable main' | sudo tee /etc/apt/sources.list.d/elasticsearch.list
 
-sudo apt-get update
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-6-jre elasticsearch
+# Instructions from: http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
 
-# :TODO: Set up a virtualenv, to protect us
-# from system python packages
+# Instructions from: https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager
+wget -qO - https://deb.nodesource.com/setup | sudo bash -
+
+# Install the packages we need
+sudo apt-get update
+sudo DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  git libffi-dev libssl-dev build-essential yui-compressor sqlite3 postfix \
+  python-dev python-pip python-virtualenv \
+  rabbitmq-server \
+  openjdk-6-jre elasticsearch \
+  mongodb-org nodejs
+
+# Set virtualenv directory and create it if needed.
+virtualenv_dir="/home/vagrant/writeit-virtualenv"
+[[ -d "$virtualenv_dir" ]] || virtualenv "$virtualenv_dir"
 
 # Install the python requirements
 # We specify a long timeout and use-mirrors to avoid
 # errors like "SSLError: The read operation timed out"
 cd /vagrant
-sudo pip install --timeout=120 --use-mirrors -r requirements.txt
+"$virtualenv_dir/bin/pip" install --timeout=120 --use-mirrors --requirement /vagrant/requirements.txt
 
 # Set up the Django database
-./manage.py syncdb --noinput
-./manage.py migrate
+"$virtualenv_dir/bin/python" /vagrant/manage.py syncdb --noinput
+"$virtualenv_dir/bin/python" /vagrant/manage.py migrate
 
 # Set shell login message
-echo "-----------------------------------------------
+echo "-------------------------------------------------------
 Welcome to the WriteIt vagrant machine
 
 Run the web server with:
-  cd /vagrant
   ./manage.py runserver 0.0.0.0:8000
 
-Then visit http://localhost:8000 to use WriteIt
------------------------------------------------
+Then visit http://127.0.0.1.xip.io:8000/ to use WriteIt
+
+Add some seed data to your instance with:
+  ./manage.py loaddata example_data.yaml
+
+Run a celery worker with:
+  ./manage.py celery worker
+
+Run the tests with:
+  ./start_local_popit_api.bash
+  ./manage.py test nuntium contactos mailit
+
+-------------------------------------------------------
 " | sudo tee /etc/motd.tail > /dev/null
+
+# Add cd /vagrant to ~/.bashrc
+grep -qG "cd /vagrant" "$HOME/.bashrc" || echo "cd /vagrant" >> "$HOME/.bashrc"
+
+# Activate virtualenv in ~/.bashrc
+grep -qG "source $virtualenv_dir/bin/activate" "$HOME/.bashrc" || echo "source $virtualenv_dir/bin/activate" >> "$HOME/.bashrc"
