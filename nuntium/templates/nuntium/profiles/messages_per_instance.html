@@ -35,10 +35,10 @@
         <thead>
           <tr>
             <th>{% trans "Message" %}</th>
-            <th class="text-center">{% trans "Public" %}</th>
-            <th class="text-center">{% trans "Confirmed" %}</th>
+            <th class="text-center">{% trans "Public?" %}</th>
+            <th class="text-center">{% trans "Confirmed?" %}</th>
             {% if writeitinstance.config.moderation_needed_in_all_messages %}
-            	<th class="text-center">{% trans "Moderated" %}</th>
+            	<th class="text-center">{% trans "Moderated?" %}</th>
             {% endif %}
             <th class="text-center">{% trans "Replies"%}</th>
             <th class="text-center">{% trans "Make private/public"%}</th>
