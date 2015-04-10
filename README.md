@@ -27,12 +27,15 @@ Once it’s complete, log into the virtual machine with:
 
     vagrant ssh
 
-Once you’re inside the virtual machine, run the web server with:
+Once you’re inside the virtual machine, you can load some fixtures with:
 
-    cd /vagrant
+    ./manage.py loaddata example_data.yaml
+
+Then run the development server with:
+
     ./manage.py runserver 0.0.0.0:8000
 
-And visit http://localhost:8000 on your host machine to use WriteIt.
+And visit http://127.0.0.1.xio.io:8000 on your host machine to use WriteIt.
 
 
 Manual Installation (without Vagrant)
