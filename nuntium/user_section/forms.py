@@ -56,6 +56,7 @@ class WriteItInstanceAdvancedUpdateForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(WriteItInstanceAdvancedUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['rate_limiter'].validators.append(validators.MinValueValidator(0))
         self.fields['maximum_recipients'].validators.append(validators.MinValueValidator(1))
         self.fields['maximum_recipients'].validators.append(validators.MaxValueValidator(settings.OVERALL_MAX_RECIPIENTS))
 
