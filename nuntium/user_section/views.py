@@ -10,7 +10,7 @@ from mailit.forms import MailitTemplateForm
 
 from ..models import WriteItInstance, Message,\
     NewAnswerNotificationTemplate, ConfirmationTemplate, \
-    Answer, WriteitInstancePopitInstanceRecord
+    Answer, WriteitInstancePopitInstanceRecord, Moderation
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
     WriteItInstanceCreateForm, AnswerForm, \
@@ -336,6 +336,34 @@ class AcceptMessageView(RedirectView):
             'messages_per_writeitinstance',
             subdomain=message.writeitinstance.slug,
             )
+
+
+class ModerationView(DetailView):
+    model = Moderation
+    slug_field = 'key'
+
+
+class AcceptModerationView(ModerationView):
+    template_name = "nuntium/moderation_accepted.html"
+
+    def get(self, *args, **kwargs):
+        moderation = self.get_object()
+        moderation.message.moderate()
+        return super(AcceptModerationView, self).get(*args, **kwargs)
+
+
+class RejectModerationView(ModerationView):
+    template_name = "nuntium/moderation_rejected.html"
+
+    def get(self, *args, **kwargs):
+        get = super(RejectModerationView, self).get(*args, **kwargs)
+        self.object.message.public = False
+        # It is turned True to avoid users to
+        # mistakenly moderate this message
+        # in the admin section
+        self.object.message.moderated = True
+        self.object.message.save()
+        return get
 
 
 class WriteitPopitRelatingView(FormView):

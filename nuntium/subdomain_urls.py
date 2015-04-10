@@ -7,20 +7,19 @@ from contactos.views import ToggleContactEnabledView
 from mailit.views import MailitTemplateUpdateView
 from nuntium.models import AnswerAttachment
 from nuntium.views import (
-    AcceptModerationView,
     ConfirmView,
     MessageThreadView,
     MessageThreadsView,
     MessagesFromPersonView,
     MessagesPerPersonView,
     PerInstanceSearchView,
-    RejectModerationView,
     WriteMessageView,
     WriteSignView,
     WriteItInstanceDetailView,
     )
 from nuntium.user_section.views import (
     AcceptMessageView,
+    AcceptModerationView,
     AnswerCreateView,
     AnswerUpdateView,
     ConfirmationTemplateUpdateView,
@@ -36,6 +35,7 @@ from nuntium.user_section.views import (
     WriteItInstanceUpdateView,
     WriteitPopitRelatingView,
     MessageTogglePublic,
+    RejectModerationView,
     ReSyncFromPopit,
     WriteItPopitUpdateView,
 )
