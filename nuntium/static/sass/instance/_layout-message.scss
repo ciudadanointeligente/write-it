@@ -62,6 +62,23 @@
   }
 }
 
+.message__attachments {
+  margin-top: 1em;
+
+  .label {
+    font-size: 0.9em;
+    font-weight: normal;
+
+    .glyphicon {
+      font-size: 0.9em;
+    }
+
+    & + .label {
+      margin-left: 1em;
+    }
+  }
+}
+
 .message--reply {
   position: relative;
   margin-left: 2em;
