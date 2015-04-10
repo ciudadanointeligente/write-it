@@ -169,6 +169,15 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         self.assertEquals(writeitinstance.config.autoconfirm_api_messages, 1)
         self.assertEquals(writeitinstance.config.maximum_recipients, 7)
 
+    def test_rate_limit_cannot_be_negative(self):
+        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
+        modified_data = self.data
+        modified_data['rate_limiter'] = -1
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        self.assertTrue(response.context['advanced_form'].errors)
+        self.assertTrue(response.context['advanced_form'].errors['rate_limiter'])
+
     @override_settings(OVERALL_MAX_RECIPIENTS=10)
     def test_max_recipients_cannot_rise_more_than_settings(self):
         '''The max number of recipients in an instance cannot be changed using this form'''
