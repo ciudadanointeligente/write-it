@@ -26,7 +26,7 @@
     {% blocktrans count message_count=writeitinstance.message_set.count %}
     <strong>1</strong> message in your WriteIt
     {% plural %}
-    There are <strong>{{ message_count }}</strong> messages in your WriteIt
+    There are <strong>{{ message_count }}</strong> messages 
     {% endblocktrans %}
   </div>
     {% autopaginate message_list %}
