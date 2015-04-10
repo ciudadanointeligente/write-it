@@ -35,7 +35,7 @@ Then run the development server with:
 
     ./manage.py runserver 0.0.0.0:8000
 
-And visit http://127.0.0.1.xio.io:8000 on your host machine to use WriteIt.
+And visit http://127.0.0.1.xip.io:8000 on your host machine to use WriteIt.
 
 
 Manual Installation (without Vagrant)
