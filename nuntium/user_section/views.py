@@ -262,18 +262,6 @@ class MessageDetail(WriteItInstanceOwnerMixin, DetailView):
     template_name = "nuntium/profiles/message_detail.html"
 
 
-class MessageDelete(WriteItInstanceOwnerMixin, DeleteView):
-    model = Message
-    template_name = "nuntium/profiles/message_delete_confirm.html"
-
-    def get_success_url(self):
-        success_url = reverse(
-            'messages_per_writeitinstance',
-            subdomain=self.object.writeitinstance.slug,
-            )
-        return success_url
-
-
 class AnswerEditMixin(View):
     def get_message(self):
         raise NotImplementedError
@@ -331,7 +319,30 @@ class AcceptMessageView(RedirectView):
             writeitinstance__owner=self.request.user
             )
         message.moderate()
-        view_messages.info(self.request, _("This message has been moderated"))
+        view_messages.info(self.request, _('The message "%(message)s" has been accepted') % { 'message': message })
+        return reverse(
+            'messages_per_writeitinstance',
+            subdomain=message.writeitinstance.slug,
+            )
+
+
+class RejectMessageView(RedirectView):
+    permanent = False
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(RejectMessageView, self).dispatch(*args, **kwargs)
+
+    def get_redirect_url(self, *args, **kwargs):
+        message = get_object_or_404(Message,
+            pk=kwargs['pk'],
+            writeitinstance__slug=self.request.subdomain,
+            writeitinstance__owner=self.request.user
+            )
+        message.public = False
+        message.moderated = True
+        message.save()
+        view_messages.info(self.request, _('The message "%(message)s" has been rejected') % { 'message': message })
         return reverse(
             'messages_per_writeitinstance',
             subdomain=message.writeitinstance.slug,
