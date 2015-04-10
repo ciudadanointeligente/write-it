@@ -94,7 +94,7 @@
               </td>
               {% else %}
               <td class="text-center">
-                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated — click here to approve it' %}">
+                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not yet been moderated — click here to approve it' %}">
                     <form action="{% url 'accept_message' pk=message.pk %}" method="post">{% csrf_token %} <button class="btn btn-default btn-sm moderate">{% trans "Approve"%}</button>
                     </form>
                 </div>
