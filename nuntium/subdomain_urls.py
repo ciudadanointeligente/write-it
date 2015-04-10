@@ -7,12 +7,14 @@ from contactos.views import ToggleContactEnabledView
 from mailit.views import MailitTemplateUpdateView
 from nuntium.models import AnswerAttachment
 from nuntium.views import (
+    AcceptModerationView,
     ConfirmView,
     MessageThreadView,
     MessageThreadsView,
     MessagesFromPersonView,
     MessagesPerPersonView,
     PerInstanceSearchView,
+    RejectModerationView,
     WriteMessageView,
     WriteSignView,
     WriteItInstanceDetailView,
@@ -70,6 +72,8 @@ managepatterns = patterns('',
         WriteItDeleteView.as_view(template_name="nuntium/profiles/writeitinstance_check_delete.html"),
         name='delete_an_instance'),
     url(r'^messages/(?P<pk>[-\d]+)/toggle-public/$', MessageTogglePublic.as_view(), name='toggle_public'),
+    url(r'^moderation_accept/(?P<slug>[-\w]+)/?$', AcceptModerationView.as_view(), name='moderation_accept'),
+    url(r'^moderation_reject/(?P<slug>[-\w]+)/?$', RejectModerationView.as_view(), name='moderation_rejected'),
 
 )
 

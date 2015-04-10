@@ -211,7 +211,9 @@ class ModerationMessagesTestCase(TestCase):
         self.private_message.confirmated = True
         self.private_message.save()
 
-        url = reverse('moderation_accept', kwargs={
+        url = reverse('moderation_accept',
+            subdomain=self.private_message.writeitinstance.slug,
+            kwargs={
             'slug': self.private_message.moderation.key
             })
         response = self.client.get(url)
@@ -225,14 +227,18 @@ class ModerationMessagesTestCase(TestCase):
         self.assertTrue(private_message.moderated)
 
     def test_moderation_get_success_url(self):
-        expected_url = reverse('moderation_accept', kwargs={
+        expected_url = reverse('moderation_accept',
+            self.private_message.writeitinstance.slug,
+            kwargs={
             'slug': self.private_message.moderation.key
             })
         self.assertEquals(self.private_message.moderation.get_success_url(), expected_url)
 
     def test_moderation_get_reject_url(self):
-        expected_url = reverse('moderation_rejected', kwargs={
-            'slug': self.private_message.moderation.key
+        expected_url = reverse('moderation_rejected',
+            subdomain=self.private_message.writeitinstance.slug,
+            kwargs={
+                'slug': self.private_message.moderation.key
             })
         self.assertEquals(self.private_message.moderation.get_reject_url(), expected_url)
 
@@ -249,6 +255,7 @@ class ModerationMessagesTestCase(TestCase):
 
         url = reverse(
             'moderation_rejected',
+            subdomain=public_message.writeitinstance.slug,
             kwargs={
                 'slug': public_message.moderation.key
                 })
@@ -274,18 +281,15 @@ class ModerationMessagesTestCase(TestCase):
         self.assertTrue(self.private_message.subject in moderation_mail.body)
         self.assertTrue(self.private_message.author_name in moderation_mail.body)
         self.assertTrue(self.private_message.author_email in moderation_mail.body)
-        current_site = Site.objects.get_current()
-        current_domain = 'http://' + current_site.domain
-        url_rejected = (current_domain +
-                        reverse('moderation_rejected',
+        url_rejected = (reverse('moderation_rejected',
+                                subdomain=self.private_message.writeitinstance.slug,
                                 kwargs={'slug': self.private_message.moderation.key})
                         )
-        url_accept = (current_domain +
-                      reverse('moderation_accept',
+        url_accept = (reverse('moderation_accept',
+                              subdomain=self.private_message.writeitinstance.slug,
                               kwargs={'slug': self.private_message.moderation.key})
                       )
 
-        self.assertFalse(current_domain + url_rejected in moderation_mail.body)
         self.assertIn(url_rejected, moderation_mail.body)
         self.assertIn(url_accept, moderation_mail.body)
 
