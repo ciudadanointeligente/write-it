@@ -357,6 +357,14 @@ class ModerationView(DetailView):
     def dispatch(self, *args, **kwargs):
         return super(ModerationView, self).dispatch(*args, **kwargs)
 
+    def get_queryset(self):
+        queryset = super(ModerationView, self).get_queryset()
+        queryset.filter(
+            message__writeitinstance__owner=self.request.user,
+            message__writeitinstance__slug=self.request.subdomain,
+        )
+        return queryset
+
 
 class AcceptModerationView(ModerationView):
     template_name = "nuntium/moderation_accepted.html"
