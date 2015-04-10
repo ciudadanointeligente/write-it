@@ -15,7 +15,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">{% trans 'Create a new WriteIt' %}</h4>
+        <h4 class="modal-title">{% trans 'Create a new Site' %}</h4>
       </div>
       <div class="modal-body">
         <form action="{% url 'create_writeit_instance' %}" method="POST" role="form">
@@ -40,7 +40,7 @@
 {% endif %}
 
     <div class="page-header">
-    <h2>{% trans "Your WriteIts" %}</h2>
+    <h2>{% trans "Your Sites" %}</h2>
     </div>
 
 
@@ -92,13 +92,13 @@
 
           </tr>
           {% empty %}
-          <tr><td colspan="3" class="text-center">You have no instances</td></tr>
+          <tr><td colspan="3" class="text-center">You have no sites</td></tr>
           {% endfor %}
         </tbody>
       </table>
 
       <button class="btn btn-primary" data-toggle="modal" data-target="#createNew">
-        {% trans 'Create a new Write-It' %}
+        {% trans 'Create a new Site' %}
       </button>
 
 <script type="text/javascript">
