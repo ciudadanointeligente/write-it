@@ -79,6 +79,7 @@ $(".chosen-person-select").chosen();
       {% csrf_token %}
       <div class="form-element">
         <div class="form-inline">
+          <p>{{ form.non_field_errors.as_text }}</p>
           {{ form.popit_url.label_tag }}
           {{ form.popit_url }}
           <button type="submit" class="btn btn-primary">{% trans 'Add' %}</button>

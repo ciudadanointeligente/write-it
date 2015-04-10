@@ -12,8 +12,9 @@ from django.forms import ValidationError, ModelChoiceField, Form, URLField
 
 from django.utils.translation import ugettext as _
 from popit.models import Person
-from ..forms import WriteItInstanceCreateFormPopitUrl
+from ..forms import WriteItInstanceCreateFormPopitUrl, PopitParsingFormMixin
 from django.conf import settings
+from nuntium.popit_api_instance import PopitApiInstance
 
 
 class WriteItInstanceBasicForm(ModelForm):
@@ -148,7 +149,7 @@ class AnswerForm(ModelForm):
         return answer
 
 
-class RelatePopitInstanceWithWriteItInstance(Form):
+class RelatePopitInstanceWithWriteItInstance(Form, PopitParsingFormMixin):
     popit_url = URLField(
         label=_('PopIt API URL'),
         help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"),
@@ -163,6 +164,13 @@ class RelatePopitInstanceWithWriteItInstance(Form):
             self.cleaned_data['popit_url']
             )
         return result
+
+    def clean(self, *args, **kwargs):
+        cleaned_data = super(RelatePopitInstanceWithWriteItInstance, self).clean(*args, **kwargs)
+        if self.writeitinstance.writeitinstancepopitinstancerecord_set.filter(popitapiinstance__url=cleaned_data.get('popit_url')):
+            self.relate()
+            raise ValidationError(_("You have already added this PopIt. But we will fetch the data from it again now."))
+        return cleaned_data
 
 
 class WriteItPopitUpdateForm(ModelForm):

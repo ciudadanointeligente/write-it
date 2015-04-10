@@ -138,17 +138,7 @@ popit_urls_completer = [
 ]
 
 
-class WriteItInstanceCreateFormPopitUrl(ModelForm):
-    popit_url = URLField(
-        label=_('Url of the popit instance api'),
-        help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"),
-        required=False,
-        )
-
-    class Meta:
-        model = WriteItInstance
-        fields = ('owner', 'name', 'popit_url')
-
+class PopitParsingFormMixin(object):
     def other_possible_popit_url_parsings(self, popit_url):
         if popit_url.startswith('https://'):
             popit_url = popit_url.replace('https://', 'http://', 1)
@@ -163,9 +153,25 @@ class WriteItInstanceCreateFormPopitUrl(ModelForm):
 
         return self.other_possible_popit_url_parsings(popit_url)
 
+    def clean_popit_url(self):
+        popit_url = self.cleaned_data.get('popit_url')
+        return self.get_popit_url_parsed(popit_url)
+
+
+class WriteItInstanceCreateFormPopitUrl(ModelForm, PopitParsingFormMixin):
+    popit_url = URLField(
+        label=_('Url of the popit instance api'),
+        help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"),
+        required=False,
+        )
+
+    class Meta:
+        model = WriteItInstance
+        fields = ('owner', 'name', 'popit_url')
+
     def relate_with_people(self):
         if self.cleaned_data['popit_url']:
-            popit_url = self.get_popit_url_parsed(self.cleaned_data['popit_url'])
+            popit_url = self.cleaned_data['popit_url']
             self.instance.load_persons_from_a_popit_api(
                 popit_url
                 )

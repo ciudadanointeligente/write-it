@@ -11,6 +11,7 @@ from user_section_views_tests import UserSectionTestCase
 from django.utils.translation import ugettext as _
 from nuntium.user_section.forms import RelatePopitInstanceWithWriteItInstance
 from nuntium.management.commands.back_fill_writeit_popit_records import WPBackfillRecords
+from nuntium.popit_api_instance import PopitApiInstance
 
 
 class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
@@ -122,6 +123,31 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         self.assertIn('popit_url', form.fields)
         self.assertIsInstance(form.fields['popit_url'], URLField)
         self.assertTrue(form.is_valid())
+
+    def test_it_parses_the_popit_api(self):
+        data = {"popit_url": 'http://the-instance.popit.mysociety.org/api/'}
+        form = RelatePopitInstanceWithWriteItInstance(data=data, writeitinstance=self.writeitinstance)
+        popit_url = form.get_popit_url_parsed(data["popit_url"])
+        expected_url = 'http://the-instance.popit.mysociety.org/api/v0.1'
+        self.assertEquals(popit_url, expected_url)
+        self.assertTrue(form.is_valid())
+        cleaned_data = form.clean()
+        self.assertEquals(cleaned_data.get('popit_url'), expected_url)
+
+    def test_the_form_is_not_valid_if_there_is_another_popit(self):
+        '''The form is not valid if there is already another popit api instance related'''
+        popit_load_data('other_persons')  # This json contains a different person named Benito
+
+        popit_api_instance = PopitApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
+        WriteitInstancePopitInstanceRecord.objects.create(writeitinstance=self.writeitinstance,
+            popitapiinstance=popit_api_instance)
+
+        data = {"popit_url": settings.TEST_POPIT_API_URL}
+        form = RelatePopitInstanceWithWriteItInstance(data=data, writeitinstance=self.writeitinstance)
+        self.assertFalse(form.is_valid())
+        # Ok so because we know that you are trying to update from your previously related popit
+        # rather than creating a new one I now should just check that Benito is here
+        self.assertTrue(self.writeitinstance.persons.filter(name="Benito"))
 
     def test_form_relate(self):
         form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
