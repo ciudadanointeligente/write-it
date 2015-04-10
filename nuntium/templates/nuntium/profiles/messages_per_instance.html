@@ -80,13 +80,12 @@
             {% if writeitinstance.config.moderation_needed_in_all_messages %}
               {% if message.moderated %}
               <td class="text-center">
-                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has been moderated' %}"><i class="glyphicon glyphicon-ok"></i></div>
+                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has been approved' %}"><i class="glyphicon glyphicon-ok"></i></div>
               </td>
               {% else %}
               <td class="text-center">
-                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated and you can moderate it by clicking here' %}">
-                    <form action="{% url 'accept_message' pk=message.pk %}" method="post">{% csrf_token %}
-                        <button class="btn btn-default btn-sm moderate">{% trans "Moderate"%}</button>
+                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not been moderated — click here to approve it' %}">
+                    <form action="{% url 'accept_message' pk=message.pk %}" method="post">{% csrf_token %} <button class="btn btn-default btn-sm moderate">{% trans "Approve"%}</button>
                     </form>
                 </div>
               </td>
