@@ -236,23 +236,30 @@ class ModerationMessagesTestCase(TestCase):
             })
         self.assertEquals(self.private_message.moderation.get_reject_url(), expected_url)
 
-    def test_there_is_a_reject_moderation_url_that_deletes_the_message(self):
+    def test_there_is_a_reject_moderation_url_that_hides_the_message(self):
         '''
         This is the case when you proud owner of a writeitInstance
         think that the private message should not go anywhere
-        and it should be deleted
+        and it should be hidden
         '''
+        # Ok I'm going to make the message public
+        public_message = self.private_message
+        public_message.public = True
+        public_message.save()
+
         url = reverse(
             'moderation_rejected',
             kwargs={
-                'slug': self.private_message.moderation.key
+                'slug': public_message.moderation.key
                 })
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'nuntium/moderation_rejected.html')
         # If someone knows how to do the DoesNotExist or where to extend from
         # I could do a self.assertRaises but I'm not taking any more time in this
-        self.assertEquals(Message.objects.filter(id=self.private_message.id).count(), 0)
+        message = Message.objects.get(id=public_message.id)
+        self.assertFalse(message.public)
+        self.assertTrue(message.moderated)
 
     def test_when_moderation_needed_a_mail_for_its_owner_is_sent(self):
         self.private_message.recently_confirmated()
