@@ -47,7 +47,7 @@ class WriteItInstanceAdvancedUpdateForm(ModelForm):
         widgets = {
             'moderation_needed_in_all_messages': CheckboxInput(attrs={'class': 'form-control'}),
             'allow_messages_using_form': CheckboxInput(attrs={'class': 'form-control'}),
-            'rate_limiter': NumberInput(attrs={'class': 'form-control'}),
+            'rate_limiter': NumberInput(attrs={'class': 'form-control', 'min': 0}),
             'notify_owner_when_new_answer': CheckboxInput(attrs={'class': 'form-control'}),
             'autoconfirm_api_messages': CheckboxInput(attrs={'class': 'form-control'}),
             'testing_mode': CheckboxInput(attrs={'class': 'form-control'}),
