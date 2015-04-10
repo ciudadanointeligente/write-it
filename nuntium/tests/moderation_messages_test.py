@@ -30,6 +30,9 @@ class ModerationMessagesTestCase(TestCase):
             persons=[self.person1],
             )
         self.confirmation = Confirmation.objects.create(message=self.private_message)
+        self.owner = self.writeitinstance1.owner
+        self.owner.set_password('feroz')
+        self.owner.save()
 
     def test_private_messages_confirmation_created_move_from_new_to_needs_moderation(self):
         moderation, created = Moderation.objects.get_or_create(message=self.private_message)
@@ -206,6 +209,7 @@ class ModerationMessagesTestCase(TestCase):
         self.assertEquals(outbound_message_to_pedro.status, 'new')
 
     def test_there_is_a_moderation_url_that_sets_the_message_to_ready(self):
+        self.client.login(username=self.owner.username, password='feroz')
         self.confirmation.confirmated_at = datetime.datetime.now()
         self.confirmation.save()
         self.private_message.confirmated = True
@@ -248,6 +252,7 @@ class ModerationMessagesTestCase(TestCase):
         think that the private message should not go anywhere
         and it should be hidden
         '''
+        self.client.login(username=self.owner.username, password='feroz')
         # Ok I'm going to make the message public
         public_message = self.private_message
         public_message.public = True
@@ -355,3 +360,41 @@ class ModerationMessagesTestCase(TestCase):
         # Here I have the bug!!!!!
         self.assertEquals(outbound_message.status, 'needmodera')
         # This one is the bug!!\
+
+    def test_non_authenticated_users_cant_accept_messages(self):
+        """Moderation accept links require users to be logged in"""
+        self.confirmation.confirmated_at = datetime.datetime.now()
+        self.confirmation.save()
+        self.private_message.confirmated = True
+        self.private_message.save()
+
+        url = reverse('moderation_accept',
+            subdomain=self.private_message.writeitinstance.slug,
+            kwargs={
+            'slug': self.private_message.moderation.key
+            })
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 302)
+        outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message.id)
+        self.assertEquals(outbound_message_to_pedro.status, 'new')
+        private_message = Message.objects.get(id=self.private_message.id)
+        self.assertFalse(private_message.moderated)
+
+    def test_non_authenticated_users_cant_reject_messages(self):
+        """Moderation reject links require users to be logged in"""
+        self.confirmation.confirmated_at = datetime.datetime.now()
+        self.confirmation.save()
+        self.private_message.confirmated = True
+        self.private_message.save()
+
+        url = reverse('moderation_rejected',
+            subdomain=self.private_message.writeitinstance.slug,
+            kwargs={
+            'slug': self.private_message.moderation.key
+            })
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 302)
+        outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message.id)
+        self.assertEquals(outbound_message_to_pedro.status, 'new')
+        private_message = Message.objects.get(id=self.private_message.id)
+        self.assertFalse(private_message.moderated)

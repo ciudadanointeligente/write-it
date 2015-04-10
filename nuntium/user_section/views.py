@@ -342,6 +342,10 @@ class ModerationView(DetailView):
     model = Moderation
     slug_field = 'key'
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ModerationView, self).dispatch(*args, **kwargs)
+
 
 class AcceptModerationView(ModerationView):
     template_name = "nuntium/moderation_accepted.html"
