@@ -25,4 +25,13 @@
     <div class="message__content">
         {{ answer.content|linebreaksbr }}
     </div>
+
+  {% if answer.attachments.exists %}
+    <div class="message__attachments">
+      {% for attachment in answer.attachments.all %}
+        <a class="label label-primary" href="{% url 'attachment' pk=attachment.pk %}"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span> {{attachment.name}}</a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
 </div>
