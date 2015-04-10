@@ -43,16 +43,16 @@ $(".chosen-person-select").chosen();
               <p class="data-source__info"><i class="data-source__status-indicator data-source__status-indicator--{{ record.status }}"></i>{{ record.status }} <span class="muted">&mdash; last updated {{ record.updated }}</span></p>
               <div class="data-source__controls">
                 <ul>
-                  <li><a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">{% trans 'Edit' %}</a></li>
+                  <li><a data-toggle="collapse" href="#collapseExample-{{ record.pk }}" aria-expanded="false" aria-controls="collapseExample">{% trans 'Edit' %}</a></li>
                 </ul>
               </div>
-              <div class="collapse data-source__edit" id="collapseExample">
+              <div class="collapse data-source__edit" id="collapseExample-{{ record.pk }}">
                 <div class="well">
                   <h3>{% trans 'Polling interval' %}</h3>
                   <form class="form-inline update-popit-form" action="{% url 'update-popit-writeit-relation' subdomain=record.writeitinstance.slug pk=record.pk %}" method='POST'>
                     <div class="form-group">
-                      <label for="polling-interval-select">{% trans 'Fetch new data from this source' %}</label>
-                      <select class="form-control" id="polling-interval-select" name="periodicity">
+                      <label for="polling-interval-select-{{ record.pk }}">{% trans 'Fetch new data from this source' %}</label>
+                      <select class="form-control" id="polling-interval-select-{{ record.pk }}" name="periodicity">
                         <option value="--" {% if record.periodicity == "--" %}selected{% endif %}>{% trans 'Never' %}</option>
                         <option value="2D" {% if record.periodicity == "2D" %}selected{% endif %}>{% trans 'Twice a day' %}</option>
                         <option value="1D" {% if record.periodicity == "1D" %}selected{% endif %}>{% trans 'Daily' %}</option>
