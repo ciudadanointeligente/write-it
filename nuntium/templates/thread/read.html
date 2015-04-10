@@ -36,7 +36,7 @@
           {% for answer in message.answers.all %}
             {% include "thread/answer.html" with person_links=True answer=answer original=answer.message %}
           {% empty %}
-            <p>{% trans "Future replies will be published here." %}</p>
+            <p class="thread__messages__no-replies">{% trans "Future replies will be published here." %}</p>
           {% endfor %}
         </div>
         <div class="thread__actions">
