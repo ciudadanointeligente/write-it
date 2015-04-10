@@ -35,12 +35,12 @@
         <thead>
           <tr>
             <th>{% trans "Message" %}</th>
+            <th class="text-center">{% trans "Replies"%}</th>
             <th class="text-center">{% trans "Public?" %}</th>
             <th class="text-center">{% trans "Confirmed?" %}</th>
             {% if writeitinstance.config.moderation_needed_in_all_messages %}
             	<th class="text-center">{% trans "Moderated?" %}</th>
             {% endif %}
-            <th class="text-center">{% trans "Replies"%}</th>
             <th class="text-center">{% trans "Make private/public"%}</th>
           </tr>
         </thead>
@@ -55,6 +55,14 @@
                 {% endblocktrans %}
               </p>
             </td>
+
+            <td class="text-center">
+              {{ message.answers.count }}
+              {% if writeitinstance.config.can_create_answer %}
+                <a data-toggle="modal" data-target="#modal" href="{% url 'create_answer' subdomain=writeitinstance.slug pk=message.pk %}" alt="{% trans "Add"%}"><i class="fa fa-plus"></i></a>
+              {% endif %}
+            </td>
+
             <td class="text-center">
               {% if message.public %}
               <div class="explanation" data-toggle="tooltip" data-placement="left" title="{% trans 'This message can be seen by everyone' %}">
@@ -66,6 +74,7 @@
               </div>
               {% endif %}
             </td>
+
             <td class="text-center">
             {% if message.confirmated %}
               <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'The author has confirmed that this was sent from their email' %}">
@@ -77,6 +86,7 @@
               </div>
             {% endif %}
             </td>
+
             {% if writeitinstance.config.moderation_needed_in_all_messages %}
               {% if message.moderated %}
               <td class="text-center">
@@ -90,15 +100,8 @@
                 </div>
               </td>
               {% endif %}
-
             {% endif %}
 
-            <td class="text-center">
-              {{ message.answers.count  }}
-              {% if writeitinstance.config.can_create_answer %}
-                <a data-toggle="modal" data-target="#modal" href="{% url 'create_answer' subdomain=writeitinstance.slug pk=message.pk %}" alt="{% trans "Add"%}"><i class="fa fa-plus"></i></a>
-              {% endif %}
-            </td>
             <td class="text-center">
                 {% if message.public %}
                 <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message is public, you can make it private by clicking here' %}">
