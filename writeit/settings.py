@@ -199,9 +199,9 @@ INSTALLED_APPS = (
     'annoying',
     'celery_haystack',
 
-    'nuntium',
     'djangoplugins',
     'popit',
+    'nuntium',
     'south',
     'contactos',
     'mailit',
