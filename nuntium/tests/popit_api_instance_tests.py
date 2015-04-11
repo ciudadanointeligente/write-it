@@ -8,7 +8,58 @@ from contactos.models import Contact, ContactType
 from django.utils.unittest import skipUnless
 from django.conf import settings
 from django.contrib.auth.models import User
-from nuntium.popit_api_instance import is_current_membership
+from nuntium.popit_api_instance import is_current_membership, PopitApiInstance, AboutPopitApiInstance
+
+
+class PopitApiInstanceAboutTestsCase(TestCase):
+    '''
+    Ok so what I thought was:
+    PopitApiInstance is a proxy Model (https://docs.djangoproject.com/en/1.6/topics/db/models/#proxy-models)
+    which means that it doesn't have a database representation of its own
+    and I could make it proxy = True but then I would have to create a datamigration and
+    call me a chicken but I really really don't want to go that way, cause it looks scary =(.
+    So what I thought was that I could create a statellite class called AboutPopitApiInstance which would have some other information
+    about the PopitApiInstance like name and description in this TestCase I'm testing its creation as well as when I go and do instance.get_about()
+    it should go to popit get the about and store it.
+    '''
+    def setUp(self):
+        super(PopitApiInstanceAboutTestsCase, self).setUp()
+
+    def test_a_popit_instance_can_have_about(self):
+        '''A PopitApiInstance can have a about info'''
+
+        popit_api_instance = PopitApiInstance.objects.get(id=1)
+        AboutPopitApiInstance.objects.create(
+            popit_api_instance=popit_api_instance,
+            name="UK Parliament",
+            description="A list of everybody in both houses of the UK Parliament, based on the Members' Data Platform.")
+        self.assertEquals(popit_api_instance.about.name, "UK Parliament")
+        self.assertEquals(popit_api_instance.about.description, "A list of everybody in both houses of the UK Parliament, based on the Members' Data Platform.")
+
+    def test_importing_name_and_description_from_popit(self):
+        '''Getting it and retrieving the data'''
+        with self.vcr.use_cassette('nuntium/tests/fixtures/uk_parliament_popit_about.yaml', match_on=['popit_url']):
+            popit_api_instance = PopitApiInstance.objects.get(id=1)
+            about = popit_api_instance.get_about()
+            self.assertEquals(about.name,
+                "UK Parliament")
+            self.assertEquals(about.description,
+                "A list of everybody in both houses of the UK Parliament, based on the Members' Data Platform.")
+
+    def test_cope_with_404_or_other_errors(self):
+        '''
+        Even if there is an error with the url it creates an AboutPopitApiInstance object
+        '''
+        with self.vcr.use_cassette('nuntium/tests/fixtures/popit_about_404.yaml', match_on=['popit_url']):
+            popit_api_instance = PopitApiInstance.objects.get(id=1)
+            about = popit_api_instance.get_about()
+            '''
+            So the AboutPopitApiInstance is not None but the content in name and description are empty
+            '''
+            self.assertTrue(about)
+            self.assertFalse(about.name)
+            self.assertFalse(about.description)
+            self.assertTrue(about.id)
 
 
 @skipUnless(settings.LOCAL_POPIT, "No local popit running")

@@ -1,0 +1,30 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Connection: [close]
+      Host: [parliament.popit.mysociety.org]
+      User-Agent: [Python-urllib/2.7]
+    method: GET
+    uri: http://parliament.popit.mysociety.org/api/about/
+  response:
+    body: {string: !!python/unicode "{\n  \"result\": {\n    \"name\": \"UK Parliament\",\n
+        \   \"description\": \"A list of everybody in both houses of the UK Parliament,
+        based on the Members' Data Platform.\",\n    \"language\": \"en\",\n    \"license\":
+        \"The **{{name}}** PopIt instance is made available under the [Open Database
+        License](http://opendatacommons.org/licenses/odbl/1.0/). Any rights in individual
+        contents of the database are licensed under the [Database Contents License](http://opendatacommons.org/licenses/dbcl/1.0/).\",\n
+        \   \"person_count\": 4138,\n    \"organization_count\": 333\n  }\n}"}
+    headers:
+      accept-ranges: [bytes]
+      age: ['0']
+      connection: [close]
+      content-length: ['543']
+      content-type: [application/json; charset=utf-8]
+      date: ['Fri, 10 Apr 2015 15:27:58 GMT']
+      etag: [W/"21f-818edeb2"]
+      vary: [X-HTTP-Method-Override]
+      x-content-type-options: [nosniff]
+      x-url: [/api/about]
+    status: {code: 200, message: OK}
+version: 1
