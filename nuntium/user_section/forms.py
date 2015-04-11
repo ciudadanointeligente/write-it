@@ -110,7 +110,7 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
         model = WriteItInstance
         fields = ('name', 'popit_url')
         widgets = {
-            'name': TextInput(attrs={'class': 'form-control'})
+            'name': TextInput(attrs={'class': 'form-control', 'required': True}),
         }
 
     def __init__(self, *args, **kwargs):
