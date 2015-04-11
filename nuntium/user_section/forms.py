@@ -118,6 +118,7 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
             self.owner = kwargs.pop('owner')
         super(WriteItInstanceCreateForm, self).__init__(*args, **kwargs)
         self.fields['popit_url'].widget.attrs['class'] = 'form-control'
+        self.fields['popit_url'].widget.attrs['required'] = True
 
     def save(self, commit=True):
         instance = super(WriteItInstanceCreateForm, self).save(commit=False)
