@@ -101,6 +101,9 @@ class AboutPopitApiInstance(models.Model):
 
 
 class PopitApiInstance(ApiInstance):
+    about_class = AboutPopitApiInstance
+
+    
     class Meta:
         proxy = True
 
@@ -113,7 +116,7 @@ class PopitApiInstance(ApiInstance):
         for model in models:
             model.fetch_all_from_api(instance=self, writeitinstance=writeitinstance)
 
-    def get_about(self, about_class=AboutPopitApiInstance):
+    def get_about(self):
         api = slumber.API(self.url)
         '''
         Right here I depend a bit on popit and how it is going to behave in the future
@@ -123,7 +126,7 @@ class PopitApiInstance(ApiInstance):
         if the answer to that is No then we should strip the version of the api from the URL
         which I'm not doing right now.
         '''
-        about = about_class(popit_api_instance=self)
+        about = self.about_class(popit_api_instance=self)
         try:
             result = api.about().get()
             for key in result['result'].keys():
