@@ -152,8 +152,8 @@ class AnswerForm(ModelForm):
 
 class RelatePopitInstanceWithWriteItInstance(Form, PopitParsingFormMixin):
     popit_url = URLField(
-        label=_('PopIt API URL'),
-        help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"),
+        label=_('PopIt URL'),
+        help_text=_("Example: https://eduskunta.popit.mysociety.org/"),
         )
 
     def __init__(self, *args, **kwargs):
