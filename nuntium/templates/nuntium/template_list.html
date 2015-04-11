@@ -7,7 +7,7 @@
 {% block bodyclass %}page-without-sidebar{% endblock bodyclass %}
 {% block content %}
 
-    <h2 class="text-center">{% trans "Current instances of WriteIt" %}</h2>
+    <h2 class="text-center">{% trans "Current Sites" %}</h2>
 
   {% if object_list %}
     {% autopaginate object_list %}
@@ -25,8 +25,8 @@
     </div>
     {% paginate %}
   {% else %}
-    <p>{% trans "There are no instances yet!" %}</p>
-    <p><a href="#" class="btn btn-primary">{% trans "Create a WriteIt instance" %}</a></p>
+    <p>{% trans "There are no sites yet!" %}</p>
+    <p><a href="#" class="btn btn-primary">{% trans "Create a Site" %}</a></p>
   {% endif %}
 
 {% endblock content %}
