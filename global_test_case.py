@@ -14,6 +14,7 @@ from django.db import DEFAULT_DB_ALIAS
 from django.test import RequestFactory
 from django.test.client import Client
 import logging
+import vcr
 
 _LOCALS = threading.local()
 
@@ -167,6 +168,14 @@ class WriteItClient(WriteItRequestFactory, Client):
     pass
 
 
+def popit_about_url_matcher(r1, r2):
+    url_contains_popit = 'popit' in r1.url
+    ends_in_about = (r1.url.endswith('/about/') or r1.url.endswith('/about'))
+    if url_contains_popit and ends_in_about:
+        return True
+    return False
+
+
 class WriteItTestCaseMixin(object):
     client_class = WriteItClient
     fixtures = ['example_data.yaml']
@@ -174,6 +183,8 @@ class WriteItTestCaseMixin(object):
     def setUp(self):
         self.site = Site.objects.get_current()
         self.factory = WriteItRequestFactory()
+        self.vcr = vcr.VCR()
+        self.vcr.register_matcher('popit_url', popit_about_url_matcher)
 
     def assertRedirects(self, response, expected_url, status_code=302, target_status_code=200, host=None, msg_prefix=''):
         self.assertEquals(response.status_code, status_code)
