@@ -61,6 +61,23 @@ class PopitApiInstanceAboutTestsCase(TestCase):
             self.assertFalse(about.description)
             self.assertTrue(about.id)
 
+    def test_create_a_writeitinstance_out_of_a_popit_url(self):
+        '''
+        Create A WriteItInstance out of a popit url
+        So here it is the thing,
+        if from the popit url I can grab the name and description
+        of an instance I can surely create a writeitinstance.
+        '''
+        popit_load_data()
+        with self.vcr.use_cassette('nuntium/tests/fixtures/uk_parliament_popit_about.yaml', match_on=['popit_url']):
+            owner = User.objects.get(id=1)
+            instance = WriteItInstance.objects.create_out_of_popit(settings.TEST_POPIT_API_URL, owner=owner)
+            self.assertTrue(instance)
+            self.assertEquals(instance.name, "UK Parliament")
+            self.assertEquals(instance.description,
+                "A list of everybody in both houses of the UK Parliament, based on the Members' Data Platform.")
+            self.assertTrue(instance.persons.all())
+
 
 @skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class EmailCreationWhenPullingFromPopit(TestCase):

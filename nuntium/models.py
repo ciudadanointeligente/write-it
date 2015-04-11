@@ -46,6 +46,17 @@ def read_template_as_string(path, file_source_path=__file__):
     return result
 
 
+class WriteItInstanceManager(models.Manager):
+    def create_out_of_popit(self, popit_url, *args, **kwargs):
+        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=popit_url)
+        about = popit_api_instance.get_about()
+        kwargs['name'] = about.name
+        kwargs['description'] = about.description
+        instance = super(WriteItInstanceManager, self).create(*args, **kwargs)
+        instance.load_persons_from_a_popit_api(popit_url)
+        return instance
+
+
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people
     for usability purposes. E.g. 'Candidates running for president'"""
@@ -56,6 +67,8 @@ class WriteItInstance(models.Model):
         related_name='writeit_instances',
         through='Membership')
     owner = models.ForeignKey(User, related_name="writeitinstances")
+
+    objects = WriteItInstanceManager()
 
     def add_person(self, person):
         Membership.objects.get_or_create(writeitinstance=self, person=person)
