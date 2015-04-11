@@ -42,7 +42,14 @@ $(".chosen-person-select").chosen();
               <h3 class="data-source__title"><a href="{{ record.popitapiinstance.url }}">{{ record.popitapiinstance.url }}</a></h3>
               <p class="data-source__info"><i class="data-source__status-indicator data-source__status-indicator--{{ record.status }}"></i>{{ record.status }} 
                   {% if record.status_explanation %}({{ record.status_explanation }}){% endif %}
-                  <span class="muted">&mdash; last updated {{ record.updated }}</span></p>
+                  <span class="muted">&mdash; last updated {{ record.updated }} 
+                    {% if record.periodicity == "--" %}{% trans 'Never automatically updates.' %}
+                    {% elif record.periodicity == "2D" %}{% trans 'Updates twice a day.' %}
+                    {% elif record.periodicity == "1D" %}{% trans 'Updates daily.' %}
+                    {% elif record.periodicity == "1W" %}{% trans 'Updates weekly.' %}
+                    {% endif %}
+                  </span>
+              </p>
               <div class="data-source__controls">
                 <ul>
                   <li><a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">{% trans 'Edit' %}</a></li>
