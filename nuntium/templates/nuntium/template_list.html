@@ -26,7 +26,7 @@
     {% paginate %}
   {% else %}
     <p>{% trans "There are no sites yet!" %}</p>
-    <p><a href="#" class="btn btn-primary">{% trans "Create a Site" %}</a></p>
+    <p><a href="{% url 'create_writeit_instance' %}" class="btn btn-primary">{% trans "Create a Site" %}</a></p>
   {% endif %}
 
 {% endblock content %}
