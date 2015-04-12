@@ -78,19 +78,6 @@
         </div>
     </header>
 
-  {% if writeitinstance and writeitinstance.config.testing_mode %}
-    <div class="site-alert">
-        <div class="container">
-            <h3 class="site-alert__heading">{% trans "This site is in Test Mode." %}</h3>
-            <p class="site-alert__description">{% trans "Any messages you write will be sent to the site administrator rather than real representatives." %}</p>
-
-            {% if user.is_authenticated %}
-              <a class="site-alert__cta" href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{% trans "Disable Test Mode in Settings" %}</a>
-            {% endif %}
-        </div>
-    </div>
-  {% endif %}
-
   {% if writeitinstance and not writeitinstance.config.allow_messages_using_form %}
     <div class="site-alert">
         <div class="container">
@@ -108,6 +95,16 @@
             <p class="site-alert__description">{% trans "There is no-one to write to yet. Please check back soon." %}</p>
           {% if user.is_authenticated %}
             <a class="site-alert__cta" href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{% trans "Import people from PopIt" %}</a>
+          {% endif %}
+        </div>
+    </div>
+  {% elif writeitinstance and writeitinstance.config.testing_mode %}
+    <div class="site-alert">
+        <div class="container">
+            <h3 class="site-alert__heading">{% trans "This site is in Test Mode." %}</h3>
+            <p class="site-alert__description">{% trans "Any messages you write will be sent to the site administrator rather than real representatives." %}</p>
+          {% if user.is_authenticated %}
+            <a class="site-alert__cta" href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{% trans "Disable Test Mode in Settings" %}</a>
           {% endif %}
         </div>
     </div>
