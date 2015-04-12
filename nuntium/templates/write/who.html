@@ -18,6 +18,8 @@
 
 {% block content_inner %}
 
+  {% if writeitinstance.contacts.exists and writeitinstance.config.allow_messages_using_form %}
+
     {% include "write/breadcrumb.html" with current_step=1 %}
 
     <form class="writing-step" action="" method="post">{% csrf_token %}
@@ -38,5 +40,10 @@
             <input class="writing-buttons__button--next" type="submit" value="{% trans "Draft message" %}"/>
         </p>
     </form>
+
+  {% else %}
+  <h1>{% trans "Sorry" %}</h1> 
+  <p>{% trans "You can’t currently create new messages using this site." %}</p>
+  {% endif %}
 
 {% endblock content_inner %}
