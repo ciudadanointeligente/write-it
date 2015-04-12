@@ -15,6 +15,7 @@ from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, 
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
     WriteItInstanceCreateForm, \
     WriteItInstanceModerationForm, \
+    WriteItInstanceMaxRecipientsForm, \
     WriteItInstanceRateLimiterForm, \
     AnswerForm, RelatePopitInstanceWithWriteItInstance
 from django.contrib import messages as view_messages
@@ -195,6 +196,12 @@ class WriteItInstanceRateLimiterView(WriteItInstanceAdvancedUpdateView):
 class WriteItInstanceModerationView(WriteItInstanceAdvancedUpdateView):
     form_class = WriteItInstanceModerationForm
     template_name = 'nuntium/writeitinstance_moderation_form.html'
+    model = WriteItInstanceConfig
+
+
+class WriteItInstanceMaxRecipientsView(WriteItInstanceAdvancedUpdateView):
+    form_class = WriteItInstanceMaxRecipientsForm
+    template_name = 'nuntium/writeitinstance_max_recipients_form.html'
     model = WriteItInstanceConfig
 
 

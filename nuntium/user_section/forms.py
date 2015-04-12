@@ -69,6 +69,19 @@ class WriteItInstanceModerationForm(ModelForm):
             'moderation_needed_in_all_messages': CheckboxInput(attrs={'class': 'form-control'}),
         }
 
+class WriteItInstanceMaxRecipientsForm(ModelForm):
+    class Meta:
+        model = WriteItInstanceConfig
+        fields = [ 'maximum_recipients' ]
+        widgets = { 
+            'maximum_recipients': NumberInput(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(WriteItInstanceMaxRecipientsForm, self).__init__(*args, **kwargs)
+        self.fields['maximum_recipients'].validators.append(validators.MinValueValidator(1))
+        self.fields['maximum_recipients'].validators.append(validators.MaxValueValidator(settings.OVERALL_MAX_RECIPIENTS))
+
 
 class WriteItInstanceRateLimiterForm(ModelForm):
     class Meta:

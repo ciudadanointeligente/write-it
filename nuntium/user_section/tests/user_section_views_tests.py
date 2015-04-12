@@ -202,16 +202,40 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
         self.assertFalse(writeitinstance.config.moderation_needed_in_all_messages)
 
+    def test_set_max_recipients_to_7(self):
+        url = reverse('writeitinstance_maxrecipients_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'maximum_recipients': 7 }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertEquals(writeitinstance.config.maximum_recipients, 7)
+
+    def test_set_max_recipients_to_1(self):
+        url = reverse('writeitinstance_maxrecipients_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'maximum_recipients': 1 }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertEquals(writeitinstance.config.maximum_recipients, 1)
+
+    def test_set_max_recipients_to_zero(self):
+        url = reverse('writeitinstance_maxrecipients_update', subdomain=self.writeitinstance.slug)
+        modified_data = self.data
+        modified_data['maximum_recipients'] = 0
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        self.assertTrue(response.context['form'].errors)
+        self.assertTrue(response.context['form'].errors['maximum_recipients'])
+
     @override_settings(OVERALL_MAX_RECIPIENTS=10)
     def test_max_recipients_cannot_rise_more_than_settings(self):
-        '''The max number of recipients in an instance cannot be changed using this form'''
-        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
+        url = reverse('writeitinstance_maxrecipients_update', subdomain=self.writeitinstance.slug)
         modified_data = self.data
         modified_data['maximum_recipients'] = 11
         self.client.login(username=self.owner.username, password='admin')
         response = self.client.post(url, data=modified_data, follow=True)
-        self.assertTrue(response.context['advanced_form'].errors)
-        self.assertTrue(response.context['advanced_form'].errors['maximum_recipients'])
+        self.assertTrue(response.context['form'].errors)
+        self.assertTrue(response.context['form'].errors['maximum_recipients'])
 
     def test_update_view_is_not_reachable_by_a_non_user(self):
         url = reverse('writeitinstance_advanced_update', subdomain=self.writeitinstance.slug)
