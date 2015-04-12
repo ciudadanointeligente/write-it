@@ -27,7 +27,7 @@
                 {% blocktrans count counter=writeitinstance.config.maximum_recipients %}
                     Search for recipient by name
                 {% plural %}
-                    Search for recipients by name
+                    Search for up to {{counter }} recipients by name
                 {% endblocktrans %}
             </label>
             {{ form.persons.errors }}
