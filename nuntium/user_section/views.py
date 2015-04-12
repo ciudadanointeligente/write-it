@@ -194,6 +194,8 @@ class YourInstancesView(UserSectionListView):
     def get_context_data(self, **kwargs):
         kwargs = super(YourInstancesView, self).get_context_data(**kwargs)
         kwargs['new_instance_form'] = WriteItInstanceCreateForm()
+        kwargs['live_sites'] = kwargs['object_list'].filter(config__testing_mode=False)
+        kwargs['test_sites'] = kwargs['object_list'].filter(config__testing_mode=True)
         return kwargs
 
 
