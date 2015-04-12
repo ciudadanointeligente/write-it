@@ -69,6 +69,14 @@ class WriteItInstanceAnswerNotificationForm(ModelForm):
             'notify_owner_when_new_answer': CheckboxInput(attrs={'class': 'form-control'}),
         }
 
+class WriteItInstanceWebBasedForm(ModelForm):
+    class Meta:
+        model = WriteItInstanceConfig
+        fields = [ 'allow_messages_using_form' ]
+        widgets = { 
+            'allow_messages_using_form': CheckboxInput(attrs={'class': 'form-control'}),
+        }
+
 class WriteItInstanceModerationForm(ModelForm):
     class Meta:
         model = WriteItInstanceConfig

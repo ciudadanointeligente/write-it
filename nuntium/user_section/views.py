@@ -19,6 +19,7 @@ from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, 
     WriteItInstanceModerationForm, \
     WriteItInstanceMaxRecipientsForm, \
     WriteItInstanceRateLimiterForm, \
+    WriteItInstanceWebBasedForm, \
     AnswerForm, RelatePopitInstanceWithWriteItInstance
 from django.contrib import messages as view_messages
 from django.utils.translation import ugettext as _
@@ -216,6 +217,12 @@ class WriteItInstanceApiAutoconfirmView(WriteItInstanceAdvancedUpdateView):
 class WriteItInstanceMaxRecipientsView(WriteItInstanceAdvancedUpdateView):
     form_class = WriteItInstanceMaxRecipientsForm
     template_name = 'nuntium/writeitinstance_max_recipients_form.html'
+    model = WriteItInstanceConfig
+
+
+class WriteItInstanceWebBasedView(WriteItInstanceAdvancedUpdateView):
+    form_class = WriteItInstanceWebBasedForm
+    template_name = 'nuntium/writeitinstance_web_based_form.html'
     model = WriteItInstanceConfig
 
 

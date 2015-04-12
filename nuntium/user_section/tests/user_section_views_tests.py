@@ -178,6 +178,22 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
         self.assertFalse(writeitinstance.config.notify_owner_when_new_answer)
 
+    def test_turning_web_based_on(self):
+        url = reverse('writeitinstance_webbased_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'allow_messages_using_form': 'on' }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertTrue(writeitinstance.config.allow_messages_using_form)
+
+    def test_turning_web_based_off(self):
+        url = reverse('writeitinstance_webbased_update', subdomain=self.writeitinstance.slug)
+        modified_data = { }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertFalse(writeitinstance.config.allow_messages_using_form)
+
     def test_turning_api_autoconfirm_on(self):
         url = reverse('writeitinstance_api_autoconfirm_update', subdomain=self.writeitinstance.slug)
         modified_data = { 'autoconfirm_api_messages': 'on' }
@@ -302,6 +318,7 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         form = WriteItInstanceBasicForm()
         self.assertEquals(form._meta.model, WriteItInstance)
         self.assertEquals(form._meta.fields, ['name', 'description'])
+
 
     def test_writeitinstance_basic_form_save(self):
         data = {

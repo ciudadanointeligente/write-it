@@ -1,0 +1,35 @@
+{% extends "base_manager.html" %}
+{% load i18n %}
+{% load subdomainurls %}
+{% load staticfiles %}
+
+
+{% block header %}
+{% include 'nuntium/profiles/per_instance_top_menu.html' with section='writeitinstance_advanced_update' %}
+{% endblock header %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h2>{% trans 'Allow Form?' %}</h2>
+    </div>
+
+    <p>{% blocktrans %}
+    If this is turned off, messages cannot be created via the web-based
+    form.
+    {% endblocktrans %}</p>
+
+    <form role="form" action="" method="post">
+
+      <div class="form-group">
+        {{form.allow_messages_using_form.label_tag}}
+        {{form.allow_messages_using_form}}
+      </div>
+
+      <div class="save-bar">
+        <input type="submit" class='btn btn-primary' value="{% trans 'Save changes' %}" />
+      </div>
+      {% csrf_token %}
+    </form>
+
+{% endblock content %}
