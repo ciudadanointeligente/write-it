@@ -11,13 +11,17 @@
 {% block content %}
 
     <div class="page-header">
-        <h2>{% blocktrans with writeitinstance=writeitinstance %}Rate Limiting on {{ writeitinstance }}{% endblocktrans %}</h2>
+        <h2>{% trans 'Rate Limiting' %}</h2>
     </div>
 
-    <p>If you set a “rate limit” for your site, no-one will be able to
-    send more messages than that per day.</p>
+    <p>{% blocktrans %}
+    If you set a “rate limit” for your site, no-one will be able to
+    send more messages than that per day.
+    {% endblocktrans %}</p>
 
-    <p>Set this to zero for to allow unlimited messages.</p>
+    <p>{% blocktrans %}
+    Set this to zero for to allow unlimited messages.
+    {% endblocktrans %}</p>
 
 
     <form role="form" action="" method="post">
