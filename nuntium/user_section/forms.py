@@ -61,6 +61,17 @@ class WriteItInstanceAdvancedUpdateForm(ModelForm):
         self.fields['maximum_recipients'].validators.append(validators.MaxValueValidator(settings.OVERALL_MAX_RECIPIENTS))
 
 
+class WriteItInstanceRateLimiterForm(ModelForm):
+    class Meta:
+        model = WriteItInstanceConfig
+        fields = [ 'rate_limiter' ]
+        widgets = { 'rate_limiter': NumberInput(attrs={'class': 'form-control', 'min': 0}) }
+
+    def __init__(self, *args, **kwargs):
+        super(WriteItInstanceRateLimiterForm, self).__init__(*args, **kwargs)
+        self.fields['rate_limiter'].validators.append(validators.MinValueValidator(0))
+
+
 class NewAnswerNotificationTemplateForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self.writeitinstance = kwargs.pop('writeitinstance')

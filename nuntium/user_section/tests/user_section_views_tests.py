@@ -170,13 +170,21 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         self.assertEquals(writeitinstance.config.maximum_recipients, 7)
 
     def test_rate_limit_cannot_be_negative(self):
-        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
+        url = reverse('writeitinstance_ratelimiter_update', subdomain=self.writeitinstance.slug)
         modified_data = self.data
         modified_data['rate_limiter'] = -1
         self.client.login(username=self.owner.username, password='admin')
         response = self.client.post(url, data=modified_data, follow=True)
-        self.assertTrue(response.context['advanced_form'].errors)
-        self.assertTrue(response.context['advanced_form'].errors['rate_limiter'])
+        self.assertTrue(response.context['form'].errors)
+        self.assertTrue(response.context['form'].errors['rate_limiter'])
+
+    def test_change_rate_limit(self):
+        url = reverse('writeitinstance_ratelimiter_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'rate_limiter' : 10 }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertEquals(writeitinstance.config.rate_limiter, 10)
 
     @override_settings(OVERALL_MAX_RECIPIENTS=10)
     def test_max_recipients_cannot_rise_more_than_settings(self):

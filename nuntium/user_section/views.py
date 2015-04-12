@@ -13,7 +13,7 @@ from ..models import WriteItInstance, Message,\
     Answer, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
-    WriteItInstanceCreateForm, AnswerForm, \
+    WriteItInstanceCreateForm, WriteItInstanceRateLimiterForm, AnswerForm, \
     RelatePopitInstanceWithWriteItInstance
 from django.contrib import messages as view_messages
 from django.utils.translation import ugettext as _
@@ -182,6 +182,11 @@ class WriteItInstanceAdvancedUpdateView(UpdateView):
             'writeitinstance_advanced_update',
             subdomain=self.object.writeitinstance.slug,
             )
+
+class WriteItInstanceRateLimiterView(WriteItInstanceAdvancedUpdateView):
+    form_class = WriteItInstanceRateLimiterForm
+    template_name = 'nuntium/writeitinstance_ratelimiter_form.html'
+    model = WriteItInstanceConfig
 
 
 class UserSectionListView(ListView):

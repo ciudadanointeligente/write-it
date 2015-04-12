@@ -1,0 +1,41 @@
+{% extends "base_manager.html" %}
+{% load i18n %}
+{% load subdomainurls %}
+{% load staticfiles %}
+
+
+{% block header %}
+{% include 'nuntium/profiles/per_instance_top_menu.html' with section='writeitinstance_advanced_update' %}
+{% endblock header %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h2>{% blocktrans with writeitinstance=writeitinstance %}Rate Limiting on {{ writeitinstance }}{% endblocktrans %}</h2>
+    </div>
+
+    <p>If you set a “rate limit” for your site, no-one will be able to
+    send more messages than that per day.</p>
+
+    <p>Set this to zero for to allow unlimited messages.</p>
+
+
+    <form role="form" action="" method="post">
+
+      <div class="form-group">
+        {{form.allow_messages_using_form.label_tag}}
+        {{form.allow_messages_using_form}}
+      </div>
+
+      <div class="form-group">
+        {{form.rate_limiter.label_tag}}
+        {{form.rate_limiter}}
+      </div>
+
+      <div class="save-bar">
+        <input type="submit" class='btn btn-primary' value="{% trans 'Save changes' %}" />
+      </div>
+      {% csrf_token %}
+    </form>
+
+{% endblock content %}
