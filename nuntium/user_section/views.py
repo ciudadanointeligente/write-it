@@ -10,7 +10,7 @@ from mailit.forms import MailitTemplateForm
 
 from ..models import WriteItInstance, Message,\
     NewAnswerNotificationTemplate, ConfirmationTemplate, \
-    Answer, WriteitInstancePopitInstanceRecord
+    Answer, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
     WriteItInstanceCreateForm, AnswerForm, \
@@ -154,6 +154,34 @@ class WriteItInstanceUpdateView(UpdateView):
             form_class = self.get_form_class()
             form = self.get_form(form_class)
             return self.form_invalid(form)
+
+
+class WriteItInstanceAdvancedUpdateView(UpdateView):
+    form_class = WriteItInstanceAdvancedUpdateForm
+    template_name = 'nuntium/writeitinstance_advanced_update_form.html'
+    model = WriteItInstanceConfig
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.kwargs['slug'] = request.subdomain
+        return super(WriteItInstanceAdvancedUpdateView, self).dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return super(WriteItInstanceAdvancedUpdateView, self).get_queryset().filter(writeitinstance__owner=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super(WriteItInstanceAdvancedUpdateView, self).get_context_data(**kwargs)
+        context['writeitinstance'] = self.object.writeitinstance
+        return context
+
+    def get_slug_field(self):
+        return 'writeitinstance__slug'
+
+    def get_success_url(self):
+        return reverse(
+            'writeitinstance_advanced_update',
+            subdomain=self.object.writeitinstance.slug,
+            )
 
 
 class UserSectionListView(ListView):

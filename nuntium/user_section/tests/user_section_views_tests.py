@@ -156,7 +156,7 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         self.assertIn("testing_mode", form.fields)
 
     def test_writeitinstance_advanced_form_save(self):
-        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
+        url = reverse('writeitinstance_advanced_update', subdomain=self.writeitinstance.slug)
         c = self.client
         c.login(username=self.owner.username, password='admin')
         response = c.post(url, data=self.data)
@@ -186,12 +186,11 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         modified_data['maximum_recipients'] = 11
         self.client.login(username=self.owner.username, password='admin')
         response = self.client.post(url, data=modified_data, follow=True)
-
         self.assertTrue(response.context['advanced_form'].errors)
         self.assertTrue(response.context['advanced_form'].errors['maximum_recipients'])
 
     def test_update_view_is_not_reachable_by_a_non_user(self):
-        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
+        url = reverse('writeitinstance_advanced_update', subdomain=self.writeitinstance.slug)
         client = self.client
         response = client.get(url)
         self.assertRedirectToLogin(response, next_url=url)
@@ -205,7 +204,7 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
             email="fiera@votainteligente.cl",
             password="feroz",
             )
-        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
+        url = reverse('writeitinstance_advanced_update', subdomain=self.writeitinstance.slug)
         c = self.client
         c.login(username=fiera.username, password='feroz')
 
