@@ -61,6 +61,14 @@ class WriteItInstanceAdvancedUpdateForm(ModelForm):
         self.fields['maximum_recipients'].validators.append(validators.MaxValueValidator(settings.OVERALL_MAX_RECIPIENTS))
 
 
+class WriteItInstanceAnswerNotificationForm(ModelForm):
+    class Meta:
+        model = WriteItInstanceConfig
+        fields = [ 'notify_owner_when_new_answer' ]
+        widgets = { 
+            'notify_owner_when_new_answer': CheckboxInput(attrs={'class': 'form-control'}),
+        }
+
 class WriteItInstanceModerationForm(ModelForm):
     class Meta:
         model = WriteItInstanceConfig

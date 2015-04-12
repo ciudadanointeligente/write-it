@@ -13,6 +13,7 @@ from ..models import WriteItInstance, Message,\
     Answer, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
+    WriteItInstanceAnswerNotificationForm, \
     WriteItInstanceCreateForm, \
     WriteItInstanceModerationForm, \
     WriteItInstanceMaxRecipientsForm, \
@@ -185,6 +186,12 @@ class WriteItInstanceAdvancedUpdateView(UpdateView):
             'writeitinstance_advanced_update',
             subdomain=self.object.writeitinstance.slug,
             )
+
+
+class WriteItInstanceAnswerNotificationView(WriteItInstanceAdvancedUpdateView):
+    form_class = WriteItInstanceAnswerNotificationForm
+    template_name = 'nuntium/writeitinstance_answernotification_form.html'
+    model = WriteItInstanceConfig
 
 
 class WriteItInstanceRateLimiterView(WriteItInstanceAdvancedUpdateView):

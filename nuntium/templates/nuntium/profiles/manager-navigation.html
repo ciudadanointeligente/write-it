@@ -8,6 +8,7 @@
       <li class="{% if section == 'writeitinstance_moderation_update' %}active{% endif %}"><a href="{% url 'writeitinstance_moderation_update' subdomain=writeitinstance.slug %}">{% trans "Moderation" %}</a></li>
       <li class="{% if section == 'writeitinstance_maxrecipients_update' %}active{% endif %}"><a href="{% url 'writeitinstance_maxrecipients_update' subdomain=writeitinstance.slug %}">{% trans "Maxium Recipients" %}</a></li>
       <li class="{% if section == 'writeitinstance_ratelimiter_update' %}active{% endif %}"><a href="{% url 'writeitinstance_ratelimiter_update' subdomain=writeitinstance.slug %}">{% trans "Rate Limiter" %}</a></li>
+      <li class="{% if section == 'writeitinstance_answernotification_update' %}active{% endif %}"><a href="{% url 'writeitinstance_answernotification_update' subdomain=writeitinstance.slug %}">{% trans "Answer Notification" %}</a></li>
     </ul>
     <li class="{% if section == 'writeitinstance_template_update' %}active{% endif %}"><a href="{% url 'writeitinstance_template_update' subdomain=writeitinstance.slug %}">{% trans "Templates" %}</a></li>
     <li class="{% if section == 'contacts-per-writeitinstance' %}active{% endif %}"><a href="{% url 'contacts-per-writeitinstance' subdomain=writeitinstance.slug %}">{% trans "Recipients" %}</a></li>

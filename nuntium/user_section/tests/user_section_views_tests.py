@@ -202,6 +202,22 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
         self.assertFalse(writeitinstance.config.moderation_needed_in_all_messages)
 
+    def test_turning_answer_notification_on(self):
+        url = reverse('writeitinstance_answernotification_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'notify_owner_when_new_answer': 'on' }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertTrue(writeitinstance.config.notify_owner_when_new_answer)
+
+    def test_turning_answer_notification_off(self):
+        url = reverse('writeitinstance_answernotification_update', subdomain=self.writeitinstance.slug)
+        modified_data = { }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertFalse(writeitinstance.config.notify_owner_when_new_answer)
+
     def test_set_max_recipients_to_7(self):
         url = reverse('writeitinstance_maxrecipients_update', subdomain=self.writeitinstance.slug)
         modified_data = { 'maximum_recipients': 7 }
