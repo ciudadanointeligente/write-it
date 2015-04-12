@@ -218,6 +218,22 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
         self.assertFalse(writeitinstance.config.notify_owner_when_new_answer)
 
+    def test_turning_api_autoconfirm_on(self):
+        url = reverse('writeitinstance_api_autoconfirm_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'autoconfirm_api_messages': 'on' }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertTrue(writeitinstance.config.autoconfirm_api_messages)
+
+    def test_turning_api_autoconfirm_off(self):
+        url = reverse('writeitinstance_api_autoconfirm_update', subdomain=self.writeitinstance.slug)
+        modified_data = { }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertFalse(writeitinstance.config.autoconfirm_api_messages)
+
     def test_set_max_recipients_to_7(self):
         url = reverse('writeitinstance_maxrecipients_update', subdomain=self.writeitinstance.slug)
         modified_data = { 'maximum_recipients': 7 }

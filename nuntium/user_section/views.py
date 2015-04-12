@@ -14,6 +14,7 @@ from ..models import WriteItInstance, Message,\
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
     WriteItInstanceAnswerNotificationForm, \
+    WriteItInstanceApiAutoconfirmForm, \
     WriteItInstanceCreateForm, \
     WriteItInstanceModerationForm, \
     WriteItInstanceMaxRecipientsForm, \
@@ -203,6 +204,12 @@ class WriteItInstanceRateLimiterView(WriteItInstanceAdvancedUpdateView):
 class WriteItInstanceModerationView(WriteItInstanceAdvancedUpdateView):
     form_class = WriteItInstanceModerationForm
     template_name = 'nuntium/writeitinstance_moderation_form.html'
+    model = WriteItInstanceConfig
+
+
+class WriteItInstanceApiAutoconfirmView(WriteItInstanceAdvancedUpdateView):
+    form_class = WriteItInstanceApiAutoconfirmForm
+    template_name = 'nuntium/writeitinstance_autoconfirm_form.html'
     model = WriteItInstanceConfig
 
 

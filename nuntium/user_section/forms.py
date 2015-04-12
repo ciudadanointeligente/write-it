@@ -77,6 +77,14 @@ class WriteItInstanceModerationForm(ModelForm):
             'moderation_needed_in_all_messages': CheckboxInput(attrs={'class': 'form-control'}),
         }
 
+class WriteItInstanceApiAutoconfirmForm(ModelForm):
+    class Meta:
+        model = WriteItInstanceConfig
+        fields = [ 'autoconfirm_api_messages' ]
+        widgets = { 
+            'autoconfirm_api_messages': CheckboxInput(attrs={'class': 'form-control'}),
+        }
+
 class WriteItInstanceMaxRecipientsForm(ModelForm):
     class Meta:
         model = WriteItInstanceConfig
