@@ -61,6 +61,15 @@ class WriteItInstanceAdvancedUpdateForm(ModelForm):
         self.fields['maximum_recipients'].validators.append(validators.MaxValueValidator(settings.OVERALL_MAX_RECIPIENTS))
 
 
+class WriteItInstanceModerationForm(ModelForm):
+    class Meta:
+        model = WriteItInstanceConfig
+        fields = [ 'moderation_needed_in_all_messages' ]
+        widgets = { 
+            'moderation_needed_in_all_messages': CheckboxInput(attrs={'class': 'form-control'}),
+        }
+
+
 class WriteItInstanceRateLimiterForm(ModelForm):
     class Meta:
         model = WriteItInstanceConfig

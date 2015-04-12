@@ -186,6 +186,22 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
         self.assertEquals(writeitinstance.config.rate_limiter, 10)
 
+    def test_turning_moderation_on(self):
+        url = reverse('writeitinstance_moderation_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'moderation_needed_in_all_messages': 'on' }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertTrue(writeitinstance.config.moderation_needed_in_all_messages)
+
+    def test_turning_moderation_off(self):
+        url = reverse('writeitinstance_moderation_update', subdomain=self.writeitinstance.slug)
+        modified_data = { }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertFalse(writeitinstance.config.moderation_needed_in_all_messages)
+
     @override_settings(OVERALL_MAX_RECIPIENTS=10)
     def test_max_recipients_cannot_rise_more_than_settings(self):
         '''The max number of recipients in an instance cannot be changed using this form'''
