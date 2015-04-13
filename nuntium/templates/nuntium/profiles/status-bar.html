@@ -2,6 +2,17 @@
 {% load subdomainurls %}
 {% load staticfiles %}
 
+{% if writeitinstance.config.testing_mode %}
+  <div class="alert alert-info" role="alert">
+      <a href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">
+      <i class="fa fa-info-circle"></i> 
+      {% blocktrans %}
+        This instance is in testing mode. 
+        All mails will be sent to you, rather than the representatives.
+      {% endblocktrans %}</a>
+  </div>
+{% endif %}
+
 {% for rec in writeitinstance.writeitinstancepopitinstancerecord_set.all %}
     {% if rec.status == 'inprogress' %}
         <div class="alert alert-warning" role="alert">
@@ -11,14 +22,6 @@
         </div>
     {% endif %}
 {% endfor %}
-{% if writeitinstance.config.testing_mode %}
-  <div class="alert alert-info" role="alert">
-
-      <a href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{% blocktrans %}
-      <i class="fa fa-info-circle"></i> This instance is in testing mode which means that all mails will go to you.
-      {% endblocktrans %}</a>
-  </div>
-{% endif %}
 
 {% if messages %}
   <div class="alert alert-info" role="alert">
