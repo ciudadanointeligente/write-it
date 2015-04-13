@@ -27,7 +27,6 @@ from nuntium.user_section.views import (
     MessagesPerWriteItInstance,
     NewAnswerNotificationTemplateUpdateView,
     WriteItDeleteView,
-    WriteItInstanceAdvancedUpdateView,
     WriteItInstanceAnswerNotificationView,
     WriteItInstanceApiAutoconfirmView,
     WriteItInstanceApiDocsView,
@@ -55,7 +54,6 @@ download_attachment_view = ObjectDownloadView.as_view(model=AnswerAttachment, fi
 
 managepatterns = patterns('',
     url(r'^$', WriteItInstanceUpdateView.as_view(), name='writeitinstance_basic_update'),
-    url(r'^settings/$', WriteItInstanceAdvancedUpdateView.as_view(), name='writeitinstance_advanced_update'),
     url(r'^settings/moderation/$', WriteItInstanceModerationView.as_view(), name='writeitinstance_moderation_update'),
     url(r'^settings/maxrecipients/$', WriteItInstanceMaxRecipientsView.as_view(), name='writeitinstance_maxrecipients_update'),
     url(r'^settings/ratelimiter/$', WriteItInstanceRateLimiterView.as_view(), name='writeitinstance_ratelimiter_update'),

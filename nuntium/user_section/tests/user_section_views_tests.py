@@ -11,7 +11,7 @@ from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from nuntium.models import WriteItInstance, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord
 from nuntium.user_section.views import WriteItInstanceUpdateView, WriteItInstanceApiDocsView
 from nuntium.user_section.forms import WriteItInstanceBasicForm, \
-    WriteItInstanceAdvancedUpdateForm, WriteItInstanceCreateForm, \
+    WriteItInstanceCreateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
 from django.test.utils import override_settings
 from urlparse import urlparse
@@ -242,12 +242,6 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         response = self.client.post(url, data=modified_data, follow=True)
         self.assertTrue(response.context['form'].errors)
         self.assertTrue(response.context['form'].errors['maximum_recipients'])
-
-    def test_update_view_is_not_reachable_by_a_non_user(self):
-        url = reverse('writeitinstance_advanced_update', subdomain=self.writeitinstance.slug)
-        client = self.client
-        response = client.get(url)
-        self.assertRedirectToLogin(response, next_url=url)
 
 
 class WriteItInstancePullingDetailViewTestCase(UserSectionTestCase):

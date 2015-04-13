@@ -11,7 +11,7 @@ from mailit.forms import MailitTemplateForm
 from ..models import WriteItInstance, Message,\
     NewAnswerNotificationTemplate, ConfirmationTemplate, \
     Answer, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord, Moderation
-from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
+from .forms import WriteItInstanceBasicForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
     WriteItInstanceAnswerNotificationForm, \
     WriteItInstanceApiAutoconfirmForm, \
@@ -142,8 +142,6 @@ class WriteItInstanceUpdateView(UpdateView):
 
 
 class WriteItInstanceAdvancedUpdateView(UpdateView):
-    form_class = WriteItInstanceAdvancedUpdateForm
-    template_name = 'nuntium/writeitinstance_advanced_update_form.html'
     model = WriteItInstanceConfig
 
     @method_decorator(login_required)
@@ -162,47 +160,71 @@ class WriteItInstanceAdvancedUpdateView(UpdateView):
     def get_slug_field(self):
         return 'writeitinstance__slug'
 
-    def get_success_url(self):
-        return reverse(
-            'writeitinstance_advanced_update',
-            subdomain=self.object.writeitinstance.slug,
-            )
-
 
 class WriteItInstanceAnswerNotificationView(WriteItInstanceAdvancedUpdateView):
     form_class = WriteItInstanceAnswerNotificationForm
     template_name = 'nuntium/writeitinstance_answernotification_form.html'
-    model = WriteItInstanceConfig
+
+    def get_success_url(self):
+        return reverse(
+            'writeitinstance_answernotification_update',
+            subdomain=self.object.writeitinstance.slug
+            )
 
 
 class WriteItInstanceRateLimiterView(WriteItInstanceAdvancedUpdateView):
     form_class = WriteItInstanceRateLimiterForm
     template_name = 'nuntium/writeitinstance_ratelimiter_form.html'
-    model = WriteItInstanceConfig
+
+    def get_success_url(self):
+        return reverse(
+            'writeitinstance_ratelimiter_update',
+            subdomain=self.object.writeitinstance.slug
+            )
 
 
 class WriteItInstanceModerationView(WriteItInstanceAdvancedUpdateView):
     form_class = WriteItInstanceModerationForm
     template_name = 'nuntium/writeitinstance_moderation_form.html'
-    model = WriteItInstanceConfig
+
+    def get_success_url(self):
+        return reverse(
+            'writeitinstance_moderation_update',
+            subdomain=self.object.writeitinstance.slug
+            )
 
 
 class WriteItInstanceApiAutoconfirmView(WriteItInstanceAdvancedUpdateView):
     form_class = WriteItInstanceApiAutoconfirmForm
     template_name = 'nuntium/writeitinstance_autoconfirm_form.html'
-    model = WriteItInstanceConfig
+
+    def get_success_url(self):
+        return reverse(
+            'writeitinstance_api_autoconfirm_update',
+            subdomain=self.object.writeitinstance.slug
+            )
 
 
 class WriteItInstanceMaxRecipientsView(WriteItInstanceAdvancedUpdateView):
     form_class = WriteItInstanceMaxRecipientsForm
     template_name = 'nuntium/writeitinstance_max_recipients_form.html'
-    model = WriteItInstanceConfig
+
+    def get_success_url(self):
+        return reverse(
+            'writeitinstance_maxrecipients_update',
+            subdomain=self.object.writeitinstance.slug
+            )
 
 
 class WriteItInstanceWebBasedView(WriteItInstanceAdvancedUpdateView):
     form_class = WriteItInstanceWebBasedForm
     template_name = 'nuntium/writeitinstance_web_based_form.html'
-    model = WriteItInstanceConfig
+
+    def get_success_url(self):
+        return reverse(
+            'writeitinstance_webbased_update',
+            subdomain=self.object.writeitinstance.slug
+            )
 
 
 class UserSectionListView(ListView):

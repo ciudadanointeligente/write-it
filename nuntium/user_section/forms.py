@@ -32,35 +32,6 @@ class WriteItInstanceBasicForm(ModelForm):
             }
 
 
-class WriteItInstanceAdvancedUpdateForm(ModelForm):
-    class Meta:
-        model = WriteItInstanceConfig
-        fields = [
-            'moderation_needed_in_all_messages',
-            'allow_messages_using_form',
-            'rate_limiter',
-            'notify_owner_when_new_answer',
-            'autoconfirm_api_messages',
-            'testing_mode',
-            'maximum_recipients',
-            ]
-        widgets = {
-            'moderation_needed_in_all_messages': CheckboxInput(attrs={'class': 'form-control'}),
-            'allow_messages_using_form': CheckboxInput(attrs={'class': 'form-control'}),
-            'rate_limiter': NumberInput(attrs={'class': 'form-control', 'min': 0}),
-            'notify_owner_when_new_answer': CheckboxInput(attrs={'class': 'form-control'}),
-            'autoconfirm_api_messages': CheckboxInput(attrs={'class': 'form-control'}),
-            'testing_mode': CheckboxInput(attrs={'class': 'form-control'}),
-            'maximum_recipients': NumberInput(attrs={'class': 'form-control'}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super(WriteItInstanceAdvancedUpdateForm, self).__init__(*args, **kwargs)
-        self.fields['rate_limiter'].validators.append(validators.MinValueValidator(0))
-        self.fields['maximum_recipients'].validators.append(validators.MinValueValidator(1))
-        self.fields['maximum_recipients'].validators.append(validators.MaxValueValidator(settings.OVERALL_MAX_RECIPIENTS))
-
-
 class WriteItInstanceAnswerNotificationForm(ModelForm):
     class Meta:
         model = WriteItInstanceConfig
