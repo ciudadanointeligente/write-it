@@ -140,27 +140,6 @@ class WriteItInstanceUpdateView(UpdateView):
             subdomain=self.object.slug,
             )
 
-    def get_advanced_form(self):
-        advanced_form_kwargs = self.get_form_kwargs()
-        advanced_form_kwargs['instance'] = self.object.config
-        return WriteItInstanceAdvancedUpdateForm(**advanced_form_kwargs)
-
-    def get_context_data(self, form):
-        context = super(WriteItInstanceUpdateView, self).get_context_data(form=form)
-        context['advanced_form'] = self.get_advanced_form()
-        return context
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        advanced_form = self.get_advanced_form()
-        if advanced_form.is_valid():
-            advanced_form.save()
-            return super(WriteItInstanceUpdateView, self).post(request, *args, **kwargs)
-        else:
-            form_class = self.get_form_class()
-            form = self.get_form(form_class)
-            return self.form_invalid(form)
-
 
 class WriteItInstanceAdvancedUpdateView(UpdateView):
     form_class = WriteItInstanceAdvancedUpdateForm
