@@ -24,7 +24,7 @@
             <form action="{% url 'write_message_step' step='who' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="write_message_view-current_step" value="who">
-                <input type="hidden" name="who-persons" value="{{ person.pk }}">
+                <input type="hidden" name="who_{{ writeitinstance.slug }}-persons" value="{{ person.pk }}">
                 <button type="submit" class="btn btn-primary write-to-this-person">{% trans "Write to this person" %}</button>
             </form>
         </div>
