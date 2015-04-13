@@ -45,6 +45,13 @@ def read_template_as_string(path, file_source_path=__file__):
     return result
 
 
+def template_with_wrap(template, context):
+    wrapper = textwrap.TextWrapper(break_long_words=False, break_on_hyphens=False, replace_whitespace=False)
+    return u'\n'.join(
+        [wrapper.fill(x) for x in template.format(**context).splitlines()]
+        )
+
+
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people
     for usability purposes. E.g. 'Candidates running for president'"""
@@ -424,7 +431,7 @@ class Message(models.Model):
         connection = self.writeitinstance.config.get_mail_connection()
         msg = EmailMultiAlternatives(
             moderation_subject.format(**context),
-            moderation_content_txt.format(**context),
+            template_with_wrap(moderation_content_txt, context),
             from_email,
             [self.writeitinstance.owner.email],
             connection=connection,
@@ -781,10 +788,7 @@ def send_confirmation_email(sender, instance, created, **kwargs):
             'message_url': message_full_url,
             }
 
-        wrapper = textwrap.TextWrapper(break_long_words=False, break_on_hyphens=False, replace_whitespace=False)
-        text_content = u'\n'.join(
-            [wrapper.fill(x) for x in plaintext.format(**context).splitlines()]
-            )
+        text_content = template_with_wrap(plaintext, context)
         subject = subject.format(**context)
         html_content = htmly.format(**escape_dictionary_values(context))
 

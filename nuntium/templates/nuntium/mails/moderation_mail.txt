@@ -1,11 +1,7 @@
 Hi {owner_name}
 
 
-Someone just used
-
-{writeit_name}
-
-to submit a message. Time for some moderation!
+Someone just used {writeit_name} to submit a message. Time for some moderation!
 
 
 ======================================================================
@@ -21,10 +17,11 @@ Message body:
 
 **Everything fine?** Accept this message by visiting
 
+
 {url_accept}
 
 
-**Not so good?** Reject this message, DELETING IT PERMANENTLY, at
+**Not so good?** Reject this message at
 
 {url_reject}
 
