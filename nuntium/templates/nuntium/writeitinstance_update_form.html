@@ -21,13 +21,13 @@ $(".chosen-person-select").chosen();
 {% block content %}
 
     <div class="page-header">
-        <h2>{% blocktrans with writeitinstance=writeitinstance %}Editing {{ writeitinstance }}{% endblocktrans %}</h2>
+        <h2>
+          {% blocktrans with writeitinstance=writeitinstance %}Editing {{ writeitinstance }}{% endblocktrans %}
+          {% if writeitinstance.pulling_from_popit_status.inprogress > 0 %}
+            <i class="fa fa-spinner fa-pulse" data-toggle="tooltip" data-placement="right" title="{% trans 'We are currently fetching data from PopIt' %}"></i>
+          {% endif %}
+        </h2>
     </div>
-      <span>
-        {% if writeitinstance.pulling_from_popit_status.inprogress > 0 %}
-        {% blocktrans with writeitinstance=writeitinstance %}We are getting information from popit about the people and contacts in this instance{% endblocktrans %}
-        {% endif %}
-      </span>
 
     <form role="form" action="" method="post">
       <div class="form-group">
@@ -78,5 +78,11 @@ $(".chosen-person-select").chosen();
     </form>
 
 
+<script type="text/javascript">
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
+    
 
 {% endblock content %}
