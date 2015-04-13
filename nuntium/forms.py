@@ -160,9 +160,9 @@ class PopitParsingFormMixin(object):
 
 class WriteItInstanceCreateFormPopitUrl(ModelForm, PopitParsingFormMixin):
     popit_url = URLField(
-        label=_('Url of the popit instance api'),
-        help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"),
-        required=False,
+        label=_('PopIt URL'),
+        help_text=_("Example: https://eduskunta.popit.mysociety.org/"),
+        required=True,
         )
 
     class Meta:
