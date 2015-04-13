@@ -14,10 +14,6 @@
 <div class="alert alert-error">
     {% blocktrans count counter=form.errors.items|length %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
 </div>
-{% else %}
-<div class="alert alert-error">
-    {% blocktrans count counter=form.errors.items|length %}Yay no error.{% plural %}Yay no errors.{% endblocktrans %}
-</div>
 {% endif %}
 
 
