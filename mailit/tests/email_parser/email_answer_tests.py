@@ -1,5 +1,4 @@
 # coding=utf8
-from django.utils.unittest import skip
 from django.contrib.auth.models import User
 
 from global_test_case import GlobalTestCase as TestCase
@@ -26,10 +25,11 @@ class AnswerHandlerTestCase(TestCase):
 
         email_answer = EmailAnswer()
         self.assertTrue(hasattr(email_answer, 'subject'))
-        self.assertTrue(hasattr(email_answer, 'content_text'))
+        self.assertTrue(hasattr(email_answer, '_content_text'))
         self.assertTrue(hasattr(email_answer, 'content_html'))
         self.assertTrue(hasattr(email_answer, 'outbound_message_identifier'))
         self.assertTrue(hasattr(email_answer, 'email_from'))
+        self.assertTrue(hasattr(email_answer, 'email_to'))
         self.assertTrue(hasattr(email_answer, 'when'))
         self.assertTrue(hasattr(email_answer, 'message_id'))
         email_answer.subject = 'prueba4'
@@ -37,6 +37,7 @@ class AnswerHandlerTestCase(TestCase):
         email_answer.content_html = '<p>prueba4lafieritaespeluda</p>'
         email_answer.outbound_message_identifier = '8974aabsdsfierapulgosa'
         email_answer.email_from = 'falvarez@votainteligente.cl'
+        email_answer.email_to = 'Felipe <instance-slug+8974aabsdsfierapulgosa@writeit.org>'
         email_answer.when = 'Wed Jun 26 21:05:33 2013'
         email_answer.message_id = '<CAA5PczfGfdhf29wgK=8t6j7hm8HYsBy8Qg87iTU2pF42Ez3VcQ@mail.gmail.com>'
 
@@ -45,12 +46,12 @@ class AnswerHandlerTestCase(TestCase):
         self.assertEquals(email_answer.content_text, 'prueba4lafieritaespeluda')
         self.assertEquals(email_answer.outbound_message_identifier, '8974aabsdsfierapulgosa')
         self.assertEquals(email_answer.email_from, 'falvarez@votainteligente.cl')
+        self.assertEquals(email_answer.email_to, 'Felipe <instance-slug+8974aabsdsfierapulgosa@writeit.org>')
         self.assertEquals(email_answer.when, 'Wed Jun 26 21:05:33 2013')
         self.assertEquals(email_answer.message_id, '<CAA5PczfGfdhf29wgK=8t6j7hm8HYsBy8Qg87iTU2pF42Ez3VcQ@mail.gmail.com>')
         self.assertEquals(email_answer.content_html, '<p>prueba4lafieritaespeluda</p>')
         self.assertFalse(email_answer.is_bounced)
 
-    @skip("not yet I'm going to do something")
     def test_getter_removes_the_identifier(self):
         email_answer = EmailAnswer()
         email_answer.subject = 'prueba4'
@@ -59,6 +60,22 @@ class AnswerHandlerTestCase(TestCase):
 
         self.assertFalse(email_answer.outbound_message_identifier in email_answer.content_text)
         self.assertNotIn("devteam+@chile.com", email_answer.content_text)
+
+    def test_it_doesnt_contain_anything_of_the_original_email(self):
+        '''If I set the "To" header in the email and use it in the email_answer.recipient
+        then I should not be getting her/his email address in the content'''
+        email_answer = EmailAnswer()
+        email_answer.subject = 'prueba5'
+        email_answer.email_to = 'Tony <instance-2+identifier123@writeit.org>'
+        email_answer.outbound_message_identifier = 'identifier123'
+        email_answer.content_text = '''Thank you for your enquiry. I am completely in favour of this measure,
+and will certainly be voting for it.
+Tony 
+<instance-2+identifier123@writeit.org>:'''
+        # There is an intended extra space after the word 'Tony'
+        self.assertNotIn('<instance-', email_answer.content_text)
+        self.assertNotIn('> :', email_answer.content_text)
+        self.assertNotIn('Tony', email_answer.content_text)
 
     def test_the_email_answer_can_have_attachments(self):
         '''An email answer can have attachments'''
