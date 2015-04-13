@@ -87,3 +87,8 @@
 .accounts-box__instructions {
     @include make-md-column(5);
 }
+
+.popover-content > :last-child {
+  // Avoid double padding inside Boostrap popovers
+  margin-bottom: 0;
+}
