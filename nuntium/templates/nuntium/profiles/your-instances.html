@@ -9,28 +9,6 @@
 
 {% block content %}
 
-<!-- Modal -->
-<div class="modal fade" id="createNew" >
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">{% trans 'Create a new Site' %}</h4>
-      </div>
-      <div class="modal-body">
-        <form action="{% url 'create_writeit_instance' %}" method="POST" role="form">
-          {% csrf_token %}
-          {{ new_instance_form.as_p }}
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
-            <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
 {% if messages %}
   <div class="alert alert-info" role="alert">
     {% for message in messages %}
@@ -128,14 +106,13 @@
       </table>
       {% endif %}
 
-      <button class="btn btn-primary" data-toggle="modal" data-target="#createNew">
+      <p class="btn btn-default"><a href="{% url 'create_writeit_instance' %}">
         {% trans 'Create a new Site' %}
-      </button>
+      </a></p>
 
 <script type="text/javascript">
   var go_and_check_status_of_instance = function(url, class_){
     $.get(url, function(status){
-
       if (status.inprogress >= 1){
         setTimeout( go_and_check_status_of_instance, 2000, url, class_)
       }
@@ -144,9 +121,12 @@
       }
     })
   }
+
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
   })
+
+
 
 </script>
 {% endblock content%}

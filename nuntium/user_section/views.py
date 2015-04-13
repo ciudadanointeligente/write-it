@@ -56,7 +56,7 @@ class WriteItInstanceContactDetailView(WriteItInstanceDetailBaseView):
 
     def get_context_data(self, **kwargs):
         context = super(WriteItInstanceContactDetailView, self).get_context_data(**kwargs)
-        context['people'] = self.object.persons.all()
+        context['people'] = self.object.persons.order_by('name')
         return context
 
 

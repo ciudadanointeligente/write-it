@@ -22,7 +22,7 @@ pytz>=2013b
 django-admin-bootstrapped
 django-object-actions
 unidecode
-python-social-auth
+python-social-auth==0.2.3
 django-nose
 mock
 python-dateutil
