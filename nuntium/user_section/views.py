@@ -10,7 +10,7 @@ from mailit.forms import MailitTemplateForm
 
 from ..models import WriteItInstance, Message,\
     NewAnswerNotificationTemplate, ConfirmationTemplate, \
-    Answer, WriteitInstancePopitInstanceRecord
+    Answer, WriteitInstancePopitInstanceRecord, Moderation
 from .forms import WriteItInstanceBasicForm, WriteItInstanceAdvancedUpdateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
     WriteItInstanceCreateForm, AnswerForm, \
@@ -264,18 +264,6 @@ class MessageDetail(WriteItInstanceOwnerMixin, DetailView):
     template_name = "nuntium/profiles/message_detail.html"
 
 
-class MessageDelete(WriteItInstanceOwnerMixin, DeleteView):
-    model = Message
-    template_name = "nuntium/profiles/message_delete_confirm.html"
-
-    def get_success_url(self):
-        success_url = reverse(
-            'messages_per_writeitinstance',
-            subdomain=self.object.writeitinstance.slug,
-            )
-        return success_url
-
-
 class AnswerEditMixin(View):
     def get_message(self):
         raise NotImplementedError
@@ -333,11 +321,74 @@ class AcceptMessageView(RedirectView):
             writeitinstance__owner=self.request.user
             )
         message.moderate()
-        view_messages.info(self.request, _("This message has been moderated"))
+        view_messages.info(self.request, _('The message "%(message)s" has been accepted') % { 'message': message })
         return reverse(
             'messages_per_writeitinstance',
             subdomain=message.writeitinstance.slug,
             )
+
+
+class RejectMessageView(RedirectView):
+    permanent = False
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(RejectMessageView, self).dispatch(*args, **kwargs)
+
+    def get_redirect_url(self, *args, **kwargs):
+        message = get_object_or_404(Message,
+            pk=kwargs['pk'],
+            writeitinstance__slug=self.request.subdomain,
+            writeitinstance__owner=self.request.user
+            )
+        message.public = False
+        message.moderated = True
+        message.save()
+        view_messages.info(self.request, _('The message "%(message)s" has been rejected') % { 'message': message })
+        return reverse(
+            'messages_per_writeitinstance',
+            subdomain=message.writeitinstance.slug,
+            )
+
+
+class ModerationView(DetailView):
+    model = Moderation
+    slug_field = 'key'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ModerationView, self).dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super(ModerationView, self).get_queryset()
+        queryset.filter(
+            message__writeitinstance__owner=self.request.user,
+            message__writeitinstance__slug=self.request.subdomain,
+        )
+        return queryset
+
+
+class AcceptModerationView(ModerationView):
+    template_name = "nuntium/moderation_accepted.html"
+
+    def get(self, *args, **kwargs):
+        moderation = self.get_object()
+        moderation.message.moderate()
+        return super(AcceptModerationView, self).get(*args, **kwargs)
+
+
+class RejectModerationView(ModerationView):
+    template_name = "nuntium/moderation_rejected.html"
+
+    def get(self, *args, **kwargs):
+        get = super(RejectModerationView, self).get(*args, **kwargs)
+        self.object.message.public = False
+        # It is turned True to avoid users to
+        # mistakenly moderate this message
+        # in the admin section
+        self.object.message.moderated = True
+        self.object.message.save()
+        return get
 
 
 class WriteitPopitRelatingView(FormView):

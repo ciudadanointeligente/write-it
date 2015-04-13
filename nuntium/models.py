@@ -391,14 +391,16 @@ class Message(models.Model):
             outbound_message.save()
 
     def send_moderation_mail(self):
-        current_site = Site.objects.get_current()
-        current_domain = 'http://' + current_site.domain
-        url_reject = current_domain + reverse('moderation_rejected', kwargs={
-            'slug': self.moderation.key
+        url_reject = reverse('moderation_rejected',
+            subdomain=self.writeitinstance.slug,
+            kwargs={
+                'slug': self.moderation.key
             })
 
-        url_accept = current_domain + reverse('moderation_accept', kwargs={
-            'slug': self.moderation.key
+        url_accept = reverse('moderation_accept',
+            subdomain=self.writeitinstance.slug,
+            kwargs={
+                'slug': self.moderation.key
             })
 
         context = {
@@ -833,13 +835,17 @@ class Moderation(models.Model):
         self.message.save()
 
     def get_success_url(self):
-        return reverse('moderation_accept', kwargs={
-            'slug': self.key
+        return reverse('moderation_accept',
+            subdomain=self.message.writeitinstance.slug,
+            kwargs={
+                'slug': self.key
             })
 
     def get_reject_url(self):
-        return reverse('moderation_rejected', kwargs={
-            'slug': self.key
+        return reverse('moderation_rejected',
+            subdomain=self.message.writeitinstance.slug,
+            kwargs={
+                'slug': self.key
             })
 
 

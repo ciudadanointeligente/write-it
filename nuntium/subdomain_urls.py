@@ -19,10 +19,10 @@ from nuntium.views import (
     )
 from nuntium.user_section.views import (
     AcceptMessageView,
+    AcceptModerationView,
     AnswerCreateView,
     AnswerUpdateView,
     ConfirmationTemplateUpdateView,
-    MessageDelete,
     MessageDetail,
     MessagesPerWriteItInstance,
     NewAnswerNotificationTemplateUpdateView,
@@ -34,6 +34,8 @@ from nuntium.user_section.views import (
     WriteItInstanceUpdateView,
     WriteitPopitRelatingView,
     MessageTogglePublic,
+    RejectMessageView,
+    RejectModerationView,
     ReSyncFromPopit,
     WriteItPopitUpdateView,
 )
@@ -62,14 +64,16 @@ managepatterns = patterns('',
     url(r'^messages/(?P<pk>[-\d]+)/answers/$', MessageDetail.as_view(), name='message_detail_private'),
     url(r'^messages/(?P<pk>[-\d]+)/answers/create/$', AnswerCreateView.as_view(), name='create_answer'),
     url(r'^messages/(?P<message_pk>[-\d]+)/answers/(?P<pk>[-\d]+)/update/$', AnswerUpdateView.as_view(), name='update_answer'),
-    url(r'^messages/(?P<pk>[-\d]+)/delete/$', MessageDelete.as_view(), name='message_delete'),
     url(r'^messages/(?P<pk>[-\d]+)/accept/$', AcceptMessageView.as_view(), name='accept_message'),
+    url(r'^messages/(?P<pk>[-\d]+)/reject/$', RejectMessageView.as_view(), name='reject_message'),
     url(r'^stats/$', StatsView.as_view(), name='stats'),
     url(r'^pulling_status/$', WriteItInstanceStatusView.as_view(), name='pulling_status'),
     url(r'^delete/$',
         WriteItDeleteView.as_view(template_name="nuntium/profiles/writeitinstance_check_delete.html"),
         name='delete_an_instance'),
     url(r'^messages/(?P<pk>[-\d]+)/toggle-public/$', MessageTogglePublic.as_view(), name='toggle_public'),
+    url(r'^moderation_accept/(?P<slug>[-\w]+)/?$', AcceptModerationView.as_view(), name='moderation_accept'),
+    url(r'^moderation_reject/(?P<slug>[-\w]+)/?$', RejectModerationView.as_view(), name='moderation_rejected'),
 
 )
 
