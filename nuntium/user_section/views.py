@@ -392,7 +392,7 @@ class AcceptMessageView(RedirectView):
             writeitinstance__owner=self.request.user
             )
         message.moderate()
-        view_messages.info(self.request, _('The message "%(message)s" has been accepted') % { 'message': message })
+        view_messages.info(self.request, _('The message "%(message)s" has been accepted') % {'message': message})
         return reverse(
             'messages_per_writeitinstance',
             subdomain=message.writeitinstance.slug,
@@ -415,7 +415,7 @@ class RejectMessageView(RedirectView):
         message.public = False
         message.moderated = True
         message.save()
-        view_messages.info(self.request, _('The message "%(message)s" has been rejected') % { 'message': message })
+        view_messages.info(self.request, _('The message "%(message)s" has been rejected') % {'message': message})
         return reverse(
             'messages_per_writeitinstance',
             subdomain=message.writeitinstance.slug,
