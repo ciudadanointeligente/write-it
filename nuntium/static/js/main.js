@@ -17,19 +17,30 @@
     e.preventDefault();
   });
 
+  // We store ajax requests (rather, promises) in here,
+  // keyed by URL, so we never request the same page twice.
+  helpLoaderAjaxPromises = {};
+
   var loadHelpContent = function loadHelpContent($trigger){
     var dfd = $.Deferred();
     var sourceUrl = $trigger.attr('href');
     if (sourceUrl.indexOf('#') > -1) {
       var urlParts = sourceUrl.split('#');
-      $.ajax({
-        url: urlParts[0]
-      }).done(function(response){
-        var targetElement = $(response).find('#help-' + urlParts[1]);
+      var urlPath = urlParts[0];
+      var urlFragment = urlParts[1];
+
+      // Cache the ajax promises, to avoid ajaxing
+      // in the same page multiple times.
+      if(!(urlPath in helpLoaderAjaxPromises)){
+        helpLoaderAjaxPromises[urlPath] = $.ajax(urlPath).promise();
+      }
+
+      helpLoaderAjaxPromises[urlPath].done(function(response){
+        var targetElement = $(response).find('#help-' + urlFragment);
         if(targetElement.length){
           dfd.resolve(targetElement.html());
         } else {
-          dfd.reject('Ajax call completed, but the target element #help-' + urlParts[1] + ' could not be found in the returned page.');
+          dfd.reject('Ajax call completed, but the target element #help-' + urlFragment + ' could not be found in the returned page.');
         }
       }).fail(function(jqXHR){
         dfd.reject('Ajax request failed ' + jqXHR.status + ' ' + jqXHR.statusText);
