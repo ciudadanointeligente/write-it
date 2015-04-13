@@ -1,0 +1,36 @@
+{% extends "base_manager.html" %}
+{% load i18n %}
+{% load subdomainurls %}
+{% load staticfiles %}
+
+
+{% block header %}
+{% include 'nuntium/profiles/per_instance_top_menu.html' with section='writeitinstance_advanced_update' %}
+{% endblock header %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h2>{% trans 'Moderation' %}</h2>
+    </div>
+
+    <p>{% blocktrans %}
+    If you turn on “Moderation” for the site, messages will be sent
+    to you for approval, before being sent to the intended
+    Recipient(s).
+    {% endblocktrans %}</p>
+
+    <form role="form" action="" method="post">
+
+      <div class="form-group">
+        {{form.moderation_needed_in_all_messages.label_tag}}
+        {{form.moderation_needed_in_all_messages}}
+      </div>
+
+      <div class="save-bar">
+        <input type="submit" class='btn btn-primary' value="{% trans 'Save changes' %}" />
+      </div>
+      {% csrf_token %}
+    </form>
+
+{% endblock content %}

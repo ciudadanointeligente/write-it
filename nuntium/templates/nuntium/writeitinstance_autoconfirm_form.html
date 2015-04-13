@@ -1,0 +1,36 @@
+{% extends "base_manager.html" %}
+{% load i18n %}
+{% load subdomainurls %}
+{% load staticfiles %}
+
+
+{% block header %}
+{% include 'nuntium/profiles/per_instance_top_menu.html' with section='writeitinstance_advanced_update' %}
+{% endblock header %}
+
+{% block content %}
+
+    <div class="page-header">
+        <h2>{% trans 'API Autoconfirm' %}</h2>
+    </div>
+
+    <p>{% blocktrans %}
+    If you turn on “API Autoconfirm”, any messages created through the
+    API will be automatically Confirmed. If you do this, please ensure 
+    that you confirm the sender's contact details in your application.
+    {% endblocktrans %}</p>
+
+    <form role="form" action="" method="post">
+
+      <div class="form-group">
+        {{form.autoconfirm_api_messages.label_tag}}
+        {{form.autoconfirm_api_messages}}
+      </div>
+
+      <div class="save-bar">
+        <input type="submit" class='btn btn-primary' value="{% trans 'Save changes' %}" />
+      </div>
+      {% csrf_token %}
+    </form>
+
+{% endblock content %}

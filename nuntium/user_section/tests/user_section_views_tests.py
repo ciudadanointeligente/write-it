@@ -11,7 +11,7 @@ from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from nuntium.models import WriteItInstance, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord
 from nuntium.user_section.views import WriteItInstanceUpdateView, WriteItInstanceApiDocsView
 from nuntium.user_section.forms import WriteItInstanceBasicForm, \
-    WriteItInstanceAdvancedUpdateForm, WriteItInstanceCreateForm, \
+    WriteItInstanceCreateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
 from django.test.utils import override_settings
 from urlparse import urlparse
@@ -129,89 +129,119 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         self.factory = RequestFactory()
         self.writeitinstance = WriteItInstance.objects.all()[0]
         self.owner = self.writeitinstance.owner
-        self.pedro = Person.objects.get(name="Pedro")
-        self.marcel = Person.objects.get(name="Marcel")
-        self.data = {
-            'name': 'test 1',
-            'moderation_needed_in_all_messages': 1,
-            'allow_messages_using_form': 1,
-            'rate_limiter': 3,
-            'notify_owner_when_new_answer': 1,
-            'autoconfirm_api_messages': 1,
-            'maximum_recipients': 7,
-            }
-
-    def test_writeitinstance_basic_form(self):
-        form = WriteItInstanceAdvancedUpdateForm()
-        self.assertEquals(form._meta.model, WriteItInstanceConfig)
-        self.assertNotIn("name", form.fields)
-        self.assertNotIn("slug", form.fields)
-        self.assertNotIn("persons", form.fields)
-        self.assertIn("moderation_needed_in_all_messages", form.fields)
-        self.assertNotIn("owner", form.fields)
-        self.assertIn("allow_messages_using_form", form.fields)
-        self.assertIn("rate_limiter", form.fields)
-        self.assertIn("notify_owner_when_new_answer", form.fields)
-        self.assertIn("autoconfirm_api_messages", form.fields)
-        self.assertIn("testing_mode", form.fields)
-
-    def test_writeitinstance_advanced_form_save(self):
-        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
-        c = self.client
-        c.login(username=self.owner.username, password='admin')
-        response = c.post(url, data=self.data)
-        self.assertRedirects(response, url)
-        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
-        self.assertTrue(writeitinstance.config.moderation_needed_in_all_messages)
-        self.assertEquals(writeitinstance.config.allow_messages_using_form, 1)
-        self.assertEquals(writeitinstance.config.rate_limiter, 3)
-        self.assertEquals(writeitinstance.config.notify_owner_when_new_answer, 1)
-        self.assertEquals(writeitinstance.config.autoconfirm_api_messages, 1)
-        self.assertEquals(writeitinstance.config.maximum_recipients, 7)
 
     def test_rate_limit_cannot_be_negative(self):
-        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
-        modified_data = self.data
-        modified_data['rate_limiter'] = -1
+        url = reverse('writeitinstance_ratelimiter_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'rate_limiter': -1 }
         self.client.login(username=self.owner.username, password='admin')
         response = self.client.post(url, data=modified_data, follow=True)
-        self.assertTrue(response.context['advanced_form'].errors)
-        self.assertTrue(response.context['advanced_form'].errors['rate_limiter'])
+        self.assertTrue(response.context['form'].errors)
+        self.assertTrue(response.context['form'].errors['rate_limiter'])
+
+    def test_change_rate_limit(self):
+        url = reverse('writeitinstance_ratelimiter_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'rate_limiter' : 10 }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertEquals(writeitinstance.config.rate_limiter, 10)
+
+    def test_turning_moderation_on(self):
+        url = reverse('writeitinstance_moderation_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'moderation_needed_in_all_messages': 'on' }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertTrue(writeitinstance.config.moderation_needed_in_all_messages)
+
+    def test_turning_moderation_off(self):
+        url = reverse('writeitinstance_moderation_update', subdomain=self.writeitinstance.slug)
+        modified_data = { }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertFalse(writeitinstance.config.moderation_needed_in_all_messages)
+
+    def test_turning_answer_notification_on(self):
+        url = reverse('writeitinstance_answernotification_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'notify_owner_when_new_answer': 'on' }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertTrue(writeitinstance.config.notify_owner_when_new_answer)
+
+    def test_turning_answer_notification_off(self):
+        url = reverse('writeitinstance_answernotification_update', subdomain=self.writeitinstance.slug)
+        modified_data = { }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertFalse(writeitinstance.config.notify_owner_when_new_answer)
+
+    def test_turning_web_based_on(self):
+        url = reverse('writeitinstance_webbased_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'allow_messages_using_form': 'on' }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertTrue(writeitinstance.config.allow_messages_using_form)
+
+    def test_turning_web_based_off(self):
+        url = reverse('writeitinstance_webbased_update', subdomain=self.writeitinstance.slug)
+        modified_data = { }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertFalse(writeitinstance.config.allow_messages_using_form)
+
+    def test_turning_api_autoconfirm_on(self):
+        url = reverse('writeitinstance_api_autoconfirm_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'autoconfirm_api_messages': 'on' }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertTrue(writeitinstance.config.autoconfirm_api_messages)
+
+    def test_turning_api_autoconfirm_off(self):
+        url = reverse('writeitinstance_api_autoconfirm_update', subdomain=self.writeitinstance.slug)
+        modified_data = { }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertFalse(writeitinstance.config.autoconfirm_api_messages)
+
+    def test_set_max_recipients_to_7(self):
+        url = reverse('writeitinstance_maxrecipients_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'maximum_recipients': 7 }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertEquals(writeitinstance.config.maximum_recipients, 7)
+
+    def test_set_max_recipients_to_1(self):
+        url = reverse('writeitinstance_maxrecipients_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'maximum_recipients': 1 }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertEquals(writeitinstance.config.maximum_recipients, 1)
+
+    def test_set_max_recipients_to_zero(self):
+        url = reverse('writeitinstance_maxrecipients_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'maximum_recipients': 0 }
+        self.client.login(username=self.owner.username, password='admin')
+        response = self.client.post(url, data=modified_data, follow=True)
+        self.assertTrue(response.context['form'].errors)
+        self.assertTrue(response.context['form'].errors['maximum_recipients'])
 
     @override_settings(OVERALL_MAX_RECIPIENTS=10)
     def test_max_recipients_cannot_rise_more_than_settings(self):
-        '''The max number of recipients in an instance cannot be changed using this form'''
-        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
-        modified_data = self.data
-        modified_data['maximum_recipients'] = 11
+        url = reverse('writeitinstance_maxrecipients_update', subdomain=self.writeitinstance.slug)
+        modified_data = { 'maximum_recipients': 11 }
         self.client.login(username=self.owner.username, password='admin')
         response = self.client.post(url, data=modified_data, follow=True)
-
-        self.assertTrue(response.context['advanced_form'].errors)
-        self.assertTrue(response.context['advanced_form'].errors['maximum_recipients'])
-
-    def test_update_view_is_not_reachable_by_a_non_user(self):
-        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
-        client = self.client
-        response = client.get(url)
-        self.assertRedirectToLogin(response, next_url=url)
-
-    def test_when_a_non_owner_saves_it_does_not_get_200_status_code(self):
-        # I think that this test is unnecesary but
-        # it could be of some use in the future
-        # I have no opinion on this =/
-        fiera = User.objects.create_user(
-            username="fierita",
-            email="fiera@votainteligente.cl",
-            password="feroz",
-            )
-        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
-        c = self.client
-        c.login(username=fiera.username, password='feroz')
-
-        response = c.post(url, data=self.data, follow=True)
-
-        self.assertEquals(response.status_code, 404)
+        self.assertTrue(response.context['form'].errors)
+        self.assertTrue(response.context['form'].errors['maximum_recipients'])
 
 
 class WriteItInstancePullingDetailViewTestCase(UserSectionTestCase):
@@ -282,6 +312,7 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         form = WriteItInstanceBasicForm()
         self.assertEquals(form._meta.model, WriteItInstance)
         self.assertEquals(form._meta.fields, ['name', 'description'])
+
 
     def test_writeitinstance_basic_form_save(self):
         data = {
@@ -377,6 +408,18 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         response = fiera_client.get(url)
         self.assertEquals(response.status_code, 404)
 
+    def test_change_description(self):
+        data = {
+            'name': 'new name',
+            'description': 'new description',
+            }
+        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
+        c = self.client
+        c.login(username=self.owner.username, password='admin')
+        response = c.post(url, data=data)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertEquals(writeitinstance.name, data['name'])
+        self.assertEquals(writeitinstance.description, data['description'])
 
 class WriteItInstanceApiDocsTestCase(UserSectionTestCase):
     def setUp(self):

@@ -32,33 +32,61 @@ class WriteItInstanceBasicForm(ModelForm):
             }
 
 
-class WriteItInstanceAdvancedUpdateForm(ModelForm):
+class WriteItInstanceAnswerNotificationForm(ModelForm):
     class Meta:
         model = WriteItInstanceConfig
-        fields = [
-            'moderation_needed_in_all_messages',
-            'allow_messages_using_form',
-            'rate_limiter',
-            'notify_owner_when_new_answer',
-            'autoconfirm_api_messages',
-            'testing_mode',
-            'maximum_recipients',
-            ]
-        widgets = {
-            'moderation_needed_in_all_messages': CheckboxInput(attrs={'class': 'form-control'}),
-            'allow_messages_using_form': CheckboxInput(attrs={'class': 'form-control'}),
-            'rate_limiter': NumberInput(attrs={'class': 'form-control', 'min': 0}),
+        fields = [ 'notify_owner_when_new_answer' ]
+        widgets = { 
             'notify_owner_when_new_answer': CheckboxInput(attrs={'class': 'form-control'}),
+        }
+
+class WriteItInstanceWebBasedForm(ModelForm):
+    class Meta:
+        model = WriteItInstanceConfig
+        fields = [ 'allow_messages_using_form' ]
+        widgets = { 
+            'allow_messages_using_form': CheckboxInput(attrs={'class': 'form-control'}),
+        }
+
+class WriteItInstanceModerationForm(ModelForm):
+    class Meta:
+        model = WriteItInstanceConfig
+        fields = [ 'moderation_needed_in_all_messages' ]
+        widgets = { 
+            'moderation_needed_in_all_messages': CheckboxInput(attrs={'class': 'form-control'}),
+        }
+
+class WriteItInstanceApiAutoconfirmForm(ModelForm):
+    class Meta:
+        model = WriteItInstanceConfig
+        fields = [ 'autoconfirm_api_messages' ]
+        widgets = { 
             'autoconfirm_api_messages': CheckboxInput(attrs={'class': 'form-control'}),
-            'testing_mode': CheckboxInput(attrs={'class': 'form-control'}),
+        }
+
+class WriteItInstanceMaxRecipientsForm(ModelForm):
+    class Meta:
+        model = WriteItInstanceConfig
+        fields = [ 'maximum_recipients' ]
+        widgets = { 
             'maximum_recipients': NumberInput(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
-        super(WriteItInstanceAdvancedUpdateForm, self).__init__(*args, **kwargs)
-        self.fields['rate_limiter'].validators.append(validators.MinValueValidator(0))
+        super(WriteItInstanceMaxRecipientsForm, self).__init__(*args, **kwargs)
         self.fields['maximum_recipients'].validators.append(validators.MinValueValidator(1))
         self.fields['maximum_recipients'].validators.append(validators.MaxValueValidator(settings.OVERALL_MAX_RECIPIENTS))
+
+
+class WriteItInstanceRateLimiterForm(ModelForm):
+    class Meta:
+        model = WriteItInstanceConfig
+        fields = [ 'rate_limiter' ]
+        widgets = { 'rate_limiter': NumberInput(attrs={'class': 'form-control', 'min': 0}) }
+
+    def __init__(self, *args, **kwargs):
+        super(WriteItInstanceRateLimiterForm, self).__init__(*args, **kwargs)
+        self.fields['rate_limiter'].validators.append(validators.MinValueValidator(0))
 
 
 class NewAnswerNotificationTemplateForm(ModelForm):
