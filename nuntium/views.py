@@ -100,7 +100,7 @@ class WriteMessageView(NamedUrlSessionWizardView):
 
     def get_form_kwargs(self, step):
         if step == 'who':
-            return {'persons_queryset': self.writeitinstance.persons_with_contacts}
+            return {'persons_queryset': self.writeitinstance.persons_with_contacts.order_by('name')}
         else:
             return {}
 
