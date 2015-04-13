@@ -1,3 +1,4 @@
+# coding=utf8
 import email
 import re
 import requests
@@ -75,6 +76,7 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
         self.content_html = ''
         self.outbound_message_identifier = ''
         self.email_from = ''
+        self.email_to = ''
         self.when = ''
         self.message_id = None  # http://en.wikipedia.org/wiki/Message-ID
         self.requests_session = requests.Session()
@@ -89,6 +91,18 @@ class EmailAnswer(EmailSaveMixin, EmailReportBounceMixin):
         # pattern = '[\w\.-]+@[\w\.-]+'
         # expression = re.compile(pattern)
         # cleaned_content = re.sub(expression, '', cleaned_content)
+        if self.email_to:
+            email_to = re.escape(self.email_to)
+            expression = re.compile(" ?\n".join(email_to.split()))
+            # Joining the parts of the "To" header with a new line
+            # So if for example the "To" header comes as follow
+            # Felipe Álvarez <giant-email@tremendous-email.org>
+            # it would match in the content the following
+            # Felipe
+            # Álvarez
+            # <giant-email@tremendous-email.org>
+            # This is to avoid things like the one in #773
+            cleaned_content = expression.sub('', cleaned_content)
         cleaned_content = re.sub(r'[\w\.-\.+]+@[\w\.-]+', '', cleaned_content)
 
         cleaned_content = cleaned_content.replace(self.outbound_message_identifier, '')
@@ -155,6 +169,7 @@ class EmailHandler(FroideEmailParser):
         the_match = regex.match(the_recipient)
         if the_match is None:
             raise CouldNotFindIdentifier
+        answer.email_to = the_recipient
         answer.outbound_message_identifier = the_match.groups()[0]
         logging.info("Reading the parts")
         for part in msg.walk():
