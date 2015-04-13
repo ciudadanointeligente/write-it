@@ -64,7 +64,7 @@ class MailTemplateTestCase(TestCase):
         template = MailItTemplate.objects.create(writeitinstance=self.writeitinstance2)
 
         self.assertEquals(template.subject_template, "{subject}")
-        self.assertEquals(template.content_template, self.content_template)
+        self.assertEquals(template.content_template, '')
 
     def test_when_creating_a_new_instance_then_a_new_template_is_created_automatically(self):
         '''
@@ -78,7 +78,7 @@ class MailTemplateTestCase(TestCase):
 
         self.assertTrue(instance.mailit_template)
         self.assertEquals(instance.mailit_template.subject_template, "{subject}")
-        self.assertEquals(instance.mailit_template.content_template, self.content_template)
+        self.assertEquals(instance.mailit_template.content_template, '')
         self.assertEquals(instance.mailit_template.content_html_template, '')
 
 

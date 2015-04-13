@@ -59,7 +59,7 @@ class MailChannel(OutputPlugin):
             'writeit_name': writeitinstance.name,
             'owner_email': writeitinstance.owner.email,
             }
-        text_content = template.content_template.format(**context)
+        text_content = template.get_content_template().format(**context)
         html_content = template.content_html_template.format(**escape_dictionary_values(context))
         subject = template.subject_template.format(**context)
 
