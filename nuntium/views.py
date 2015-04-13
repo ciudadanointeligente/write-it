@@ -1,5 +1,4 @@
 from datetime import datetime
-import re
 
 from django.views.generic import TemplateView, DetailView, RedirectView, ListView
 from subdomains.utils import reverse
@@ -294,30 +293,9 @@ class MessageThreadView(MessageDetailView):
 class WriteSignView(TemplateView):
     template_name = 'write/sign.html'
 
-    def get_inbox_link(self, email):
-        domains = [
-            r'gmail\.com',
-            r'googlemail\.com',
-            r'hotmail\.(com|co\.uk)',
-            r'live\.com',
-            r'outlook\.com',
-            r'yahoo\.[a-z.]+',
-            r'aol\.com'
-        ]
-        pattern = r'^.+@(' + '|'.join(domains) + ')$'
-        matches = re.match(pattern, email, re.I)
-        print matches
-        if matches:
-            return matches.group(1)
-        else:
-            return None
-
     def get_context_data(self, **kwargs):
         context = super(WriteSignView, self).get_context_data(**kwargs)
         context['writeitinstance'] = WriteItInstance.objects.get(slug=self.request.subdomain)
-        # :TODO: actually get the sender's real email address here
-        # context['email'] = 'example@gmail.com'
-        # context['inbox_link'] = self.get_inbox_link(context['email'])
         return context
 
 
