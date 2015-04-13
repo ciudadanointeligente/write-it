@@ -14,7 +14,6 @@ from django.utils.translation import ugettext as _
 from popit.models import Person
 from ..forms import WriteItInstanceCreateFormPopitUrl, PopitParsingFormMixin
 from django.conf import settings
-from nuntium.popit_api_instance import PopitApiInstance
 
 
 class WriteItInstanceBasicForm(ModelForm):
@@ -35,40 +34,44 @@ class WriteItInstanceBasicForm(ModelForm):
 class WriteItInstanceAnswerNotificationForm(ModelForm):
     class Meta:
         model = WriteItInstanceConfig
-        fields = [ 'notify_owner_when_new_answer' ]
-        widgets = { 
+        fields = ['notify_owner_when_new_answer']
+        widgets = {
             'notify_owner_when_new_answer': CheckboxInput(attrs={'class': 'form-control'}),
         }
+
 
 class WriteItInstanceWebBasedForm(ModelForm):
     class Meta:
         model = WriteItInstanceConfig
-        fields = [ 'allow_messages_using_form' ]
-        widgets = { 
+        fields = ['allow_messages_using_form']
+        widgets = {
             'allow_messages_using_form': CheckboxInput(attrs={'class': 'form-control'}),
         }
+
 
 class WriteItInstanceModerationForm(ModelForm):
     class Meta:
         model = WriteItInstanceConfig
-        fields = [ 'moderation_needed_in_all_messages' ]
-        widgets = { 
+        fields = ['moderation_needed_in_all_messages']
+        widgets = {
             'moderation_needed_in_all_messages': CheckboxInput(attrs={'class': 'form-control'}),
         }
+
 
 class WriteItInstanceApiAutoconfirmForm(ModelForm):
     class Meta:
         model = WriteItInstanceConfig
-        fields = [ 'autoconfirm_api_messages' ]
-        widgets = { 
+        fields = ['autoconfirm_api_messages']
+        widgets = {
             'autoconfirm_api_messages': CheckboxInput(attrs={'class': 'form-control'}),
         }
+
 
 class WriteItInstanceMaxRecipientsForm(ModelForm):
     class Meta:
         model = WriteItInstanceConfig
-        fields = [ 'maximum_recipients' ]
-        widgets = { 
+        fields = ['maximum_recipients']
+        widgets = {
             'maximum_recipients': NumberInput(attrs={'class': 'form-control'}),
         }
 
@@ -81,8 +84,8 @@ class WriteItInstanceMaxRecipientsForm(ModelForm):
 class WriteItInstanceRateLimiterForm(ModelForm):
     class Meta:
         model = WriteItInstanceConfig
-        fields = [ 'rate_limiter' ]
-        widgets = { 'rate_limiter': NumberInput(attrs={'class': 'form-control', 'min': 0}) }
+        fields = ['rate_limiter']
+        widgets = {'rate_limiter': NumberInput(attrs={'class': 'form-control', 'min': 0})}
 
     def __init__(self, *args, **kwargs):
         super(WriteItInstanceRateLimiterForm, self).__init__(*args, **kwargs)
@@ -206,4 +209,4 @@ class RelatePopitInstanceWithWriteItInstance(Form, PopitParsingFormMixin):
 class WriteItPopitUpdateForm(ModelForm):
     class Meta:
         model = WriteitInstancePopitInstanceRecord
-        fields = ['periodicity', ]
+        fields = ['periodicity']

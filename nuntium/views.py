@@ -94,7 +94,6 @@ class WriteMessageView(NamedUrlSessionWizardView):
                 return redirect(self.get_step_url(self.steps.first))
         return super(WriteMessageView, self).get(*args, **kwargs)
 
-
     def get_template_names(self):
         return [TEMPLATES[self.steps.current]]
 
@@ -300,8 +299,8 @@ class WriteSignView(TemplateView):
 
 
 class HelpView(TemplateView):
-  def get_template_names(self):
-    if 'section_name' in self.kwargs:
-        return ["help/{}.html".format(self.kwargs['section_name'])]
-    else:
-        return ["help/index.html"]
+    def get_template_names(self):
+        if 'section_name' in self.kwargs:
+            return ["help/{}.html".format(self.kwargs['section_name'])]
+        else:
+            return ["help/index.html"]

@@ -4,7 +4,6 @@ from ..models import Message, WriteItInstance, \
     Moderation, Confirmation, OutboundMessage
 from popit.models import Person
 from django.core import mail
-from django.contrib.sites.models import Site
 from subdomains.utils import reverse
 import datetime
 from mock import patch
@@ -218,7 +217,7 @@ class ModerationMessagesTestCase(TestCase):
         url = reverse('moderation_accept',
             subdomain=self.private_message.writeitinstance.slug,
             kwargs={
-            'slug': self.private_message.moderation.key
+                'slug': self.private_message.moderation.key
             })
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
@@ -234,7 +233,7 @@ class ModerationMessagesTestCase(TestCase):
         expected_url = reverse('moderation_accept',
             self.private_message.writeitinstance.slug,
             kwargs={
-            'slug': self.private_message.moderation.key
+                'slug': self.private_message.moderation.key
             })
         self.assertEquals(self.private_message.moderation.get_success_url(), expected_url)
 
@@ -371,7 +370,7 @@ class ModerationMessagesTestCase(TestCase):
         url = reverse('moderation_accept',
             subdomain=self.private_message.writeitinstance.slug,
             kwargs={
-            'slug': self.private_message.moderation.key
+                'slug': self.private_message.moderation.key
             })
         response = self.client.get(url)
         self.assertEquals(response.status_code, 302)
@@ -390,7 +389,7 @@ class ModerationMessagesTestCase(TestCase):
         url = reverse('moderation_rejected',
             subdomain=self.private_message.writeitinstance.slug,
             kwargs={
-            'slug': self.private_message.moderation.key
+                'slug': self.private_message.moderation.key
             })
         response = self.client.get(url)
         self.assertEquals(response.status_code, 302)

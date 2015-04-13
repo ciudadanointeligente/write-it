@@ -52,7 +52,6 @@ class InstanceCreateFormTestCase(TestCase):
         form = WriteItInstanceCreateFormPopitUrl(data)
         self.assertFalse(form.is_valid())
 
-
     def test_it_has_all_the_fields(self):
         """The form for creating a new writeit instance has all the fields"""
         form = WriteItInstanceCreateFormPopitUrl()
