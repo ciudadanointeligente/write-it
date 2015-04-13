@@ -414,6 +414,18 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         response = fiera_client.get(url)
         self.assertEquals(response.status_code, 404)
 
+    def test_change_description(self):
+        data = {
+            'name': 'new name',
+            'description': 'new description',
+            }
+        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
+        c = self.client
+        c.login(username=self.owner.username, password='admin')
+        response = c.post(url, data=data)
+        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
+        self.assertEquals(writeitinstance.name, data['name'])
+        self.assertEquals(writeitinstance.description, data['description'])
 
 class WriteItInstanceApiDocsTestCase(UserSectionTestCase):
     def setUp(self):
