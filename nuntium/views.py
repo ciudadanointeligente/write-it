@@ -297,3 +297,11 @@ class WriteSignView(TemplateView):
         context = super(WriteSignView, self).get_context_data(**kwargs)
         context['writeitinstance'] = WriteItInstance.objects.get(slug=self.request.subdomain)
         return context
+
+
+class HelpView(TemplateView):
+  def get_template_names(self):
+    if 'section_name' in self.kwargs:
+        return ["help/{}.html".format(self.kwargs['section_name'])]
+    else:
+        return ["help/index.html"]

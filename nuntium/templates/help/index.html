@@ -1,0 +1,22 @@
+{% extends "base_manager.html" %}
+{% load i18n %}
+{% block sidebar %}
+{% endblock sidebar %}
+{% block bodyclass %}page-without-sidebar{% endblock bodyclass %}
+{% load subdomainurls %}
+
+{% block content %}
+
+<h1>
+  WriteIt Help
+</h1>
+<ul>
+  <li>
+    <a href="/en/help/overview">How it works</a>
+  </li>
+  <li>
+    <a href="/en/help/glossary">Glossary</a>
+  </li>
+</ul>
+
+{% endblock content %}

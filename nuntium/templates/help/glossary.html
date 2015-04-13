@@ -1,0 +1,71 @@
+{% extends "base_manager.html" %}
+{% load i18n %}
+{% block sidebar %}
+{% endblock sidebar %}
+{% block bodyclass %}page-without-sidebar{% endblock bodyclass %}
+{% load subdomainurls %}
+
+{% block content %}
+
+<h1>Glossary</h1>
+
+<p>
+  This is a glossary of terms for WriteIt.
+</p>
+<p>
+  <strong>
+    WriteIt is a zero-config factory for building sites that empower citizens
+    to send emails to representatives and politicians.
+  </strong>
+</p>
+<p>
+  <a href="/en/help/overview">How does WriteIt work?</a>
+</p>
+
+<h2>Definitions</h2>
+
+<ul class="definitions">
+  <li><a href="#testing-mode">testing mode</a></li>
+  <li><a href="#moderation">moderation</a></li>
+</ul>
+
+<dl class="glossary">
+
+  <dt>
+    <a name="moderation">moderation</a>
+  </dt>
+  <dd id="help-moderation">
+    <p>
+      If moderation is enabled, the site will not send messages until the
+      site owner has approved them.
+    </p>
+    <!--
+    <div class="more-info">
+      <p>More information:</p>
+      <ul>
+        <li>
+          See the <a href="/en/help/admin-guide">admin guide</a> for how to moderate
+          outgoing messages.
+        </li>
+      </ul>
+    </div>
+      -->
+  </dd>
+
+  <dt>
+    <a name="testing-mode">testing mode</a>
+  </dt>
+  <dd id="help-testing-mode">
+    <p>
+      A WriteIt site in testing mode will <strong>not</strong> send messages
+      to the email addresses in its database &mdash; instead it will send
+      them to the site's owner. Also, WriteIt doesn't publicise testing sites:
+      whenever WriteIt displays a list of sites, testing sites are not shown
+      (unless you're logged in as the sites' owner).
+    </p>
+  </dd>
+
+</dl>
+
+
+{% endblock content %}
