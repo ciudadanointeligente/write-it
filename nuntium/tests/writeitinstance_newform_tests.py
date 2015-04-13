@@ -13,8 +13,8 @@ class InstanceCreateFormTestCase(TestCase):
         super(InstanceCreateFormTestCase, self).setUp()
         self.user = User.objects.first()
 
-    def test_instanciate_the_form(self):
-        '''Instanciate the form for creating a writeit instance'''
+    def test_instantiate_the_form(self):
+        '''Instantiate the form for creating a writeit instance'''
         data = {
             'owner': self.user.id,
             'popit_url': settings.TEST_POPIT_API_URL,
@@ -43,16 +43,15 @@ class InstanceCreateFormTestCase(TestCase):
         instance = form.save()
         self.assertTrue(instance.persons.all())
 
-    def test_creating_an_instance_without_popit_url(self):
+    def test_cant_create_an_instance_without_popit_url(self):
         data = {
             'owner': self.user.id,
             'name': "instance",
             "rate_limiter": 0,
             }
         form = WriteItInstanceCreateFormPopitUrl(data)
-        instance = form.save()
+        self.assertFalse(form.is_valid())
 
-        self.assertFalse(instance.persons.all())
 
     def test_it_has_all_the_fields(self):
         """The form for creating a new writeit instance has all the fields"""

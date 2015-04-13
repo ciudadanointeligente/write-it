@@ -100,7 +100,7 @@ class WriteMessageView(NamedUrlSessionWizardView):
 
     def get_form_kwargs(self, step):
         if step == 'who':
-            return {'persons_queryset': self.writeitinstance.persons_with_contacts}
+            return {'persons_queryset': self.writeitinstance.persons_with_contacts.order_by('name')}
         else:
             return {}
 
@@ -162,34 +162,6 @@ class ConfirmView(RedirectView):
         return reverse('thread_read',
             subdomain=confirmation.message.writeitinstance.slug,
             kwargs={'slug': confirmation.message.slug})
-
-
-class ModerationView(DetailView):
-    model = Moderation
-    slug_field = 'key'
-
-
-class AcceptModerationView(ModerationView):
-    template_name = "nuntium/moderation_accepted.html"
-
-    def get(self, *args, **kwargs):
-        moderation = self.get_object()
-        moderation.message.moderate()
-        return super(AcceptModerationView, self).get(*args, **kwargs)
-
-
-class RejectModerationView(ModerationView):
-    template_name = "nuntium/moderation_rejected.html"
-
-    def get(self, *args, **kwargs):
-        get = super(RejectModerationView, self).get(*args, **kwargs)
-        self.object.message.public = False
-        # It is turned True to avoid users to
-        # mistakenly moderate this message
-        # in the admin section
-        self.object.message.moderated = True
-        self.object.message.save()
-        return get
 
 
 class RootRedirectView(RedirectView):

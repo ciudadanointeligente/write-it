@@ -167,7 +167,7 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
         model = WriteItInstance
         fields = ('name', 'popit_url')
         widgets = {
-            'name': TextInput(attrs={'class': 'form-control'})
+            'name': TextInput(attrs={'class': 'form-control', 'required': True}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -175,6 +175,7 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
             self.owner = kwargs.pop('owner')
         super(WriteItInstanceCreateForm, self).__init__(*args, **kwargs)
         self.fields['popit_url'].widget.attrs['class'] = 'form-control'
+        self.fields['popit_url'].widget.attrs['required'] = True
 
     def save(self, commit=True):
         instance = super(WriteItInstanceCreateForm, self).save(commit=False)
@@ -209,8 +210,8 @@ class AnswerForm(ModelForm):
 
 class RelatePopitInstanceWithWriteItInstance(Form, PopitParsingFormMixin):
     popit_url = URLField(
-        label=_('PopIt API URL'),
-        help_text=_("Example: http://popit.master.ciudadanointeligente.org/api/"),
+        label=_('PopIt URL'),
+        help_text=_("Example: https://eduskunta.popit.mysociety.org/"),
         )
 
     def __init__(self, *args, **kwargs):

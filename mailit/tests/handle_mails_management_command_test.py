@@ -2,7 +2,7 @@
 from global_test_case import GlobalTestCase as TestCase
 from django.core.management import call_command
 from ..management.commands.handleemail import AnswerForManageCommand
-from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Answer
+from nuntium.models import OutboundMessage, Answer
 from mock import patch
 from django.core import mail
 from django.test.utils import override_settings
@@ -106,12 +106,17 @@ def killer_mail():
     return 'this should kill the parser!'
 
 
+def readlines4_mock():
+    return read_lines('mailit/tests/fixture/mail_from_tony.txt')
+
+
 class HandleIncomingEmailCommand(TestCase):
     def setUp(self):
         super(HandleIncomingEmailCommand, self).setUp()
+        self.outbound_message = OutboundMessage.objects.get(id=1)
 
     def test_call_command(self):
-        identifier = OutboundMessageIdentifier.objects.first()
+        identifier = self.outbound_message.outboundmessageidentifier
         identifier.key = '4aaaabbb'
         identifier.save()
 
@@ -125,7 +130,7 @@ class HandleIncomingEmailCommand(TestCase):
             self.assertEquals(the_answers[0].content, 'prueba4lafieri')
 
     def test_call_command_does_not_include_identifier_in_content(self):
-        identifier = OutboundMessageIdentifier.objects.first()
+        identifier = self.outbound_message.outboundmessageidentifier
         identifier.key = '4aaaabbb'
         identifier.save()
 
@@ -161,3 +166,16 @@ class HandleIncomingEmailCommand(TestCase):
             self.assertNotIn(killer_mail(), mail.outbox[0].body)
             self.assertEquals(mail.outbox[0].to[0], 'falvarez@admins.org')
             self.assertEquals(len(mail.outbox[0].attachments), 1)
+
+    def test_it_correctly_parses_the_to_email(self):
+        '''As described in #773 emails can contain odd parts'''
+        identifier = self.outbound_message.outboundmessageidentifier
+        identifier.key = '4aaaabbb'
+        identifier.save()
+        with patch('sys.stdin') as stdin:
+            stdin.attach_mock(readlines4_mock, 'readlines')
+            call_command('handleemail', 'mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+            the_answer = Answer.objects.get(message=identifier.outbound_message.message)
+            self.assertNotIn('Tony', the_answer.content)
+            self.assertNotIn('<eduskunta-', the_answer.content)
+            self.assertNotIn('>', the_answer.content)

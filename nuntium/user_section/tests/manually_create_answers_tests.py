@@ -279,19 +279,19 @@ class ManuallyEditAnswer(UserSectionTestCase):
         self.assertTemplateUsed(response, 'nuntium/profiles/update_answer.html')
 
 
-class DeleteMessageView(UserSectionTestCase):
+class RejectMessageView(UserSectionTestCase):
     def setUp(self):
-        super(DeleteMessageView, self).setUp()
+        super(RejectMessageView, self).setUp()
         self.writeitinstance = WriteItInstance.objects.all()[0]
         self.message = self.writeitinstance.message_set.all()[1]
 
-    def test_there_is_a_url_to_delete_messages(self):
-        '''There is a url that would help me to delete a message'''
-        reverse('message_delete', subdomain=self.writeitinstance.slug, kwargs={'pk': self.message.pk})
+    def test_there_is_a_url_to_reject_messages(self):
+        '''There is a url that would help me to reject a message'''
+        reverse('reject_message', subdomain=self.writeitinstance.slug, kwargs={'pk': self.message.pk})
 
-    def test_posting_to_that_url_deletes_the_message(self):
-        '''When posting to delete a message it deletes it'''
-        url = reverse('message_delete', subdomain=self.writeitinstance.slug, kwargs={'pk': self.message.pk})
+    def test_posting_to_that_url_rejects_the_message(self):
+        '''When posting to reject a message it marks it private'''
+        url = reverse('reject_message', subdomain=self.writeitinstance.slug, kwargs={'pk': self.message.pk})
 
         c = self.client
         c.login(username=self.writeitinstance.owner.username, password='admin')
@@ -299,42 +299,33 @@ class DeleteMessageView(UserSectionTestCase):
         '''It should redirect to the see all messages url'''
         allmessages_url = reverse('messages_per_writeitinstance', subdomain=self.writeitinstance.slug)
         self.assertRedirects(response, allmessages_url)
-        self.assertFalse(Message.objects.filter(id=self.message.id))
-
-    def test_a_get_gives_me_the_cornfirmation_url(self):
-        '''When I do a get it takes me to the confirm deleting url'''
-        url = reverse('message_delete', subdomain=self.writeitinstance.slug, kwargs={'pk': self.message.pk})
-
-        c = self.client
-        c.login(username=self.writeitinstance.owner.username, password='admin')
-        response = c.get(url)
-        self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, "nuntium/profiles/message_delete_confirm.html")
+        message = Message.objects.get(pk=self.message.pk)
+        self.assertFalse(message.public)
+        self.assertTrue(message.moderated)
 
     def test_if_moderation_needed_moderation_column_displayed(self):
         self.writeitinstance.config.moderation_needed_in_all_messages = True
         self.writeitinstance.config.save()
 
-        url = reverse('message_delete', subdomain=self.writeitinstance.slug, kwargs={'pk': self.message.pk})
+        url = reverse('messages_per_writeitinstance', subdomain=self.writeitinstance.slug)
         self.client.login(username=self.writeitinstance.owner.username, password='admin')
         response = self.client.get(url)
-        self.assertContains(response, '<dt>Moderated</dt>', html=True)
-        # self.assertContains(response, 'Moderated')
+        self.assertContains(response, 'Moderated')
 
     def test_it_cannot_be_accessed_by_a_non_user(self):
-        '''A non user cannot delete a message'''
+        '''A non user cannot reject a message'''
 
-        url = reverse('message_delete', subdomain=self.writeitinstance.slug, kwargs={'pk': self.message.pk})
+        url = reverse('reject_message', subdomain=self.writeitinstance.slug, kwargs={'pk': self.message.pk})
 
         c = self.client
         response = c.get(url)
         self.assertRedirectToLogin(response, next_url=url)
 
-    def test_not_owner_deletes_message(self):
-        '''If the user is not the owner of the instance then he/she cannot delete a message'''
+    def test_not_owner_rejects_message(self):
+        '''If the user is not the owner of the instance then he/she cannot reject a message'''
         not_the_owner = User.objects.create_user(username="not_owner", password="secreto")
 
-        url = reverse('message_delete', subdomain=self.writeitinstance.slug, kwargs={'pk': self.message.pk})
+        url = reverse('reject_message', subdomain=self.writeitinstance.slug, kwargs={'pk': self.message.pk})
         c = self.client
         c.login(username=not_the_owner.username, password="secreto")
         response1 = c.get(url)
