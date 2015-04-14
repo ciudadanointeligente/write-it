@@ -6,7 +6,6 @@
     <li class="{% if section == 'writeitinstance_advanced_update' %}active{% endif %}">{% trans "Advanced Update" %}</li>
     <ul>
       <li class="{% if section == 'writeitinstance_moderation_update' %}active{% endif %}"><a href="{% url 'writeitinstance_moderation_update' subdomain=writeitinstance.slug %}">{% trans "Moderation" %}</a></li>
-      <li class="{% if section == 'writeitinstance_maxrecipients_update' %}active{% endif %}"><a href="{% url 'writeitinstance_maxrecipients_update' subdomain=writeitinstance.slug %}">{% trans "Maxium Recipients" %}</a></li>
       <li class="{% if section == 'writeitinstance_ratelimiter_update' %}active{% endif %}"><a href="{% url 'writeitinstance_ratelimiter_update' subdomain=writeitinstance.slug %}">{% trans "Rate Limiter" %}</a></li>
       <li class="{% if section == 'writeitinstance_webbased_update' %}active{% endif %}"><a href="{% url 'writeitinstance_webbased_update' subdomain=writeitinstance.slug %}">{% trans "Web Based?" %}</a></li>
     </ul>
