@@ -1,5 +1,6 @@
 {% extends "base_instance.html" %}
 {% load i18n %}
+{% load static %}
 
 {% block content_inner %}
 
@@ -7,10 +8,19 @@
 
     <div class="writing-step writing-step--confirm-email">
 
-        <p>{% trans "Thanks, your message will be sent once you click the confirmation link in your email." %}</p>
+        <img src="{% static 'img/check-your-email.png' %}">
 
-        <!-- Temporary, while we're testing! -->
-        <p style="font-size: 0.8em; margin-top: 4em"><a href="{% url 'thread_read' slug='hello-world' %}">DEBUG: Skip to next page</a></p>
+        <h2>{% trans "Please confirm your email address" %}</h2>
+
+      {% if email %}
+        <p>{% blocktrans %}We have sent a confirmation link to {{ email }}{% endblocktrans %}</p>
+          {% if inbox_link %}
+            <p><a href="http://{{ inbox_link }}" class="btn btn-primary">Go to {{ inbox_link }}</a></p>
+          {% endif %}
+      {% else %}
+        <p>{% trans "We have emailed you a confirmation link. Please click it." %}</p>
+      {% endif %}
+
     </div>
 
 {% endblock content_inner %}
