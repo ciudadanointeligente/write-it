@@ -603,5 +603,6 @@ class WelcomeView(DetailView):
         context['url_template'] = reverse('writeitinstance_template_update', subdomain=self.request.subdomain)
         context['url_basic_update'] = reverse('writeitinstance_basic_update', subdomain=self.request.subdomain)
         context['url_maxrecipients_update'] = reverse('writeitinstance_maxrecipients_update', subdomain=self.request.subdomain)
+        context['url_answernotification_update'] = reverse('writeitinstance_answernotification_update', subdomain=self.request.subdomain)
         context['url_data_sources'] = reverse('relate-writeit-popit', subdomain=self.request.subdomain)
         return context
