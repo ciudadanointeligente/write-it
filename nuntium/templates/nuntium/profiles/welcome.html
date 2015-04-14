@@ -16,9 +16,69 @@
 {% endif %}
 
 <div class="page-header">
-    <h2>{% trans "Welcome" %}</h2>
+    <h2>
+       {% blocktrans with name=writeitinstance.name %}
+         Welcome! This is {{ name }}
+       {% endblocktrans %}
+    </h2>
 </div>
 
-<p>{% trans "Write to your representative etc." %}</p>
+<p>
+  {% blocktrans with name=writeitinstance.name %}
+    This is your &ldquo;{{name}}&rdquo; message-sending site.
+  {% endblocktrans %}
+</p>
+<p>
+  {% blocktrans %}
+     Here are the things you need to check you've done before everything will work properly.
+  {% endblocktrans %}
+</p>
+<ul>
+  <li>
+    <p>
+      {% if writeitinstance.description %}
+        {% blocktrans with desc=writeitinstance.description %}
+          change the description (which is &ldquo;{{ desc }}&rdquo;)
+        {% endblocktrans %}
+      {% else %}
+        {% blocktrans with desc=writeitinstance.description %}
+          set the description
+        {% endblocktrans %}
+      {% endif %}
+    </p>
+  </li>
+  <li>
+    <p>
+      {% blocktrans %}
+        change the email templates so the messages your site sends out are
+        exactly how you want them
+      {% endblocktrans %}
+    </p>
+  </li>
+  <li>
+    <p>
+      {% blocktrans %}
+        pick the right options for things like:
+      {% endblocktrans %}
+    </p>
+    <ul>
+      <li>
+        <p>
+          {% blocktrans %}
+            how many recipients a message can go to (just one, or many?)
+          {% endblocktrans %}
+        </p>
+      </li>
+      <li>
+        <p>
+          {% blocktrans %}
+            how often to check for new data (which really means: do you
+            expect the data source to change?)
+          {% endblocktrans %}
+        </p>
+      </li>
+    </ul>
+  </li>
+</ul>
 
 {% endblock content%}
