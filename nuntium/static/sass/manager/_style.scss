@@ -20,6 +20,13 @@ label {
     font-weight: normal;
 }
 
+caption {
+    border-bottom:1px solid $gray-lighter;
+    h3 {
+        font-size: 1.25em;
+    }
+}
+
 .manager-page {
         border-radius: 5px;
         margin-bottom: 3em;

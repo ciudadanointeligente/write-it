@@ -24,24 +24,25 @@
   </div>
   <div class="manager-overview">
     {% blocktrans count message_count=writeitinstance.message_set.count %}
-    There is <strong>1</strong> message 
+    There is <strong>1</strong> message.
     {% plural %}
-    There are <strong>{{ message_count }}</strong> messages 
+    There are <strong>{{ message_count }}</strong> total messages.
     {% endblocktrans %}
+    {% if writeitinstance.config.moderation_needed_in_all_messages %}
+    5 messages await moderation.
+    {% endif %}
   </div>
+  {% if writeitinstance.config.moderation_needed_in_all_messages %}
     {% autopaginate message_list %}
       {% paginate %}
       <table class="table table-striped">
+        <caption><h3>{% trans "Messages awaiting moderation" %}</h3></caption>
         <thead>
           <tr>
             <th>{% trans "Message" %}</th>
             <th class="text-center">{% trans "Replies"%}</th>
-            <th class="text-center">{% trans "Public?" %}</th>
             <th class="text-center">{% trans "Confirmed?" %}</th>
-            {% if writeitinstance.config.moderation_needed_in_all_messages %}
-            	<th class="text-center">{% trans "Moderated?" %}</th>
-            {% endif %}
-            <th class="text-center">{% trans "Make private/public"%}</th>
+            <th class="text-center">{% trans "Public"%}</th>
           </tr>
         </thead>
         <tbody>
@@ -64,18 +65,6 @@
             </td>
 
             <td class="text-center">
-              {% if message.public %}
-              <div class="explanation" data-toggle="tooltip" data-placement="left" title="{% trans 'This message can be seen by everyone' %}">
-                <i class="glyphicon glyphicon-ok"></i>
-              </div>
-              {% else %}
-              <div class="explanation" data-toggle="tooltip" data-placement="left" title="{% trans "This message can't be seen by anyone" %}">
-                <i class="glyphicon glyphicon-remove"></i>
-              </div>
-              {% endif %}
-            </td>
-
-            <td class="text-center">
             {% if message.confirmated %}
               <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'The author has confirmed that this was sent from their email' %}">
                 <i class="glyphicon glyphicon-ok"></i>
@@ -86,33 +75,17 @@
               </div>
             {% endif %}
             </td>
-
-            {% if writeitinstance.config.moderation_needed_in_all_messages %}
-              {% if message.moderated %}
-              <td class="text-center">
-                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has been accepted' %}"><i class="glyphicon glyphicon-ok"></i></div>
-              </td>
-              {% else %}
-              <td class="text-center">
-                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not yet been moderated — click here to accept it' %}">
-                    <form action="{% url 'accept_message' pk=message.pk %}" method="post">{% csrf_token %} <button class="btn btn-default btn-sm moderate">{% trans "Accept"%}</button>
-                    </form>
-                </div>
-              </td>
-              {% endif %}
-            {% endif %}
-
             <td class="text-center">
                 {% if message.public %}
                 <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message is public, you can make it private by clicking here' %}">
                     <form action="{% url 'toggle_public' pk=message.pk %}" method="post">{% csrf_token %}
-                        <button class="btn btn-default btn-sm toggle-public"><i class="fa fa-eye"></i></button>
+                        <input type="checkbox" checked="checked"/>
                     </form>
                 </div>
                 {% else %}
                 <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message is private, you can make it public by clicking here' %}">
                     <form action="{% url 'toggle_public' pk=message.pk %}" method="post">{% csrf_token %}
-                        <button class="btn btn-default btn-sm toggle-public"><i class="fa fa-eye-slash"></i></button>
+                       <input type="checkbox" />
                     </form>
                 </div>
                 {% endif %}
@@ -122,6 +95,24 @@
           {% empty %}
           <tr><td colspan="5" class="text-center">{% trans "You have no messages" %}</td></tr>
           {% endfor %}
+        </tbody>
+      </table>
+      {% paginate %}
+      {% endif %}
+       {% autopaginate message_list %}
+      {% paginate %}
+      <table class="table table-striped">
+        <caption><h3>{% trans "All messages" %}</h3></caption>
+        <thead>
+          <tr>
+            <th>{% trans "Message" %}</th>
+            <th class="text-center">{% trans "Replies"%}</th>
+            <th class="text-center">{% trans "Confirmed?" %}</th>
+            <th class="text-center">{% trans "Public"%}</th>
+          </tr>
+        </thead>
+        <tbody>
+
         </tbody>
       </table>
       {% paginate %}
