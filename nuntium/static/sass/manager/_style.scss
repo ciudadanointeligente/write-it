@@ -84,6 +84,24 @@ label {
     }
 }
 
+.page-header__settings-link {
+    i {
+        font-size: 9px;
+        color: $gray-light;
+        margin-right: 0.5em;
+    }
+}
+
+.settings-group {
+    h3 {
+        font-size: 1.35em;
+        font-weight: bold;
+    }
+    & + .settings-group {
+        margin-top: 2em;
+        border-top: 1px solid $gray-lighter;
+    }
+}
 
 .data-source__title {
     font-size: 1.3125em;
