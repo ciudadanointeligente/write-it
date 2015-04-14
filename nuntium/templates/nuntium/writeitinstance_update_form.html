@@ -19,7 +19,7 @@
 
     <div class="page-header">
         <h2>
-          {% blocktrans with writeitinstance=writeitinstance %}Editing {{ writeitinstance }}{% endblocktrans %}
+          {% trans "About your site" %}
           {% if writeitinstance.pulling_from_popit_status.inprogress > 0 %}
             <i class="fa fa-spinner fa-pulse" data-toggle="tooltip" data-placement="right" title="{% trans 'We are currently fetching data from PopIt' %}"></i>
           {% endif %}

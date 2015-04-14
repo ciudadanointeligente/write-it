@@ -2,7 +2,7 @@
 {% load subdomainurls %}
 {% load staticfiles %}
   <ul class="navigation__list">
-    <li class="{% if section == 'writeitinstance_basic_update' %}active{% endif %}"><a href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{% trans "Basic Update" %}</a></li>
+    <li class="{% if section == 'writeitinstance_basic_update' %}active{% endif %}"><a href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{% trans "About your site" %}</a></li>
     <li class="{% if section == 'writeitinstance_advanced_update' %}active{% endif %}">{% trans "Advanced Update" %}</li>
     <ul>
       <li class="{% if section == 'writeitinstance_moderation_update' %}active{% endif %}"><a href="{% url 'writeitinstance_moderation_update' subdomain=writeitinstance.slug %}">{% trans "Moderation" %}</a></li>
