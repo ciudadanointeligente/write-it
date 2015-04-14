@@ -29,13 +29,13 @@
 <p>
   {% if writeitinstance.persons.count %}
     {% blocktrans count qty_pers=writeitinstance.persons.count %}
-      You've got only one recipient in your database.
+      You've got only <a href="{{ url_recipients }}">one recipient</a> in your database.
     {% plural %}
-      You've got {{ qty_pers }} recipients in your database.
+      You've got <a href="{{ url_recipients }}">{{ qty_pers }} recipients</a> in your database.
     {% endblocktrans %}
   {% else %}
     {% blocktrans %}
-      <strong>There aren't any recipients in your database</strong>
+      <strong>There are <a href="{{ url_recipients }}">no recipients</a> in your database</strong>
       &mdash; you need to get some in there before anyone can send any messages!
       <br>
       Has your data source got recipients in it? Has it loaded OK?
