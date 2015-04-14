@@ -78,7 +78,8 @@
       <li>
         <p>
           {% blocktrans %}
-            how many recipients a message can go to (just one, or many?)
+            <a href="{{ url_maxrecipients_update }}">how many recipients</a>
+            a message can go to (just one, or many?)
           {% endblocktrans %}
         </p>
       </li>
@@ -86,7 +87,8 @@
         <p>
           {% blocktrans %}
             how often to check for new data (which really means: do you
-            expect the data source to change?)
+            expect the 
+            <a href="{{ url_data_sources }}">data source</a> to change?)
           {% endblocktrans %}
         </p>
       </li>
