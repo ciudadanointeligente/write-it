@@ -16,6 +16,16 @@
     This is your &ldquo;{{name}}&rdquo; message-sending site.
   {% endblocktrans %}
 </p>
+{% if writeitinstance.config.testing_mode %}
+  <p>
+    {% blocktrans %}
+      You're currently running in <strong>testing mode</strong>, so all
+      the emails sent will go to you (and not the recipients).
+      Contact us if you want this restriction lifted and you're ready to
+      send real messages to real people!
+    {% endblocktrans %}
+  </p>
+{% endif %}
 <p>
   {% if writeitinstance.persons.count %}
     {% blocktrans count qty_pers=writeitinstance.persons.count %}
