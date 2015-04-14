@@ -15,5 +15,15 @@ $brand-primary: $color-orange;
 $link-color: $color-blue;
 $navbar-default-bg: mix(#fff, $color-bluegrey-50, 33%);
 
+// Pagination only ever appears on bluegrey-background pages,
+// so tweak the pagination colours to blend in better.
+$pagination-bg:                        mix(#fff, $color-bluegrey-50, 50%);
+$pagination-border:                    $color-bluegrey-100;
+$pagination-hover-bg:                  #fff;
+$pagination-hover-border:              $color-bluegrey-100;
+$pagination-active-color:              $color-bluegrey-700;
+$pagination-active-bg:                 #fff;
+$pagination-active-border:             $color-bluegrey-100;
+
 $chosen-sprite-path: '/static/img/chosen-sprite.png';
 $chosen-sprite-retina-path: '/static/img/chosen-sprite@2x.png';
