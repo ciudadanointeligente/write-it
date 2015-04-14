@@ -27,9 +27,10 @@
         <p class="form-group">
             <label for="id_who-persons">
                 {% blocktrans count counter=writeitinstance.config.maximum_recipients %}
-                    Search for recipient by name
+                    Search for the recipient by name, or select from the drop-down.
                 {% plural %}
-                    Search for up to {{counter }} recipients by name
+                    Search for recipients by name, or select from the drop-down. <br/ ><br />
+                    You can send your message to up to {{ counter }} people.
                 {% endblocktrans %}
             </label>
             {{ form.persons.errors }}
