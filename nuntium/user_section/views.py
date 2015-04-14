@@ -248,7 +248,7 @@ class WriteItInstanceCreateView(CreateView):
 
     def get_success_url(self):
         return reverse(
-            'writeitinstance_basic_update',
+            'welcome',
             subdomain=self.object.slug
             )
 
