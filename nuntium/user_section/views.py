@@ -596,3 +596,10 @@ class WelcomeView(DetailView):
     def dispatch(self, request, *args, **kwargs):
         self.kwargs['slug'] = request.subdomain
         return super(WelcomeView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(WelcomeView, self).get_context_data(**kwargs)
+        # passing URLs in for easy insertion into the translation tags
+        context['url_template'] = reverse('writeitinstance_template_update', subdomain=self.request.subdomain)
+        context['url_basic_update'] = reverse('writeitinstance_basic_update', subdomain=self.request.subdomain)
+        return context
