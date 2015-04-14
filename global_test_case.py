@@ -1,3 +1,5 @@
+import re
+
 from django.test import TestCase
 from django.utils.unittest import skipUnless
 from django.core.management import call_command
@@ -35,6 +37,14 @@ def del_test_db():
         delattr(_LOCALS, 'test_db_name')
     except AttributeError:
         pass
+
+
+def whitespace_ignoring_in(a, b):
+    """Strip all the whitespace from a and b, and then check a in b."""
+    def squash(x):
+        return re.sub('\s', '', x)
+
+    return squash(a) in squash(b)
 
 
 class TestUsingDbRouter(object):
@@ -171,7 +181,7 @@ class WriteItTestCaseMixin(object):
 
     def assertModerationMailSent(self, message, moderation_mail):
         self.assertEquals(moderation_mail.to[0], message.writeitinstance.owner.email)
-        self.assertTrue(message.content in moderation_mail.body)
+        self.assertTrue(whitespace_ignoring_in(message.content, moderation_mail.body))
         self.assertTrue(message.subject in moderation_mail.body)
         self.assertTrue(message.author_name in moderation_mail.body)
         self.assertTrue(message.author_email in moderation_mail.body)

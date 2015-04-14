@@ -66,6 +66,11 @@ class ModerationMessagesTestCase(TestCase):
         self.assertEquals(outbound_message_to_pedro.status, 'needmodera')
 
     def test_message_send_moderation_message(self):
+        # Let's have some longer message content so we can keep an eye on the text wrapping.
+        self.private_message.content = u'''A gaf fi dynnu sylw'r Prif Weinidog at y sefyllfa yn Ysbyty Penrhos Stanley yng Nghaergybi, lle mae un o'r ddwy ward wedi bod ar gau ers dros bythefnos erbyn hyn, oherwydd absenoldeb staff a diffyg staff wrth gefn, ac ni fydd y ward yn agor am bythefnos arall, tan 13 Ebrill—bron i dair wythnos a dweud y gwir?
+A gaf i dynnu sylw'r Prif Weinidog hefyd at y sefyllfa yn Ysbyty Gwynedd yn ddiweddar, lle cadwyd etholwr i mi mewn ystafell storio dros nos wrth wella ar ôl llawdriniaeth, â’i declyn drip yn hongian oddi ar beg ar y wal, ac y rhoddwyd cloch bres Fictoraidd iddo i dynnu sylw’r nyrs. Mae'r nyrs yn gwneud gwaith gwych dan amgylchiadau anodd. A yw hynny'n swnio i'r Prif Weinidog fel GIG sydd ag adnoddau da ac yn cael ei reoli'n dda? Er bod gwleidyddiaeth cyni cyllidol yn gyfrifol am lawer o'r diffyg adnoddau, nid yw'n esgusodi camreolaeth y GIG gan Lywodraeth Cymru.'''
+        self.private_message.save()
+
         moderation, created = Moderation.objects.get_or_create(message=self.private_message)
         self.private_message.send_moderation_mail()
 
