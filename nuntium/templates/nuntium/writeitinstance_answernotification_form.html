@@ -10,22 +10,25 @@
 
 {% block content %}
 
-    <div class="page-header">
-        <h2>{% trans 'Answer Notification' %}</h2>
+      <div class="page-header">
+        <h2>{% trans 'Message settings' %}</h2>
+        <a href="{% url 'messages_per_writeitinstance' subdomain=writeitinstance.slug %}"><i class="glyphicon glyphicon-arrow-left"></i> {% trans "back to messages" %}</a>
     </div>
 
-    <p>{% blocktrans %}
+
+
+    <form role="form" action="" method="post">
+      <div class="settings-group">
+      <h3>{% trans 'Answer notification' %}</h3>
+        <p class="help-block">{% blocktrans %}
     If you turn on “Answer Notification”, you will receive copies of all
     responses to messages to your email address.
     {% endblocktrans %}</p>
-
-    <form role="form" action="" method="post">
-
-      <div class="form-group">
-        {{form.notify_owner_when_new_answer.label_tag}}
-        {{form.notify_owner_when_new_answer}}
+        <div class="form-group">
+          {{form.notify_owner_when_new_answer.label_tag}}
+          {{form.notify_owner_when_new_answer}}
+        </div>
       </div>
-
       <div class="save-bar">
         <input type="submit" class='btn btn-primary' value="{% trans 'Save changes' %}" />
       </div>

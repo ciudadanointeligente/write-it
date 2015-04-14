@@ -11,22 +11,24 @@
 {% block content %}
 
     <div class="page-header">
-        <h2>{% trans 'Moderation' %}</h2>
+        <h2>{% trans 'Moderation settings' %}</h2>
+        <a href="#"><i class="glyphicon glyphicon-arrow-left"></i> {% trans "back to moderation" %}</a>
     </div>
 
-    <p>{% blocktrans %}
-    If you turn on “Moderation” for the site, messages will be sent
-    to you for approval, before being sent to the intended
-    Recipient(s).
-    {% endblocktrans %}</p>
 
     <form role="form" action="" method="post">
-
-      <div class="form-group">
-        {{form.moderation_needed_in_all_messages.label_tag}}
-        {{form.moderation_needed_in_all_messages}}
+      <div class="settings-group">
+        <h3>Moderation</h3>
+        <p class="help-block">{% blocktrans %}
+        If you turn on “Moderation” for the site, messages will be sent
+        to you for approval, before being sent to the intended
+        Recipient(s).
+        {% endblocktrans %}</p>
+        <div class="form-group">
+          {{form.moderation_needed_in_all_messages.label_tag}}
+          {{form.moderation_needed_in_all_messages}}
+        </div>
       </div>
-
       <div class="save-bar">
         <input type="submit" class='btn btn-primary' value="{% trans 'Save changes' %}" />
       </div>

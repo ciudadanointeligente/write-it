@@ -37,6 +37,7 @@ $(function() {
 {% block content %}
   <div class="page-header">
     <h2>{% trans "Recipients" %}</h2>
+    <a href="{% url 'writeitinstance_maxrecipients_update' subdomain=writeitinstance.slug %}" class="page-header__settings-link btn btn-default btn-sm"><i class="glyphicon glyphicon-wrench"></i> {% trans "Settings" %}</a>
   </div>
   <div class="manager-overview">
     {% blocktrans count person_count=writeitinstance.persons.count %}

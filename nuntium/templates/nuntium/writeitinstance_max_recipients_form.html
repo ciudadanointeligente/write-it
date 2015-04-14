@@ -11,28 +11,30 @@
 {% block content %}
 
     <div class="page-header">
-        <h2>{% trans 'Maximum Recipients' %}</h2>
+        <h2>{% trans 'Recipients settings' %}</h2>
+        <a href="{% url 'contacts-per-writeitinstance' subdomain=writeitinstance.slug %}"><i class="glyphicon glyphicon-arrow-left"></i> {% trans "back to recipients" %}</a>
     </div>
 
-    <p>{% blocktrans %}
-    Select the maximum number of recipients any individual message can
-    be sent to.
-    {% endblocktrans %}</p>
-
-    <p>{% blocktrans %}
-    This is limited to a maximum of ten recipients per message. If you
-    want to enable sending messages to more people at once, please
-    contact us.
-    {% endblocktrans %}</p>
 
     <form role="form" action="" method="post">
+      <div class="settings-group">
+        <h3>Maximum recipients</h3>
+        <p class="help-block">{% blocktrans %}
+        Select the maximum number of recipients any individual message can
+        be sent to.
+        {% endblocktrans %}</p>
 
-      <div class="form-group">
-        {{form.maximum_recipients.errors}}
-        {{form.maximum_recipients.label_tag}}
-        {{form.maximum_recipients}}
+        <p class="help-block">{% blocktrans %}
+        This is limited to a maximum of ten recipients per message. If you
+        want to enable sending messages to more people at once, please
+        contact us.
+        {% endblocktrans %}</p>
+          <div class="form-group">
+            {{form.maximum_recipients.errors}}
+            {{form.maximum_recipients.label_tag}}
+            {{form.maximum_recipients}}
+          </div>
       </div>
-
       <div class="save-bar">
         <input type="submit" class='btn btn-primary' value="{% trans 'Save changes' %}" />
       </div>
