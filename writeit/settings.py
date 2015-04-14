@@ -384,6 +384,12 @@ CELERY_TIMEZONE = TIME_ZONE
 CELERY_ENABLE_UTC = True
 CELERY_CREATE_MISSING_QUEUES = True
 
+# These can be set independently, but most often one will be set to True and
+# the other to False. Setting both to the same boolean value will have
+# undefined behaviour.
+WEB_BASED = True
+API_BASED = False
+
 if TESTING:
     from testing_settings import *  # noqa
 
