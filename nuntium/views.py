@@ -5,6 +5,7 @@ from subdomains.utils import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.contrib.formtools.wizard.views import NamedUrlSessionWizardView
 from django.shortcuts import get_object_or_404, redirect
+from django.conf import settings
 
 from haystack.views import SearchView
 from itertools import chain
@@ -304,3 +305,8 @@ class HelpView(TemplateView):
             return ["help/{}.html".format(self.kwargs['section_name'])]
         else:
             return ["help/index.html"]
+
+    def get_context_data(self, **kwargs):
+        context = super(HelpView, self).get_context_data(**kwargs)
+        context['admin_contact_email'] = settings.ADMIN_SUPPORT_EMAIL
+        return context

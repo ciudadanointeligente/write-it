@@ -1,0 +1,20 @@
+{% extends "base_manager.html" %}
+{% load i18n %}
+{% block sidebar %}
+{% endblock sidebar %}
+{% block bodyclass %}page-without-sidebar{% endblock bodyclass %}
+{% load subdomainurls %}
+
+{% block content %}
+
+<h1>
+  Contact us
+</h1>
+<p>
+  Contact us for technical support, or high-level admin functions (for example,
+  we can switch sites from Testing Mode to live).
+</p>
+<p>
+  <a href="mailto:{{ admin_contact_email }}">{{ admin_contact_email }}</a>
+</p>
+{% endblock content %}

@@ -314,6 +314,8 @@ TEST_POPIT_API_URL = "http://%s.%s.xip.io:%s/api" % (
 # Email settings
 DEFAULT_FROM_EMAIL = 'mailer@example.com'
 
+ADMIN_SUPPORT_EMAIL = 'writeitsupport@example.com'
+
 # DEFAULT_FROM_DOMAIN
 DEFAULT_FROM_DOMAIN = 'mailit.ciudadanointeligente.org'
 
