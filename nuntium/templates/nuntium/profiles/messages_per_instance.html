@@ -35,7 +35,8 @@
         <thead>
           <tr>
             <th>{% trans "Message" %}</th>
-            <th class="text-center">{% trans "Replies"%}</th>
+            <th class="text-center">{% trans "Thread" %}</th>
+            <th class="text-center">{% trans "Replies" %}</th>
             <th class="text-center">{% trans "Public?" %}</th>
             <th class="text-center">{% trans "Confirmed?" %}</th>
             {% if writeitinstance.config.moderation_needed_in_all_messages %}
@@ -48,12 +49,21 @@
           {% for message in message_list %}
           <tr class="message-in-message-list">
             <td>
-              <h3><a href="{% url 'message_detail_private' subdomain=writeitinstance.slug pk=message.pk %}">{{ message.subject }}</a></h3>
+              <h3><a class="explanation" data-toggle="tooltip" data-placement="right" title="{% trans "Link to message admin" %}" 
+                href="{% url 'message_detail_private' subdomain=writeitinstance.slug pk=message.pk %}">{{ message.subject }}</a> </h3>
               <p class="message-in-message-list__meta">
                 {% blocktrans with created=message.created|timesince author_name=message.author_name to=message.people|join_with_commas %}
                   Sent <strong>{{ created }}</strong> ago to <strong>{{ to }}</strong> from <strong>{{ author_name }}</strong>
                 {% endblocktrans %}
               </p>
+            </td>
+
+            <td class="text-center">
+              {% if message.public and message.confirmated %}
+                <a class="explanation" data-toggle="tooltip" data-placement="left" 
+                  title="{% trans "Link to public message" %}" 
+                  href="{% url 'thread_read' slug=message.slug subdomain=message.writeitinstance.slug %}"><i class="fa fa-external-link"></i></a>
+              {% endif %}
             </td>
 
             <td class="text-center">
