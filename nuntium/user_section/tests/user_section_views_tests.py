@@ -549,7 +549,7 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
 
         response = c.post(url, data=self.data)
         instance = WriteItInstance.objects.get(Q(name='instance'), Q(owner=self.user))
-        self.assertRedirects(response, reverse('writeitinstance_basic_update', subdomain=instance.slug))
+        self.assertRedirects(response, reverse('welcome', subdomain=instance.slug))
         self.assertTrue(instance.persons.all())
 
     def test_create_an_instance_get_not_logged(self):
