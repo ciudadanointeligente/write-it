@@ -5,7 +5,6 @@ import textwrap
 from django.conf import settings
 from django.core.mail import mail_admins
 from django.core.mail.message import EmailMultiAlternatives
-from django.contrib.sites.models import get_current_site
 
 from smtplib import SMTPServerDisconnected, SMTPResponseException
 
@@ -46,7 +45,6 @@ class MailChannel(OutputPlugin):
         except:
             return False, False
 
-        full_url = ''.join(['http://', get_current_site(None).domain, writeitinstance.get_absolute_url()])
         author_name = outbound_message.message.author_name
         context = {
             'subject': outbound_message.message.subject,
@@ -54,7 +52,7 @@ class MailChannel(OutputPlugin):
             'content_indented': process_content(outbound_message.message.content),
             'person': outbound_message.contact.person.name,
             'author': author_name,
-            'writeit_url': full_url,
+            'writeit_url': writeitinstance.get_absolute_url(),
             'message_url': outbound_message.message.get_absolute_url(),
             'writeit_name': writeitinstance.name,
             'owner_email': writeitinstance.owner.email,
