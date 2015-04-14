@@ -58,24 +58,13 @@ class MailTemplateTestCase(TestCase):
         with codecs.open('mailit/templates/mailit/mails/content_template.txt', 'r', encoding='utf8') as f:
             self.content_template += f.read()
 
-    def test_it_has_a_template(self):
-        self.writeitinstance2.mailit_template.delete()
-        template = MailItTemplate.objects.create(
-            writeitinstance=self.writeitinstance2,
-            subject_template=u"hello somebody %(thing)s",
-            content_template=u"content thing %(another)s asdas",
-            )
-
-        self.assertTrue(template)
-        self.assertEquals(self.writeitinstance2.mailit_template, template)
-
     def test_mailit_template_has_some_default_data(self):
         self.writeitinstance2.mailit_template.delete()
 
         template = MailItTemplate.objects.create(writeitinstance=self.writeitinstance2)
 
-        self.assertEquals(template.subject_template, "[WriteIT] Message: {subject}")
-        self.assertEquals(template.content_template, self.content_template)
+        self.assertEquals(template.subject_template, "{subject}")
+        self.assertEquals(template.content_template, '')
 
     def test_when_creating_a_new_instance_then_a_new_template_is_created_automatically(self):
         '''
@@ -88,22 +77,9 @@ class MailTemplateTestCase(TestCase):
             )
 
         self.assertTrue(instance.mailit_template)
-        self.assertEquals(instance.mailit_template.subject_template, "[WriteIT] Message: {subject}")
-        self.assertEquals(instance.mailit_template.content_template, self.content_template)
+        self.assertEquals(instance.mailit_template.subject_template, "{subject}")
+        self.assertEquals(instance.mailit_template.content_template, '')
         self.assertEquals(instance.mailit_template.content_html_template, '')
-
-    def test_it_only_creates_templates_when_creating_not_when_updating(self):
-        instance = WriteItInstance.objects.create(
-            name=u'instance 234',
-            slug=u'instance-234',
-            owner=self.owner,
-            )
-
-        instance.save()
-
-        self.assertTrue(instance.mailit_template)
-        self.assertEquals(instance.mailit_template.subject_template, "[WriteIT] Message: {subject}")
-        self.assertEquals(instance.mailit_template.content_template, self.content_template)
 
 
 class MailSendingTestCase(TestCase):
@@ -143,11 +119,10 @@ class MailSendingTestCase(TestCase):
         message = mail.outbox[0]
         self.assertFalse(message.alternatives)
         self.assertIsInstance(message, EmailMultiAlternatives)
-        self.assertEquals(message.subject, '[WriteIT] Message: Subject 1')
+        self.assertEquals(message.subject, 'Subject 1')
 
         context = [
-            'Subject 1',
-            'Content 1',
+            '    Content 1',
             'Pedro',
             'Fiera',
             'instance1',
@@ -160,6 +135,23 @@ class MailSendingTestCase(TestCase):
 
         self.assertEquals(len(message.to), 1)
         self.assertIn("pdaire@ciudadanointeligente.org", message.to)
+
+    @override_settings(EMAIL_SUBJECT_PREFIX='[WriteIT]')
+    def test_content_justification(self):
+        activate('en')
+        self.outbound_message1.message.content = """Ar un o lethrau'r Berwyn y ganwyd ac y magwyd Ceiriog.  Gadawodd ei gartref anghysbell a mynyddig pan yn fachgen; a'i hiraeth am fynyddoedd a bugeiliaid bro ei febyd, tra ym mwg a thwrw Manceinion, roddodd fod i'w gan pan ar ei thlysaf ac ar ei thyneraf.
++
++Mab Richard a Phoebe Hughes, Pen y Bryn, Llanarmon Dyffryn Ceiriog, oedd John Ceiriog Hughes.  Ganwyd ef Medi 25ain, 1832.  Aeth i'r ysgol yn Nant y Glog, ger y llan.  Yn lle aros gartref ym Mhen y Bryn i amaethu ac i fugeila wedi gadael yr ysgol, trodd tua Chroesoswallt yn 1848, i swyddfa argraffydd.  Oddiyno, yn 1849, aeth i Fanceinion; ac yno y bu nes y daeth ei enw yn adnabyddus trwy Gymru.  Deffrowyd ei awen gan gapel, a chyfarfod llenyddol, a chwmni rhai, fel Idris Vychan, oedd yn rhoddi pris ar draddodiadau ac alawon Cymru."""
+
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+
+        self.assertEquals(len(mail.outbox), 1)  # it is sent to one person pointed in the contact
+        message = mail.outbox[0]
+
+        self.assertIn(
+            u"\n    Ar un o lethrau'r Berwyn y ganwyd ac y magwyd Ceiriog.  Gadawodd\n    ei gartref anghysbell a mynyddig pan yn fachgen; a'i hiraeth am\n    fynyddoedd a bugeiliaid bro ei febyd, tra ym mwg a thwrw\n    Manceinion, roddodd fod i'w gan pan ar ei thlysaf ac ar ei\n    thyneraf.\n    +\n    +Mab Richard a Phoebe Hughes, Pen y Bryn, Llanarmon Dyffryn\n    Ceiriog, oedd John Ceiriog Hughes.  Ganwyd ef Medi 25ain, 1832.\n    Aeth i'r ysgol yn Nant y Glog, ger y llan.  Yn lle aros gartref ym\n    Mhen y Bryn i amaethu ac i fugeila wedi gadael yr ysgol, trodd tua\n    Chroesoswallt yn 1848, i swyddfa argraffydd.  Oddiyno, yn 1849,\n    aeth i Fanceinion; ac yno y bu nes y daeth ei enw yn adnabyddus\n    trwy Gymru.  Deffrowyd ei awen gan gapel, a chyfarfod llenyddol, a\n    chwmni rhai, fel Idris Vychan, oedd yn rhoddi pris ar draddodiadau\n    ac alawon Cymru.\n",
+            message.body,
+            )
 
     @override_settings(EMAIL_SUBJECT_PREFIX='[WriteIT]')
     def test_sending_email_with_html(self):
@@ -175,10 +167,9 @@ class MailSendingTestCase(TestCase):
         message = mail.outbox[0]
         self.assertEquals(message.alternatives, [(u'<b>HTML here</b>', 'text/html')])
         self.assertIsInstance(message, EmailMultiAlternatives)
-        self.assertEquals(message.subject, '[WriteIT] Message: Subject 1')
+        self.assertEquals(message.subject, 'Subject 1')
 
         context = [
-            'Subject 1',
             'Content 1',
             'Pedro',
             'Fiera',
@@ -279,7 +270,7 @@ class MailSendingTestCase(TestCase):
 
     def test_template_string_keys(self):
         # template = self.writeitinstance2.mailit_template
-        self.writeitinstance2.mailit_template.content_template += "{author}"
+        self.writeitinstance2.mailit_template.content_template
         self.writeitinstance2.mailit_template.save()
 
         contact3 = Contact.objects.create(

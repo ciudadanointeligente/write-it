@@ -1,30 +1,14 @@
 Dear {person}
 
-You’ve received a message via WriteIt, the online service that allows
-anyone to write to politicians and other prominent people.
+{author} has sent you the following message via {writeit_name} ({writeit_url})
 
 
-The message is as follows:
-Subject: {subject}
-From: {author}
-Message body:
-{content}
+{content_indented}
 
 
-You can respond to {author}
-simply by replying to this email.
+You should respond to {author} by replying to this email.
 
-** IMPORTANT ** Note that, as well as being sent to
-{author},
-your response will be added to the
-{writeit_name} website at {writeit_url},
-where it will be public and visible to anyone.
+** IMPORTANT ** Note that, as well as being sent to {author}, your response will be published at {message_url}, where it will be public and visible to anyone.
 
+If there’s a better email address for you, please let us know at {owner_email}, where we’ll also be happy to answer any questions or problems.
 
-If there’s a better email address for you, please let us know at
-{owner_email},
-where we’ll also be happy to answer any questions or problems.
-
-
-All the best,
-The WriteIt team

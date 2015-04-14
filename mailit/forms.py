@@ -1,7 +1,8 @@
 from django.forms import ModelForm, TextInput, Textarea
-from .models import MailItTemplate
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
+
+from mailit.models import MailItTemplate, default_content_template
 
 
 class MailitTemplateForm(ModelForm):
@@ -14,9 +15,15 @@ class MailitTemplateForm(ModelForm):
 
         super(MailitTemplateForm, self).__init__(*args, **kwargs)
 
+        self.initial['content_template'] = self.initial['content_template'] or default_content_template
+
     def save(self, commit=True):
+        if self.cleaned_data['content_template'] == default_content_template:
+            self.cleaned_data['content_template'] = None
+
         template = super(MailitTemplateForm, self).save(commit=False)
         template.writeitinstance = self.writeitinstance
+
         if commit:
             template.save()
         return template

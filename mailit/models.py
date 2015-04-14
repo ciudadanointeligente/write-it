@@ -1,10 +1,10 @@
 from django.db import models
 from django.db.models.signals import post_save
-from nuntium.models import WriteItInstance, OutboundMessage, read_template_as_string,\
-    Answer
+from nuntium.models import WriteItInstance, OutboundMessage, Answer, read_template_as_string
 from django.utils.translation import ugettext_lazy as _
 
-content_template = read_template_as_string(
+
+default_content_template = read_template_as_string(
     'templates/mailit/mails/content_template.txt',
     file_source_path=__file__,
     )
@@ -13,18 +13,21 @@ content_template = read_template_as_string(
 class MailItTemplate(models.Model):
     subject_template = models.CharField(
         max_length=255,
-        default="[WriteIT] Message: {subject}",
+        default="{subject}",
         help_text=_('You can use {subject}, {content}, {person}, {author}, {writeit_url}, {writeit_name}, and {owner_email}'),
         )
     content_template = models.TextField(
-        default=content_template,
         help_text=_('You can use {subject}, {content}, {person}, {author}, {writeit_url}, {writeit_name}, and {owner_email}'),
+        blank=True,
         )
     content_html_template = models.TextField(
         blank=True,
         help_text=_('You can use {subject}, {content}, {person}, {author}, {writeit_url}, {writeit_name}, and {owner_email}'),
         )
     writeitinstance = models.OneToOneField(WriteItInstance, related_name='mailit_template')
+
+    def get_content_template(self):
+        return self.content_template or default_content_template
 
 
 def new_write_it_instance(sender, instance, created, **kwargs):
