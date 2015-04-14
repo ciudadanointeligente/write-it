@@ -600,7 +600,7 @@ class WelcomeView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(WelcomeView, self).get_context_data(**kwargs)
         # passing URLs in for easy insertion into the translation tags
-        context['url_template'] = reverse('writeitinstance_template_update', subdomain=self.request.subdomain)
+        context['url_template_update'] = reverse('writeitinstance_template_update', subdomain=self.request.subdomain)
         context['url_basic_update'] = reverse('writeitinstance_basic_update', subdomain=self.request.subdomain)
         context['url_maxrecipients_update'] = reverse('writeitinstance_maxrecipients_update', subdomain=self.request.subdomain)
         context['url_answernotification_update'] = reverse('writeitinstance_answernotification_update', subdomain=self.request.subdomain)
