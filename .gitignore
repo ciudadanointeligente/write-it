@@ -1,7 +1,6 @@
 *.log
 *.pot
 *.pyc
-local_settings.py
 *.DS_store
 *.mo
 *.db
@@ -21,3 +20,7 @@ src
 
 writeit/static/
 attachments/
+
+# Django settings files
+local_settings.py
+local_settings_*.py
