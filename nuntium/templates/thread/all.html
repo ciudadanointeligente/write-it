@@ -10,12 +10,15 @@
     {% autopaginate message_list %}
     <div class="results">
         <div class="results__messages">
+
           {% for message in message_list %}
             {% include "thread/message_mini.html" with message=message %}
           {% empty %}
             <p>{% trans 'There are currently no public messages on this site.' %}</p>
           {% endfor %}
+
           {% paginate %}
+
         </div>
         <div class="results__actions">
             {% comment "This is commented out as of #711 but it should probably come back to life once we finish #789" %}

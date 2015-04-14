@@ -195,12 +195,12 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social.apps.django_app.default',
-    'pagination',
     'annoying',
     'celery_haystack',
 
     'nuntium',
     'djangoplugins',
+    'pagination',
     'popit',
     'south',
     'contactos',
