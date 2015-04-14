@@ -4,7 +4,7 @@
 <nav role="navigation" class="sidebar__navigation">
   <ul class="navigation__list">
       <li{% if section == 'account' %} class="active"{% endif %}><a href="{% url 'account' subdomain=None %}">{% trans "Your Profile" %}</a></li>
-  <li{% if section == 'your-instances' %} class="active"{% endif %}><a href="{% url 'your-instances' subdomain=None %}">{% trans "Your sites" %}</a></li>
+  <li{% if section == 'your-instances' %} class="active"{% endif %}><a href="{% url 'your-instances' subdomain=None %}">{% trans "Your Sites" %}</a></li>
   {% if writeitinstance %}
     <li>
       <h2 class="navigation__instance-name">{{ writeitinstance.name }}</h2>
