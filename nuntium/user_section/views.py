@@ -248,7 +248,7 @@ class WriteItInstanceCreateView(CreateView):
 
     def get_success_url(self):
         return reverse(
-            'writeitinstance_basic_update',
+            'welcome',
             subdomain=self.object.slug
             )
 
@@ -586,3 +586,13 @@ class MessageTogglePublic(RedirectView):
         else:
             view_messages.info(self.request, _("This message has been marked as private"))
         return reverse('messages_per_writeitinstance', subdomain=self.request.subdomain)
+
+
+class WelcomeView(DetailView):
+    model = WriteItInstance
+    template_name = 'nuntium/profiles/welcome.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.kwargs['slug'] = request.subdomain
+        return super(WelcomeView, self).dispatch(request, *args, **kwargs)

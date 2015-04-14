@@ -44,6 +44,7 @@ from nuntium.user_section.views import (
     RejectMessageView,
     RejectModerationView,
     ReSyncFromPopit,
+    WelcomeView,
     WriteItPopitUpdateView,
 )
 from nuntium.user_section.stats import StatsView
@@ -87,6 +88,7 @@ managepatterns = patterns('',
     url(r'^messages/(?P<pk>[-\d]+)/toggle-public/$', MessageTogglePublic.as_view(), name='toggle_public'),
     url(r'^moderation_accept/(?P<slug>[-\w]+)/?$', AcceptModerationView.as_view(), name='moderation_accept'),
     url(r'^moderation_reject/(?P<slug>[-\w]+)/?$', RejectModerationView.as_view(), name='moderation_rejected'),
+    url(r'^welcome/$', WelcomeView.as_view(), name='welcome'),
 
 )
 
