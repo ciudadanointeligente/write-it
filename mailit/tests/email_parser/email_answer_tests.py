@@ -68,10 +68,11 @@ class AnswerHandlerTestCase(TestCase):
         email_answer.subject = 'prueba5'
         email_answer.email_to = 'Tony <instance-2+identifier123@writeit.org>'
         email_answer.outbound_message_identifier = 'identifier123'
-        email_answer.content_text = '''Thank you for your enquiry. I am completely in favour of this measure,
-and will certainly be voting for it.
-Tony 
-<instance-2+identifier123@writeit.org>:'''
+        email_answer.content_text = (
+            u'Thank you for your enquiry. I am completely in favour of this measure,\n'
+            u'and will certainly be voting for it.\n'
+            u'Tony \n'
+            u'<instance-2+identifier123@writeit.org>:')
         # There is an intended extra space after the word 'Tony'
         self.assertNotIn('<instance-', email_answer.content_text)
         self.assertNotIn('> :', email_answer.content_text)
