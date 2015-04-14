@@ -4,12 +4,12 @@
 
 {% if writeitinstance.config.testing_mode %}
   <div class="alert alert-info" role="alert">
-      <a href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">
       <i class="fa fa-info-circle"></i> 
       {% blocktrans %}
         This instance is in testing mode. 
         All mails will be sent to you, rather than the representatives.
-      {% endblocktrans %}</a>
+        Contact us when you're ready to go live!
+      {% endblocktrans %}
   </div>
 {% endif %}
 
