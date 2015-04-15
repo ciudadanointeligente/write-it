@@ -7,6 +7,7 @@ from contactos.views import ToggleContactEnabledView
 from mailit.views import MailitTemplateUpdateView
 from nuntium.models import AnswerAttachment
 from nuntium.views import (
+    AboutView,
     ConfirmView,
     HelpView,
     MessageThreadView,
@@ -115,4 +116,5 @@ urlpatterns = i18n_patterns('',
 
     url(r'^help/(?P<section_name>\w+)/?$', HelpView.as_view(), name='help_section'),
     url(r'^help/?$', HelpView.as_view()),
+    url(r'^about/?$', AboutView.as_view()),
 )
