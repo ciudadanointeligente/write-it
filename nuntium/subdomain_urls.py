@@ -7,6 +7,7 @@ from contactos.views import ToggleContactEnabledView
 from mailit.views import MailitTemplateUpdateView
 from nuntium.models import AnswerAttachment
 from nuntium.views import (
+    AboutView,
     ConfirmView,
     HelpView,
     MessageThreadView,
@@ -112,6 +113,8 @@ urlpatterns = i18n_patterns('',
     url(r'^attachment/(?P<pk>[-\d]+)/$', download_attachment_view, name='attachment'),
     url(r'^manage/', include(managepatterns)),
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', kwargs={'next_page': '/'}, name='logout'),
+
+    url(r'^about/?$', AboutView.as_view(), name='about'),
 
     url(r'^help/(?P<section_name>\w+)/?$', HelpView.as_view(), name='help_section'),
     url(r'^help/?$', HelpView.as_view()),
