@@ -159,7 +159,7 @@ class WriteItInstanceConfig(models.Model):
         have a moderation mail"), default=False)
     allow_messages_using_form = models.BooleanField(
         help_text=_("Allow the creation of new messages \
-        using the web"), default=True)
+        using the web"), default=settings.WEB_BASED)
     rate_limiter = models.IntegerField(default=0)
     notify_owner_when_new_answer = models.BooleanField(
         help_text=_("The owner of this instance \
