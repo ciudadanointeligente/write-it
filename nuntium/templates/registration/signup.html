@@ -10,7 +10,7 @@
         <p>If you've got an account sign in with it here. If not, it's quick and easy to <a href="#">sign up</a></p>
         <hr />
         <p>{% trans 'You can also&hellip;' %}</p>
-        <a class="btn btn-primary btn-full-width btn-google" href="{% url 'social:begin' 'google-oauth2' %}">
+        <a class="btn btn-primary btn-full-width btn-google" href="{% url 'social:begin' 'google-oauth2' %}{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}">
             <i class="fa fa-google"></i> Sign in with Google
         </a>
     </div>
