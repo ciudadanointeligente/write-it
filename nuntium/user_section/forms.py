@@ -160,9 +160,12 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
 
     def clean_slug(self):
         slug = self.cleaned_data['slug']
+        url_validator = validators.URLValidator(message="Enter a valid subdomain")
+        url = 'http://%s.example.com' % slug
+        url_validator(url)
         slug_exists = WriteItInstance.objects.filter(slug=slug).exists()
         if slug_exists:
-            raise ValidationError("This subdomain has already been taken.")
+            raise ValidationError(_("This subdomain has already been taken."))
         return slug
 
     def save(self, commit=True):
