@@ -158,6 +158,13 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
         self.fields['popit_url'].widget.attrs['required'] = True
         self.fields['slug'].widget.attrs['class'] = 'form-control'
 
+    def clean_slug(self):
+        slug = self.cleaned_data['slug']
+        slug_exists = WriteItInstance.objects.filter(slug=slug).exists()
+        if slug_exists:
+            raise ValidationError("This subdomain has already been taken.")
+        return slug
+
     def save(self, commit=True):
         instance = super(WriteItInstanceCreateForm, self).save(commit=False)
         slug = self.cleaned_data['slug']
