@@ -1,4 +1,6 @@
 # coding=utf-8
+import urlparse
+
 from django.forms import ModelForm, ModelMultipleChoiceField, SelectMultiple, URLField, Form, Textarea, TextInput, EmailInput
 from .models import Message, WriteItInstance, Confirmation
 
@@ -126,32 +128,25 @@ class PerInstanceSearchForm(SearchForm):
         super(PerInstanceSearchForm, self).__init__(*args, **kwargs)
         self.searchqueryset = self.searchqueryset.filter(writeitinstance=self.writeitinstance.id)
 
-popit_urls_completer = [
-    {
-        'regexp': r'^https?://(.*)\.popit.mysociety.org$',
-        'complete_with': '/api/v0.1'
-    },
-    {
-        'regexp': r'^https?://(.*)\.popit.mysociety.org/api$',
-        'complete_with': '/v0.1'
-    }
-]
-
 
 class PopitParsingFormMixin(object):
-    def other_possible_popit_url_parsings(self, popit_url):
-        if 'popit.mysociety.org' in popit_url and popit_url.startswith('http://'):
-            popit_url = popit_url.replace('http://', 'https://', 1)
-        return popit_url
+    def get_scheme(self, hostname):
+        if 'popit.mysociety.org' in hostname:
+            return 'https'
+        else:
+            return 'http'
 
     def get_popit_url_parsed(self, popit_url):
-        import re
-        popit_url = popit_url.strip("/")
-        for completer in popit_urls_completer:
-            if re.compile(completer['regexp']).match(popit_url):
-                popit_url = popit_url + completer['complete_with']
-
-        return self.other_possible_popit_url_parsings(popit_url)
+        url = urlparse.urlparse(popit_url)
+        popit_url = urlparse.urlunparse((
+            self.get_scheme(url.netloc),
+            url.netloc,
+            '/api/v0.1',
+            url.params,
+            url.query,
+            url.fragment
+        ))
+        return popit_url
 
     def clean_popit_url(self):
         popit_url = self.cleaned_data.get('popit_url')
