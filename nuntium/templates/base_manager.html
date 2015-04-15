@@ -95,23 +95,7 @@
 
     </div><!-- end wrap -->
 
-    <div id="footer">
-      <ul class="container">
-        <li class="fci">{% blocktrans %}Built by <a href="http://www.ciudadanointeligente.org">Fundación Ciudadano Inteligente</a>{% endblocktrans %}</li>
-        <li class="poplus-logo">
-          <a href="http://poplus.org/">
-            <img src="{% static 'img/icon-poplus.png' %}">
-            Poplus
-          </a>
-        </li>
-        <li class="github">
-          <a href="http://www.github.com/ciudadanointeligente/write-it">
-            <i class="fa fa-github"></i>
-            {% blocktrans %}Find the code at Github{% endblocktrans %}
-          </a>
-        </li>
-      </ul>
-    </div>
+    {% include 'footer.html' %}
 
     <!-- Bootstrap core JavaScript
     ================================================== -->

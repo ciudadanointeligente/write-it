@@ -120,26 +120,4 @@
     </div>
 {% endblock content %}
 
-{% block footer %}
-    <footer class="site-footer">
-        <div class="container">
-            <ul>
-                <li>
-                    {% blocktrans %}Built by <a href="http://www.ciudadanointeligente.org">Fundación Ciudadano Inteligente</a>{% endblocktrans %}
-                </li>
-                <li>
-                    <a href="http://poplus.org/">
-                        <img src="{% static 'img/icon-poplus.png' %}">
-                        Poplus
-                    </a>
-                </li>
-                <li>
-                    <a href="http://www.github.com/ciudadanointeligente/write-it">
-                        <i class="fa fa-github"></i>
-                        {% blocktrans %}Find the code at Github{% endblocktrans %}
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </footer>
-{% endblock footer %}
+{% block footer %}{% include 'footer.html' %}{% endblock footer %}

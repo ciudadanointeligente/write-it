@@ -1,0 +1,24 @@
+﻿{% load staticfiles %}
+{% load i18n %}
+    <footer class="site-footer">
+        <div class="container">
+            <ul>
+                <li>
+                    <a href="http://poplus.org/">
+                        <img src="{% static 'img/icon-poplus.png' %}">
+                        {% trans "A Poplus Component" %}
+                    </a>
+                </li>
+                <li>
+                    {% blocktrans %}Built by <a href="http://www.ciudadanointeligente.org">Fundación Ciudadano Inteligente</a>{% endblocktrans %}
+                </li>
+                <li>
+                    <a href="http://www.github.com/ciudadanointeligente/write-it">
+                        <i class="fa fa-github"></i>
+                        {% trans "Find the code at Github" %}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </footer>
+
