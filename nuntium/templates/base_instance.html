@@ -31,6 +31,7 @@
             <div class="site-header__nav" id="navbar" role="navigation">
                 <ul>
                     <li class="site-header__nav__link"><a href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{% trans "Home" %}</a></li>
+                    <li class="site-header__nav__link"><a href="{% url 'about' subdomain=writeitinstance.slug %}">{% trans "About" %}</a></li>
                   {% if writeitinstance.contacts.exists and writeitinstance.config.allow_messages_using_form %}
                     <li class="site-header__nav__link"><a href="{% url 'write_message' subdomain=writeitinstance.slug %}">{% trans "Send a message" %}</a></li>
                   {% endif %}
