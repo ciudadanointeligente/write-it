@@ -7,8 +7,38 @@
 
 {% block content %}
 <div class="page-header">
-    <h2>{% trans "Create a new Site" %}</h2>
+    <h2>{% trans "Create your new Site" %}</h2>
 </div>
+
+{% blocktrans %}
+<p>You’re going to make a site that enables people to contact their
+politicians.</p>
+
+<p>You will need:</p>
+
+<ul>
+  <li> Names and contact details for those politicians</li>
+  <li> A PopIt site to store them in</li>
+</ul>
+
+<p>Both sites work hand in hand: PopIt stores your data, and we fetch the
+names and contact details we need from there.</p>
+
+<h4>No PopIt site?</h4>
+
+Don’t worry, it takes just minutes to set one up. All you need is a spreadsheet with the basic data for your politicians. 
+
+The <a href="http://everypolitician.org/upload/">CSV importer at EveryPolitician</a> 
+will turn that data into the right format, and create a PopIt for you.
+
+<h4>Got your PopIt?</h4>
+
+<p>Great - you’re ready to begin!</p>
+
+<hr>
+
+{% endblocktrans %}
+
 <form method="POST">
     {% csrf_token %}
     {{form.as_p}}
