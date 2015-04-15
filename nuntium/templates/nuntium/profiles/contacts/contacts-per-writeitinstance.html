@@ -59,7 +59,9 @@ $(function() {
             <td>{% show_contacts_for person writeitinstance %}</td>
           </tr>
           {% empty %}
-          <tr><td colspan="3" class="text-center">{% trans "There are no People linked from Popit, connect to a data source to add some" %}</td></tr>
+          <tr><td colspan="3" class="text-center">{% trans "There are no People linked from Popit." %} 
+              <a href="{% url 'relate-writeit-popit' subdomain=writeitinstance.slug %}">{% trans "Connect to a data source to add some." %}</a>
+            </td></tr>
           {% endfor %}
         </tbody>
       </table>
