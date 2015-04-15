@@ -46,3 +46,10 @@ will turn that data into the right format, and create a PopIt for you.
 </form>
 
 {% endblock content %}
+
+{% block extrajs %}
+  $('#id_popit_url').keyup(function () {
+    var generated_slug = this.value.split('/')[2].split('.')[0];
+    $('#id_slug').val(generated_slug.toLowerCase());
+  });
+{% endblock extrajs %}
