@@ -101,14 +101,11 @@
             {% if writeitinstance.config.moderation_needed_in_all_messages %}
               {% if message.moderated %}
               <td class="text-center">
-                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has been accepted' %}"><i class="glyphicon glyphicon-ok"></i></div>
+                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has been accepted' %}"><i class="fa fa-check"></i></div>
               </td>
               {% else %}
               <td class="text-center">
-                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not yet been moderated — click here to accept it' %}">
-                    <form action="{% url 'accept_message' pk=message.pk %}" method="post">{% csrf_token %} <button class="btn btn-default btn-sm moderate">{% trans "Accept"%}</button>
-                    </form>
-                </div>
+                <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not yet been moderated' %}"><i class="fa fa-times"></i></div>
               </td>
               {% endif %}
             {% endif %}
