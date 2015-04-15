@@ -26,7 +26,7 @@ class WriteItInstanceBasicForm(ModelForm):
             'description': TextInput(
                 attrs={
                     'class': 'form-control',
-                    'placeholder': _('Write to the people in power. Get answers. Be heard.'),
+                    'placeholder': _('Write to the people who represent you.'),
                     }),
             }
 
