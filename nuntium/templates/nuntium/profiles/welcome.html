@@ -4,11 +4,7 @@
 {% block content %}
 
 <div class="page-header">
-    <h2>
-       {% blocktrans with name=writeitinstance.name %}
-         Welcome! This is {{ name }}
-       {% endblocktrans %}
-    </h2>
+    <h2>{% trans "Welcome" %}</h2>
 </div>
 
 <p>
@@ -27,19 +23,46 @@
   </p>
 {% endif %}
 <p>
-  {% if writeitinstance.persons.count %}
-    {% blocktrans count qty_pers=writeitinstance.persons.count %}
-      You've got only <a href="{{ url_recipients }}">one recipient</a> in your database.
+  {% if writeitinstance.persons_with_contacts.count %}
+    {% blocktrans count contactable_count=writeitinstance.persons_with_contacts.count %}
+      You've got only <a href="{{ url_recipients }}">one contactable recipient</a> in your database.
+      But that‘s enough to test out the process of writing to them!
     {% plural %}
-      You've got <a href="{{ url_recipients }}">{{ qty_pers }} recipients</a> in your database.
+      You've got <a href="{{ url_recipients }}">{{ contactable_count }} contactable recipients</a> in your database.
+      That‘s great — now you can test out the process of writing to them!
     {% endblocktrans %}
+
+    {% url 'instance_detail' as site_root %}
+    {% if writeitinstance.config.testing_mode %}
+      {% blocktrans %}Try it out at <a href="{{ site_root }}">your test site</a> —
+      don't worry: any emails you send will be sent to <b>you</b>, not
+      the politicians.{% endblocktrans %}
+    {% else %}
+      {% blocktrans %}Try it out at <a href="{{ site_root }}">your live site</a> —
+      but be careful: now that you're no longer in Test Mode, don‘t
+      forget that any messages you send will be sent to the politicans,
+      and will be live on the internet, for ever.{% endblocktrans %}
+    {% endif %}
+
+  {% elif writeitinstance.persons.count %}
+     {% blocktrans count all_contacts_count=writeitinstance.persons.count %}
+       We loaded one person from your PopIt source — but we couldn‘t 
+       detect their email addresss.
+       {% plural %}
+       We've loaded {{ all_contacts_count }} people from your
+       PopIt source — but we couldn‘t detect email addresses for them.
+     {% endblocktrans %}
+     {% blocktrans %}
+       <strong>You need to ensure that your PopIt contains email data,
+         or we won't know how to deliver messages.</strong>
+     {% endblocktrans %}
   {% else %}
     {% blocktrans %}
-      <strong>There are <a href="{{ url_recipients }}">no recipients</a> in your database</strong>
-      &mdash; you need to get some in there before anyone can send any messages!
-      <br>
-      Has your data source got recipients in it? Has it loaded OK?
+    We haven't loaded any data from your PopIt instance yet. Sometimes
+    that takes a few minutes, so try reloading this page after you‘ve
+    read the rest of it.
     {% endblocktrans %}
+
   {% endif %}
 </p>
 <p>
