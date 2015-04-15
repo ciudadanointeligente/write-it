@@ -136,12 +136,18 @@ class PopitParsingFormMixin(object):
         else:
             return scheme
 
+    def get_path(self, hostname, path):
+        if 'popit.mysociety.org' in hostname:
+            return '/api/v0.1'
+        else:
+            return path
+
     def get_popit_url_parsed(self, popit_url):
         url = urlparse.urlparse(popit_url)
         popit_url = urlparse.urlunparse((
             self.get_scheme(url.netloc, url.scheme),
             url.netloc,
-            '/api/v0.1',
+            self.get_path(url.netloc, url.path),
             url.params,
             url.query,
             url.fragment
