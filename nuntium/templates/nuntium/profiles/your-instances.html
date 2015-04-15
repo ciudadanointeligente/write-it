@@ -9,14 +9,6 @@
 
 {% block content %}
 
-{% if messages %}
-  <div class="alert alert-info" role="alert">
-    {% for message in messages %}
-    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-    {% endfor %}
-  </div>
-{% endif %}
-
       <div class="page-header">
         <h2>{% trans "Live Sites" %}</h2>
       </div>
