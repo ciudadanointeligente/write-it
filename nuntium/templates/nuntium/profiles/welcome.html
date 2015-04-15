@@ -26,14 +26,28 @@
   {% if writeitinstance.persons_with_contacts.count %}
     {% blocktrans count contactable_count=writeitinstance.persons_with_contacts.count %}
       You've got only <a href="{{ url_recipients }}">one contactable recipient</a> in your database.
+      But that‘s enough to test out the process of writing to them!
     {% plural %}
       You've got <a href="{{ url_recipients }}">{{ contactable_count }} contactable recipients</a> in your database.
+      That‘s great — now you can test out the process of writing to them!
     {% endblocktrans %}
-    {% trans "That‘s great — now you can test writing to them." %}
+
+    {% url 'instance_detail' as site_root %}
+    {% if writeitinstance.config.testing_mode %}
+      {% blocktrans %}Try it out at <a href="{{ site_root }}">your test site</a> —
+      don't worry: any emails you send will be sent to <b>you</b>, not
+      the politicians.{% endblocktrans %}
+    {% else %}
+      {% blocktrans %}Try it out at <a href="{{ site_root }}">your live site</a> —
+      but be careful: now that you're no longer in Test Mode, don‘t
+      forget that any messages you send will be sent to the politicans,
+      and will be live on the internet, for ever.{% endblocktrans %}
+    {% endif %}
+
   {% elif writeitinstance.persons.count %}
      {% blocktrans count all_contacts_count=writeitinstance.persons.count %}
-       We loaded {{ all_contacts_count }} person from your
-       PopIt source — but we couldn‘t detect their email addresss.
+       We loaded one person from your PopIt source — but we couldn‘t 
+       detect their email addresss.
        {% plural %}
        We've loaded {{ all_contacts_count }} people from your
        PopIt source — but we couldn‘t detect email addresses for them.
