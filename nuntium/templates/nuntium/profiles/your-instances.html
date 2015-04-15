@@ -70,7 +70,8 @@
       <hr />
       <div class="page-header">
         <h2>{% trans "Test Sites" %}</h2>
-        <p>
+        <p>{% trans "Sites are set to Testing Mode by default. Use the menu on the left to make sure that your site is set up in the way that you want it. When you are ready, contact us to let us know and we’ll put your site live." %}</p>
+        
             {% blocktrans count counter=test_sites.count %}
                 This site is in Test Mode:
             {% plural %}
