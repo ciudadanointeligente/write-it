@@ -2,7 +2,7 @@
 from urlparse import urlparse
 
 from django.forms import ModelForm, TextInput, Textarea, \
-    CheckboxInput, NumberInput
+    CheckboxInput, NumberInput, CharField
 from django.core import validators
 
 from nuntium.models import WriteItInstance, \
@@ -140,9 +140,15 @@ class SimpleInstanceCreateFormPopitUrl(WriteItInstanceCreateFormPopitUrl):
 
 
 class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
+    slug = CharField(
+        label=_("Subdomain"),
+        help_text=_("Choose wisely, this can't be changed. If left blank one will be automatically generated."),
+        required=False,
+        min_length=4,
+        )
     class Meta:
         model = WriteItInstance
-        fields = ('popit_url',)
+        fields = ('popit_url', 'slug')
 
     def __init__(self, *args, **kwargs):
         if 'owner' in kwargs:
@@ -150,9 +156,13 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
         super(WriteItInstanceCreateForm, self).__init__(*args, **kwargs)
         self.fields['popit_url'].widget.attrs['class'] = 'form-control'
         self.fields['popit_url'].widget.attrs['required'] = True
+        self.fields['slug'].widget.attrs['class'] = 'form-control'
 
     def save(self, commit=True):
         instance = super(WriteItInstanceCreateForm, self).save(commit=False)
+        slug = self.cleaned_data['slug']
+        if slug:
+            instance.slug = slug
         instance.owner = self.owner
         popit_url = self.cleaned_data['popit_url']
         about = get_about(popit_url)
