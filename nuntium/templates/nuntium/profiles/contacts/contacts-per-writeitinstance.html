@@ -8,7 +8,6 @@
 {% block extrajs %}
 $(function() {
   $('.toggle-enable').change(function() {
-
     $.ajax({
       url: "{% url 'toggle-enabled' %}",
       method: 'POST',
@@ -29,9 +28,7 @@ $(function() {
 {% endblock extrascripts %}
 
 {% block header %}
-
 {% include 'nuntium/profiles/per_instance_top_menu.html' with section='contacts-per-writeitinstance' %}
-
 {% endblock header %}
 
 {% block content %}
@@ -41,9 +38,9 @@ $(function() {
   </div>
   <div class="manager-overview">
     {% blocktrans count person_count=writeitinstance.persons.count %}
-    There is <strong>1</strong> recipient in your WriteIt
+    There is <strong>1</strong> Person linked from PopIt
     {% plural %}
-    There are <strong>{{ person_count }}</strong> recipients in your WriteIt
+    There are <strong>{{ person_count }}</strong> People linked from PopIt
     {% endblocktrans %}
   </div>
       {% autopaginate people %}
@@ -62,36 +59,13 @@ $(function() {
             <td>{% show_contacts_for person writeitinstance %}</td>
           </tr>
           {% empty %}
-          <tr><td colspan="3" class="text-center">{% trans "There are no recipients, connect to a data source to add some" %}</td></tr>
+          <tr><td colspan="3" class="text-center">{% trans "There are no People linked from Popit." %} 
+              <a href="{% url 'relate-writeit-popit' subdomain=writeitinstance.slug %}">{% trans "Connect to a data source to add some." %}</a>
+            </td></tr>
           {% endfor %}
         </tbody>
       </table>
       {% paginate %}
 
 
-<!-- Modal -->
-<div class="modal fade" id="addNewContact" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-    </div>
-  </div>
-</div>
-
-<script type="text/javascript">
-var loadAddNewContactModal = function(url, title){
-  console.log(title)
-  $('#myModalLabel').text(title)
-  $('.modal-body').load(url)
-  $('#addNewContact').modal('show')
-}
-$(function() {
-});
-</script>
 {% endblock content %}
