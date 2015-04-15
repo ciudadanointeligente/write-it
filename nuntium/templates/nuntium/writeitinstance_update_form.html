@@ -20,9 +20,7 @@
     <div class="page-header">
         <h2>
           {% trans "About your site" %}
-          {% if writeitinstance.pulling_from_popit_status.inprogress > 0 %}
-            <i class="fa fa-spinner fa-pulse" data-toggle="tooltip" data-placement="right" title="{% trans 'We are currently fetching data from PopIt' %}"></i>
-          {% endif %}
+          <span class="import_spinner"></span>
         </h2>
     </div>
 
@@ -43,12 +41,26 @@
       {% csrf_token %}
     </form>
 
-
-<script type="text/javascript">
-  $(function () {
-    $('[data-toggle="tooltip"]').tooltip()
-  })
-</script>
-    
-
 {% endblock content %}
+
+{% block extrajs %}
+
+  var spin_if_pulling = function(url) {
+    var spinning = '<i class="fa fa-spinner fa-pulse" data-toggle="tooltip" data-placement="right" title="{% trans 'We are currently fetching data from PopIt' %}"></i>';
+    $.get(url, function(status){
+      if (status.inprogress >= 1){
+        $(".import_spinner").html(spinning);
+        $('[data-toggle="tooltip"]').tooltip()
+        setTimeout( spin_if_pulling, 2000, url)
+      } else {
+        $(".import_spinner").text("");
+      }
+    })
+  };
+
+  $(function(){
+    spin_if_pulling("{% url 'pulling_status' subdomain=writeitinstance.slug %}");
+  });
+
+{% endblock %}
+
