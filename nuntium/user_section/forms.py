@@ -141,8 +141,8 @@ class SimpleInstanceCreateFormPopitUrl(WriteItInstanceCreateFormPopitUrl):
 
 class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
     slug = CharField(
-        label=_("Subdomain"),
-        help_text=_("Choose wisely, this can't be changed. If left blank one will be automatically generated."),
+        label=_("The subdomain your site will run at"),
+        help_text=_("Choose wisely; this can't be changed. If you leave this blank, we'll generate one for you."),
         required=False,
         min_length=4,
         )
