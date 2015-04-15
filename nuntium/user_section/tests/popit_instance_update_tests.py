@@ -187,19 +187,6 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         self.assertTrue(messages)
         self.assertEquals(messages[0].message, _('We could not connect with the URL'))
 
-    def test_insights_about_pulling_popit_even_if_everything_goes_ok(self):
-        '''Return some insights even if everything goes ok'''
-        self.client.login(username="fieraferoz", password="feroz")
-        url = reverse('relate-writeit-popit', subdomain=self.writeitinstance.slug)
-        data = self.data
-        response = self.client.post(url, data=data)
-        expected_follow_url = reverse('relate-writeit-popit', subdomain=self.writeitinstance.slug)
-        self.assertRedirects(response, expected_follow_url)
-        response = self.client.get(expected_follow_url)
-        messages = list(response.context['messages'])
-        self.assertTrue(messages)
-        self.assertEquals(messages[0].message, _("We are now getting the people from popit"))
-
     def test_get_the_url(self):
         form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
         form.is_valid()

@@ -486,7 +486,6 @@ class WriteitPopitRelatingView(FormView):
         form.relate()
         # It returns an AsyncResult http://celery.readthedocs.org/en/latest/reference/celery.result.html
         # that we could use for future information about this process
-        view_messages.add_message(self.request, view_messages.INFO, _("We are now getting the people from popit"))
         return super(WriteitPopitRelatingView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
