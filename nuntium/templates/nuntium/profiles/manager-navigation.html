@@ -9,11 +9,13 @@
     <li class="{% if section == 'contacts-per-writeitinstance' %}active{% endif %}"><a href="{% url 'contacts-per-writeitinstance' subdomain=writeitinstance.slug %}">
       <i class="fa fa-user"></i> 
       {% trans "Recipients" %}
+      <span class="badge">{{ writeitinstance.persons.count }}</span>
     </a></li>
     
     <li class="{% if section == 'messages_per_writeitinstance' %}active{% endif %}"><a href="{% url 'messages_per_writeitinstance' subdomain=writeitinstance.slug %}">
       <i class="fa fa-envelope-o"></i> 
       {% trans "Messages" %}
+      <span class="badge">{{ writeitinstance.message_set.count }}</span>
     </a></li>
     <li class="{% if section == 'relate-writeit-popit' %}active{% endif %}"><a href="{% url 'relate-writeit-popit' subdomain=writeitinstance.slug %}">
       <i class="fa fa-database"></i> 
