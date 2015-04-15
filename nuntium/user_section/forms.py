@@ -1,4 +1,6 @@
 # coding=utf-8
+from urlparse import urlparse
+
 from django.forms import ModelForm, TextInput, Textarea, \
     CheckboxInput, NumberInput
 from django.core import validators
@@ -7,6 +9,7 @@ from nuntium.models import WriteItInstance, \
     NewAnswerNotificationTemplate, \
     ConfirmationTemplate, Answer, WriteItInstanceConfig, \
     WriteitInstancePopitInstanceRecord
+from nuntium.popit_api_instance import get_about
 
 from django.forms import ValidationError, ModelChoiceField, Form, URLField
 
@@ -139,10 +142,7 @@ class SimpleInstanceCreateFormPopitUrl(WriteItInstanceCreateFormPopitUrl):
 class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
     class Meta:
         model = WriteItInstance
-        fields = ('name', 'popit_url')
-        widgets = {
-            'name': TextInput(attrs={'class': 'form-control', 'required': True}),
-        }
+        fields = ('popit_url',)
 
     def __init__(self, *args, **kwargs):
         if 'owner' in kwargs:
@@ -154,6 +154,10 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
     def save(self, commit=True):
         instance = super(WriteItInstanceCreateForm, self).save(commit=False)
         instance.owner = self.owner
+        popit_url = self.cleaned_data['popit_url']
+        about = get_about(popit_url)
+        subdomain = urlparse(popit_url).netloc.split('.')[0]
+        instance.name = about.get('name', subdomain)
         instance.save()
         self.relate_with_people()
         return instance
