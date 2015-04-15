@@ -4,9 +4,107 @@
 {% block content %}
 
 <div class="page-header">
-    <h2>{% trans "Welcome" %}</h2>
+    <h2>
+       {% blocktrans with name=writeitinstance.name %}
+         Welcome! This is {{ name }}
+       {% endblocktrans %}
+    </h2>
 </div>
 
-<p>{% trans "Write to your representative etc." %}</p>
+<p>
+  {% blocktrans with name=writeitinstance.name %}
+    This is your &ldquo;{{name}}&rdquo; message-sending site.
+  {% endblocktrans %}
+</p>
+{% if writeitinstance.config.testing_mode %}
+  <p>
+    {% blocktrans %}
+      You're currently running in <strong>testing mode</strong>, so all
+      the emails sent will go to you (and not the recipients).
+      Contact us when you want this restriction lifted and you're ready to
+      send real messages to real people!
+    {% endblocktrans %}
+  </p>
+{% endif %}
+<p>
+  {% if writeitinstance.persons.count %}
+    {% blocktrans count qty_pers=writeitinstance.persons.count %}
+      You've got only <a href="{{ url_recipients }}">one recipient</a> in your database.
+    {% plural %}
+      You've got <a href="{{ url_recipients }}">{{ qty_pers }} recipients</a> in your database.
+    {% endblocktrans %}
+  {% else %}
+    {% blocktrans %}
+      <strong>There are <a href="{{ url_recipients }}">no recipients</a> in your database</strong>
+      &mdash; you need to get some in there before anyone can send any messages!
+      <br>
+      Has your data source got recipients in it? Has it loaded OK?
+    {% endblocktrans %}
+  {% endif %}
+</p>
+<p>
+  {% blocktrans %}
+     Here are the things you need to check you've done before everything will work properly.
+  {% endblocktrans %}
+</p>
+<ul>
+  <li>
+    <p>
+      {% if writeitinstance.description %}
+        {% blocktrans with desc=writeitinstance.description %}
+          <a href="{{ url_basic_update }}">change the description</a>
+          (which is &ldquo;{{ desc }}&rdquo;)
+        {% endblocktrans %}
+      {% else %}
+        {% blocktrans with desc=writeitinstance.description %}
+          <a href="{{ url_basic_update }}">set the description</a>
+        {% endblocktrans %}
+      {% endif %}
+    </p>
+  </li>
+  <li>
+    <p>
+      {% blocktrans %}
+        <a href="{{ url_template_update }}">update the email templates</a> so the
+        messages your site sends out are exactly how you want them
+      {% endblocktrans %}
+    </p>
+  </li>
+  <li>
+    <p>
+      {% blocktrans %}
+        pick the right options for things like:
+      {% endblocktrans %}
+    </p>
+    <ul>
+      <li>
+        <p>
+          {% blocktrans %}
+            <a href="{{ url_maxrecipients_update }}">how many recipients</a>
+            a message can go to (just one, or many?)
+          {% endblocktrans %}
+        </p>
+      </li>
+      <li>
+        <p>
+          {% blocktrans %}
+            how often to check for new data (which really means: do you
+            expect the 
+            <a href="{{ url_data_sources }}">data source</a> to change?)
+          {% endblocktrans %}
+        </p>
+      </li>
+      <li>
+        <p>
+          {% blocktrans %}
+            do you want to
+             <a href="{{ url_answernotification_update }}">receive a notification email</a>
+             every time someone gets a reply? 
+          {% endblocktrans %}
+        </p>
+      </li>
+    </ul>
+  </li>
+</ul>
 
 {% endblock content%}

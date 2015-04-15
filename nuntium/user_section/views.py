@@ -596,3 +596,17 @@ class WelcomeView(DetailView):
     def dispatch(self, request, *args, **kwargs):
         self.kwargs['slug'] = request.subdomain
         return super(WelcomeView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(WelcomeView, self).get_context_data(**kwargs)
+        # passing URLs in for easy insertion into the translation tags
+        # because we're using an overridden version of the url tag that
+        # doesn't allow the use of "as" to pass the url as a variable
+        # that can be quoted within a translation block. *sigh*
+        context['url_template_update'] = reverse('writeitinstance_template_update', subdomain=self.request.subdomain)
+        context['url_basic_update'] = reverse('writeitinstance_basic_update', subdomain=self.request.subdomain)
+        context['url_maxrecipients_update'] = reverse('writeitinstance_maxrecipients_update', subdomain=self.request.subdomain)
+        context['url_answernotification_update'] = reverse('writeitinstance_answernotification_update', subdomain=self.request.subdomain)
+        context['url_recipients'] =  reverse('contacts-per-writeitinstance', subdomain=self.request.subdomain)
+        context['url_data_sources'] = reverse('relate-writeit-popit', subdomain=self.request.subdomain)
+        return context
