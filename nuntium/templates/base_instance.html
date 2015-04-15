@@ -105,9 +105,6 @@
         <div class="container">
             <h3 class="site-alert__heading">{% trans "This site is in Test Mode." %}</h3>
             <p class="site-alert__description">{% trans "Any messages you write will be sent to the site administrator rather than real representatives." %}</p>
-          {% if user.is_authenticated %}
-            <a class="site-alert__cta" href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{% trans "Disable Test Mode in Settings" %}</a>
-          {% endif %}
         </div>
     </div>
   {% endif %}
