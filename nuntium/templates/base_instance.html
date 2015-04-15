@@ -31,6 +31,7 @@
             <div class="site-header__nav" id="navbar" role="navigation">
                 <ul>
                     <li class="site-header__nav__link"><a href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{% trans "Home" %}</a></li>
+                    <li class="site-header__nav__link"><a href="{% url 'about' subdomain=writeitinstance.slug %}">{% trans "About" %}</a></li>
                   {% if writeitinstance.contacts.exists and writeitinstance.config.allow_messages_using_form %}
                     <li class="site-header__nav__link"><a href="{% url 'write_message' subdomain=writeitinstance.slug %}">{% trans "Send a message" %}</a></li>
                   {% endif %}
@@ -86,17 +87,17 @@
             <h3 class="site-alert__heading">{% trans "This site is read-only." %}</h3>
             <p class="site-alert__description">{% trans "You can’t currently create new messages using this site." %}</p>
           {% if user.is_authenticated %}
-            <a class="site-alert__cta" href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{% trans "Change this in Settings" %}</a>
+            <a class="site-alert__cta" href="{% url 'writeitinstance_webbased_update' subdomain=writeitinstance.slug %}">{% trans "Change this in Settings" %}</a>
           {% endif %}
         </div>
     </div>
-  {% elif writeitinstance and not writeitinstance.persons.exists %}
+  {% elif writeitinstance and not writeitinstance.persons_with_contacts %}
     <div class="site-alert">
         <div class="container">
             <h3 class="site-alert__heading">{% trans "This site has no recipients." %}</h3>
             <p class="site-alert__description">{% trans "There is no-one to write to yet. Please check back soon." %}</p>
           {% if user.is_authenticated %}
-            <a class="site-alert__cta" href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{% trans "Import people from PopIt" %}</a>
+            <a class="site-alert__cta" href="{% url 'relate-writeit-popit' subdomain=writeitinstance.slug %}">{% trans "Import people from PopIt" %}</a>
           {% endif %}
         </div>
     </div>
@@ -120,26 +121,4 @@
     </div>
 {% endblock content %}
 
-{% block footer %}
-    <footer class="site-footer">
-        <div class="container">
-            <ul>
-                <li>
-                    {% blocktrans %}Built by <a href="http://www.ciudadanointeligente.org">Fundación Ciudadano Inteligente</a>{% endblocktrans %}
-                </li>
-                <li>
-                    <a href="http://poplus.org/">
-                        <img src="{% static 'img/icon-poplus.png' %}">
-                        Poplus
-                    </a>
-                </li>
-                <li>
-                    <a href="http://www.github.com/ciudadanointeligente/write-it">
-                        <i class="fa fa-github"></i>
-                        {% blocktrans %}Find the code at Github{% endblocktrans %}
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </footer>
-{% endblock footer %}
+{% block footer %}{% include 'footer.html' %}{% endblock footer %}
