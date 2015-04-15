@@ -160,6 +160,8 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
 
     def clean_slug(self):
         slug = self.cleaned_data['slug']
+        if not slug:
+            return slug
         url_validator = validators.URLValidator(message="Enter a valid subdomain")
         url = 'http://%s.example.com' % slug
         url_validator(url)
