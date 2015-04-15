@@ -21,7 +21,7 @@
         <p class="form-group">
             <label for="id_draft-content" class="label-with-hint">
               {% trans "Your message" %}
-              <small>{% trans "This will be published, with your name, on this site." %}</small>
+              <small>{% trans "This will be published, on this site." %}</small>
             </label>
             {{ form.content.errors }}
             {{ form.content }}
@@ -30,7 +30,10 @@
         <div class="row">
             <div class="col-sm-6">
                 <p class="form-group">
-                    <label for="id_draft-author_name">Your name</label>
+                    <label for="id_draft-author_name" class="label-with-hint">
+                        {% trans "Your name" %}
+                        <small>{% trans "This will be published, on this site." %}</small>
+                        </label>
                     {{ form.author_name.errors }}
                     {{ form.author_name }}
                 </p>
