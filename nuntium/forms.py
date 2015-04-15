@@ -140,8 +140,8 @@ popit_urls_completer = [
 
 class PopitParsingFormMixin(object):
     def other_possible_popit_url_parsings(self, popit_url):
-        if popit_url.startswith('https://'):
-            popit_url = popit_url.replace('https://', 'http://', 1)
+        if popit_url.startswith('http://'):
+            popit_url = popit_url.replace('http://', 'https://', 1)
         return popit_url
 
     def get_popit_url_parsed(self, popit_url):
