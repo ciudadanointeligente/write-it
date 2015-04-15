@@ -12,11 +12,13 @@
 
     <div class="writing-step">
         <div class="writing-step__congratulations">
-            <h2>{% trans "Your message has been sent" %} :&thinsp;)</h2>
-            <p>{% trans "We will email you when there’s a reply.<br/>Or you can bookmark this page and check back later." %}</p>
+            <h2>{% trans "Your message is on its way." %}</h2>
+            <p>{% trans "We'll email you as soon as there‘s a reply." %}
+            <p>{% trans "We’ve published it too: your letter and any replies will be visible to everyone, on this page." %}</p>
         </div>
 
         {% include "thread/message.html" with recently_sent=True person_links=True message=message %}
+        <p class="thread__messages__no-replies">{% trans "Future replies will be published here." %}</p>
 
         <div class="post-message-actions">
             <a href="{% url 'message_threads' subdomain=writeitinstance.slug %}" class="post-message-actions__back">{% trans "Back to all messages" %}</a>
