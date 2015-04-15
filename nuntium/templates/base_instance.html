@@ -90,7 +90,7 @@
           {% endif %}
         </div>
     </div>
-  {% elif writeitinstance and not writeitinstance.persons.exists %}
+  {% elif writeitinstance and not writeitinstance.persons_with_contacts %}
     <div class="site-alert">
         <div class="container">
             <h3 class="site-alert__heading">{% trans "This site has no recipients." %}</h3>
