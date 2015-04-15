@@ -2,6 +2,7 @@ from popit.models import ApiInstance, Person, get_paginated_generator
 from contactos.models import Contact
 from mailit import MailChannel
 from datetime import datetime
+import slumber
 
 
 def get_date_or_none(membership_doc, key, format="%Y-%m-%d"):
@@ -25,6 +26,15 @@ def is_current_membership(membership_doc, start_date_key='start_date', end_date_
     start_date = get_date_or_none(membership_doc, start_date_key)
     end_date = get_date_or_none(membership_doc, end_date_key)
     return _is_current_membership(start_date, end_date)
+
+
+def get_about(url):
+        try:
+            api = slumber.API(url.replace('/v0.1', ''))
+            response = api.about().get()
+            return response.get('result', {})
+        except slumber.exceptions.HttpClientError:
+            return {}
 
 
 class PopitPerson(Person):

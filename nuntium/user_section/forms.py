@@ -1,12 +1,15 @@
 # coding=utf-8
+from urlparse import urlparse
+
 from django.forms import ModelForm, TextInput, Textarea, \
-    CheckboxInput, NumberInput
+    CheckboxInput, NumberInput, CharField
 from django.core import validators
 
 from nuntium.models import WriteItInstance, \
     NewAnswerNotificationTemplate, \
     ConfirmationTemplate, Answer, WriteItInstanceConfig, \
     WriteitInstancePopitInstanceRecord
+from nuntium.popit_api_instance import get_about
 
 from django.forms import ValidationError, ModelChoiceField, Form, URLField
 
@@ -137,12 +140,15 @@ class SimpleInstanceCreateFormPopitUrl(WriteItInstanceCreateFormPopitUrl):
 
 
 class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
+    slug = CharField(
+        label=_("Subdomain"),
+        help_text=_("Choose wisely, this can't be changed. If left blank one will be automatically generated."),
+        required=False,
+        min_length=4,
+        )
     class Meta:
         model = WriteItInstance
-        fields = ('name', 'popit_url')
-        widgets = {
-            'name': TextInput(attrs={'class': 'form-control', 'required': True}),
-        }
+        fields = ('popit_url', 'slug')
 
     def __init__(self, *args, **kwargs):
         if 'owner' in kwargs:
@@ -150,10 +156,28 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
         super(WriteItInstanceCreateForm, self).__init__(*args, **kwargs)
         self.fields['popit_url'].widget.attrs['class'] = 'form-control'
         self.fields['popit_url'].widget.attrs['required'] = True
+        self.fields['slug'].widget.attrs['class'] = 'form-control'
+
+    def clean_slug(self):
+        slug = self.cleaned_data['slug']
+        url_validator = validators.URLValidator(message="Enter a valid subdomain")
+        url = 'http://%s.example.com' % slug
+        url_validator(url)
+        slug_exists = WriteItInstance.objects.filter(slug=slug).exists()
+        if slug_exists:
+            raise ValidationError(_("This subdomain has already been taken."))
+        return slug
 
     def save(self, commit=True):
         instance = super(WriteItInstanceCreateForm, self).save(commit=False)
+        slug = self.cleaned_data['slug']
+        if slug:
+            instance.slug = slug
         instance.owner = self.owner
+        popit_url = self.cleaned_data['popit_url']
+        about = get_about(popit_url)
+        subdomain = urlparse(popit_url).netloc.split('.')[0]
+        instance.name = about.get('name', subdomain)
         instance.save()
         self.relate_with_people()
         return instance
