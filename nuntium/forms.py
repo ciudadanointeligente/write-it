@@ -130,16 +130,16 @@ class PerInstanceSearchForm(SearchForm):
 
 
 class PopitParsingFormMixin(object):
-    def get_scheme(self, hostname):
+    def get_scheme(self, hostname, scheme):
         if 'popit.mysociety.org' in hostname:
             return 'https'
         else:
-            return 'http'
+            return scheme
 
     def get_popit_url_parsed(self, popit_url):
         url = urlparse.urlparse(popit_url)
         popit_url = urlparse.urlunparse((
-            self.get_scheme(url.netloc),
+            self.get_scheme(url.netloc, url.scheme),
             url.netloc,
             '/api/v0.1',
             url.params,
