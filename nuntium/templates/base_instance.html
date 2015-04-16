@@ -62,12 +62,17 @@
                                 </a>
                             </li>
                             <li>
+                            {% if user.id == writeitinstance.owner.id %}
                               {% if writeitinstance.config.testing_mode %}
                                 <a href="{% url 'welcome' subdomain=writeitinstance.slug %}">
                               {% else %}
                                 <a href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">
                               {% endif %}
                                     <span class="glyphicon glyphicon-cog"></span>
+                            {% else %}
+                                <a href="{% url 'your-instances' subdomain=None %}">
+                                    <span class="glyphicon glyphicon-tasks"></span>
+                            {% endif %}
                                     {% trans "Site Manager" %}
                                 </a>
                             </li>
