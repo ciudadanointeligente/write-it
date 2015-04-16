@@ -25,10 +25,12 @@
       <i class="fa fa-file"></i> 
       {% trans "Templates" %}
     </a></li>
+  {% if API_BASED %}
     <li class="{% if section == 'writeitinstance_api_docs' %}active{% endif %}"><a href="{% url 'writeitinstance_api_docs' subdomain=writeitinstance.slug %}">
       <i class="fa fa-plug"></i> 
       {% trans "API" %}
     </a></li>
+  {% endif %}
     <li class="{% if section == 'stats' %}active{% endif %}"><a href="{% url 'stats' subdomain=writeitinstance.slug %}">
       <i class="fa fa-area-chart"></i> 
       {% trans "Stats" %}
