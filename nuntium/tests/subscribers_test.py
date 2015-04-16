@@ -145,7 +145,9 @@ class NewAnswerNotificationToSubscribers(TestCase):
             'author_name': 'Fiera',
             'person': 'Pedro',
             'subject': 'Subject 1',
-            'content': self.answer_content,
+            # Wer'e not including content here until we can include attachments too
+            # See #930.
+            # 'content': self.answer_content,
             'writeit_name': 'instance 1',
             'message_url_part': 'thread/subject-1',
             }
