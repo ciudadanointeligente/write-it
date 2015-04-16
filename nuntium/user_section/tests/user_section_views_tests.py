@@ -1,7 +1,6 @@
 from subdomains.utils import reverse
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.db.models import Q
 from django.test.client import RequestFactory
 from django.utils.unittest import skipUnless
 from popit.models import Person

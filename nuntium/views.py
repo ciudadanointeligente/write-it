@@ -308,4 +308,3 @@ class HelpView(TemplateView):
             return ["help/{}.html".format(self.kwargs['section_name'])]
         else:
             return ["help/index.html"]
-
