@@ -57,13 +57,17 @@
                             <li class="divider"></li>
                             <li>
                                 <a href="{% url 'account' subdomain=None %}">
-                                    <span class="glyphicon glyphicon-cog"></span>
+                                    <span class="glyphicon glyphicon-user"></span>
                                     {% trans "Your Profile" %}
                                 </a>
                             </li>
                             <li>
-                                <a href="{% url 'your-instances' subdomain=None %}">
-                                    <span class="glyphicon glyphicon-tasks"></span>
+                              {% if writeitinstance.config.testing_mode %}
+                                <a href="{% url 'welcome' subdomain=writeitinstance.slug %}">
+                              {% else %}
+                                <a href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">
+                              {% endif %}
+                                    <span class="glyphicon glyphicon-cog"></span>
                                     {% trans "Site Manager" %}
                                 </a>
                             </li>
