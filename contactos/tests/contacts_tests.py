@@ -16,6 +16,7 @@ from subdomains.utils import reverse
 import simplejson as json
 from nuntium.models import WriteItInstance
 from django.db.models import Q
+from django.contrib.sites.models import Site
 
 
 class ContactTestCase(TestCase):
@@ -269,7 +270,7 @@ class ResendOutboundMessages(TestCase):
 
     def test_resends_only_failed_outbound_messages(self):
         message = Message.objects.get(id=1)
-        OutboundMessage.objects.create(message=message, contact=self.contact, status="ready")
+        OutboundMessage.objects.create(message=message, contact=self.contact, status="ready", site=Site.objects.get_current())
         self.contact.resend_messages()
         current_amount_of_mails_sent_after_resend_messages = len(mail.outbox)
         self.assertEquals(current_amount_of_mails_sent_after_resend_messages - self.previous_amount_of_mails,

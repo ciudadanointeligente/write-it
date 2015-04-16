@@ -5,6 +5,7 @@ from requests.models import Request
 
 from django.utils.unittest import skip
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 
 from nuntium.models import OutboundMessage, OutboundMessageIdentifier, Message, OutboundMessagePluginRecord, Answer
 from contactos.models import Contact
@@ -324,7 +325,7 @@ class BouncedMailInAmazonBug(TestCase):
         super(BouncedMailInAmazonBug, self).setUp()
         self.message = Message.objects.get(id=1)
         self.contact = Contact.objects.get(value="mailnoexistente@ciudadanointeligente.org")
-        self.outbound_message = OutboundMessage.objects.create(message=self.message, contact=self.contact)
+        self.outbound_message = OutboundMessage.objects.create(message=self.message, contact=self.contact, site=Site.objects.get_current())
         identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
         identifier.key = "4aaaabbb"
         identifier.save()
@@ -353,7 +354,7 @@ class BouncedMailInGmail(TestCase):
         self.message = Message.objects.get(id=1)
         self.contact = Contact.objects.get(value="mailnoexistente@ciudadanointeligente.org")
         self.outbound_message = OutboundMessage.objects.create(
-            message=self.message, contact=self.contact)
+            message=self.message, contact=self.contact, site=Site.objects.get_current())
         self.outbound_message.send()
         identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
         identifier.key = "4aaaabbb"
@@ -386,7 +387,7 @@ class EmailReadingExamplesTestCase(TestCase):
         super(EmailReadingExamplesTestCase, self).setUp()
         self.message = Message.objects.get(id=1)
         self.contact = Contact.objects.get(value="falvarez@ciudadanointeligente.cl")
-        self.outbound_message = OutboundMessage.objects.create(message=self.message, contact=self.contact)
+        self.outbound_message = OutboundMessage.objects.create(message=self.message, contact=self.contact, site=Site.objects.get_current())
         self.outbound_message.send()
         identifier = OutboundMessageIdentifier.objects.get(outbound_message=self.outbound_message)
         identifier.key = "7e460e9c462411e38ef81231400178dd"
