@@ -21,6 +21,7 @@ import re
 from django.db.models import Q
 import requests
 from django.utils.timezone import now
+from django.contrib.sites.models import Site
 
 from annoying.fields import AutoOneToOneField
 
@@ -380,7 +381,7 @@ class Message(models.Model):
         for contact in person.contact_set.filter(writeitinstance=self.writeitinstance):
             if not contact.is_bounced:
                 OutboundMessage.objects.get_or_create(
-                    contact=contact, message=self)
+                    contact=contact, message=self, site=Site.objects.get_current())
 
     def save(self, *args, **kwargs):
         created = self.id is None
@@ -574,6 +575,7 @@ class AbstractOutboundMessage(models.Model):
         choices=STATUS_CHOICES,
         default="new",
         )
+    site = models.ForeignKey(Site)
 
     class Meta:
         abstract = True
@@ -608,6 +610,7 @@ def create_new_outbound_messages_for_newly_created_contact(sender, instance, cre
             # here I should test that it also
             # copies the status
             status=no_contact_om.status,
+            site=Site.objects.get_current(),
             )
 
     no_contact_oms.delete()
