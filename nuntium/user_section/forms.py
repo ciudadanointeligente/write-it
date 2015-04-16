@@ -1,22 +1,43 @@
 # coding=utf-8
 from urlparse import urlparse
 
-from django.forms import ModelForm, TextInput, Textarea, \
-    CheckboxInput, NumberInput, CharField
+from django.conf import settings
 from django.core import validators
-
-from nuntium.models import WriteItInstance, \
-    NewAnswerNotificationTemplate, \
-    ConfirmationTemplate, Answer, WriteItInstanceConfig, \
-    WriteitInstancePopitInstanceRecord
-from nuntium.popit_api_instance import get_about
-
-from django.forms import ValidationError, ModelChoiceField, Form, URLField
+from django.forms import (
+    CharField,
+    CheckboxInput,
+    Form,
+    ModelChoiceField,
+    ModelForm,
+    NumberInput,
+    TextInput,
+    Textarea,
+    URLField,
+    ValidationError,
+    )
 
 from django.utils.translation import ugettext as _
+
 from popit.models import Person
-from ..forms import WriteItInstanceCreateFormPopitUrl, PopitParsingFormMixin
-from django.conf import settings
+
+from nuntium.models import (
+    Answer,
+    ConfirmationTemplate,
+    NewAnswerNotificationTemplate,
+    WriteItInstance,
+    WriteItInstanceConfig,
+    WriteitInstancePopitInstanceRecord,
+    default_confirmation_template_content_text,
+    default_confirmation_template_subject,
+    default_new_answer_content_template,
+    default_new_answer_subject_template,
+    )
+from nuntium.popit_api_instance import get_about
+
+from ..forms import (
+    WriteItInstanceCreateFormPopitUrl,
+    PopitParsingFormMixin,
+    )
 
 
 class WriteItInstanceBasicForm(ModelForm):
@@ -99,9 +120,16 @@ class NewAnswerNotificationTemplateForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self.writeitinstance = kwargs.pop('writeitinstance')
         super(NewAnswerNotificationTemplateForm, self).__init__(*args, **kwargs)
+        self.initial['template_text'] = self.initial['template_text'] or default_new_answer_content_template
+        self.initial['subject_template'] = self.initial['subject_template'] or default_new_answer_subject_template
 
     def save(self, commit=True):
         template = super(NewAnswerNotificationTemplateForm, self).save(commit=False)
+        if self.cleaned_data['template_text'] == default_new_answer_content_template:
+            self.cleaned_data['template_text'] = None
+        if self.cleaned_data['subject_template'] == default_new_answer_subject_template:
+            self.cleaned_data['subject_template'] = None
+
         template.writeitinstance = self.writeitinstance
         if commit:
             template.save()
@@ -131,6 +159,18 @@ class ConfirmationTemplateForm(ModelForm):
             raise ValidationError(_("WriteIt Instance not present"))
         self.writeitinstance = kwargs.pop("writeitinstance")
         super(ConfirmationTemplateForm, self).__init__(*args, **kwargs)
+        self.initial['subject'] = self.initial['subject'] or default_confirmation_template_subject
+        self.initial['content_text'] = self.initial['content_text'] or default_confirmation_template_content_text
+
+    def save(self, commit=True):
+        template = super(ConfirmationTemplateForm, self).save(commit=commit)
+        if template.subject == default_confirmation_template_subject:
+            template.subject = u''
+        if template.content_text == default_confirmation_template_content_text:
+            template.content_text = u''
+        if commit:
+            template.save()
+        return template
 
 
 class SimpleInstanceCreateFormPopitUrl(WriteItInstanceCreateFormPopitUrl):
@@ -146,6 +186,7 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
         required=False,
         min_length=4,
         )
+
     class Meta:
         model = WriteItInstance
         fields = ('popit_url', 'slug')

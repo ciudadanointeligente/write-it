@@ -502,8 +502,8 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
             'writeit_name': answer.message.writeitinstance.name,
             }
 
-        subject = new_answer_template.subject_template.format(**context)
-        text_content = new_answer_template.template_text.format(**context)
+        subject = new_answer_template.get_subject_template().format(**context)
+        text_content = new_answer_template.get_content_template().format(**context)
         html_content = new_answer_template.template_html.format(**escape_dictionary_values(context))
 
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
@@ -731,14 +731,20 @@ class ConfirmationTemplate(models.Model):
         help_text=_('You can use {author_name}, {writeit_name}, {subject}, {content}, {recipients}, {confirmation_url}, and {message_url}'),
         )
     content_text = models.TextField(
-        default=default_confirmation_template_content_text,
+        blank=True,
         help_text=_('You can use {author_name}, {writeit_name}, {subject}, {content}, {recipients}, {confirmation_url}, and {message_url}'),
         )
     subject = models.CharField(
         max_length=512,
-        default=default_confirmation_template_subject,
+        blank=True,
         help_text=_('You can use {author_name}, {writeit_name}, {subject}, {content}, {recipients}, {confirmation_url}, and {message_url}'),
         )
+
+    def get_content_template(self):
+        return self.content_text or default_confirmation_template_content_text
+
+    def get_subject_template(self):
+        return self.subject or default_confirmation_template_subject
 
 
 class Confirmation(models.Model):
@@ -773,9 +779,9 @@ def send_confirmation_email(sender, instance, created, **kwargs):
             kwargs={'slug': confirmation.key},
         )
         message_full_url = confirmation.message.get_absolute_url()
-        plaintext = confirmation.message.writeitinstance.confirmationtemplate.content_text
+        plaintext = confirmation.message.writeitinstance.confirmationtemplate.get_content_template()
         htmly = confirmation.message.writeitinstance.confirmationtemplate.content_html
-        subject = confirmation.message.writeitinstance.confirmationtemplate.subject
+        subject = confirmation.message.writeitinstance.confirmationtemplate.get_subject_template()
         subject = subject.rstrip()
 
         context = {
@@ -871,8 +877,8 @@ class Subscriber(models.Model):
     email = models.EmailField()
 
 
-nant_txt = read_template_as_string('templates/nuntium/mails/new_answer.txt')
-nant_subject = read_template_as_string('templates/nuntium/mails/nant_subject.txt')
+default_new_answer_content_template = read_template_as_string('templates/nuntium/mails/new_answer.txt')
+default_new_answer_subject_template = read_template_as_string('templates/nuntium/mails/nant_subject.txt')
 
 
 class NewAnswerNotificationTemplate(models.Model):
@@ -885,17 +891,23 @@ class NewAnswerNotificationTemplate(models.Model):
         help_text=_('You can use {author_name}, {person}, {subject}, {content}, {message_url}, and {writeit_name}'),
         )
     template_text = models.TextField(
-        default=nant_txt,
+        blank=True,
         help_text=_('You can use {author_name}, {person}, {subject}, {content}, {message_url}, and {writeit_name}'),
         )
     subject_template = models.CharField(
         max_length=255,
-        default=nant_subject,
+        blank=True,
         help_text=_('You can use {author_name}, {person}, {subject}, {content}, {message_url}, and {writeit_name}'),
         )
 
     def __unicode__(self):
         return _("Notification template for %s") % self.writeitinstance.name
+
+    def get_content_template(self):
+        return self.template_text or default_new_answer_content_template
+
+    def get_subject_template(self):
+        return self.subject_template or default_new_answer_subject_template
 
 
 class RateLimiter(models.Model):
