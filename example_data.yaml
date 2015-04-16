@@ -40,19 +40,19 @@
 - fields: {content: Content 4, subject: Subject 4, confirmated: True, writeitinstance: 2, slug: subject-4, author_name: Fiera, author_email: fiera@ciudadanointeligente.org}
   model: nuntium.message
   pk: 4
-- fields: {contact: 1, message: 1}
+- fields: {contact: 1, message: 1, site: 1}
   model: nuntium.outboundmessage
   pk: 1
-- fields: {contact: 2, message: 1}
+- fields: {contact: 2, message: 1, site: 1}
   model: nuntium.outboundmessage
   pk: 2
-- fields: {contact: 3, message: 1}
+- fields: {contact: 3, message: 1, site: 1}
   model: nuntium.outboundmessage
   pk: 3
-- fields: {contact: 1, message: 2}
+- fields: {contact: 1, message: 2, site: 1}
   model: nuntium.outboundmessage
   pk: 4
-- fields: {contact: 1, message: 4}
+- fields: {contact: 1, message: 4, site: 1}
   model: nuntium.outboundmessage
   pk: 5
 - fields: {url: 'http://popit.org/api/v1'}
