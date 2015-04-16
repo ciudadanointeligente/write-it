@@ -1,10 +1,14 @@
 {% extends "base_manager.html" %}
+
 {% load i18n %}
 
 {% block content %}
 
 <div class="page-header">
-    <h2>{% trans "Welcome" %}</h2>
+    <h2>{% trans "Welcome" %}
+      <span class="import_spinner"></span>
+    </h2>
+    
 </div>
 
 <p>
@@ -58,9 +62,10 @@
      {% endblocktrans %}
   {% else %}
     {% blocktrans %}
-    We haven't loaded any data from your PopIt instance yet. Sometimes
-    that takes a few minutes, so try reloading this page after you‘ve
-    read the rest of it.
+    We haven't finished loading the data from your PopIt instance yet. 
+    That can take 5–10 minutes if you have a lot of data (or if we‘re
+    very busy), but hopefully by the time you've played with the rest of
+    the options below, we‘ll be finished.
     {% endblocktrans %}
 
   {% endif %}
@@ -131,3 +136,8 @@
 </ul>
 
 {% endblock content%}
+
+{% block extrajs %}
+  {% include 'js/poll_pulling.js' %}
+{% endblock %}
+
