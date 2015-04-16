@@ -40,11 +40,19 @@ $(function() {
     {% endif %}
   </div>
   <div class="manager-overview">
-    {% blocktrans count person_count=writeitinstance.persons.count %}
-    There is <strong>1</strong> Person linked from PopIt
+
+  {% if writeitinstance.persons.count %}
+    {% blocktrans count person_count=writeitinstance.persons_with_contacts.count %}
+    There is <strong>1</strong> contactable person
     {% plural %}
-    There are <strong>{{ person_count }}</strong> People linked from PopIt
+    There are <strong>{{ person_count }}</strong> contactable people 
     {% endblocktrans %}
+
+    {% if writeitinstance.persons_with_contacts.count < writeitinstance.persons.count %}
+    from <strong>{{ writeitinstance.persons.count }}</strong> total records
+    {% endif %}
+  {% endif %}
+
   </div>
       {% autopaginate people %}
       {% paginate %}
