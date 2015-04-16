@@ -1,6 +1,5 @@
 {% extends "base_manager.html" %}
 {% load i18n %}
-{% load subdomainurls %}
 {% load staticfiles %}
 
 
@@ -12,7 +11,7 @@
 
     <div class="page-header">
         <h2>{% trans 'Recipients settings' %}</h2>
-        <a href="{% url 'contacts-per-writeitinstance' subdomain=writeitinstance.slug %}"><i class="glyphicon glyphicon-arrow-left"></i> {% trans "back to recipients" %}</a>
+        <a href="{% url 'contacts-per-writeitinstance' %}"><i class="glyphicon glyphicon-arrow-left"></i> {% trans "back to recipients" %}</a>
     </div>
 
 
@@ -24,11 +23,13 @@
         be sent to.
         {% endblocktrans %}</p>
 
+        {% url 'contact_us' as contact_page %}
         <p class="help-block">{% blocktrans %}
         This is limited to a maximum of ten recipients per message. If you
         want to enable sending messages to more people at once, please
-        contact us.
+        <a href="{{ contact_page }}">contact us</a>.
         {% endblocktrans %}</p>
+
           <div class="form-group">
             {{form.maximum_recipients.errors}}
             {{form.maximum_recipients.label_tag}}
