@@ -294,7 +294,7 @@ class SendConfirmationEmailTestCase(TestCase):
 
         email = mail.outbox.pop()
 
-        self.assertEqual(email.subject, u'Please confirm your WriteIt message to Test Person')
+        self.assertEqual(email.subject, u'Please confirm your message to Test Person')
         recipients = email.recipients()
         self.assertEqual(len(recipients), 1)
         self.assertEqual(recipients[0], 'test@example.com')
