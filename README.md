@@ -147,8 +147,3 @@ Write-it has been used mostly through its REST API for which there are a number 
 The github repos and the status of the development are listed below:
 - [writeit-rails](https://github.com/ciudadanointeligente/writeit-rails) ALPHA
 - [writeit-django](https://github.com/ciudadanointeligente/writeit-django) ALPHA
-
-
-There are instructions to install write-it in heroku
-----------------------------------------------------
-The instructions are in [the following link](deploying_to_heroku.md).
