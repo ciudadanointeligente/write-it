@@ -2,7 +2,7 @@ import textwrap
 
 from django.db.models.signals import post_save, pre_save
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import override, ugettext_lazy as _
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from popit.models import Person, ApiInstance
 from contactos.models import Contact
@@ -491,7 +491,8 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
         connection = writeitinstance.config.get_mail_connection()
         new_answer_template = writeitinstance.new_answer_notification_template
 
-        message_url = reverse('thread_read', subdomain=writeitinstance.slug, kwargs={'slug': answer.message.slug})
+        with override(None, deactivate=True):
+            message_url = reverse('thread_read', subdomain=writeitinstance.slug, kwargs={'slug': answer.message.slug})
 
         context = {
             'author_name': answer.message.author_name,
