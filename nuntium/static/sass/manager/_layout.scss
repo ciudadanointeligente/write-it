@@ -98,3 +98,20 @@
   // Avoid double padding inside Boostrap popovers
   margin-bottom: 0;
 }
+
+.site-footer {
+  color: mix(#666, $body-bg, 50%);
+
+  ul {
+    @extend .list-inline;
+  }
+
+  a {
+      color: mix(#000, $body-bg, 50%);
+
+      img {
+          vertical-align: -0.15em;
+          margin-right: 0.2em;
+      }
+  }
+}
