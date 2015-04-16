@@ -7,6 +7,7 @@ from ..models import Message, WriteItInstance, OutboundMessage, \
     MessageRecord, OutboundMessagePluginRecord, \
     OutboundMessageIdentifier, Answer, \
     NoContactOM, AbstractOutboundMessage
+from django.contrib.sites.models import Site
 
 from popit.models import Person, ApiInstance
 from mock import patch
@@ -27,6 +28,7 @@ class OutboundMessageTestCase(TestCase):
         outbound_message = OutboundMessage.objects.create(
             message=self.message,
             contact=self.contact1,
+            site=Site.objects.get_current(),
             )
         # This means that there is a link between a contact and a message
         self.assertTrue(outbound_message)
@@ -34,7 +36,7 @@ class OutboundMessageTestCase(TestCase):
 
     def test_outbound_message_unicode(self):
         outbound_message = OutboundMessage.objects.create(
-            message=self.message, contact=self.contact1)
+            message=self.message, contact=self.contact1, site=Site.objects.get_current())
         expected_unicode = _('%(subject)s sent to %(person)s (%(contact)s) at %(instance)s') % {
             'subject': self.message.subject,
             'person': self.contact1.person.name,
@@ -65,6 +67,7 @@ class OutboundMessageTestCase(TestCase):
         outbound_message = OutboundMessage.objects.create(
             message=self.message,
             contact=self.contact1,
+            site=Site.objects.get_current(),
             )
         outbound_message.send()
 
@@ -76,6 +79,7 @@ class OutboundMessageTestCase(TestCase):
             message=self.message,
             contact=self.contact1,
             status="ready",
+            site=Site.objects.get_current(),
             )
 
         self.assertEquals(OutboundMessage.objects.to_send().filter(id=outbound_message.id).count(), 1)
@@ -85,6 +89,7 @@ class OutboundMessageTestCase(TestCase):
             message=self.message,
             contact=self.contact1,
             status="ready",
+            site=Site.objects.get_current(),
             )
         identifier = OutboundMessageIdentifier.objects.get(outbound_message=outbound_message)
 
@@ -108,7 +113,7 @@ class OutboundMessageIdentifierTestCase(TestCase):
     def test_create_an_outbound_message_identifier_when_creating_(self):
         with patch('uuid.uuid1') as string:
             string.return_value.hex = 'oliwi'
-            outbound_message = OutboundMessage.objects.create(message=self.message, contact=self.contact1)
+            outbound_message = OutboundMessage.objects.create(message=self.message, contact=self.contact1, site=Site.objects.get_current())
             identifier = OutboundMessageIdentifier.objects.get(outbound_message=outbound_message)
             string.assert_called()
             # the key is created when saved
@@ -180,7 +185,7 @@ class PluginMentalMessageTestCase(TestCase):
             )
 
     def test_it_only_sends_messages_to_contacts_of_the_same_channel(self):
-        otubound_message = OutboundMessage.objects.create(contact=self.mental_contact1, message=self.message)
+        otubound_message = OutboundMessage.objects.create(contact=self.mental_contact1, message=self.message, site=Site.objects.get_current())
         otubound_message.send()
 
         record = OutboundMessagePluginRecord.objects.get(outbound_message=otubound_message)
@@ -195,7 +200,7 @@ class PluginMentalMessageTestCase(TestCase):
         # It should send using all the channels available
 
     def test_it_should_create_a_new_kind_of_outbox_message(self):
-        otubound_message = OutboundMessage.objects.create(contact=self.mental_contact1, message=self.message)
+        otubound_message = OutboundMessage.objects.create(contact=self.mental_contact1, message=self.message, site=Site.objects.get_current())
         otubound_message.send()
         the_records = MessageRecord.objects.filter(
             object_id=otubound_message.id,
@@ -315,6 +320,7 @@ class MessagesToPersonWithoutContactsTestCase(TestCase):
         no_contact_outbound_message = NoContactOM.objects.create(
             message=self.message,
             person=pedro,
+            site=Site.objects.get_current(),
             )
         self.assertTrue(no_contact_outbound_message)
         self.assertEquals(no_contact_outbound_message.message, self.message)

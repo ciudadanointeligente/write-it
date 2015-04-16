@@ -376,7 +376,7 @@ class Message(models.Model):
 
     def create_outbound_messages_to_person(self, person):
         if not person.contact_set.all():
-            NoContactOM.objects.get_or_create(message=self, person=person)
+            NoContactOM.objects.get_or_create(message=self, person=person, site=Site.objects.get_current())
             return
         for contact in person.contact_set.filter(writeitinstance=self.writeitinstance):
             if not contact.is_bounced:
