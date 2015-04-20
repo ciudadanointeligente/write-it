@@ -128,7 +128,7 @@ class Migration(SchemaMigration):
         u'nuntium.confirmation': {
             'Meta': {'object_name': 'Confirmation'},
             'confirmated_at': ('django.db.models.fields.DateField', [], {'default': 'None', 'null': 'True'}),
-            'created': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2015, 4, 10, 0, 0)'}),
+            'created': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2015, 4, 20, 0, 0)'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'key': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '64'}),
             'message': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['nuntium.Message']", 'unique': 'True'})
@@ -136,9 +136,9 @@ class Migration(SchemaMigration):
         u'nuntium.confirmationtemplate': {
             'Meta': {'object_name': 'ConfirmationTemplate'},
             'content_html': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'content_text': ('django.db.models.fields.TextField', [], {'default': "u'Hello {author_name}\\n\\n\\nYou just submitted a message via {writeit_name}. Please visit the following link to confirm you want to send this message\\n\\n{confirmation_url}\\n\\n(If you can\\u2019t click the link, try copying and pasting it into your browser\\u2019s address bar)\\n\\n**IMPORTANT** Once confirmed and sent, the message will also be published on {writeit_name}, where your name, your message, and any replies, will be public and online for anyone to read, and will also appear in search engine results.\\n\\nIf this message didn\\u2019t come from you (or you\\u2019ve changed your mind and don\\u2019t want to send it after all) please just ignore this email.\\n\\nThanks for using {writeit_name}, and here is a copy of your message for your records:\\n\\n\\nTo: {recipients}\\nSubject: {subject}\\n\\n{content}\\n'"}),
+            'content_text': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'subject': ('django.db.models.fields.CharField', [], {'default': "u'Please confirm your WriteIt message to {recipients}\\n'", 'max_length': '512'}),
+            'subject': ('django.db.models.fields.CharField', [], {'max_length': '512', 'blank': 'True'}),
             'writeitinstance': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['nuntium.WriteItInstance']", 'unique': 'True'})
         },
         u'nuntium.membership': {
@@ -165,7 +165,7 @@ class Migration(SchemaMigration):
         u'nuntium.messagerecord': {
             'Meta': {'object_name': 'MessageRecord'},
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
-            'datetime': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2015, 4, 10, 0, 0)'}),
+            'datetime': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2015, 4, 20, 0, 0)'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
             'status': ('django.db.models.fields.CharField', [], {'max_length': '255'})
@@ -179,9 +179,9 @@ class Migration(SchemaMigration):
         u'nuntium.newanswernotificationtemplate': {
             'Meta': {'object_name': 'NewAnswerNotificationTemplate'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'subject_template': ('django.db.models.fields.CharField', [], {'default': "u'{person} has replied to your message {subject}\\n'", 'max_length': '255'}),
+            'subject_template': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
             'template_html': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'template_text': ('django.db.models.fields.TextField', [], {'default': 'u\'Dear {author_name}\\n\\n{person} has replied to your {writeit_name}\\nmessage with subject\\n\\n"{subject}"\\n\\n\\nYou can see their response at\\n\\n{message_url}\\n\\n\\n{person} said:\\n\\n{content}\\n\\n-- \\n\\nThanks for using {writeit_name}\\n\''}),
+            'template_text': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'writeitinstance': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'new_answer_notification_template'", 'unique': 'True', 'to': u"orm['nuntium.WriteItInstance']"})
         },
         u'nuntium.nocontactom': {
@@ -189,6 +189,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'message': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['nuntium.Message']"}),
             'person': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['popit.Person']"}),
+            'site': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['sites.Site']"}),
             'status': ('django.db.models.fields.CharField', [], {'default': "'new'", 'max_length': "'10'"})
         },
         u'nuntium.outboundmessage': {
@@ -196,6 +197,7 @@ class Migration(SchemaMigration):
             'contact': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contactos.Contact']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'message': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['nuntium.Message']"}),
+            'site': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['sites.Site']"}),
             'status': ('django.db.models.fields.CharField', [], {'default': "'new'", 'max_length': "'10'"})
         },
         u'nuntium.outboundmessageidentifier': {
@@ -281,6 +283,12 @@ class Migration(SchemaMigration):
             'popit_id': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True'}),
             'popit_url': ('popit.fields.PopItURLField', [], {'default': "''", 'max_length': '200', 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'summary': ('django.db.models.fields.TextField', [], {'blank': 'True'})
+        },
+        u'sites.site': {
+            'Meta': {'ordering': "(u'domain',)", 'object_name': 'Site', 'db_table': "u'django_site'"},
+            'domain': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         }
     }
 
