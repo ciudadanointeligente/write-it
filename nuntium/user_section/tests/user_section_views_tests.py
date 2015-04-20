@@ -1,7 +1,6 @@
 from subdomains.utils import reverse
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.db.models import Q
 from django.test.client import RequestFactory
 from django.utils.unittest import skipUnless
 from popit.models import Person
@@ -510,7 +509,7 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         super(CreateUserSectionInstanceTestCase, self).setUp()
         self.user = User.objects.first()
         self.data = {
-            "name": 'instance',
+            "slug": 'instance',
             "popit_url": settings.TEST_POPIT_API_URL,
             }
 
@@ -522,9 +521,9 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         self.assertTrue(form.is_valid())
         # the following lines are probably a little too deep in the details
         # but this isn't very simple to workout
-        attrs_for_name = form.fields['name'].widget.attrs
-        self.assertIn('class', attrs_for_name)
-        self.assertEquals(attrs_for_name['class'], 'form-control')
+        attrs_for_slug = form.fields['slug'].widget.attrs
+        self.assertIn('class', attrs_for_slug)
+        self.assertEquals(attrs_for_slug['class'], 'form-control')
         # everything ok until now
         attrs_for_popit_url = form.fields['popit_url'].widget.attrs
         self.assertIn('class', attrs_for_popit_url)
@@ -536,7 +535,7 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         form = WriteItInstanceCreateForm(data=self.data, owner=self.user)
         instance = form.save()
         self.assertTrue(instance)
-        self.assertEquals(instance.name, "instance")
+        self.assertEquals(instance.name, "popit-django-test")
         self.assertEquals(instance.owner, self.user)
         self.assertTrue(instance.persons.all())
 
@@ -548,7 +547,7 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         url = reverse('create_writeit_instance')
 
         response = c.post(url, data=self.data)
-        instance = WriteItInstance.objects.get(Q(name='instance'), Q(owner=self.user))
+        instance = WriteItInstance.objects.get(slug='instance', owner=self.user)
         self.assertRedirects(response, reverse('welcome', subdomain=instance.slug))
         self.assertTrue(instance.persons.all())
 

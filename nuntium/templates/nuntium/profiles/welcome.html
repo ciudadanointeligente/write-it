@@ -1,12 +1,143 @@
 {% extends "base_manager.html" %}
+
 {% load i18n %}
 
 {% block content %}
 
 <div class="page-header">
-    <h2>{% trans "Welcome" %}</h2>
+    <h2>{% trans "Welcome" %}
+      <span class="import_spinner"></span>
+    </h2>
+    
 </div>
 
-<p>{% trans "Write to your representative etc." %}</p>
+<p>
+  {% blocktrans with name=writeitinstance.name %}
+    This is your &ldquo;{{name}}&rdquo; message-sending site.
+  {% endblocktrans %}
+</p>
+{% if writeitinstance.config.testing_mode %}
+  <p>
+    {% blocktrans %}
+      You're currently running in <strong>testing mode</strong>, so all
+      the emails sent will go to you (and not the recipients).
+      Contact us when you want this restriction lifted and you're ready to
+      send real messages to real people!
+    {% endblocktrans %}
+  </p>
+{% endif %}
+<p>
+  {% if writeitinstance.persons_with_contacts.count %}
+    {% blocktrans count contactable_count=writeitinstance.persons_with_contacts.count %}
+      You've got only <a href="{{ url_recipients }}">one contactable recipient</a> in your database.
+      But that‘s enough to test out the process of writing to them!
+    {% plural %}
+      You've got <a href="{{ url_recipients }}">{{ contactable_count }} contactable recipients</a> in your database.
+      That‘s great — now you can test out the process of writing to them!
+    {% endblocktrans %}
+
+    {% url 'instance_detail' as site_root %}
+    {% if writeitinstance.config.testing_mode %}
+      {% blocktrans %}Try it out at <a href="{{ site_root }}">your test site</a> —
+      don't worry: any emails you send will be sent to <b>you</b>, not
+      the politicians.{% endblocktrans %}
+    {% else %}
+      {% blocktrans %}Try it out at <a href="{{ site_root }}">your live site</a> —
+      but be careful: now that you're no longer in Test Mode, don‘t
+      forget that any messages you send will be sent to the politicans,
+      and will be live on the internet, for ever.{% endblocktrans %}
+    {% endif %}
+
+  {% elif writeitinstance.persons.count %}
+     {% blocktrans count all_contacts_count=writeitinstance.persons.count %}
+       We loaded one person from your PopIt source — but we couldn‘t 
+       detect their email addresss.
+       {% plural %}
+       We've loaded {{ all_contacts_count }} people from your
+       PopIt source — but we couldn‘t detect email addresses for them.
+     {% endblocktrans %}
+     {% blocktrans %}
+       <strong>You need to ensure that your PopIt contains email data,
+         or we won't know how to deliver messages.</strong>
+     {% endblocktrans %}
+  {% else %}
+    {% blocktrans %}
+    We haven't finished loading the data from your PopIt instance yet. 
+    That can take 5–10 minutes if you have a lot of data (or if we‘re
+    very busy), but hopefully by the time you've played with the rest of
+    the options below, we‘ll be finished.
+    {% endblocktrans %}
+
+  {% endif %}
+</p>
+<p>
+  {% blocktrans %}
+     Here are the things you need to check you've done before everything will work properly.
+  {% endblocktrans %}
+</p>
+<ul>
+  <li>
+    <p>
+      {% if writeitinstance.description %}
+        {% blocktrans with desc=writeitinstance.description %}
+          <a href="{{ url_basic_update }}">change the description</a>
+          (which is &ldquo;{{ desc }}&rdquo;)
+        {% endblocktrans %}
+      {% else %}
+        {% blocktrans with desc=writeitinstance.description %}
+          <a href="{{ url_basic_update }}">set the description</a>
+        {% endblocktrans %}
+      {% endif %}
+    </p>
+  </li>
+  <li>
+    <p>
+      {% blocktrans %}
+        <a href="{{ url_template_update }}">update the email templates</a> so the
+        messages your site sends out are exactly how you want them
+      {% endblocktrans %}
+    </p>
+  </li>
+  <li>
+    <p>
+      {% blocktrans %}
+        pick the right options for things like:
+      {% endblocktrans %}
+    </p>
+    <ul>
+      <li>
+        <p>
+          {% blocktrans %}
+            <a href="{{ url_maxrecipients_update }}">how many recipients</a>
+            a message can go to (just one, or many?)
+          {% endblocktrans %}
+        </p>
+      </li>
+      <li>
+        <p>
+          {% blocktrans %}
+            how often to check for new data (which really means: do you
+            expect the 
+            <a href="{{ url_data_sources }}">data source</a> to change?)
+          {% endblocktrans %}
+        </p>
+      </li>
+      <li>
+        <p>
+          {% blocktrans %}
+            do you want to
+             <a href="{{ url_answernotification_update }}">receive a notification email</a>
+             every time someone gets a reply? 
+          {% endblocktrans %}
+        </p>
+      </li>
+    </ul>
+  </li>
+</ul>
 
 {% endblock content%}
+
+{% block extrajs %}
+  {% include 'js/poll_pulling.js' %}
+{% endblock %}
+

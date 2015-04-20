@@ -9,14 +9,6 @@
 
 {% block content %}
 
-{% if messages %}
-  <div class="alert alert-info" role="alert">
-    {% for message in messages %}
-    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-    {% endfor %}
-  </div>
-{% endif %}
-
       <div class="page-header">
         <h2>{% trans "Live Sites" %}</h2>
       </div>
@@ -29,7 +21,9 @@
             <th>{% trans 'Recipients' %}</th>
             <th>{% trans 'Messages' %}</th>
             <th>{% trans 'Edit' %}</th>
+          {% if WEB_BASED %}
             <th>{% trans 'Disable' %}</th>
+          {% endif %}
           </tr>
         </thead>
         <tbody>
@@ -49,7 +43,15 @@
             <td><a href="{% url 'contacts-per-writeitinstance' subdomain=writeitinstance.slug %}"><i class="fa fa-user"></i> <span class="badge">{{ writeitinstance.persons.count }}</span></a></td>
             <td><a href="{% url 'messages_per_writeitinstance' subdomain=writeitinstance.slug %}"><i class="fa fa-envelope-o"></i> <span class="badge">{{ writeitinstance.message_set.count }}</span></a></td>
             <td><a href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}"><i class="fa fa-pencil"></i></a></td>
-            <td><a href="{% url 'writeitinstance_webbased_update' subdomain=writeitinstance.slug %}"><i class="fa fa-times"></i></a></td>
+          {% if WEB_BASED %}
+            <td>
+              {% if writeitinstance.config.allow_messages_using_form %}
+                <a href="{% url 'writeitinstance_webbased_update' subdomain=writeitinstance.slug %}"><i class="fa fa-times"></i></a>
+              {% else %}
+                <a href="{% url 'writeitinstance_webbased_update' subdomain=writeitinstance.slug %}">DISABLED</a>
+              {% endif %}
+            </td>
+          {% endif %}
           </tr>
           {% empty %}
           <tr><td colspan="3" class="text-center">You have no sites</td></tr>
@@ -64,7 +66,8 @@
       <hr />
       <div class="page-header">
         <h2>{% trans "Test Sites" %}</h2>
-        <p>
+        <p>{% trans "Sites are set to Testing Mode by default. Use the menu on the left to make sure that your site is set up in the way that you want it. When you are ready, contact us to let us know and we’ll put your site live." %}</p>
+        
             {% blocktrans count counter=test_sites.count %}
                 This site is in Test Mode:
             {% plural %}

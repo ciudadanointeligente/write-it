@@ -298,6 +298,10 @@ class WriteSignView(TemplateView):
         return context
 
 
+class AboutView(WriteItInstanceDetailView):
+    template_name = 'about.html'
+
+
 class HelpView(TemplateView):
     def get_template_names(self):
         if 'section_name' in self.kwargs:

@@ -7,7 +7,8 @@
 <div class="accounts-box">
     <div class="accounts-box__instructions">
         <h1>{% trans 'Sign in' %}</h1>
-        <p>If you've got an account sign in with it here. If not, it's quick and easy to <a href="#">sign up</a></p>
+        <p>If you've got an account, sign in with it here. If not, you
+        can create one using the “Sign in with Google” button.</p>
         <hr />
         <p>{% trans 'You can also&hellip;' %}</p>
         <a class="btn btn-primary btn-full-width btn-google" href="{% url 'social:begin' 'google-oauth2' %}{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}">

@@ -10,25 +10,16 @@
 <script src="{% static 'js/chosen.jquery.min.js' %}"></script>
 <script src="http://malsup.github.com/jquery.form.js"></script> 
 {% endblock extrascripts %}
+
 {% block extrajs %}
 $(".chosen-person-select").chosen();
 {% endblock extrajs %}
 
 {% block header %}
-
 {% include 'nuntium/profiles/per_instance_top_menu.html' with section='relate-writeit-popit' %}
-
 {% endblock header %}
 
 {% block content %}
-
-{% if messages %}
-  <div class="alert alert-info" role="alert">
-    {% for message in messages %}
-    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-    {% endfor %}
-  </div>
-{% endif %}
 
   <div class="page-header">
     <h2>{% trans "Data Sources" %}</h2>

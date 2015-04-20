@@ -15,6 +15,10 @@
         <a href="{% url 'writeitinstance_api_docs' subdomain=writeitinstance.slug %}" class=""><i class="glyphicon glyphicon-arrow-left"></i> {% trans "back to API" %}</a>
     </div>
 
+    <h4>Your API Key is <tt>{{ user.api_key.key }}</tt></h4>
+
+    <hr />
+
     <form role="form" action="" method="post">
       <div class="settings-group">
         <h3>{% trans 'API Autoconfirm' %}</h3>

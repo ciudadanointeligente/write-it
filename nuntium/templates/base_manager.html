@@ -14,7 +14,11 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
     <link href='http://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    {% if WEB_BASED %}
+    <title>{{ writeitinstance|default:'WriteInPublic' }}</title>
+    {% else %}
     <title>{{ writeitinstance|default:'WriteIt' }}</title>
+    {% endif %}
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
@@ -45,6 +49,8 @@
             <a class="navbar-brand" href="/">
             {% if writeitinstance.name %}
               {{ writeitinstance.name }}
+            {% elif WEB_BASED %}
+              Write In Public
             {% else %}
               WriteIt
             {% endif %}
@@ -56,7 +62,7 @@
               <li{% block menu-login-active %}{% endblock menu-login-active %}><a href="{% url 'login' subdomain=None %}">Sign in</a></li>
               {% else %}
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ user }} <b class="caret"></b></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ user.first_name }} <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <li><a href="{% url 'account' subdomain=None %}"><span class="glyphicon glyphicon-cog"></span> {% trans "Your Profile" %}</a></li>
                   <li><a href="{% url 'your-instances' subdomain=None %}"><span class="glyphicon glyphicon-tasks"></span> {% trans "Site Manager" %}</a></li>
@@ -95,23 +101,7 @@
 
     </div><!-- end wrap -->
 
-    <div id="footer">
-      <ul class="container">
-        <li class="fci">{% blocktrans %}Built by <a href="http://www.ciudadanointeligente.org">Fundación Ciudadano Inteligente</a>{% endblocktrans %}</li>
-        <li class="poplus-logo">
-          <a href="http://poplus.org/">
-            <img src="{% static 'img/icon-poplus.png' %}">
-            Poplus
-          </a>
-        </li>
-        <li class="github">
-          <a href="http://www.github.com/ciudadanointeligente/write-it">
-            <i class="fa fa-github"></i>
-            {% blocktrans %}Find the code at Github{% endblocktrans %}
-          </a>
-        </li>
-      </ul>
-    </div>
+    {% include 'footer.html' %}
 
     <!-- Bootstrap core JavaScript
     ================================================== -->

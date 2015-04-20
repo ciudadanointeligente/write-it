@@ -29,6 +29,15 @@ def is_current_membership(membership_doc, start_date_key='start_date', end_date_
     return _is_current_membership(start_date, end_date)
 
 
+def get_about(url):
+        try:
+            api = slumber.API(url.replace('/v0.1', ''))
+            response = api.about().get()
+            return response.get('result', {})
+        except slumber.exceptions.HttpClientError:
+            return {}
+
+
 class PopitPerson(Person):
     class Meta:
         proxy = True

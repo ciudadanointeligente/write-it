@@ -1,19 +1,43 @@
 # coding=utf-8
-from django.forms import ModelForm, TextInput, Textarea, \
-    CheckboxInput, NumberInput
+from urlparse import urlparse
+
+from django.conf import settings
 from django.core import validators
-
-from nuntium.models import WriteItInstance, \
-    NewAnswerNotificationTemplate, \
-    ConfirmationTemplate, Answer, WriteItInstanceConfig, \
-    WriteitInstancePopitInstanceRecord
-
-from django.forms import ValidationError, ModelChoiceField, Form, URLField
+from django.forms import (
+    CharField,
+    CheckboxInput,
+    Form,
+    ModelChoiceField,
+    ModelForm,
+    NumberInput,
+    TextInput,
+    Textarea,
+    URLField,
+    ValidationError,
+    )
 
 from django.utils.translation import ugettext as _
+
 from popit.models import Person
-from ..forms import WriteItInstanceCreateFormPopitUrl, PopitParsingFormMixin
-from django.conf import settings
+
+from nuntium.models import (
+    Answer,
+    ConfirmationTemplate,
+    NewAnswerNotificationTemplate,
+    WriteItInstance,
+    WriteItInstanceConfig,
+    WriteitInstancePopitInstanceRecord,
+    default_confirmation_template_content_text,
+    default_confirmation_template_subject,
+    default_new_answer_content_template,
+    default_new_answer_subject_template,
+    )
+from nuntium.popit_api_instance import get_about
+
+from ..forms import (
+    WriteItInstanceCreateFormPopitUrl,
+    PopitParsingFormMixin,
+    )
 
 
 class WriteItInstanceBasicForm(ModelForm):
@@ -96,9 +120,16 @@ class NewAnswerNotificationTemplateForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self.writeitinstance = kwargs.pop('writeitinstance')
         super(NewAnswerNotificationTemplateForm, self).__init__(*args, **kwargs)
+        self.initial['template_text'] = self.initial['template_text'] or default_new_answer_content_template
+        self.initial['subject_template'] = self.initial['subject_template'] or default_new_answer_subject_template
 
     def save(self, commit=True):
         template = super(NewAnswerNotificationTemplateForm, self).save(commit=False)
+        if self.cleaned_data['template_text'] == default_new_answer_content_template:
+            self.cleaned_data['template_text'] = None
+        if self.cleaned_data['subject_template'] == default_new_answer_subject_template:
+            self.cleaned_data['subject_template'] = None
+
         template.writeitinstance = self.writeitinstance
         if commit:
             template.save()
@@ -128,6 +159,18 @@ class ConfirmationTemplateForm(ModelForm):
             raise ValidationError(_("WriteIt Instance not present"))
         self.writeitinstance = kwargs.pop("writeitinstance")
         super(ConfirmationTemplateForm, self).__init__(*args, **kwargs)
+        self.initial['subject'] = self.initial['subject'] or default_confirmation_template_subject
+        self.initial['content_text'] = self.initial['content_text'] or default_confirmation_template_content_text
+
+    def save(self, commit=True):
+        template = super(ConfirmationTemplateForm, self).save(commit=commit)
+        if template.subject == default_confirmation_template_subject:
+            template.subject = u''
+        if template.content_text == default_confirmation_template_content_text:
+            template.content_text = u''
+        if commit:
+            template.save()
+        return template
 
 
 class SimpleInstanceCreateFormPopitUrl(WriteItInstanceCreateFormPopitUrl):
@@ -137,12 +180,16 @@ class SimpleInstanceCreateFormPopitUrl(WriteItInstanceCreateFormPopitUrl):
 
 
 class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
+    slug = CharField(
+        label=_("The subdomain your site will run at"),
+        help_text=_("Choose wisely; this can't be changed. If you leave this blank, we'll generate one for you."),
+        required=False,
+        min_length=4,
+        )
+
     class Meta:
         model = WriteItInstance
-        fields = ('name', 'popit_url')
-        widgets = {
-            'name': TextInput(attrs={'class': 'form-control', 'required': True}),
-        }
+        fields = ('popit_url', 'slug')
 
     def __init__(self, *args, **kwargs):
         if 'owner' in kwargs:
@@ -150,10 +197,30 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
         super(WriteItInstanceCreateForm, self).__init__(*args, **kwargs)
         self.fields['popit_url'].widget.attrs['class'] = 'form-control'
         self.fields['popit_url'].widget.attrs['required'] = True
+        self.fields['slug'].widget.attrs['class'] = 'form-control'
+
+    def clean_slug(self):
+        slug = self.cleaned_data['slug']
+        if not slug:
+            return slug
+        url_validator = validators.URLValidator(message="Enter a valid subdomain")
+        url = 'http://%s.example.com' % slug
+        url_validator(url)
+        slug_exists = WriteItInstance.objects.filter(slug__iexact=slug).exists()
+        if slug_exists:
+            raise ValidationError(_("This subdomain has already been taken."))
+        return slug
 
     def save(self, commit=True):
         instance = super(WriteItInstanceCreateForm, self).save(commit=False)
+        slug = self.cleaned_data['slug']
+        if slug:
+            instance.slug = slug
         instance.owner = self.owner
+        popit_url = self.cleaned_data['popit_url']
+        about = get_about(popit_url)
+        subdomain = urlparse(popit_url).netloc.split('.')[0]
+        instance.name = about.get('name', subdomain)
         instance.save()
         self.relate_with_people()
         return instance

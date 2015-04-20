@@ -41,8 +41,8 @@ class ConfirmationTemplateTestCase(TestCase):
         confirmation_template = ConfirmationTemplate(writeitinstance=self.writeitinstance)
         self.assertTrue(confirmation_template)
         self.assertEquals(confirmation_template.writeitinstance, self.writeitinstance)
-        self.assertEquals(confirmation_template.content_text, self.default_template_text)
-        self.assertEquals(confirmation_template.subject, self.default_subject)
+        self.assertEquals(confirmation_template.content_text, u'')
+        self.assertEquals(confirmation_template.subject, u'')
 
     def test_confirmation_template_with_a_writeitinstance(self):
         """Every time a writeit instance is created then is associated with a confirmation template"""
@@ -53,9 +53,9 @@ class ConfirmationTemplateTestCase(TestCase):
             )
 
         self.assertTrue(writeitinstance.confirmationtemplate)
-        self.assertEquals(writeitinstance.confirmationtemplate.content_html, '')
-        self.assertEquals(writeitinstance.confirmationtemplate.content_text, self.default_template_text)
-        self.assertEquals(writeitinstance.confirmationtemplate.subject, self.default_subject)
+        self.assertEquals(writeitinstance.confirmationtemplate.content_html, u'')
+        self.assertEquals(writeitinstance.confirmationtemplate.content_text, u'')
+        self.assertEquals(writeitinstance.confirmationtemplate.subject, u'')
 
     def test_confirmation_mail_with_template(self):
         """The confirmation mail is sent using the template"""
@@ -294,7 +294,7 @@ class SendConfirmationEmailTestCase(TestCase):
 
         email = mail.outbox.pop()
 
-        self.assertEqual(email.subject, u'Please confirm your WriteIt message to Test Person')
+        self.assertEqual(email.subject, u'Please confirm your message to Test Person')
         recipients = email.recipients()
         self.assertEqual(len(recipients), 1)
         self.assertEqual(recipients[0], 'test@example.com')

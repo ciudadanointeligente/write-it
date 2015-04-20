@@ -2,11 +2,37 @@
 {% load subdomainurls %}
 {% load staticfiles %}
   <ul class="navigation__list">
-    <li class="{% if section == 'writeitinstance_basic_update' %}active{% endif %}"><a href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">{% trans "About your site" %}</a></li>
-    <li class="{% if section == 'writeitinstance_template_update' %}active{% endif %}"><a href="{% url 'writeitinstance_template_update' subdomain=writeitinstance.slug %}">{% trans "Templates" %}</a></li>
-    <li class="{% if section == 'contacts-per-writeitinstance' %}active{% endif %}"><a href="{% url 'contacts-per-writeitinstance' subdomain=writeitinstance.slug %}">{% trans "Recipients" %}</a></li>
-    <li class="{% if section == 'messages_per_writeitinstance' %}active{% endif %}"><a href="{% url 'messages_per_writeitinstance' subdomain=writeitinstance.slug %}">{% trans "Messages" %}</a></li>
-    <li class="{% if section == 'relate-writeit-popit' %}active{% endif %}"><a href="{% url 'relate-writeit-popit' subdomain=writeitinstance.slug %}">{% trans "Data sources" %}</a></li>
-    <li class="{% if section == 'writeitinstance_api_docs' %}active{% endif %}"><a href="{% url 'writeitinstance_api_docs' subdomain=writeitinstance.slug %}">{% trans "API" %}</a></li>
-    <li class="{% if section == 'stats' %}active{% endif %}"><a href="{% url 'stats' subdomain=writeitinstance.slug %}">{% trans "Stats" %}</a></li>
+    <li class="{% if section == 'writeitinstance_basic_update' %}active{% endif %}"><a href="{% url 'writeitinstance_basic_update' subdomain=writeitinstance.slug %}">
+      <i class="fa fa-info-circle"></i> 
+      {% trans "About your site" %}
+    </a></li>
+    <li class="{% if section == 'contacts-per-writeitinstance' %}active{% endif %}"><a href="{% url 'contacts-per-writeitinstance' subdomain=writeitinstance.slug %}">
+      <i class="fa fa-user"></i> 
+      {% trans "Recipients" %}
+      <span class="badge">{{ writeitinstance.persons.count }}</span>
+    </a></li>
+    
+    <li class="{% if section == 'messages_per_writeitinstance' %}active{% endif %}"><a href="{% url 'messages_per_writeitinstance' subdomain=writeitinstance.slug %}">
+      <i class="fa fa-envelope-o"></i> 
+      {% trans "Messages" %}
+      <span class="badge">{{ writeitinstance.message_set.count }}</span>
+    </a></li>
+    <li class="{% if section == 'relate-writeit-popit' %}active{% endif %}"><a href="{% url 'relate-writeit-popit' subdomain=writeitinstance.slug %}">
+      <i class="fa fa-database"></i> 
+      {% trans "Data sources" %}
+    </a></li>
+    <li class="{% if section == 'writeitinstance_template_update' %}active{% endif %}"><a href="{% url 'writeitinstance_template_update' subdomain=writeitinstance.slug %}">
+      <i class="fa fa-file"></i> 
+      {% trans "Templates" %}
+    </a></li>
+  {% if API_BASED %}
+    <li class="{% if section == 'writeitinstance_api_docs' %}active{% endif %}"><a href="{% url 'writeitinstance_api_docs' subdomain=writeitinstance.slug %}">
+      <i class="fa fa-plug"></i> 
+      {% trans "API" %}
+    </a></li>
+  {% endif %}
+    <li class="{% if section == 'stats' %}active{% endif %}"><a href="{% url 'stats' subdomain=writeitinstance.slug %}">
+      <i class="fa fa-area-chart"></i> 
+      {% trans "Stats" %}
+    </a></li>
   </ul>

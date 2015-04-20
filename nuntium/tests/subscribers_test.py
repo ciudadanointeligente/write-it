@@ -101,10 +101,8 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
         self.assertEquals(notification_template.__unicode__(), "Notification template for %s" % (self.instance.name))
 
     def test_a_new_one_is_always_created_with_some_default_values(self):
-        new_answer_txt = ''
-        with open(os.path.join(script_dir, '../templates/nuntium/mails/new_answer.txt'), 'r') as f:
-            new_answer_txt += f.read()
-
+        new_answer_txt = u''
+        subject_template = u''
         notification_template = NewAnswerNotificationTemplate.objects.create(writeitinstance=self.instance)
 
         self.assertEquals(notification_template.template_text, new_answer_txt)
@@ -115,8 +113,8 @@ class NewAnswerToSubscribersMessageTemplate(TestCase):
 
         notification_template = instance.new_answer_notification_template
         self.assertTrue(notification_template)
-        self.assertEquals(notification_template.template_html, '')
-        self.assertEquals(notification_template.subject_template, subject_template)
+        self.assertEquals(notification_template.template_html, u'')
+        self.assertEquals(notification_template.subject_template, u'')
 
 
 class NewAnswerNotificationToSubscribers(TestCase):
@@ -147,7 +145,9 @@ class NewAnswerNotificationToSubscribers(TestCase):
             'author_name': 'Fiera',
             'person': 'Pedro',
             'subject': 'Subject 1',
-            'content': self.answer_content,
+            # Wer'e not including content here until we can include attachments too
+            # See #930.
+            # 'content': self.answer_content,
             'writeit_name': 'instance 1',
             'message_url_part': 'thread/subject-1',
             }
