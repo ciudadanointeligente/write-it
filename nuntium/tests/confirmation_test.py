@@ -179,10 +179,15 @@ class ConfirmationTestCase(TestCase):
             kwargs={'slug': confirmation.key},
             )
         response1 = self.client.get(url)
+        message_thread = reverse(
+            'thread_read', subdomain=self.message.writeitinstance.slug,
+            kwargs={
+                'slug': self.message.slug
+            })
         response2 = self.client.get(url)
 
         self.assertEquals(response1.status_code, 302)
-        self.assertEquals(response2.status_code, 404)
+        self.assertRedirects(response2, message_thread)
 
     def test_i_cannot_access_a_non_confirmed_message(self):
         Confirmation.objects.create(message=self.message)
