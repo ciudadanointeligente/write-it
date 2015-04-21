@@ -52,9 +52,9 @@ class MailChannel(OutputPlugin):
             'content_indented': process_content(outbound_message.message.content),
             'person': outbound_message.contact.person.name,
             'author': author_name,
-            'writeit_url': writeitinstance.get_absolute_url(),
+            'site_url': writeitinstance.get_absolute_url(),
             'message_url': outbound_message.message.get_absolute_url(),
-            'writeit_name': writeitinstance.name,
+            'site_name': writeitinstance.name,
             'owner_email': writeitinstance.owner.email,
             }
         text_content = template.get_content_template().format(**context)

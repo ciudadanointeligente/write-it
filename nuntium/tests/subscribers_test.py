@@ -148,7 +148,7 @@ class NewAnswerNotificationToSubscribers(TestCase):
             # Wer'e not including content here until we can include attachments too
             # See #930.
             # 'content': self.answer_content,
-            'writeit_name': 'instance 1',
+            'site_name': 'instance 1',
             'message_url_part': 'thread/subject-1',
             }
 

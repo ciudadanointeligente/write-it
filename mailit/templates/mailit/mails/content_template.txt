@@ -1,6 +1,6 @@
 Dear {person}
 
-{author} has sent you the following message via {writeit_name} ({writeit_url})
+{author} has sent you the following message via {site_name} ({site_url})
 
 
 {content_indented}

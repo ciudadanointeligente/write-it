@@ -1,17 +1,17 @@
 Hello {author_name}
 
 
-You just submitted a message via {writeit_name}. Please visit the following link to confirm you want to send this message
+You just submitted a message via {site_name}. Please visit the following link to confirm you want to send this message
 
 {confirmation_url}
 
 (If you can’t click the link, try copying and pasting it into your browser’s address bar)
 
-**IMPORTANT** Once confirmed and sent, the message will also be published on {writeit_name}, where your name, your message, and any replies, will be public and online for anyone to read, and will also appear in search engine results.
+**IMPORTANT** Once confirmed and sent, the message will also be published on {site_name}, where your name, your message, and any replies, will be public and online for anyone to read, and will also appear in search engine results.
 
 If this message didn’t come from you (or you’ve changed your mind and don’t want to send it after all) please just ignore this email.
 
-Thanks for using {writeit_name}, and here is a copy of your message for your records:
+Thanks for using {site_name}, and here is a copy of your message for your records:
 
 
 To: {recipients}

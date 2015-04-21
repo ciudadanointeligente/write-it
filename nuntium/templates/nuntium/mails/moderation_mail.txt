@@ -1,7 +1,7 @@
 Hi {owner_name}
 
 
-Someone just used {writeit_name} to submit a message. Time for some moderation!
+Someone just used {site_name} to submit a message. Time for some moderation!
 
 
 ======================================================================
@@ -24,12 +24,3 @@ Message body:
 **Not so good?** Reject this message at
 
 {url_reject}
-
-
--- 
-
-All the best,
-The WriteIt team
-
-
------
