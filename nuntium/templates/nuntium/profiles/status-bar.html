@@ -5,10 +5,11 @@
   <div class="alert alert-info" role="alert">
       <i class="fa fa-info-circle"></i> 
       {% url 'welcome' as welcome_page %}
+      {% url 'contact_us' as contact_page %}
       {% blocktrans %}
         This site is in <a href="{{ welcome_page }}">testing mode.</a>
         All mails will be sent to you, rather than the representatives.
-        Contact us when you're ready to go live!
+        <a href="{{ contact_page }}">Contact us</a> when you're ready to go live!
       {% endblocktrans %}
   </div>
 {% endif %}
