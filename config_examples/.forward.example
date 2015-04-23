@@ -1,0 +1,4 @@
+# Exim filter
+if $h_to matches "@writeit.ciudadanointeligente.org" then
+    pipe "/home/writeit/handle_email.sh"
+endif
