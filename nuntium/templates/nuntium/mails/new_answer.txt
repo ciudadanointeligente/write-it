@@ -1,6 +1,6 @@
 Dear {author_name}
 
-{person} has replied to your {writeit_name}
+{person} has replied to your {site_name}
 message with subject
 
 "{subject}"
@@ -12,4 +12,4 @@ You can see their response at
 
 -- 
 
-Thanks for using {writeit_name}
+Thanks for using {site_name}

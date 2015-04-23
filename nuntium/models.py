@@ -417,7 +417,7 @@ class Message(models.Model):
             'recipients': u', '.join([x.name for x in self.people]),
             'subject': self.subject,
             'content': self.content,
-            'writeit_name': self.writeitinstance.name,
+            'site_name': self.writeitinstance.name,
             'url_reject': url_reject,
             'url_accept': url_accept,
             }
@@ -501,7 +501,7 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
             'subject': answer.message.subject,
             'content': answer.content,
             'message_url': message_url,
-            'writeit_name': answer.message.writeitinstance.name,
+            'site_name': answer.message.writeitinstance.name,
             }
 
         subject = new_answer_template.get_subject_template().format(**context)
@@ -732,16 +732,16 @@ class ConfirmationTemplate(models.Model):
     writeitinstance = models.OneToOneField(WriteItInstance)
     content_html = models.TextField(
         blank=True,
-        help_text=_('You can use {author_name}, {writeit_name}, {subject}, {content}, {recipients}, {confirmation_url}, and {message_url}'),
+        help_text=_('You can use {author_name}, {site_name}, {subject}, {content}, {recipients}, {confirmation_url}, and {message_url}'),
         )
     content_text = models.TextField(
         blank=True,
-        help_text=_('You can use {author_name}, {writeit_name}, {subject}, {content}, {recipients}, {confirmation_url}, and {message_url}'),
+        help_text=_('You can use {author_name}, {site_name}, {subject}, {content}, {recipients}, {confirmation_url}, and {message_url}'),
         )
     subject = models.CharField(
         max_length=512,
         blank=True,
-        help_text=_('You can use {author_name}, {writeit_name}, {subject}, {content}, {recipients}, {confirmation_url}, and {message_url}'),
+        help_text=_('You can use {author_name}, {site_name}, {subject}, {content}, {recipients}, {confirmation_url}, and {message_url}'),
         )
 
     def get_content_template(self):
@@ -790,7 +790,7 @@ def send_confirmation_email(sender, instance, created, **kwargs):
 
         context = {
             'author_name': confirmation.message.author_name,
-            'writeit_name': confirmation.message.writeitinstance.name,
+            'site_name': confirmation.message.writeitinstance.name,
             'subject': confirmation.message.subject,
             'content': confirmation.message.content,
             'recipients': u', '.join([x.name for x in confirmation.message.people]),
@@ -892,16 +892,16 @@ class NewAnswerNotificationTemplate(models.Model):
         )
     template_html = models.TextField(
         blank=True,
-        help_text=_('You can use {author_name}, {person}, {subject}, {content}, {message_url}, and {writeit_name}'),
+        help_text=_('You can use {author_name}, {person}, {subject}, {content}, {message_url}, and {site_name}'),
         )
     template_text = models.TextField(
         blank=True,
-        help_text=_('You can use {author_name}, {person}, {subject}, {content}, {message_url}, and {writeit_name}'),
+        help_text=_('You can use {author_name}, {person}, {subject}, {content}, {message_url}, and {site_name}'),
         )
     subject_template = models.CharField(
         max_length=255,
         blank=True,
-        help_text=_('You can use {author_name}, {person}, {subject}, {content}, {message_url}, and {writeit_name}'),
+        help_text=_('You can use {author_name}, {person}, {subject}, {content}, {message_url}, and {site_name}'),
         )
 
     def __unicode__(self):
