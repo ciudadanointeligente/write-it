@@ -1,0 +1,29 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Connection: [close]
+      Host: [yournextmp.popit.mysociety.org]
+      User-Agent: [Python-urllib/2.7]
+    method: GET
+    uri: https://yournextmp.popit.mysociety.org/api/v0.1/about
+  response:
+    body: {string: !!python/unicode "{\n  \"errors\": [\n    \"collection 'about'
+        not found\"\n  ]\n}"}
+    headers:
+      accept-ranges: [bytes]
+      access-control-allow-origin: ['*']
+      age: ['0']
+      connection: [close]
+      content-length: ['56']
+      content-type: [application/json; charset=utf-8]
+      date: ['Sat, 11 Apr 2015 00:44:13 GMT']
+      etag: [W/"38-8b9a338f"]
+      server: [nginx]
+      set-cookie: [connect.sess=s%3Aj%3A%7B%22passport%22%3A%7B%7D%7D.UywPBji0dFbUMZW5r1RdSpofbQAIv7kGfQeO1FGtXmc;
+          Domain=.popit.mysociety.org; Path=/; HttpOnly; Secure]
+      vary: ['X-HTTP-Method-Override,Origin']
+      x-content-type-options: [nosniff]
+      x-url: [/api/v0.1/about]
+    status: {code: 404, message: Not Found}
+version: 1

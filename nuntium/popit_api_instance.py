@@ -2,6 +2,7 @@ from popit.models import ApiInstance, Person, get_paginated_generator
 from contactos.models import Contact
 from mailit import MailChannel
 from datetime import datetime
+from django.db import models
 import slumber
 
 
@@ -93,7 +94,16 @@ class PopitPerson(Person):
             contact.save()
 
 
+class AboutPopitApiInstance(models.Model):
+    popit_api_instance = models.OneToOneField('PopitApiInstance', related_name='about')
+    name = models.CharField(max_length=512)
+    description = models.TextField()
+
+
 class PopitApiInstance(ApiInstance):
+    about_class = AboutPopitApiInstance
+
+    
     class Meta:
         proxy = True
 
@@ -105,3 +115,24 @@ class PopitApiInstance(ApiInstance):
         models = [PopitPerson]
         for model in models:
             model.fetch_all_from_api(instance=self, writeitinstance=writeitinstance)
+
+    def get_about(self):
+        api = slumber.API(self.url)
+        '''
+        Right here I depend a bit on popit and how it is going to behave in the future
+        so here it is the thing for example for https://yournextmp.popit.mysociety.org/api/v0.1
+        there is no /about because the /about is in the root of the api in other words
+        https://yournextmp.popit.mysociety.org/api/about, so is ```about``` going to be part of /v0.1?
+        if the answer to that is No then we should strip the version of the api from the URL
+        which I'm not doing right now.
+        '''
+        about = self.about_class(popit_api_instance=self)
+        try:
+            result = api.about().get()
+            for key in result['result'].keys():
+                if hasattr(about, key):
+                    setattr(about, key, result['result'][key])
+        except slumber.exceptions.HttpClientError:
+            pass
+        about.save()
+        return about
