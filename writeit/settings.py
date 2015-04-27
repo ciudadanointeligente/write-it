@@ -232,6 +232,7 @@ if TESTING:
 
 #SEARCH INDEX WITH ELASTICSEARCH
 HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
+
 if TESTING:
     HAYSTACK_CONNECTIONS = {
         'default': {
@@ -240,6 +241,7 @@ if TESTING:
             'INDEX_NAME': 'haystack-testing',
         },
     }
+    HAYSTACK_SIGNAL_PROCESSOR = 'global_test_case.CeleryTestingSignalProcessor'
 else:
     HAYSTACK_CONNECTIONS = {
         'default': {
@@ -384,6 +386,8 @@ SESSION_COOKIE_DOMAIN = '.127.0.0.1.xip.io'
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_ENABLE_UTC = True
 CELERY_CREATE_MISSING_QUEUES = True
+CELERY_HAYSTACK_TRANSACTION_SAFE = True
+CELERY_HAYSTACK_DEFAULT_TASK = 'celery_haystack.tasks.CeleryHaystackSignalHandler'
 
 # These can be set independently, but most often one will be set to True and
 # the other to False. Setting both to the same boolean value will have
@@ -458,3 +462,10 @@ if 'SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL' in os.environ \
     #         'INDEX_NAME': 'haystack',
     #     },
     # }
+
+from django.db.utils import OperationalError
+try:
+    from subdomains.utils import reverse
+    LOGIN_URL = reverse('login', subdomain=None)
+except OperationalError:
+    LOGIN_URL = '/accounts/login'

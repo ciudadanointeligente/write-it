@@ -14,6 +14,7 @@ from django.db import DEFAULT_DB_ALIAS
 from django.test import RequestFactory
 from django.test.client import Client
 import logging
+from haystack.signals import BaseSignalProcessor
 
 _LOCALS = threading.local()
 
@@ -215,3 +216,7 @@ class WriteItTestRunner(CeleryTestSuiteRunner, NoseTestSuiteRunner):
         logging.disable(logging.CRITICAL)
 
         return super(WriteItTestRunner, self).run_tests(test_labels, extra_tests, **kwargs)
+
+
+class CeleryTestingSignalProcessor(BaseSignalProcessor):
+    pass
