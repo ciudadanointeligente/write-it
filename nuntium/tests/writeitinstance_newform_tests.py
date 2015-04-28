@@ -26,11 +26,11 @@ class InstanceCreateFormTestCase(TestCase):
         self.assertTrue(form)
         self.assertTrue(form.is_valid())
 
+    @popit_load_data()
     def test_creating_an_instance(self):
         '''Create an instance of writeit using a form that contains a popit_url'''
         # We have a popit running locally using the
         # start_local_popit_api.bash script
-        popit_load_data()
         # loading data into the popit-api
 
         data = {

@@ -72,8 +72,7 @@ class UsingDbMixin(object):
         super(UsingDbMixin, self).tearDown(*args, **kwargs)
 
 
-def popit_load_data(fixture_name='default'):
-
+def _popit_load_data(fixture_name='default'):
     """
     Use the mongofixtures CLI tool provided by the pow-mongodb-fixtures package
     used by popit-api to load some test data into db. Don't use the test fixture
@@ -215,3 +214,22 @@ class WriteItTestRunner(CeleryTestSuiteRunner, NoseTestSuiteRunner):
         logging.disable(logging.CRITICAL)
 
         return super(WriteItTestRunner, self).run_tests(test_labels, extra_tests, **kwargs)
+
+from vcr import VCR
+
+CASSETTES_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                              "nuntium/tests/fixtures/vcr_cassettes/")
+
+writeit_vcr = VCR(
+    cassette_library_dir=CASSETTES_PATH,
+    serializer='json',
+    record_mode='once'
+)
+
+
+def popit_load_data(fixture_name='default'):
+    test_fixtures_path = os.path.join(CASSETTES_PATH, '%s.yaml' % fixture_name)
+    if not os.path.exists(test_fixtures_path):
+        _popit_load_data(fixture_name)
+    func = writeit_vcr.use_cassette(fixture_name + '.yaml')
+    return func

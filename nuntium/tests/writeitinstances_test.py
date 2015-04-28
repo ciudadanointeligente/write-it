@@ -90,11 +90,10 @@ class InstanceTestCase(TestCase):
         self.assertEquals(writeitinstance.persons.get(id=self.person1.id), self.person1)
         self.assertEquals(self.person1.writeit_instances.get(id=writeitinstance.id), writeitinstance)
 
-    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    @popit_load_data()
     def test_create_an_instance_and_load_persons_from_an_api(self):
         # We have a popit running locally using the
         # start_local_popit_api.bash script
-        popit_load_data()
         #loading data into the popit-api
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
 
@@ -121,7 +120,7 @@ class InstanceTestCase(TestCase):
             writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
             async_pulling_from_popit.assert_called_with(writeitinstance, popit_api_instance)
 
-    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    @popit_load_data()
     def test_it_has_a_pulling_from_popit_status(self):
         '''It has a pulling from popit status'''
         writeitinstance = WriteItInstance.objects.create(name=u'instance 1', slug=u'instance-1', owner=self.owner)
@@ -184,7 +183,6 @@ class PersonsWithContactsTestCase(TestCase):
         self.assertEquals(self.writeitinstance.persons_with_contacts.count(), 1)
 
 
-@skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
     def setUp(self):
         super(WriteItInstanceLoadingPeopleFromAPopitApiTestCase, self).setUp()
@@ -194,9 +192,9 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
 
         self.owner = User.objects.get(id=1)
 
+    @popit_load_data()
     def test_load_persons_from_a_popit_api(self):
         '''Loading persons from a popit api'''
-        popit_load_data()
         popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
@@ -209,9 +207,9 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
         self.assertIn(raton, [r for r in writeitinstance.persons.all()])
         self.assertIn(fiera, [r for r in writeitinstance.persons.all()])
 
+    @popit_load_data()
     def test_it_returns_a_tuple(self):
         '''Returns a tuple'''
-        popit_load_data()
         popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         result = writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
