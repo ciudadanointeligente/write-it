@@ -5,13 +5,11 @@ from mock import patch
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from nuntium.models import WriteItInstance
 from contactos.models import Contact, ContactType
-from django.utils.unittest import skipUnless
 from django.conf import settings
 from django.contrib.auth.models import User
 from nuntium.popit_api_instance import is_current_membership
 
 
-@skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class EmailCreationWhenPullingFromPopit(TestCase):
     def setUp(self):
         super(EmailCreationWhenPullingFromPopit, self).setUp()
