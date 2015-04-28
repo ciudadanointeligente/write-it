@@ -5,7 +5,6 @@ from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
 from popit.models import Person
 from global_test_case import popit_load_data
-from django.utils.unittest import skipUnless
 from django.conf import settings
 import re
 from django.utils.encoding import force_text
@@ -82,7 +81,7 @@ class InstanceResourceTestCase(ResourceTestCase):
         self.assertEquals(instance.slug, instance_data['slug'])
         self.assertEquals(instance.owner, self.user)
 
-    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    @popit_load_data()
     def test_create_a_new_instance_with_only_name(self):
         instance_data = {
             'name': 'The instance',

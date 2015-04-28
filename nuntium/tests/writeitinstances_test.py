@@ -3,7 +3,7 @@ from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from subdomains.utils import reverse
 from nuntium.models import WriteItInstance, Message, Membership, Confirmation
 from popit.models import ApiInstance, Person
-from django.utils.unittest import skipUnless, skip
+from django.utils.unittest import skip
 from django.contrib.auth.models import User
 from django.utils.translation import activate
 from django.utils.translation import ugettext as _

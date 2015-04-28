@@ -6,7 +6,6 @@ from mock import patch
 from popit.models import Person
 from nuntium.popit_api_instance import PopitApiInstance
 from django.contrib.auth.models import User
-from django.utils.unittest import skipUnless
 from django.conf import settings
 from nuntium.tasks import pull_from_popit, update_all_popits
 
