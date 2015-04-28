@@ -100,7 +100,6 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
         self.assertEquals(records.count(), 0)
 
 
-@skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
     def setUp(self):
         self.owner = User.objects.create_user(username="fieraferoz", password="feroz")
@@ -110,20 +109,22 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
             owner=self.owner,
             )
         self.data = {"popit_url": settings.TEST_POPIT_API_URL}
-        popit_load_data()
 
+    @popit_load_data()
     def test_create_form(self):
         form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
 
         self.assertTrue(form)
         self.assertIsInstance(form, Form)
 
+    @popit_load_data()
     def test_form_fields(self):
         form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
         self.assertIn('popit_url', form.fields)
         self.assertIsInstance(form.fields['popit_url'], URLField)
         self.assertTrue(form.is_valid())
 
+    @popit_load_data()
     def test_it_parses_the_popit_api(self):
         data = {"popit_url": 'http://the-instance.popit.mysociety.org/api/'}
         form = RelatePopitInstanceWithWriteItInstance(data=data, writeitinstance=self.writeitinstance)
@@ -134,9 +135,9 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         cleaned_data = form.clean()
         self.assertEquals(cleaned_data.get('popit_url'), expected_url)
 
+    @popit_load_data('other_persons')
     def test_the_form_is_not_valid_if_there_is_another_popit(self):
         '''The form is not valid if there is already another popit api instance related'''
-        popit_load_data('other_persons')  # This json contains a different person named Benito
 
         popit_api_instance = PopitApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
         WriteitInstancePopitInstanceRecord.objects.create(writeitinstance=self.writeitinstance,
@@ -149,6 +150,7 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
         # rather than creating a new one I now should just check that Benito is here
         self.assertTrue(self.writeitinstance.persons.filter(name="Benito"))
 
+    @popit_load_data()
     def test_form_relate(self):
         form = RelatePopitInstanceWithWriteItInstance(data=self.data, writeitinstance=self.writeitinstance)
         form.is_valid()
@@ -160,6 +162,7 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
     def test_url_for_posting_the_url(self):
         reverse('relate-writeit-popit', subdomain=self.writeitinstance.slug)
 
+    @popit_load_data()
     def test_post_to_the_url(self):
         '''It should reject the get to that url'''
         self.client.login(username="fieraferoz", password="feroz")

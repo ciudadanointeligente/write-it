@@ -55,7 +55,6 @@ class TasksTestCase(TestCase):
             info.assert_called_with(expected_log)
 
 
-@skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class PullFromPopitTask(TestCase):
     def setUp(self):
         super(PullFromPopitTask, self).setUp()
@@ -68,7 +67,7 @@ class PullFromPopitTask(TestCase):
         '''The pulling from Popit Task has a name'''
         self.assertEquals(pull_from_popit.name, 'nuntium.tasks.pull_from_popit')
 
-    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    @popit_load_data()
     def test_do_the_pulling(self):
         '''Actually do the pulling from popit in an asynchronous way'''
         Person.objects.all().delete()
@@ -81,11 +80,9 @@ class PullFromPopitTask(TestCase):
         self.assertTrue(writeitinstance.persons.all())
 
 
-@skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class PeriodicallyPullFromPopitClass(TestCase):
     def setUp(self):
         super(PeriodicallyPullFromPopitClass, self).setUp()
-        popit_load_data()
         self.owner = User.objects.get(id=1)
         #this is the popit_api_instance created based on the previous load
         self.writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
@@ -96,12 +93,13 @@ class PeriodicallyPullFromPopitClass(TestCase):
             popitapiinstance=self.popit_api_instance
             )
         #loading data from popit in a sync way
-        self.writeitinstance._load_persons_from_a_popit_api(self.popit_api_instance)
+        with popit_load_data():
+            self.writeitinstance._load_persons_from_a_popit_api(self.popit_api_instance)
         self.previously_created_persons = list(self.writeitinstance.persons.all())
 
-    def test_update_existing_(self):
+    @popit_load_data("other_persons")
+    def test_update_existing(self):
         '''Update existing instance with new information coming from popit'''
-        popit_load_data("other_persons")
 
         # This means that if I run the task then it should update the persons
         # I'm running the weekly job by default
@@ -110,6 +108,7 @@ class PeriodicallyPullFromPopitClass(TestCase):
         persons_after_updating = list(self.writeitinstance.persons.all())
         self.assertNotEquals(self.previously_created_persons, persons_after_updating)
 
+    @popit_load_data("other_persons")
     def test_it_does_not_autosync_if_disabled(self):
         '''If the instance has autosync disabled then it does not sync'''
         writeitinstance_popit_record = WriteitInstancePopitInstanceRecord.objects.get(
@@ -121,13 +120,13 @@ class PeriodicallyPullFromPopitClass(TestCase):
         writeitinstance_popit_record.save()
 
         # The record has been set to autosync False
-        popit_load_data("other_persons")
         update_all_popits.delay()
         # Loading new data
         persons_after_updating = list(self.writeitinstance.persons.all())
         # It should not have updated our writeit instance
         self.assertEquals(self.previously_created_persons, persons_after_updating)
 
+    @popit_load_data("other_persons")
     def test_autosyncs_receiving_a_parameter_with_the_periodicity(self):
         '''It can receive a parameter refering to the periodicity'''
         writeitinstance_popit_record = WriteitInstancePopitInstanceRecord.objects.get(
@@ -136,7 +135,7 @@ class PeriodicallyPullFromPopitClass(TestCase):
         )
         writeitinstance_popit_record.periodicity = '1D'  # Daily
         writeitinstance_popit_record.save()
-        popit_load_data("other_persons")
+
         # Now because it is receiving the default value = '1W'
         # it should not pull anyone
         update_all_popits.delay()

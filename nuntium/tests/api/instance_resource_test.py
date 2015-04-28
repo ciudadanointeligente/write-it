@@ -109,10 +109,9 @@ class InstanceResourceTestCase(ResourceTestCase):
         response = self.api_client.post(url, data=instance_data, format='json')
         self.assertHttpUnauthorized(response)
 
-    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    @popit_load_data()
     def test_create_and_pull_people_from_a_popit_api(self):
         # loading data into the popit-api
-        popit_load_data()
 
         instance_data = {
             'name': 'The instance',
