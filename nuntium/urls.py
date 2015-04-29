@@ -7,11 +7,15 @@ from nuntium.views import (
     WriteItInstanceListView,
     )
 
+from nuntium.user_section.views import (
+    ContactUsView,
+)
 
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', HomeTemplateView.as_view(template_name='home.html'), name='home'),
     url(r'^instances/?$', WriteItInstanceListView.as_view(template_name='nuntium/template_list.html'), name='instance_list'),
+    url(r'^contact/$', ContactUsView.as_view(), name='contact_us'),
 
     url(r'^search/?$', MessageSearchView(), name='search_messages'),
 
