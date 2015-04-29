@@ -463,9 +463,8 @@ if 'SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL' in os.environ \
     #     },
     # }
 
-from django.db.utils import OperationalError
 try:
     from subdomains.utils import reverse
     LOGIN_URL = reverse('login', subdomain=None)
-except OperationalError:
+except:
     LOGIN_URL = '/accounts/login'
