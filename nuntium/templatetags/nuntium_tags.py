@@ -1,7 +1,7 @@
 from django import template
 from contactos.models import Contact
 from django.db.models import Q
-
+from subdomains.templatetags.subdomainurls import url as subdomainsurls, UNSET
 register = template.Library()
 
 
@@ -30,3 +30,8 @@ def join_with_commas(obj_list):
         return u"%s" % obj_list[0]
     else:
         return u", ".join(unicode(obj) for obj in obj_list[:list_len - 1]) + u" and " + unicode(obj_list[list_len - 1])
+
+
+@register.assignment_tag(takes_context=True)
+def assignment_url_with_subdomain(context, view, subdomain=UNSET, *args, **kwargs):
+    return subdomainsurls(context, view, subdomain, *args, **kwargs)
