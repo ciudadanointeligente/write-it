@@ -100,23 +100,14 @@ Then run the server:
 Testing and Development
 =======================
 
-If you want to test without PopitAPI or Elasticsearch
+If you want to test without Elasticsearch
 -----------------------------------------------------
-Elasticsearch and a popit api both are optional and can be turned off by creating a new local_settings.py file ```vi writeit/local_settings.py``` with the following content
+Elasticsearch is optional and can be turned off by creating a new local_settings.py file ```vi writeit/local_settings.py``` with the following content
 
 
 ```
-LOCAL_POPIT = False
 LOCAL_ELASTICSEARCH = False
 ```
-
-Testing with Popit and Elasticsearch
-------------------------------------
-If you want to test the pulling from popit parts, we're using a separate popit-api from which to pull people. For that you need to have MongoDB running, here is the [download page and installation instructions](http://www.mongodb.org/downloads).
-
-After you have mongodb running you can do in a separate terminal:
-
-	./start_local_popit_api.bash
 
 Running tests
 --------------

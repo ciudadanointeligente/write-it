@@ -5,22 +5,19 @@ from mock import patch
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from nuntium.models import WriteItInstance
 from contactos.models import Contact, ContactType
-from django.utils.unittest import skipUnless
 from django.conf import settings
 from django.contrib.auth.models import User
 from nuntium.popit_api_instance import is_current_membership
 
 
-@skipUnless(settings.LOCAL_POPIT, "No local popit running")
 class EmailCreationWhenPullingFromPopit(TestCase):
     def setUp(self):
         super(EmailCreationWhenPullingFromPopit, self).setUp()
         self.instance = WriteItInstance.objects.get(id=1)
 
+    @popit_load_data(fixture_name='persons_with_emails')
     def test_it_pulls_and_creates_contacts(self):
         '''When pulling from popit it also creates emails'''
-
-        popit_load_data(fixture_name='persons_with_emails')
 
         self.instance.load_persons_from_a_popit_api(
             settings.TEST_POPIT_API_URL
@@ -36,10 +33,9 @@ class EmailCreationWhenPullingFromPopit(TestCase):
         self.assertEquals(contact.value, "fiera@ciudadanointeligente.org")
         self.assertEquals(contact.writeitinstance, self.instance)
 
+    @popit_load_data(fixture_name='persons_with_emails')
     def test_it_does_not_replicate_contacts(self):
         '''It does not replicate a contact several times'''
-        popit_load_data(fixture_name='persons_with_emails')
-
         self.instance.load_persons_from_a_popit_api(
             settings.TEST_POPIT_API_URL
         )
@@ -55,28 +51,24 @@ class EmailCreationWhenPullingFromPopit(TestCase):
     def test_not_replicate_contact_even_if_value_changes(self):
         '''The value of an email has changed in popit but in writeit it should just update the value'''
         # Creating and loading the data
-        popit_load_data(fixture_name='persons_with_emails')
-
-        self.instance.load_persons_from_a_popit_api(
-            settings.TEST_POPIT_API_URL
-        )
+        with popit_load_data(fixture_name='persons_with_emails'):
+            self.instance.load_persons_from_a_popit_api(
+                settings.TEST_POPIT_API_URL
+            )
 
         # Updating the data and loading again
-        popit_load_data(fixture_name='persons_with_emails2')
-
-        self.instance.load_persons_from_a_popit_api(
-            settings.TEST_POPIT_API_URL
-        )
+        with popit_load_data(fixture_name='persons_with_emails2'):
+            self.instance.load_persons_from_a_popit_api(
+                settings.TEST_POPIT_API_URL
+            )
 
         fiera = self.instance.persons.filter(name="Fiera Feroz")
         contacts = Contact.objects.filter(person=fiera)
         self.assertEquals(contacts.count(), 1)
 
+    @popit_load_data(fixture_name='other_people_with_popolo_emails')
     def test_get_emails_in_the_popolo_format(self):
         '''Get emails contact if it comes in the popolo format'''
-
-        popit_load_data(fixture_name='other_people_with_popolo_emails')
-
         self.instance.load_persons_from_a_popit_api(
             settings.TEST_POPIT_API_URL
         )
@@ -89,10 +81,9 @@ class EmailCreationWhenPullingFromPopit(TestCase):
         self.assertEquals(contact.contact_type, contact_type)
         self.assertEquals(contact.value, "fiera-popolo@ciudadanointeligente.org")
 
+    @popit_load_data(fixture_name='other_people_with_popolo_emails')
     def test_get_twice_from_popit_does_not_repeat_the_email(self):
         '''Ít does not duplicate emails if they are comming in the field preferred email'''
-        popit_load_data(fixture_name='other_people_with_popolo_emails')
-
         self.instance.load_persons_from_a_popit_api(
             settings.TEST_POPIT_API_URL
         )
@@ -103,11 +94,10 @@ class EmailCreationWhenPullingFromPopit(TestCase):
         contacts = Contact.objects.filter(person=fiera)
         self.assertEquals(contacts.count(), 1)
 
+    @popit_load_data(fixture_name='person_with_preferred_email_and_contact_detail')
     def test_bug_506(self):
         '''If the same email is in preferred email and
         in the list of contact_details it creates a single one'''
-        popit_load_data(fixture_name='person_with_preferred_email_and_contact_detail')
-
         self.instance.load_persons_from_a_popit_api(
             settings.TEST_POPIT_API_URL
         )
@@ -119,6 +109,7 @@ class EmailCreationWhenPullingFromPopit(TestCase):
         the_contact = contacts[0]
         self.assertTrue(the_contact.popit_identifier)
 
+    @popit_load_data(fixture_name='persons_with_memberships')
     def test_if_memberships_are_no_longer_active(self):
         '''
         If all memberships are no longer active then the
@@ -128,8 +119,6 @@ class EmailCreationWhenPullingFromPopit(TestCase):
         with patch('nuntium.popit_api_instance.datetime') as mock_datetime:
             mock_datetime.today.return_value = datetime(2015, 1, 1)
             mock_datetime.strptime = lambda *args, **kw: datetime.strptime(*args, **kw)
-
-            popit_load_data(fixture_name='persons_with_memberships')
 
             self.instance.load_persons_from_a_popit_api(
                 settings.TEST_POPIT_API_URL

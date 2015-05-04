@@ -73,44 +73,6 @@ class UsingDbMixin(object):
         super(UsingDbMixin, self).tearDown(*args, **kwargs)
 
 
-def popit_load_data(fixture_name='default'):
-
-    """
-    Use the mongofixtures CLI tool provided by the pow-mongodb-fixtures package
-    used by popit-api to load some test data into db. Don't use the test fixture
-    from popit-api though as we don't want changes to that to break our test
-    suite.
-
-        https://github.com/powmedia/pow-mongodb-fixtures#cli-usage
-
-    """
-    instance_helpers.delete_api_database()
-    project_root = os.path.normpath(os.path.join(os.path.dirname(__file__)))
-
-    # gather the args for the call
-    mongofixtures_path = os.path.join(
-        project_root,
-        'popit-api-for-testing/node_modules/.bin/mongofixtures',
-        )
-    database_name = instance_helpers.get_api_database_name()
-    test_fixtures_path = os.path.join(
-        project_root, 'nuntium/tests/fixtures/%s.js' % fixture_name)
-
-    # Check that the fixture exists
-    if not os.path.exists(test_fixtures_path):
-        raise Exception("Could not find fixture for %s at %s" % (fixture_name, test_fixtures_path))
-
-    # Hack to deal with bad handling of absolute paths in mongofixtures.
-    # Fix: https://github.com/powmedia/pow-mongodb-fixtures/pull/14
-    test_fixtures_path = os.path.relpath(test_fixtures_path)
-
-    # Usage: mongofixtures db_name path/to/fixtures.js
-    dev_null = open(os.devnull, 'w')
-    exit_code = subprocess.call([mongofixtures_path, database_name, test_fixtures_path], stdout=dev_null)
-    if exit_code:
-        raise Exception("Error loading fixtures for '%s'" % fixture_name)
-
-
 from urlparse import urlparse
 
 
@@ -220,3 +182,20 @@ class WriteItTestRunner(CeleryTestSuiteRunner, NoseTestSuiteRunner):
 
 class CeleryTestingSignalProcessor(BaseSignalProcessor):
     pass
+
+
+from vcr import VCR
+
+CASSETTES_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                              "nuntium/tests/fixtures/vcr_cassettes/")
+
+writeit_vcr = VCR(
+    cassette_library_dir=CASSETTES_PATH,
+    serializer='json',
+    record_mode='once'
+)
+
+
+def popit_load_data(fixture_name='default'):
+    func = writeit_vcr.use_cassette(fixture_name + '.yaml')
+    return func

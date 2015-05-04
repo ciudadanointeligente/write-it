@@ -3,7 +3,7 @@ from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from ..models import WriteItInstance, Membership
 from ..models import WriteitInstancePopitInstanceRecord
 from popit.models import ApiInstance
-from django.utils.unittest import skipUnless, skip
+from django.utils.unittest import skip
 from django.contrib.auth.models import User
 from django.conf import settings
 from nuntium.popit_api_instance import PopitApiInstance
@@ -57,10 +57,9 @@ class PopitWriteitRelationRecord(TestCase):
         expected_unicode = "The people from http://popit.org/api/v1 were loaded into instance 1"
         self.assertEquals(record.__unicode__(), expected_unicode)
 
-    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    @popit_load_data()
     def test_it_does_not_try_to_replicate_the_memberships(self):
         '''This is related to issue #429'''
-        popit_load_data()
         popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
 
@@ -74,10 +73,9 @@ class PopitWriteitRelationRecord(TestCase):
         self.assertEquals(amount_of_memberships, 2)
         self.assertEquals(amount_of_memberships, writeitinstance.persons.count())
 
-    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    @popit_load_data()
     def test_clean_memberships(self):
         '''As part of bug #429 there can be several Membership between one writeitinstance and a person'''
-        popit_load_data()
         popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         # there should be an amount of memberships
@@ -90,7 +88,8 @@ class PopitWriteitRelationRecord(TestCase):
         # Creating a new one
         Membership.objects.create(writeitinstance=writeitinstance, person=person)
         try:
-            writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+            with popit_load_data():
+                writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
         except Membership.MultipleObjectsReturned, e:
             self.fail("There are more than one Membership " + e)
 
@@ -100,11 +99,10 @@ class PopitWriteitRelationRecord(TestCase):
         self.assertEquals(amount_of_memberships, new_amount_of_memberships)
         self.assertEquals(previous_memberships, later_memberships)
 
-    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    @popit_load_data()
     def test_it_is_created_automatically_when_fetching_a_popit_instance(self):
         '''create automatically a record when fetching a popit instance'''
 
-        popit_load_data()
         # loading data into the popit-api
         writeitinstance = WriteItInstance.objects.create(
             name='instance 1',
@@ -140,10 +138,9 @@ class PopitWriteitRelationRecord(TestCase):
 
         self.assertFalse(popit_instance_count)
 
-    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    @popit_load_data()
     def test_it_should_be_able_to_update_twice(self):
         '''It should be able to update all data twice'''
-        popit_load_data()
         # loading data into the popit-api
         writeitinstance = WriteItInstance.objects.create(
             name='instance 1',
@@ -164,10 +161,9 @@ class PopitWriteitRelationRecord(TestCase):
 
         self.assertNotEqual(record.created, record.updated)
 
+    @popit_load_data()
     def test_it_should_update_the_date_every_time_it_is_updated(self):
         '''As described in http://github.com/ciudadanointeligente/write-it/issues/412 the updated date is not updated'''
-
-        popit_load_data()
         # loading data into the popit-api
         writeitinstance = WriteItInstance.objects.create(
             name='instance 1',
@@ -204,9 +200,9 @@ class PopitWriteitRelationRecord(TestCase):
         self.assertEquals(record.status, 'error')
         self.assertEquals(record.status_explanation, 'Error 404')
 
+    @popit_load_data()
     def test_set_status_in_called_success(self):
         '''In progress and success status called'''
-        popit_load_data()
         popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
 
@@ -258,6 +254,7 @@ class UpdateStatusOfPopitWriteItRelation(WriteItPopitTestCase):
     def setUp(self):
         super(UpdateStatusOfPopitWriteItRelation, self).setUp()
 
+    @popit_load_data()
     def test_post_to_the_url_for_manual_resync(self):
         '''Resyncing can be done by posting to a url'''
         # This is just a symbolism but it is to show how this popit api is empty
@@ -273,6 +270,7 @@ class UpdateStatusOfPopitWriteItRelation(WriteItPopitTestCase):
         # It should have been updated
         self.assertTrue(self.popit_api_instance.person_set.all())
 
+    @popit_load_data()
     def test_doesnt_add_another_relation_w_p(self):
         '''
         If a user posts to the server using another popit_api that has not previously been related

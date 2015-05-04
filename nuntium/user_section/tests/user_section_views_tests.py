@@ -2,7 +2,6 @@ from subdomains.utils import reverse
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.test.client import RequestFactory
-from django.utils.unittest import skipUnless
 from popit.models import Person
 from mailit.forms import MailitTemplateForm
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
@@ -529,9 +528,8 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         self.assertIn('class', attrs_for_popit_url)
         self.assertEquals(attrs_for_popit_url['class'], 'form-control')
 
-    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    @popit_load_data()
     def test_save_the_instance_with_the_form(self):
-        popit_load_data()
         form = WriteItInstanceCreateForm(data=self.data, owner=self.user)
         instance = form.save()
         self.assertTrue(instance)
@@ -539,9 +537,8 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         self.assertEquals(instance.owner, self.user)
         self.assertTrue(instance.persons.all())
 
-    @skipUnless(settings.LOCAL_POPIT, "No local popit running")
+    @popit_load_data()
     def test_post_to_create_an_instance(self):
-        popit_load_data()
         c = self.client
         c.login(username=self.user.username, password='admin')
         url = reverse('create_writeit_instance')
