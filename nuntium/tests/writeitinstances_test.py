@@ -92,9 +92,6 @@ class InstanceTestCase(TestCase):
 
     @popit_load_data()
     def test_create_an_instance_and_load_persons_from_an_api(self):
-        # We have a popit running locally using the
-        # start_local_popit_api.bash script
-        #loading data into the popit-api
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
 
         writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)

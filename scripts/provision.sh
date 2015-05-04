@@ -61,7 +61,6 @@ Run a celery worker with:
   ./manage.py celery worker
 
 Run the tests with:
-  ./start_local_popit_api.bash
   ./manage.py test nuntium contactos mailit
 
 -------------------------------------------------------
