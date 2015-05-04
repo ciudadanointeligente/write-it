@@ -202,8 +202,8 @@ class MessagesPerPersonView(ListView):
     template_name = "thread/to.html"
 
     def dispatch(self, request, *args, **kwargs):
-        self.person = Person.objects.get(pk=self.kwargs['pk'])
-        self.writeitinstance = WriteItInstance.objects.get(slug=request.subdomain)
+        self.person = get_object_or_404(Person, pk=self.kwargs['pk'])
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=request.subdomain)
         return super(MessagesPerPersonView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
