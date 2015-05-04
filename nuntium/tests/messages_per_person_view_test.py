@@ -100,3 +100,27 @@ class MessagesPerPersonViewTestCase(TestCase):
 
         # should not be here cause it belongs to other writeit instance
         self.assertNotIn(message, response.context['message_list'])
+
+    def test_person_non_existing_throws_500(self):
+        url = reverse(
+            'thread_to',
+            subdomain=self.writeitinstance.slug,
+            kwargs={
+                'pk': 1313,
+                },
+            )
+
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 404)
+
+    def test_the_person_does_exist_but_not_the_instance(self):
+        marcel = Person.objects.get(id=2)
+        url = reverse(
+            'thread_to',
+            subdomain='non-existing-slug',
+            kwargs={
+                'pk': marcel.id,
+                },
+            )
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 404)
