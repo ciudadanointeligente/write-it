@@ -3,6 +3,7 @@
 {% load subdomainurls %}
 {% load staticfiles %}
 {% load pagination_tags %}
+{% load nuntium_tags %}
 {% block header %}
 {% include 'nuntium/profiles/top_menu.html' with section='your-instances' %}
 {% endblock header %}
@@ -66,7 +67,9 @@
       <hr />
       <div class="page-header">
         <h2>{% trans "Test Sites" %}</h2>
-        <p>{% trans "Sites are set to Testing Mode by default. Use the 'Edit' link and make sure that your site is set up in the way that you want it. When you are ready, contact us to let us know and we’ll put your site live." %}</p>
+        <p>
+          {% assignment_url_with_subdomain 'contact_us' subdomain=None as contact_page %}
+          {% blocktrans %}Sites are set to Testing Mode by default. Use the 'Edit' link and make sure that your site is set up in the way that you want it. When you are ready, <a href="{{ contact_page }}">contact us</a> to let us know and we’ll put your site live.{% endblocktrans %}</p>
         
             {% blocktrans count counter=test_sites.count %}
                 This site is in Test Mode:
