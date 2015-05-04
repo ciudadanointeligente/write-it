@@ -254,7 +254,7 @@ class MessageThreadsView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(MessageThreadsView, self).get_context_data(**kwargs)
-        context['writeitinstance'] = WriteItInstance.objects.get(slug=self.request.subdomain)
+        context['writeitinstance'] = get_object_or_404(WriteItInstance, slug=self.request.subdomain)
         return context
 
 
