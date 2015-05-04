@@ -14,15 +14,15 @@ class MailItTemplate(models.Model):
     subject_template = models.CharField(
         max_length=255,
         default="{subject}",
-        help_text=_('You can use {subject}, {content}, {person}, {author}, {writeit_url}, {writeit_name}, and {owner_email}'),
+        help_text=_('You can use {subject}, {content}, {person}, {author}, {site_url}, {site_name}, and {owner_email}'),
         )
     content_template = models.TextField(
-        help_text=_('You can use {subject}, {content}, {person}, {author}, {writeit_url}, {writeit_name}, and {owner_email}'),
+        help_text=_('You can use {subject}, {content}, {person}, {author}, {site_url}, {site_name}, and {owner_email}'),
         blank=True,
         )
     content_html_template = models.TextField(
         blank=True,
-        help_text=_('You can use {subject}, {content}, {person}, {author}, {writeit_url}, {writeit_name}, and {owner_email}'),
+        help_text=_('You can use {subject}, {content}, {person}, {author}, {site_url}, {site_name}, and {owner_email}'),
         )
     writeitinstance = models.OneToOneField(WriteItInstance, related_name='mailit_template')
 

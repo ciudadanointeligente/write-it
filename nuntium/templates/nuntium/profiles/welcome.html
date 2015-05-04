@@ -1,7 +1,7 @@
 {% extends "base_manager.html" %}
 
 {% load i18n %}
-
+{% load nuntium_tags %}
 {% block content %}
 
 <div class="page-header">
@@ -18,7 +18,7 @@
 </p>
 {% if writeitinstance.config.testing_mode %}
   <p>
-    {% url 'contact_us' as contact_page %}
+    {% assignment_url_with_subdomain 'contact_us' subdomain=None as contact_page %}
     {% blocktrans %}
       You're currently running in <strong>testing mode</strong>, so all
       the emails sent will go to you (and not the recipients).
@@ -36,8 +36,8 @@
       You've got <a href="{{ url_recipients }}">{{ contactable_count }} contactable recipients</a> in your database.
       That‘s great — now you can test out the process of writing to them!
     {% endblocktrans %}
-
-    {% url 'instance_detail' as site_root %}
+    
+    {% assignment_url_with_subdomain 'instance_detail' subdomain=writeitinstance.slug as site_root %}
     {% if writeitinstance.config.testing_mode %}
       {% blocktrans %}Try it out at <a href="{{ site_root }}">your test site</a> —
       don't worry: any emails you send will be sent to <b>you</b>, not

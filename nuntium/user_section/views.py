@@ -587,7 +587,7 @@ class MessageTogglePublic(RedirectView):
         return reverse('messages_per_writeitinstance', subdomain=self.request.subdomain)
 
 
-class ContactUsView(WriteItInstanceDetailBaseView):
+class ContactUsView(TemplateView):
     template_name = 'nuntium/profiles/contact.html'
 
 

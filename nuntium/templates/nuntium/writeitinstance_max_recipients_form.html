@@ -1,6 +1,7 @@
 {% extends "base_manager.html" %}
 {% load i18n %}
 {% load staticfiles %}
+{% load nuntium_tags %}
 
 
 {% block header %}
@@ -23,7 +24,7 @@
         be sent to.
         {% endblocktrans %}</p>
 
-        {% url 'contact_us' as contact_page %}
+        {% assignment_url_with_subdomain 'contact_us' subdomain=None as contact_page %}
         <p class="help-block">{% blocktrans %}
         This is limited to a maximum of ten recipients per message. If you
         want to enable sending messages to more people at once, please
