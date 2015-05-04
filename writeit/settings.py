@@ -382,6 +382,9 @@ CELERY_TIMEZONE = TIME_ZONE
 CELERY_ENABLE_UTC = True
 CELERY_CREATE_MISSING_QUEUES = True
 CELERY_HAYSTACK_TRANSACTION_SAFE = True
+CELERY_HAYSTACK_DEFAULT_ALIAS = None
+CELERY_HAYSTACK_RETRY_DELAY = 5 * 60
+CELERY_HAYSTACK_MAX_RETRIES = 1
 CELERY_HAYSTACK_DEFAULT_TASK = 'celery_haystack.tasks.CeleryHaystackSignalHandler'
 
 # These can be set independently, but most often one will be set to True and
