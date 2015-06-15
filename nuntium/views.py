@@ -153,11 +153,13 @@ class ConfirmView(RedirectView):
     permanent = False
 
     def get_redirect_url(self, *args, **kwargs):
-        confirmation = get_object_or_404(Confirmation, key=kwargs['slug'], confirmated_at=None)
-        confirmation.confirmated_at = datetime.now()
-        confirmation.save()
-        confirmation.message.recently_confirmated()
-        self.request.session['user_came_via_confirmation_link'] = True
+        confirmation = get_object_or_404(Confirmation, key=kwargs['slug'])
+        # Now proceed with the confirmation
+        if confirmation.confirmated_at is None:
+            confirmation.confirmated_at = datetime.now()
+            confirmation.save()
+            confirmation.message.recently_confirmated()
+            self.request.session['user_came_via_confirmation_link'] = True
         return reverse('thread_read',
             subdomain=confirmation.message.writeitinstance.slug,
             kwargs={'slug': confirmation.message.slug})
