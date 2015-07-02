@@ -167,6 +167,7 @@ MIDDLEWARE_CLASSES = (
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'subdomains.middleware.SubdomainURLRoutingMiddleware',
+    'writeit.middleware.SubdomainTemplateOverrideMiddleware',
 )
 
 ROOT_URLCONF = 'nuntium.subdomain_urls'
@@ -181,9 +182,7 @@ SUBDOMAIN_URLCONFS = {
 WSGI_APPLICATION = 'writeit.wsgi.application'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+    os.path.join(BASE_DIR, 'templates'),
 )
 TESTING = 'test' in sys.argv
 
