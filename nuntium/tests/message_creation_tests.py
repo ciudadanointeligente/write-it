@@ -15,6 +15,25 @@ class MessageCreationTestCase(TestCase):
         self.writeitinstance.add_person(self.person1)
         self.writeitinstance.add_person(self.person2)
 
+    def test_if_theres_a_single_contact_skip_the_first_step(self):
+        '''If theres a single contact skip the first step and select the single person'''
+        url = reverse('write_message_step',
+            subdomain=self.writeitinstance.slug,
+            kwargs={'step': 'who'})
+        # Deleting Marcel
+        self.writeitinstance.persons.get(id=2).delete()
+        # ok so I've deleted Marcel from the list of people that is in this instance
+        # so when I get this response I'm expecting to take me directly to
+        # the second step .
+        response = self.client.get(url)
+        url2 = reverse('write_message_step',
+            subdomain=self.writeitinstance.slug,
+            kwargs={'step': 'draft'})
+
+        self.assertRedirects(response, url2)
+        response2 = self.client.get(url2)
+        self.assertEquals(response2.status_code, 200)
+
     def test_go_through_the_whole_message_creation_process(self):
         '''Go through the whole message creation'''
         self.assertTrue(self.person1.contact_set.all())
