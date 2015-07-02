@@ -2,9 +2,14 @@
 # Django settings for writeit project.
 import sys
 import os
+from django.conf.global_settings import LANGUAGES
+from django.utils.translation import to_locale
 DEBUG = True
 TASTYPIE_FULL_DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = '^1rqg8ctiq=#11c*=1mz5pyyry%)t%z^%nrhmh=q%g@r@bej1_'
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -38,14 +43,16 @@ TIME_ZONE = 'America/Chicago'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en'
 
-gettext = lambda s: s
+LOCALE_PATHS = [
+    os.path.join(os.path.dirname(os.path.dirname(__file__)), 'locale')
+]
 
-LANGUAGES = (
-    ('en', gettext('English')),
-    ('es', gettext(u'Español')),
-    ('ar', gettext(u'العربية')),
-    ('fr', gettext(u'Français'))
-    )
+# The code below sets LANGUAGES to only those we have translations
+# If someone's browser sends 'Accept-Language: es', that means that it
+# will be found in this list, but since there are no translations for 'es'
+# it'll fall back to LANGUAGE_CODE.  However, if there is no 'es' in
+# LANGUAGES, then Django will attempt to do a best match.
+LANGUAGES = [l for l in LANGUAGES if os.path.exists(os.path.join(LOCALE_PATHS[0], to_locale(l[0])))]
 
 SITE_ID = 1
 
@@ -130,9 +137,6 @@ PIPELINE_CSS = {
         'output_filename': 'css/writeinpublic.css',
     }
 }
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '^1rqg8ctiq=#11c*=1mz5pyyry%)t%z^%nrhmh=q%g@r@bej1_'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
