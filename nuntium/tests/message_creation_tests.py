@@ -37,7 +37,6 @@ class MessageCreationTestCase(TestCase):
     def test_go_through_the_whole_message_creation_process(self):
         '''Go through the whole message creation'''
         self.assertTrue(self.person1.contact_set.all())
-        self.person2.contact_set.all().delete()
 
         url = reverse('write_message_step',
             subdomain=self.writeitinstance.slug,
@@ -49,8 +48,6 @@ class MessageCreationTestCase(TestCase):
         self.assertIn(self.person1, who_form.fields['persons'].queryset)
         # I'm expecting someone without contacts not to be in the
         # 'who' step.
-        self.assertNotIn(self.person2, who_form.fields['persons'].queryset)
-
         self.assertIn('writeitinstance', response.context)
         self.assertEquals(response.context['writeitinstance'], self.writeitinstance)
         recipient1 = self.writeitinstance.persons.get(id=1)
