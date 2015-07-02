@@ -3,20 +3,21 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: 1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-02 15:04+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2015-07-02 14:58-0300\n"
+"Last-Translator: Lab at Ciudadano Inteligente <lab@ciudadanointeligente."
+"org>\n"
+"Language-Team: FCI <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.5.4\n"
+"Language: Español\n"
 
 #: contactos/models.py:33 contactos/tests/contacts_tests.py:157
 #, python-format
@@ -181,7 +182,7 @@ msgstr ""
 
 #: nuntium/templates/base_instance.html:27 nuntium/templates/footer.html:9
 msgid "A Poplus Component"
-msgstr ""
+msgstr "Un componente de Poplus"
 
 #: nuntium/templates/base_instance.html:33
 #: nuntium/templates/registration/password_change_done.html:7
@@ -215,16 +216,16 @@ msgstr ""
 #: nuntium/templates/base_manager.html:67
 #: nuntium/templates/nuntium/profiles/profile-navigation.html:6
 msgid "Your Profile"
-msgstr ""
+msgstr "Perfil"
 
 #: nuntium/templates/base_instance.html:76
 #: nuntium/templates/base_manager.html:68
 msgid "Site Manager"
-msgstr ""
+msgstr "Administración de tus sitios"
 
 #: nuntium/templates/base_instance.html:82
 msgid "Sign out"
-msgstr ""
+msgstr "Salir"
 
 #: nuntium/templates/base_instance.html:96
 msgid "This site is read-only."
@@ -265,24 +266,28 @@ msgid ""
 "Built by <a href=\"http://www.ciudadanointeligente.org\">Fundación Ciudadano "
 "Inteligente</a>"
 msgstr ""
+"Construido por <a href=\"http://www.ciudadanointeligente.org\">Fundación "
+"Ciudadano Inteligente</a>"
 
 #: nuntium/templates/footer.html:18
 msgid "Find the code at Github"
-msgstr ""
+msgstr "Revisa nuestro código en Github"
 
 #: nuntium/templates/home.html:12
 msgid ""
 "Make sites that empower citizens to send emails to representatives and "
 "politicians."
 msgstr ""
+"Construye sitios que empoderan ciudadanos mediante enviar emails públicos a "
+"tus representantes y políticos."
 
 #: nuntium/templates/home.html:13
 msgid "No coding required."
-msgstr ""
+msgstr "No necesita programación."
 
 #: nuntium/templates/home.html:15
 msgid "Create your own site"
-msgstr ""
+msgstr "Crea tu propio sitio"
 
 #: nuntium/templates/home.html:18
 msgid "Or see ones other people have created."
