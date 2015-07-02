@@ -153,6 +153,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'social.apps.django_app.context_processors.backends',
     'social.apps.django_app.context_processors.login_redirect',
     'writeit.context_processors.web_api_settings',
+    'writeit.context_processors.google_analytics_settings',
     )
 
 MIDDLEWARE_CLASSES = (
@@ -367,6 +368,8 @@ INCOMING_EMAIL_LOGGING = 'None'
 EXTRA_APPS = ()
 
 
+GOOGLE_ANALYTICS_PROPERTY_ID = None # Override this in local_settings.py or environment.
+
 # SOCIAL AUTH DETAILS
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'Key'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'S3Cr3t'
@@ -430,6 +433,9 @@ if 'SOCIAL_AUTH_GOOGLE_OAUTH2_KEY' in os.environ:
 
 if 'SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET' in os.environ:
     SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
+
+if 'GOOGLE_ANALYTICS_PROPERTY_ID' in os.environ:
+    GOOGLE_ANALYTICS_PROPERTY_ID = os.environ['GOOGLE_ANALYTICS_PROPERTY_ID']
 
 #Email settings
 if 'DEFAULT_FROM_EMAIL' in os.environ:
