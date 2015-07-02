@@ -1,4 +1,4 @@
-# coding=utf8
+# coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
 from mailit.models import RawIncomingEmail
 from ..bin.handleemail import EmailHandler

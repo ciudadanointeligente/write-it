@@ -1,4 +1,4 @@
-# coding=utf8
+# coding=utf-8
 import json
 from mock import patch
 from requests.models import Request
