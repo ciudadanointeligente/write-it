@@ -84,6 +84,11 @@ class WriteMessageView(NamedUrlSessionWizardView):
         return super(WriteMessageView, self).dispatch(request=request, *args, **kwargs)
 
     def get(self, *args, **kwargs):
+        if self.steps.current == 'who' and self.writeitinstance.persons_with_contacts.count() == 1:
+            the_person = self.writeitinstance.persons_with_contacts.first()
+            self.storage.set_step_data('who', {self.get_form_prefix() + '-persons': [the_person.id]})
+            self.storage.current_step = 'draft'
+            return redirect(self.get_step_url('draft'))
         # Check that the form contains valid data
         if self.steps.current == 'preview' or self.steps.current == 'draft':
             message = self.get_form_values()
