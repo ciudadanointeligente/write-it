@@ -1,4 +1,4 @@
-# coding=utf8
+# coding=utf-8
 from nuntium.models import OutboundMessage
 from mailit.management.commands.handleemail import AnswerForManageCommand
 from global_test_case import GlobalTestCase as TestCase

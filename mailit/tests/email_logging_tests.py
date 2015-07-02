@@ -1,4 +1,4 @@
-# coding=utf8
+# coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
 from django.core.management import call_command
 from nuntium.models import OutboundMessageIdentifier
