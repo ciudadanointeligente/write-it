@@ -1,0 +1,1721 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-07-02 15:04+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+#: contactos/models.py:33 contactos/tests/contacts_tests.py:157
+#, python-format
+msgid "%(contact)s (%(type)s) for %(person)s"
+msgstr ""
+
+#: contactos/models.py:77
+#, python-format
+msgid "The contact %(contact)s for %(person)s has bounced"
+msgstr ""
+
+#: contactos/tests/contacts_tests.py:202
+msgid "The contact contact point for Pedro has bounced"
+msgstr ""
+
+#: mailit/forms.py:13 nuntium/forms.py:54
+msgid "Instance not present"
+msgstr ""
+
+#: mailit/models.py:17 mailit/models.py:20 mailit/models.py:25
+msgid ""
+"You can use {subject}, {content}, {person}, {author}, {site_url}, "
+"{site_name}, and {owner_email}"
+msgstr ""
+
+#: nuntium/forms.py:82
+#, python-format
+msgid "You can send messages to at most %(count)d person"
+msgid_plural "You can send messages to at most %(count)d people"
+msgstr[0] ""
+msgstr[1] ""
+
+#: nuntium/forms.py:164 nuntium/user_section/forms.py:254
+msgid "PopIt URL"
+msgstr ""
+
+#: nuntium/forms.py:165 nuntium/user_section/forms.py:255
+msgid "Example: https://eduskunta.popit.mysociety.org/"
+msgstr ""
+
+#: nuntium/models.py:79 nuntium/models.py:109
+#: nuntium/tests/popit_writeit_relation_tests.py:223
+#: nuntium/user_section/tests/popit_instance_update_tests.py:191
+msgid "We could not connect with the URL"
+msgstr ""
+
+#: nuntium/models.py:159
+msgid "Every message is going to         have a moderation mail"
+msgstr ""
+
+#: nuntium/models.py:162
+msgid "Allow the creation of new messages         using the web"
+msgstr ""
+
+#: nuntium/models.py:166
+msgid ""
+"The owner of this instance         should be notified         when a new "
+"answer comes in"
+msgstr ""
+
+#: nuntium/models.py:170
+msgid ""
+"Messages pushed to the api should             be confirmed automatically"
+msgstr ""
+
+#: nuntium/models.py:208
+#, python-format
+msgid "The message \"%(subject)s\" at %(instance)s"
+msgstr ""
+
+#: nuntium/models.py:294
+msgid "You have reached "
+msgstr ""
+
+#: nuntium/models.py:366
+msgid "A message needs persons to be sent"
+msgstr ""
+
+#: nuntium/models.py:444
+msgid "The message needs "
+msgstr ""
+
+#: nuntium/models.py:450 nuntium/tests/messages_test.py:316
+#, python-format
+msgid "%(subject)s at %(instance)s"
+msgstr ""
+
+#: nuntium/models.py:475
+msgid "This guy does not belong here"
+msgstr ""
+
+#: nuntium/models.py:479
+#, python-format
+msgid "%(person)s said \"%(content)s\""
+msgstr ""
+
+#: nuntium/models.py:566 nuntium/tests/outbound_message_test.py:99
+msgid "Newly created"
+msgstr ""
+
+#: nuntium/models.py:567 nuntium/tests/outbound_message_test.py:100
+msgid "Ready to send"
+msgstr ""
+
+#: nuntium/models.py:568 nuntium/tests/outbound_message_test.py:101
+msgid "Sent"
+msgstr ""
+
+#: nuntium/models.py:569 nuntium/tests/outbound_message_test.py:102
+msgid "Error sending it"
+msgstr ""
+
+#: nuntium/models.py:570 nuntium/tests/outbound_message_test.py:103
+msgid "Needs moderation"
+msgstr ""
+
+#: nuntium/models.py:632
+#, python-format
+msgid "%(subject)s sent to %(person)s "
+msgstr ""
+
+#: nuntium/models.py:735 nuntium/models.py:739 nuntium/models.py:744
+msgid ""
+"You can use {author_name}, {site_name}, {subject}, {content}, {recipients}, "
+"{confirmation_url}, and {message_url}"
+msgstr ""
+
+#: nuntium/models.py:895 nuntium/models.py:899 nuntium/models.py:904
+msgid ""
+"You can use {author_name}, {person}, {subject}, {content}, {message_url}, "
+"and {site_name}"
+msgstr ""
+
+#: nuntium/models.py:908
+#, python-format
+msgid "Notification template for %s"
+msgstr ""
+
+#: nuntium/models.py:957
+msgid "Not doing anything now"
+msgstr ""
+
+#: nuntium/models.py:958
+msgid "Error"
+msgstr ""
+
+#: nuntium/models.py:959
+msgid "Success"
+msgstr ""
+
+#: nuntium/models.py:960
+msgid "Waiting"
+msgstr ""
+
+#: nuntium/models.py:961
+msgid "In Progress"
+msgstr ""
+
+#: nuntium/templates/base_instance.html:17
+msgid "Toggle navigation"
+msgstr ""
+
+#: nuntium/templates/base_instance.html:27 nuntium/templates/footer.html:9
+msgid "A Poplus Component"
+msgstr ""
+
+#: nuntium/templates/base_instance.html:33
+#: nuntium/templates/registration/password_change_done.html:7
+#: nuntium/templates/registration/password_change_form.html:7
+#: nuntium/templates/registration/password_reset_complete.html:7
+#: nuntium/templates/registration/password_reset_confirm.html:7
+#: nuntium/templates/registration/password_reset_done.html:7
+#: nuntium/templates/registration/password_reset_form.html:7
+msgid "Home"
+msgstr ""
+
+#: nuntium/templates/base_instance.html:34
+msgid "About"
+msgstr ""
+
+#: nuntium/templates/base_instance.html:36
+#: nuntium/templates/nuntium/instance_detail.html:15
+msgid "Send a message"
+msgstr ""
+
+#: nuntium/templates/base_instance.html:38
+msgid "Browse messages"
+msgstr ""
+
+#: nuntium/templates/base_instance.html:42
+#: nuntium/templates/registration/login.html:9
+msgid "Sign in"
+msgstr ""
+
+#: nuntium/templates/base_instance.html:61
+#: nuntium/templates/base_manager.html:67
+#: nuntium/templates/nuntium/profiles/profile-navigation.html:6
+msgid "Your Profile"
+msgstr ""
+
+#: nuntium/templates/base_instance.html:76
+#: nuntium/templates/base_manager.html:68
+msgid "Site Manager"
+msgstr ""
+
+#: nuntium/templates/base_instance.html:82
+msgid "Sign out"
+msgstr ""
+
+#: nuntium/templates/base_instance.html:96
+msgid "This site is read-only."
+msgstr ""
+
+#: nuntium/templates/base_instance.html:97 nuntium/templates/write/who.html:47
+msgid "You can’t currently create new messages using this site."
+msgstr ""
+
+#: nuntium/templates/base_instance.html:99
+msgid "Change this in Settings"
+msgstr ""
+
+#: nuntium/templates/base_instance.html:106
+msgid "This site has no recipients."
+msgstr ""
+
+#: nuntium/templates/base_instance.html:107
+msgid "There is no-one to write to yet. Please check back soon."
+msgstr ""
+
+#: nuntium/templates/base_instance.html:109
+msgid "Import people from PopIt"
+msgstr ""
+
+#: nuntium/templates/base_instance.html:116
+msgid "This site is in Test Mode."
+msgstr ""
+
+#: nuntium/templates/base_instance.html:117
+msgid ""
+"Any messages you write will be sent to the site administrator rather than "
+"real representatives."
+msgstr ""
+
+#: nuntium/templates/footer.html:13
+msgid ""
+"Built by <a href=\"http://www.ciudadanointeligente.org\">Fundación Ciudadano "
+"Inteligente</a>"
+msgstr ""
+
+#: nuntium/templates/footer.html:18
+msgid "Find the code at Github"
+msgstr ""
+
+#: nuntium/templates/home.html:12
+msgid ""
+"Make sites that empower citizens to send emails to representatives and "
+"politicians."
+msgstr ""
+
+#: nuntium/templates/home.html:13
+msgid "No coding required."
+msgstr ""
+
+#: nuntium/templates/home.html:15
+msgid "Create your own site"
+msgstr ""
+
+#: nuntium/templates/home.html:18
+msgid "Or see ones other people have created."
+msgstr ""
+
+#: nuntium/templates/nuntium/create_new_writeitinstance.html:10
+msgid "Create your new Site"
+msgstr ""
+
+#: nuntium/templates/nuntium/create_new_writeitinstance.html:13
+msgid ""
+"\n"
+"<p>You’re going to make a site that enables people to contact their\n"
+"politicians.</p>\n"
+"\n"
+"<p>You will need:</p>\n"
+"\n"
+"<ul>\n"
+"  <li> Names and contact details for those politicians</li>\n"
+"  <li> A <a href=\"http://popit.poplus.org/\">PopIt</a> site to store them "
+"in</li>\n"
+"</ul>\n"
+"\n"
+"<p>Both sites work hand in hand: PopIt stores your data, and we fetch the\n"
+"names and contact details we need from there.</p>\n"
+"\n"
+"<h4>No PopIt site?</h4>\n"
+"\n"
+"Don’t worry, it takes just minutes to set one up. All you need is a "
+"spreadsheet with the basic data for your politicians. \n"
+"\n"
+"The <a href=\"http://everypolitician.org/upload/\">CSV importer at "
+"EveryPolitician</a> \n"
+"will turn that data into the right format, and create a PopIt for you.\n"
+"\n"
+"<h4>Got your PopIt?</h4>\n"
+"\n"
+"<p>Great - you’re ready to begin!</p>\n"
+"\n"
+"<hr>\n"
+"\n"
+msgstr ""
+
+#: nuntium/templates/nuntium/create_new_writeitinstance.html:45
+#: nuntium/templates/nuntium/profiles/create_answer.html:26
+msgid "Create"
+msgstr ""
+
+#: nuntium/templates/nuntium/instance_detail.html:12
+msgid ""
+"Write to the people who represent you.<br />In public.<br /><br />Get "
+"answers.<br />In public."
+msgstr ""
+
+#: nuntium/templates/nuntium/instance_detail.html:24
+msgid "Recent messages"
+msgstr ""
+
+#: nuntium/templates/nuntium/instance_detail.html:31
+msgid "Most popular representatives"
+msgstr ""
+
+#: nuntium/templates/nuntium/instance_detail.html:47
+#: nuntium/templates/nuntium/instance_search.html:43
+msgid "Search within messages"
+msgstr ""
+
+#: nuntium/templates/nuntium/instance_detail.html:49
+#: nuntium/templates/nuntium/instance_search.html:45
+#: nuntium/templates/nuntium/search.html:18
+msgid "Search"
+msgstr ""
+
+#: nuntium/templates/nuntium/instance_search.html:12
+#: nuntium/templates/nuntium/search.html:27
+msgid "Results"
+msgstr ""
+
+#: nuntium/templates/nuntium/instance_search.html:23
+#: nuntium/templates/nuntium/search.html:38
+msgid "No results found."
+msgstr ""
+
+#: nuntium/templates/nuntium/moderation_accepted.html:6
+msgid "Thanks! the message will be sent very soon!"
+msgstr ""
+
+#: nuntium/templates/nuntium/moderation_rejected.html:6
+msgid "The message has been deleted!"
+msgstr ""
+
+#: nuntium/templates/nuntium/template_list.html:10
+msgid "Current Sites"
+msgstr ""
+
+#: nuntium/templates/nuntium/template_list.html:20
+msgid "Test Mode"
+msgstr ""
+
+#: nuntium/templates/nuntium/template_list.html:28
+msgid "There are no sites yet!"
+msgstr ""
+
+#: nuntium/templates/nuntium/template_list.html:29
+msgid "Create a Site"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:14
+msgid "Message settings"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:15
+msgid "back to messages"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:22
+msgid "Answer notification"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:23
+msgid ""
+"\n"
+"    If you turn on “Answer Notification”, you will receive copies of all\n"
+"    responses to messages to your email address.\n"
+"    "
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:33
+#: nuntium/templates/nuntium/writeitinstance_autoconfirm_form.html:36
+#: nuntium/templates/nuntium/writeitinstance_max_recipients_form.html:41
+#: nuntium/templates/nuntium/writeitinstance_moderation_form.html:33
+#: nuntium/templates/nuntium/writeitinstance_ratelimiter_form.html:35
+#: nuntium/templates/nuntium/writeitinstance_update_form.html:37
+#: nuntium/templates/nuntium/writeitinstance_web_based_form.html:30
+#: nuntium/templates/nuntium/profiles/templates.html:35
+#: nuntium/templates/nuntium/profiles/templates.html:48
+#: nuntium/templates/nuntium/profiles/templates.html:60
+msgid "Save changes"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_api_docs.html:7
+#: nuntium/templates/nuntium/profiles/manager-navigation.html:31
+msgid "API"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_api_docs.html:8
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:24
+#: nuntium/templates/nuntium/profiles/contacts/contacts-per-writeitinstance.html:39
+msgid "Settings"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_api_docs.html:10
+msgid "Creating a message using the API"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_api_docs.html:12
+msgid "To create a message using the API, send a POST request to"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_api_docs.html:14
+msgid "with payload data like"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_api_docs.html:17
+msgid "Message content here"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_api_docs.html:24
+msgid "Name of sender"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_api_docs.html:25
+msgid "Message subject here"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_autoconfirm_form.html:14
+msgid "API settings"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_autoconfirm_form.html:15
+msgid "back to API"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_autoconfirm_form.html:24
+msgid "API Autoconfirm"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_autoconfirm_form.html:25
+msgid ""
+"\n"
+"        If you turn on “API Autoconfirm”, any messages created through the\n"
+"        API will be automatically Confirmed. If you do this, please ensure\n"
+"        that you confirm the sender's contact details in your application.\n"
+"        "
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_max_recipients_form.html:14
+msgid "Recipients settings"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_max_recipients_form.html:15
+msgid "back to recipients"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_max_recipients_form.html:22
+msgid ""
+"\n"
+"        Select the maximum number of recipients any individual message can\n"
+"        be sent to.\n"
+"        "
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_max_recipients_form.html:28
+#, python-format
+msgid ""
+"\n"
+"        This is limited to a maximum of ten recipients per message. If you\n"
+"        want to enable sending messages to more people at once, please\n"
+"        <a href=\"%(contact_page)s\">contact us</a>.\n"
+"        "
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_moderation_form.html:14
+msgid "Moderation settings"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_moderation_form.html:15
+msgid "back to moderation"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_moderation_form.html:22
+msgid ""
+"\n"
+"        If you turn on “Moderation” for the site, messages will be sent\n"
+"        to you for approval, before being sent to the intended\n"
+"        Recipient(s).\n"
+"        "
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_ratelimiter_form.html:14
+msgid "Rate Limiting"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_ratelimiter_form.html:17
+msgid ""
+"\n"
+"    If you set a “rate limit” for your site, no-one will be able to\n"
+"    send more messages than that per day.\n"
+"    "
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_ratelimiter_form.html:22
+msgid ""
+"\n"
+"    Set this to zero for to allow unlimited messages.\n"
+"    "
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_update_form.html:15
+#: nuntium/templates/registration/password_change_form.html:20
+msgid "Please correct the error below."
+msgid_plural "Please correct the errors below."
+msgstr[0] ""
+msgstr[1] ""
+
+#: nuntium/templates/nuntium/writeitinstance_update_form.html:21
+#: nuntium/templates/nuntium/profiles/manager-navigation.html:7
+msgid "About your site"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_web_based_form.html:14
+msgid "Site Enabled?"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_web_based_form.html:17
+msgid ""
+"\n"
+"    If this is turned off, messages cannot be created via the web-based\n"
+"    form.\n"
+"    "
+msgstr ""
+
+#: nuntium/templates/nuntium/answer/answer_in_list.html:10
+#: nuntium/templates/nuntium/answer/answer_in_search_list.html:7
+#, python-format
+msgid " by %(name)s."
+msgstr ""
+
+#: nuntium/templates/nuntium/message/from_person.html:6
+#, python-format
+msgid "Messages sent by %(author_name)s "
+msgstr ""
+
+#: nuntium/templates/nuntium/message/from_person.html:13
+#: nuntium/templates/thread/all.html:17
+msgid "There are currently no public messages on this site."
+msgstr ""
+
+#: nuntium/templates/nuntium/message/message_detail.html:13
+msgid "This message was sent to"
+msgstr ""
+
+#: nuntium/templates/nuntium/message/message_detail.html:16
+#: nuntium/templates/nuntium/message/message_in_list.html:28
+#: nuntium/templates/nuntium/profiles/message_detail.html:26
+#, python-format
+msgid "See all messages sent to %(person_name)s"
+msgstr ""
+
+#: nuntium/templates/nuntium/message/message_detail.html:22
+#, python-format
+msgid ""
+"Asked by \n"
+"    <a href=\"%(other_messages_by)s\">%(name)s</a>."
+msgstr ""
+
+#: nuntium/templates/nuntium/message/message_detail.html:40
+msgid "Answers"
+msgstr ""
+
+#: nuntium/templates/nuntium/message/message_detail.html:47
+msgid " Get back to the messages."
+msgstr ""
+
+#: nuntium/templates/nuntium/message/message_in_list.html:13
+msgid "There are no answers yet"
+msgstr ""
+
+#: nuntium/templates/nuntium/message/message_in_list.html:15
+#, python-format
+msgid ""
+"\n"
+"            There is %(answer_count)s answer\n"
+"            "
+msgid_plural ""
+"\n"
+"            There are %(answer_count)s answers\n"
+"            "
+msgstr[0] ""
+msgstr[1] ""
+
+#: nuntium/templates/nuntium/message/message_in_list.html:34
+#, python-format
+msgid ""
+"Asked by \n"
+"            <a href=\"%(other_messages_by)s\">%(name)s</a>."
+msgstr ""
+
+#: nuntium/templates/nuntium/message/message_in_search_list.html:14
+#, python-format
+msgid "Asked by %(name)s."
+msgstr ""
+
+#: nuntium/templates/nuntium/message/message_in_search_list.html:19
+msgid "People"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/contact.html:8
+msgid "Contact Us"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/contact.html:11
+msgid ""
+"\n"
+"<p>Need us to take your site out of Test Mode? Want us to fix something \n"
+"about how the site works, or add a feature? Or just want to shower us with\n"
+"praise?</p>\n"
+"\n"
+"<p>We'd love to hear from you — what you like about the site, what you\n"
+"hate about it, or what you wish it did differently.</p>\n"
+"\n"
+"<p>Just email us at <tt>team@writeinpublic.com</tt></p>\n"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/create_answer.html:8
+#, python-format
+msgid "Create an answer for \"%(message)s\""
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/create_answer.html:25
+#: nuntium/templates/nuntium/profiles/update_answer.html:20
+msgid "Close"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/manager-navigation.html:11
+#: nuntium/templates/nuntium/profiles/message_detail.html:24
+#: nuntium/templates/nuntium/profiles/your-instances.html:22
+#: nuntium/templates/nuntium/profiles/your-instances.html:85
+#: nuntium/templates/nuntium/profiles/contacts/contacts-per-writeitinstance.html:36
+msgid "Recipients"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/manager-navigation.html:17
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:23
+#: nuntium/templates/nuntium/profiles/your-instances.html:23
+#: nuntium/templates/nuntium/profiles/your-instances.html:86
+msgid "Messages"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/manager-navigation.html:22
+msgid "Data sources"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/manager-navigation.html:26
+#: nuntium/templates/nuntium/profiles/templates.html:25
+msgid "Templates"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/manager-navigation.html:36
+msgid "Stats"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/message_detail.html:20
+#: nuntium/templates/thread/message.html:32
+#: nuntium/templates/write/draft.html:17
+msgid "Subject"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/message_detail.html:22
+msgid "Author"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/message_detail.html:28
+msgid "Confirmed"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/message_detail.html:32
+msgid "Moderated"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/message_detail.html:36
+msgid "This message has not yet been moderated — click here to accept it"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/message_detail.html:37
+msgid "Accept"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/message_detail.html:44
+msgid "Link"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/message_detail.html:45
+msgid "Public page"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/message_detail.html:47
+msgid "Creation Date"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/message_detail.html:49
+#: nuntium/templates/nuntium/profiles/message_detail.html:65
+msgid "Content"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/message_detail.html:55
+msgid "Create a reply"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/message_detail.html:64
+msgid "Person"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/message_detail.html:66
+msgid "Actions"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/message_detail.html:72
+msgid "Edit reply"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:27
+#, python-format
+msgid ""
+"\n"
+"    There is <strong>1</strong> message \n"
+"    "
+msgid_plural ""
+"\n"
+"    There are <strong>%(message_count)s</strong> messages \n"
+"    "
+msgstr[0] ""
+msgstr[1] ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:38
+msgid "Message"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:39
+msgid "Thread"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:40
+msgid "Replies"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:41
+msgid "Public?"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:42
+msgid "Confirmed?"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:44
+msgid "Moderated?"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:46
+msgid "Make private/public"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:53
+msgid "Link to message admin"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:56
+#, python-format
+msgid ""
+"\n"
+"                  Sent <strong>%(created)s</strong> ago to <strong>%(to)s</"
+"strong> from <strong>%(author_name)s</strong>\n"
+"                "
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:65
+msgid "Link to public message"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:73
+#: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:84
+msgid "Add"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:79
+msgid "This message can be seen by everyone"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:83
+msgid "This message can't be seen by anyone"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:91
+msgid "The author has confirmed that this was sent from their email"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:95
+msgid "The author has not yet confirmed their email address"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:104
+msgid "This message has been accepted"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:108
+msgid "This message has not yet been moderated"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:115
+msgid "This message is public, you can make it private by clicking here"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:121
+msgid "This message is private, you can make it public by clicking here"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:131
+msgid "You have no messages"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:142
+msgid "Delete this message?"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:145
+msgid "Are you sure you want to delete this message? This can't be undone."
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:148
+msgid "No, keep it"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:149
+msgid "Yes, delete it"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/profile-navigation.html:7
+msgid "Your Sites"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/stats.html:24
+msgid "Statistics"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/status-bar.html:10
+#, python-format
+msgid ""
+"\n"
+"        This site is in <a href=\"%(welcome_page)s\">testing mode.</a>\n"
+"        All mails will be sent to you, rather than the representatives.\n"
+"        <a href=\"%(contact_page)s\">Contact us</a> when you're ready to go "
+"live!\n"
+"      "
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/status-bar.html:21
+#, python-format
+msgid ""
+"\n"
+"            Currently we are pulling people from %(url)s\n"
+"            "
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/templates.html:30
+msgid "Mail Template"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/templates.html:31
+msgid ""
+"This is the mail template that the person gets when a new message exists"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/templates.html:41
+msgid "Confirmation Template"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/templates.html:42
+msgid ""
+"This is the mail template that the person who creates a message gets in "
+"order to confirm their email"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/templates.html:54
+msgid "New answer notification template"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/templates.html:55
+msgid ""
+"When a new answer comes in it will notify all the subscribers with this "
+"template"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/update_answer.html:8
+#, python-format
+msgid "Update answer by %(person)s for message \"%(message)s\""
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/update_answer.html:21
+msgid "Update"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:8
+msgid "Welcome"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:15
+#, python-format
+msgid ""
+"\n"
+"    This is your &ldquo;%(name)s&rdquo; message-sending site.\n"
+"  "
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:22
+#, python-format
+msgid ""
+"\n"
+"      You're currently running in <strong>testing mode</strong>, so all\n"
+"      the emails sent will go to you (and not the recipients).\n"
+"      <a href=\"%(contact_page)s\">Contact us</a> when you want this \n"
+"      restriction lifted and you're ready to send real messages to real "
+"people!\n"
+"    "
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:32
+#, python-format
+msgid ""
+"\n"
+"      You've got only <a href=\"%(url_recipients)s\">one contactable "
+"recipient</a> in your database.\n"
+"      But that‘s enough to test out the process of writing to them!\n"
+"    "
+msgid_plural ""
+"\n"
+"      You've got <a href=\"%(url_recipients)s\">%(contactable_count)s "
+"contactable recipients</a> in your database.\n"
+"      That‘s great — now you can test out the process of writing to them!\n"
+"    "
+msgstr[0] ""
+msgstr[1] ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:42
+#, python-format
+msgid ""
+"Try it out at <a href=\"%(site_root)s\">your test site</a> —\n"
+"      don't worry: any emails you send will be sent to <b>you</b>, not\n"
+"      the politicians."
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:46
+#, python-format
+msgid ""
+"Try it out at <a href=\"%(site_root)s\">your live site</a> —\n"
+"      but be careful: now that you're no longer in Test Mode, don‘t\n"
+"      forget that any messages you send will be sent to the politicans,\n"
+"      and will be live on the internet, for ever."
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:53
+#, python-format
+msgid ""
+"\n"
+"       We loaded one person from your PopIt source — but we couldn‘t \n"
+"       detect their email addresss.\n"
+"       "
+msgid_plural ""
+"\n"
+"       We've loaded %(all_contacts_count)s people from your\n"
+"       PopIt source — but we couldn‘t detect email addresses for them.\n"
+"     "
+msgstr[0] ""
+msgstr[1] ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:60
+msgid ""
+"\n"
+"       <strong>You need to ensure that your PopIt contains email data,\n"
+"         or we won't know how to deliver messages.</strong>\n"
+"     "
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:65
+msgid ""
+"\n"
+"    We haven't finished loading the data from your PopIt instance yet. \n"
+"    That can take 5–10 minutes if you have a lot of data (or if we‘re\n"
+"    very busy), but hopefully by the time you've played with the rest of\n"
+"    the options below, we‘ll be finished.\n"
+"    "
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:75
+msgid ""
+"\n"
+"     Here are the things you need to check you've done before everything "
+"will work properly.\n"
+"  "
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:83
+#, python-format
+msgid ""
+"\n"
+"          <a href=\"%(url_basic_update)s\">change the description</a>\n"
+"          (which is &ldquo;%(desc)s&rdquo;)\n"
+"        "
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:88
+#, python-format
+msgid ""
+"\n"
+"          <a href=\"%(url_basic_update)s\">set the description</a>\n"
+"        "
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:96
+#, python-format
+msgid ""
+"\n"
+"        <a href=\"%(url_template_update)s\">update the email templates</a> "
+"so the\n"
+"        messages your site sends out are exactly how you want them\n"
+"      "
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:104
+msgid ""
+"\n"
+"        pick the right options for things like:\n"
+"      "
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:111
+#, python-format
+msgid ""
+"\n"
+"            <a href=\"%(url_maxrecipients_update)s\">how many recipients</"
+"a>\n"
+"            a message can go to (just one, or many?)\n"
+"          "
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:119
+#, python-format
+msgid ""
+"\n"
+"            how often to check for new data (which really means: do you\n"
+"            expect the \n"
+"            <a href=\"%(url_data_sources)s\">data source</a> to change?)\n"
+"          "
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/welcome.html:128
+#, python-format
+msgid ""
+"\n"
+"            do you want to\n"
+"             <a href=\"%(url_answernotification_update)s\">receive a "
+"notification email</a>\n"
+"             every time someone gets a reply? \n"
+"          "
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:25
+msgid "Data Sources"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:37
+msgid "Never automatically updates."
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:38
+msgid "Updates twice a day."
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:39
+msgid "Updates daily."
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:40
+msgid "Updates weekly."
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:46
+#: nuntium/templates/nuntium/profiles/your-instances.html:24
+#: nuntium/templates/nuntium/profiles/your-instances.html:87
+msgid "Edit"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:51
+msgid "Polling interval"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:54
+msgid "Fetch new data from this source"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:56
+msgid "Never"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:57
+msgid "Twice a day"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:58
+msgid "Daily"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:59
+msgid "Weekly"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:61
+msgid "Save"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:64
+msgid "Fetch new data now"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:77
+msgid "Add a new data source"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_check_delete.html:23
+#, python-format
+msgid "Are you sure you want to delete %(name)s?"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/writeitinstance_check_delete.html:25
+msgid "Yes"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/your-instances.html:14
+msgid "Live Sites"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/your-instances.html:21
+#: nuntium/templates/nuntium/profiles/your-instances.html:84
+#: nuntium/templates/nuntium/profiles/contacts/contacts-per-writeitinstance.html:62
+msgid "Name"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/your-instances.html:26
+msgid "Disable"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/your-instances.html:36
+#: nuntium/templates/nuntium/profiles/your-instances.html:97
+msgid "We are currently getting information from popit"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/your-instances.html:69
+msgid "Test Sites"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/your-instances.html:72
+#, python-format
+msgid ""
+"Sites are set to Testing Mode by default. Use the 'Edit' link and make sure "
+"that your site is set up in the way that you want it. When you are ready, <a "
+"href=\"%(contact_page)s\">contact us</a> to let us know and we’ll put your "
+"site live."
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/your-instances.html:74
+msgid ""
+"\n"
+"                This site is in Test Mode:\n"
+"            "
+msgid_plural ""
+"\n"
+"                These sites are in Test Mode:\n"
+"            "
+msgstr[0] ""
+msgstr[1] ""
+
+#: nuntium/templates/nuntium/profiles/your-instances.html:88
+msgid "Delete"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/your-instances.html:118
+msgid "Create a new Site"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/your-profile.html:22
+msgid "Your profile"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/your-profile.html:26
+#: nuntium/templates/registration/login.html:29
+#: nuntium/templates/registration/signup.html:26
+msgid "Username"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/your-profile.html:32
+msgid "First Name"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/your-profile.html:38
+msgid "Last Name"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/your-profile.html:44
+#: nuntium/templates/nuntium/profiles/contacts/contacts-per-writeitinstance.html:63
+msgid "Email"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/contacts/contacts-per-writeitinstance.html:45
+#, python-format
+msgid ""
+"\n"
+"    There is <strong>1</strong> contactable person\n"
+"    "
+msgid_plural ""
+"\n"
+"    There are <strong>%(person_count)s</strong> contactable people \n"
+"    "
+msgstr[0] ""
+msgstr[1] ""
+
+#: nuntium/templates/nuntium/profiles/contacts/contacts-per-writeitinstance.html:73
+msgid "There are no People linked from Popit."
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/contacts/contacts-per-writeitinstance.html:74
+msgid "Connect to a data source to add some."
+msgstr ""
+
+#: nuntium/templates/registration/logged_out.html:7
+msgid "You have signed out"
+msgstr ""
+
+#: nuntium/templates/registration/logged_out.html:8
+msgid "Thanks for using WriteIt"
+msgstr ""
+
+#: nuntium/templates/registration/login.html:13
+#: nuntium/templates/registration/signup.html:12
+msgid "You can also&hellip;"
+msgstr ""
+
+#: nuntium/templates/registration/login.html:23
+#: nuntium/templates/registration/signup.html:20
+#: nuntium/templates/write/who.html:46
+msgid "Sorry"
+msgstr ""
+
+#: nuntium/templates/registration/login.html:23
+#: nuntium/templates/registration/signup.html:20
+msgid ""
+", the username and password you entered did not match our records. Please "
+"double-check and try again."
+msgstr ""
+
+#: nuntium/templates/registration/login.html:33
+#: nuntium/templates/registration/signup.html:30
+msgid "Password"
+msgstr ""
+
+#: nuntium/templates/registration/login.html:36
+#: nuntium/templates/registration/signup.html:33
+msgid "Sign In"
+msgstr ""
+
+#: nuntium/templates/registration/password_change_done.html:8
+#: nuntium/templates/registration/password_change_form.html:8
+#: nuntium/templates/registration/password_change_form.html:12
+#: nuntium/templates/registration/password_change_form.html:13
+msgid "Password change"
+msgstr ""
+
+#: nuntium/templates/registration/password_change_done.html:12
+#: nuntium/templates/registration/password_change_done.html:13
+msgid "Password change successful"
+msgstr ""
+
+#: nuntium/templates/registration/password_change_done.html:17
+msgid "Your password was changed."
+msgstr ""
+
+#: nuntium/templates/registration/password_change_form.html:24
+msgid ""
+"Please enter your old password, for security's sake, and then enter your new "
+"password twice so we can verify you typed it in correctly."
+msgstr ""
+
+#: nuntium/templates/registration/password_change_form.html:30
+msgid "Old password"
+msgstr ""
+
+#: nuntium/templates/registration/password_change_form.html:40
+msgid "New password"
+msgstr ""
+
+#: nuntium/templates/registration/password_change_form.html:50
+msgid "Password (again)"
+msgstr ""
+
+#: nuntium/templates/registration/password_change_form.html:61
+#: nuntium/templates/registration/password_reset_confirm.html:43
+msgid "Change my password"
+msgstr ""
+
+#: nuntium/templates/registration/password_reset_complete.html:8
+#: nuntium/templates/registration/password_reset_complete.html:12
+#: nuntium/templates/registration/password_reset_complete.html:13
+msgid "Password reset complete"
+msgstr ""
+
+#: nuntium/templates/registration/password_reset_complete.html:17
+msgid "Your password has been set.  You may go ahead and log in now."
+msgstr ""
+
+#: nuntium/templates/registration/password_reset_complete.html:19
+msgid "Log in"
+msgstr ""
+
+#: nuntium/templates/registration/password_reset_confirm.html:8
+msgid "Password reset confirmation"
+msgstr ""
+
+#: nuntium/templates/registration/password_reset_confirm.html:12
+#: nuntium/templates/registration/password_reset_confirm.html:13
+#: nuntium/templates/registration/password_reset_done.html:8
+#: nuntium/templates/registration/password_reset_form.html:8
+#: nuntium/templates/registration/password_reset_form.html:12
+#: nuntium/templates/registration/password_reset_form.html:13
+msgid "Password reset"
+msgstr ""
+
+#: nuntium/templates/registration/password_reset_confirm.html:19
+msgid "Enter new password"
+msgstr ""
+
+#: nuntium/templates/registration/password_reset_confirm.html:21
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly."
+msgstr ""
+
+#: nuntium/templates/registration/password_reset_confirm.html:26
+msgid "New password:"
+msgstr ""
+
+#: nuntium/templates/registration/password_reset_confirm.html:35
+msgid "Confirm password:"
+msgstr ""
+
+#: nuntium/templates/registration/password_reset_confirm.html:49
+msgid "Password reset unsuccessful"
+msgstr ""
+
+#: nuntium/templates/registration/password_reset_confirm.html:51
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a new password reset."
+msgstr ""
+
+#: nuntium/templates/registration/password_reset_done.html:12
+#: nuntium/templates/registration/password_reset_done.html:13
+msgid "Password reset successful"
+msgstr ""
+
+#: nuntium/templates/registration/password_reset_done.html:17
+msgid ""
+"We've emailed you instructions for setting your password to the email "
+"address you submitted. You should be receiving it shortly."
+msgstr ""
+
+#: nuntium/templates/registration/password_reset_form.html:17
+msgid ""
+"Forgotten your password? Enter your email address below, and we'll email "
+"instructions for setting a new one."
+msgstr ""
+
+#: nuntium/templates/registration/password_reset_form.html:22
+msgid "Email address:"
+msgstr ""
+
+#: nuntium/templates/registration/password_reset_form.html:31
+msgid "Reset my password"
+msgstr ""
+
+#: nuntium/templates/registration/signup.html:9
+msgid "Sign up"
+msgstr ""
+
+#: nuntium/templates/thread/all.html:25
+msgid "Show messages"
+msgstr ""
+
+#: nuntium/templates/thread/all.html:30
+msgid "All messages"
+msgstr ""
+
+#: nuntium/templates/thread/all.html:36
+msgid "Awaiting reply"
+msgstr ""
+
+#: nuntium/templates/thread/all.html:41
+msgid "Search messages"
+msgstr ""
+
+#: nuntium/templates/thread/answer.html:8
+#: nuntium/templates/thread/message.html:19
+msgid "From"
+msgstr ""
+
+#: nuntium/templates/thread/answer.html:12
+#: nuntium/templates/thread/message.html:10
+#, python-format
+msgid "Show all messages to %(name)s"
+msgstr ""
+
+#: nuntium/templates/thread/answer.html:20
+#: nuntium/templates/thread/message.html:36
+msgid "Date"
+msgstr ""
+
+#: nuntium/templates/thread/message.html:6
+#: nuntium/templates/write/draft.html:13
+msgid "To"
+msgstr ""
+
+#: nuntium/templates/thread/message.html:22
+#, python-format
+msgid "Show all messages from %(name)s"
+msgstr ""
+
+#: nuntium/templates/thread/message.html:28
+msgid "Recipients will not see your email address"
+msgstr ""
+
+#: nuntium/templates/thread/read.html:15
+msgid "Your message is on its way."
+msgstr ""
+
+#: nuntium/templates/thread/read.html:16
+msgid "We'll email you as soon as there‘s a reply."
+msgstr ""
+
+#: nuntium/templates/thread/read.html:17
+msgid ""
+"We’ve published it too: your letter and any replies will be visible to "
+"everyone, on this page."
+msgstr ""
+
+#: nuntium/templates/thread/read.html:21 nuntium/templates/thread/read.html:41
+msgid "Future replies will be published here."
+msgstr ""
+
+#: nuntium/templates/thread/read.html:24 nuntium/templates/thread/read.html:47
+msgid "Back to all messages"
+msgstr ""
+
+#: nuntium/templates/thread/read.html:49
+msgid "Report for abuse"
+msgstr ""
+
+#: nuntium/templates/thread/to.html:11
+msgid "Messages to"
+msgstr ""
+
+#: nuntium/templates/thread/to.html:29
+msgid "Write to this person"
+msgstr ""
+
+#: nuntium/templates/write/breadcrumb.html:7
+#: nuntium/templates/write/breadcrumb.html:24
+msgid ""
+"\n"
+"            Select recipient\n"
+"        "
+msgid_plural ""
+"\n"
+"            Select recipients\n"
+"        "
+msgstr[0] ""
+msgstr[1] ""
+
+#: nuntium/templates/write/breadcrumb.html:16
+msgid ""
+"\n"
+"                Select recipient\n"
+"            "
+msgid_plural ""
+"\n"
+"                Select recipients\n"
+"            "
+msgstr[0] ""
+msgstr[1] ""
+
+#: nuntium/templates/write/breadcrumb.html:33
+#: nuntium/templates/write/breadcrumb.html:35
+#: nuntium/templates/write/breadcrumb.html:37
+#: nuntium/templates/write/who.html:41
+msgid "Draft message"
+msgstr ""
+
+#: nuntium/templates/write/breadcrumb.html:41
+#: nuntium/templates/write/breadcrumb.html:43
+#: nuntium/templates/write/breadcrumb.html:45
+#: nuntium/templates/write/draft.html:61
+msgid "Preview message"
+msgstr ""
+
+#: nuntium/templates/write/breadcrumb.html:49
+msgid "Confirm email address"
+msgstr ""
+
+#: nuntium/templates/write/breadcrumb.html:51
+msgid "Message sent"
+msgstr ""
+
+#: nuntium/templates/write/breadcrumb.html:53
+#: nuntium/templates/write/preview.html:22
+msgid "Send message"
+msgstr ""
+
+#: nuntium/templates/write/draft.html:23
+msgid "Your message"
+msgstr ""
+
+#: nuntium/templates/write/draft.html:24 nuntium/templates/write/draft.html:35
+msgid "This will be published, on this site."
+msgstr ""
+
+#: nuntium/templates/write/draft.html:34
+msgid "Your name"
+msgstr ""
+
+#: nuntium/templates/write/draft.html:44
+msgid "Your email"
+msgstr ""
+
+#: nuntium/templates/write/draft.html:45
+msgid "Nobody will see this, ever."
+msgstr ""
+
+#: nuntium/templates/write/draft.html:55
+msgid ""
+"\n"
+"                    Change recipient\n"
+"                "
+msgid_plural ""
+"\n"
+"                    Change recipients\n"
+"                "
+msgstr[0] ""
+msgstr[1] ""
+
+#: nuntium/templates/write/preview.html:14
+msgid "Are you happy for this message to be made public?"
+msgstr ""
+
+#: nuntium/templates/write/preview.html:15
+msgid ""
+"Once you send this message, it will be available on the Internet for anyone "
+"to read. Your name will be included alongside the message. Your email "
+"address will not be public."
+msgstr ""
+
+#: nuntium/templates/write/preview.html:21
+msgid "Edit message"
+msgstr ""
+
+#: nuntium/templates/write/sign.html:13
+msgid "Please confirm your email address"
+msgstr ""
+
+#: nuntium/templates/write/sign.html:16
+#, python-format
+msgid "We have sent a confirmation link to %(email)s"
+msgstr ""
+
+#: nuntium/templates/write/sign.html:21
+msgid "We have emailed you a confirmation link. Please click it."
+msgstr ""
+
+#: nuntium/templates/write/who.html:12
+msgid "No recipients match"
+msgstr ""
+
+#: nuntium/templates/write/who.html:29
+#, python-format
+msgid ""
+"\n"
+"                    Search for the recipient by name, or select from the "
+"drop-down.\n"
+"                "
+msgid_plural ""
+"\n"
+"                    Search for recipients by name, or select from the drop-"
+"down. <br/ ><br />\n"
+"                    You can send your message to up to %(counter)s people.\n"
+"                "
+msgstr[0] ""
+msgstr[1] ""
+
+#: nuntium/tests/answers_test.py:31
+#, python-format
+msgid "%(person)s said \"%(content)s\" to the message %(message)s"
+msgstr ""
+
+#: nuntium/tests/message_form_tests.py:235
+#: nuntium/tests/rate_limiter_tests.py:147
+msgid "You have reached your limit for today please try again tomorrow"
+msgstr ""
+
+#: nuntium/tests/moderation_messages_test.py:208
+msgid "The message needs to be confirmated first"
+msgstr ""
+
+#: nuntium/tests/outbound_message_test.py:40
+#, python-format
+msgid "%(subject)s sent to %(person)s (%(contact)s) at %(instance)s"
+msgstr ""
+
+#: nuntium/tests/record_system_test.py:30
+#, python-format
+msgid ""
+"The message \"%(subject)s\" at %(instance)s turned %(status)s at %(date)s"
+msgstr ""
+
+#: nuntium/tests/writeitinstances_test.py:352
+msgid ""
+"Thanks for submitting your message, please check your email and click on the "
+"confirmation link"
+msgstr ""
+
+#: nuntium/tests/writeitinstances_test.py:391
+msgid ""
+"Thanks for submitting your message, please check your email and click on the "
+"confirmation link, after that your message will be waiting form moderation"
+msgstr ""
+
+#: nuntium/user_section/forms.py:53
+msgid "Write to the people who represent you."
+msgstr ""
+
+#: nuntium/user_section/forms.py:159
+msgid "WriteIt Instance not present"
+msgstr ""
+
+#: nuntium/user_section/forms.py:184
+msgid "The subdomain your site will run at"
+msgstr ""
+
+#: nuntium/user_section/forms.py:185
+msgid ""
+"Choose wisely; this can't be changed. If you leave this blank, we'll "
+"generate one for you."
+msgstr ""
+
+#: nuntium/user_section/forms.py:211
+msgid "This subdomain has already been taken."
+msgstr ""
+
+#: nuntium/user_section/forms.py:272
+msgid ""
+"You have already added this PopIt. But we will fetch the data from it again "
+"now."
+msgstr ""
+
+#: nuntium/user_section/views.py:395
+#, python-format
+msgid "The message \"%(message)s\" has been accepted"
+msgstr ""
+
+#: nuntium/user_section/views.py:418
+#, python-format
+msgid "The message \"%(message)s\" has been rejected"
+msgstr ""
+
+#: nuntium/user_section/views.py:584
+msgid "This message has been marked as public"
+msgstr ""
+
+#: nuntium/user_section/views.py:586
+msgid "This message has been marked as private"
+msgstr ""
