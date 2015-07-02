@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Message, WriteItInstance, OutboundMessage, MessageRecord, \
     Answer, AnswerWebHook, NewAnswerNotificationTemplate, \
-    ConfirmationTemplate
+    ConfirmationTemplate, WriteItInstanceConfig
 
 from popit.models import ApiInstance, Person
 from mailit.models import MailItTemplate
@@ -25,18 +25,19 @@ class MailItTemplateInline(admin.TabularInline):
     model = MailItTemplate
 
 
+class WriteItInstanceConfigInline(admin.StackedInline):
+    model = WriteItInstanceConfig
+
+
 class WriteItInstanceAdmin(admin.ModelAdmin):
-    form = WriteItInstanceCreateFormPopitUrl
+    model = WriteItInstance
     inlines = [
+        WriteItInstanceConfigInline,
         MembershipInline,
         NewAnswerNotificationTemplateAdmin,
         MailItTemplateInline
     ]
-    exclude = ('persons',)
-
-    def save_model(self, request, obj, form, change):
-        super(WriteItInstanceAdmin, self).save_model(request, obj, form, change)
-        form.relate_with_people()
+    fields = ('owner', 'name', )
 
 
 admin.site.register(WriteItInstance, WriteItInstanceAdmin)
