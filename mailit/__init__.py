@@ -21,7 +21,7 @@ def process_content(content, indent='    ', width=66):
     """
     return u'\n'.join([indent + y
                        for y
-                       in itertools.chain(*[textwrap.wrap(x, width) for x in content.splitlines()])]
+                       in itertools.chain(*[lines or [u""] for lines in [textwrap.wrap(x, width) for x in content.splitlines()]])]
                       )
 
 
