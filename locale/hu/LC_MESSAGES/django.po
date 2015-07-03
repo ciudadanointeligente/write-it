@@ -1591,7 +1591,7 @@ msgstr[1] "Címzett megváltoztatása"
 
 #: nuntium/templates/write/preview.html:14
 msgid "Are you happy for this message to be made public?"
-msgstr "Biztos, hogy közzéteszi ezt az üzenetet?"
+msgstr "Olvassa át még egyszer."
 
 #: nuntium/templates/write/preview.html:15
 msgid ""
@@ -1615,7 +1615,7 @@ msgstr "A %(email)s címre kültünk egy üzenetet a megerősítéshez"
 
 #: nuntium/templates/write/sign.html:21
 msgid "We have emailed you a confirmation link. Please click it."
-msgstr "Kültünk egy üzenetet a megerősítéshez, kérjük, a jóváhagyáshoz kattintson a linkre."
+msgstr "Küldtünk egy üzenetet a megerősítéshez, kérjük, a jóváhagyáshoz kattintson a linkre."
 
 #: nuntium/templates/write/who.html:12
 msgid "No recipients match"
