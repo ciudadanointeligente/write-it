@@ -1,0 +1,64 @@
+{% extends "base_instance.html" %}
+{% load i18n %}
+{% load nuntium_tags %}
+
+{% block content_inner %}
+
+    {% include "write/breadcrumb.html" with current_step=2 %}
+
+    <form class="writing-step" action="" method="post">{% csrf_token %}
+        {{ wizard.management_form }}
+        {{ form.non_field_errors }}
+        <p class="form-group">
+            <label>{% trans "To" %}</label>
+            <span class="form-control writing-draft-recipients">{{ message.persons|join_with_commas }}</span>
+        </p>
+        <p class="form-group">
+            <label for="id_draft-subject">{% trans "Subject" %}</label>
+            {{ form.subject.errors }}
+            {{ form.subject }}
+        </p>
+        <p class="form-group">
+            <label for="id_draft-content" class="label-with-hint">
+              {% trans "Your message" %}
+              <small>{% trans "This will be published, on this site." %}</small>
+            </label>
+            {{ form.content.errors }}
+            {{ form.content }}
+        </p>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <p class="form-group">
+                    <label for="id_draft-author_name" class="label-with-hint">
+                        {% trans "Your name" %}
+                        <small>{% trans "This will be published, on this site." %}</small>
+                        </label>
+                    {{ form.author_name.errors }}
+                    {{ form.author_name }}
+                </p>
+            </div>
+            <div class="col-sm-6">
+                <p class="form-group">
+                    <label for="id_draft-author_email" class="label-with-hint">
+                        {% trans "Your email" %}
+                        <small>{% trans "Nobody will see this, ever." %}</small>
+                    </label>
+                    {{ form.author_email.errors }}
+                    {{ form.author_email }}
+                </p>
+            </div>
+        </div>
+
+        <p class="writing-buttons">
+            <a class="writing-buttons__button--previous" href="{% url 'write_message_step' step=wizard.steps.prev %}">
+                {% blocktrans count counter=writeitinstance.config.maximum_recipients %}
+                    Change recipient
+                {% plural %}
+                    Change recipients
+                {% endblocktrans %}
+            </a>
+            <input class="writing-buttons__button--next" type="submit" value="{% trans "Preview message" %}"/>
+        </p>
+    </form>
+{% endblock content_inner %}
