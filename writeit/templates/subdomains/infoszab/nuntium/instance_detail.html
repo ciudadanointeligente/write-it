@@ -1,0 +1,52 @@
+{% extends "base_instance.html" %}
+{% load i18n %}
+{% load subdomainurls %}
+
+{% block content %}
+
+    <div class="site-content">
+        <div class="container">
+            <div class="instance-hero">
+                <p class="instance-hero__welcome">Welcome to {{ writeitinstance.name }}</p>
+                <h2 class="instance-hero__heading">
+                    {{ writeitinstance.description|default:_("Write to the people who represent you.<br />In public.<br /><br />Get answers.<br />In public.") }}
+                </h2>
+                {% if writeitinstance.contacts.exists and writeitinstance.config.allow_messages_using_form %}
+                    <a class="btn btn-primary btn-lg" href="{% url 'write_message' subdomain=writeitinstance.slug %}">{% trans "Send a message" %}</a>
+                {% endif %}
+            </div>
+        </div>
+
+      {% if recent_messages %}
+        <div class="instance-summary">
+            <div class="container">
+                <div class="instance-summary__recent">
+                    <h2>{% trans "Recent messages" %}</h2>
+                    {% for message in recent_messages %}
+                        {% include 'thread/message_mini.html' %}
+                    {% endfor %}
+                </div>
+                {% comment "Hiding Most popular representatives until we have them" %}
+                <div class="instance-summary__popular">
+                    <h2>{% trans "Most popular representatives" %}</h2>
+                    <p><strong>TODO:</strong> Show representatives here.</p>
+                </div>
+                {% endcomment %}
+            </div>
+        </div>
+      {% endif %}
+    </div>
+
+{% endblock content %}
+
+{% block search_form %}
+
+    <form action="{% url 'instance_search' subdomain=writeitinstance.slug %}" class="navbar-form navbar-right" method="get"  role="form">
+        <div class="form-group">
+            <label class="sr-only" for="exampleInputEmail2">Search within messages</label>
+            <input type="text" class="form-control" name="q" id="id_q" placeholder="{% trans 'Search within messages' %}">
+        </div>
+        <button type="submit" class="btn btn-success" >{% trans 'Search' %}</button>
+    </form>
+
+{% endblock search_form%}
