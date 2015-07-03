@@ -409,7 +409,7 @@ msgid ""
 "    If you turn on “Answer Notification”, you will receive copies of all\n"
 "    responses to messages to your email address.\n"
 "    "
-msgstr "Ha bekapcsolja az “Értesítés a válaszról” funkciót, minden válaszról kap értesítést az e-mail címére."
+msgstr "\nHa bekapcsolja az “Értesítés a válaszról” funkciót, minden válaszról kap értesítést az e-mail címére."
 
 #: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:33
 #: nuntium/templates/nuntium/writeitinstance_autoconfirm_form.html:36
@@ -1450,48 +1450,48 @@ msgstr ""
 #: nuntium/templates/thread/message.html:10
 #, python-format
 msgid "Show all messages to %(name)s"
-msgstr ""
+msgstr "Mutassa a %(name)s részére küldött üzeneteket"
 
 #: nuntium/templates/thread/answer.html:20
 #: nuntium/templates/thread/message.html:36
 msgid "Date"
-msgstr ""
+msgstr "Dátum"
 
 #: nuntium/templates/thread/message.html:6
 #: nuntium/templates/write/draft.html:13
 msgid "To"
-msgstr ""
+msgstr "Címzett"
 
 #: nuntium/templates/thread/message.html:22
 #, python-format
 msgid "Show all messages from %(name)s"
-msgstr ""
+msgstr "Mutassa %(name)s összes válaszát"
 
 #: nuntium/templates/thread/message.html:28
 msgid "Recipients will not see your email address"
-msgstr ""
+msgstr "A címzett nem fogja látni az Ön e-mail címét"
 
 #: nuntium/templates/thread/read.html:15
 msgid "Your message is on its way."
-msgstr ""
+msgstr "Az üzenetet elküldtük."
 
 #: nuntium/templates/thread/read.html:16
 msgid "We'll email you as soon as there‘s a reply."
-msgstr ""
+msgstr "Ha válasz érkezik, azonnal értesítőt küldünk."
 
 #: nuntium/templates/thread/read.html:17
 msgid ""
 "We’ve published it too: your letter and any replies will be visible to "
 "everyone, on this page."
-msgstr ""
+msgstr "Az üzenetet közzétettük, a levél és az arra érkező válaszok nyilvánosan elérhetők lesznek ezen az oldalon."
 
 #: nuntium/templates/thread/read.html:21 nuntium/templates/thread/read.html:41
 msgid "Future replies will be published here."
-msgstr ""
+msgstr "A válaszokat itt tesszük majd közzé."
 
 #: nuntium/templates/thread/read.html:24 nuntium/templates/thread/read.html:47
 msgid "Back to all messages"
-msgstr ""
+msgstr "Vissz az összes üzenethez"
 
 #: nuntium/templates/thread/read.html:49
 msgid "Report for abuse"
@@ -1499,11 +1499,11 @@ msgstr ""
 
 #: nuntium/templates/thread/to.html:11
 msgid "Messages to"
-msgstr ""
+msgstr "Üzenetek neki:"
 
 #: nuntium/templates/thread/to.html:29
 msgid "Write to this person"
-msgstr ""
+msgstr "Írjon neki!"
 
 #: nuntium/templates/write/breadcrumb.html:7
 #: nuntium/templates/write/breadcrumb.html:24
@@ -1515,8 +1515,8 @@ msgid_plural ""
 "\n"
 "            Select recipients\n"
 "        "
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Címzett kiválasztása"
+msgstr[1] "Címzett kiválasztása"
 
 #: nuntium/templates/write/breadcrumb.html:16
 msgid ""
@@ -1527,55 +1527,55 @@ msgid_plural ""
 "\n"
 "                Select recipients\n"
 "            "
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Címzett kiválasztása"
+msgstr[1] "Címzett kiválasztása"
 
 #: nuntium/templates/write/breadcrumb.html:33
 #: nuntium/templates/write/breadcrumb.html:35
 #: nuntium/templates/write/breadcrumb.html:37
 #: nuntium/templates/write/who.html:41
 msgid "Draft message"
-msgstr ""
+msgstr "Üzenet írása"
 
 #: nuntium/templates/write/breadcrumb.html:41
 #: nuntium/templates/write/breadcrumb.html:43
 #: nuntium/templates/write/breadcrumb.html:45
 #: nuntium/templates/write/draft.html:61
 msgid "Preview message"
-msgstr ""
+msgstr "Előnézet"
 
 #: nuntium/templates/write/breadcrumb.html:49
 msgid "Confirm email address"
-msgstr ""
+msgstr "E-mail cím megerősítése"
 
 #: nuntium/templates/write/breadcrumb.html:51
 msgid "Message sent"
-msgstr ""
+msgstr "Elküldtük"
 
 #: nuntium/templates/write/breadcrumb.html:53
 #: nuntium/templates/write/preview.html:22
 msgid "Send message"
-msgstr ""
+msgstr "Üzenek"
 
 #: nuntium/templates/write/draft.html:23
 msgid "Your message"
-msgstr ""
+msgstr "Üzenetem"
 
 #: nuntium/templates/write/draft.html:24 nuntium/templates/write/draft.html:35
 msgid "This will be published, on this site."
-msgstr ""
+msgstr "Ez megjelenik az oldalon."
 
 #: nuntium/templates/write/draft.html:34
 msgid "Your name"
-msgstr ""
+msgstr "Név"
 
 #: nuntium/templates/write/draft.html:44
 msgid "Your email"
-msgstr ""
+msgstr "E-mail cím"
 
 #: nuntium/templates/write/draft.html:45
 msgid "Nobody will see this, ever."
-msgstr ""
+msgstr "Ezt soha senkinek nem mutatjuk meg."
 
 #: nuntium/templates/write/draft.html:55
 msgid ""
@@ -1586,40 +1586,40 @@ msgid_plural ""
 "\n"
 "                    Change recipients\n"
 "                "
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Címzett megváltoztatása"
+msgstr[1] "Címzett megváltoztatása"
 
 #: nuntium/templates/write/preview.html:14
 msgid "Are you happy for this message to be made public?"
-msgstr ""
+msgstr "Biztos, hogy közzéteszi ezt az üzenetet?"
 
 #: nuntium/templates/write/preview.html:15
 msgid ""
 "Once you send this message, it will be available on the Internet for anyone "
 "to read. Your name will be included alongside the message. Your email "
 "address will not be public."
-msgstr ""
+msgstr "Ha elküldte az üzenetet, akkor mindenki számára látható lesz az interneten. A neve megjelenik az üzenet mellett, az e-mail címe viszont nem lesz nyilvános."
 
 #: nuntium/templates/write/preview.html:21
 msgid "Edit message"
-msgstr ""
+msgstr "Üzenet szerkesztése"
 
 #: nuntium/templates/write/sign.html:13
 msgid "Please confirm your email address"
-msgstr ""
+msgstr "Erősítse meg az e-mail címét"
 
 #: nuntium/templates/write/sign.html:16
 #, python-format
 msgid "We have sent a confirmation link to %(email)s"
-msgstr ""
+msgstr "A %(email)s címre kültünk egy üzenetet a megerősítéshez"
 
 #: nuntium/templates/write/sign.html:21
 msgid "We have emailed you a confirmation link. Please click it."
-msgstr ""
+msgstr "Kültünk egy üzenetet a megerősítéshez, kérjük, a jóváhagyáshoz kattintson a linkre."
 
 #: nuntium/templates/write/who.html:12
 msgid "No recipients match"
-msgstr ""
+msgstr "Nincs ilyen címzett"
 
 #: nuntium/templates/write/who.html:29
 #, python-format
@@ -1666,7 +1666,7 @@ msgstr ""
 msgid ""
 "Thanks for submitting your message, please check your email and click on the "
 "confirmation link"
-msgstr ""
+msgstr "Köszönjük, hogy üzent az igazságügyi miniszternek. Az üzenet jóváhagyásához kattinston a linkre, amit e-mailben kültünk Önnek."
 
 #: nuntium/tests/writeitinstances_test.py:391
 msgid ""
