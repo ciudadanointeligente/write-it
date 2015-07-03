@@ -409,7 +409,7 @@ msgid ""
 "    If you turn on “Answer Notification”, you will receive copies of all\n"
 "    responses to messages to your email address.\n"
 "    "
-msgstr "Ha bekapcsolja az “Értesítés a válaszról” funkciót, minden válaszról kap értesítést az e-mail címére."
+msgstr "\nHa bekapcsolja az “Értesítés a válaszról” funkciót, minden válaszról kap értesítést az e-mail címére."
 
 #: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:33
 #: nuntium/templates/nuntium/writeitinstance_autoconfirm_form.html:36
