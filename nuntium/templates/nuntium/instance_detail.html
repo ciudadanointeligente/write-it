@@ -7,7 +7,11 @@
     <div class="site-content">
         <div class="container">
             <div class="instance-hero">
-                <p class="instance-hero__welcome">Welcome to {{ writeitinstance.name }}</p>
+                <p class="instance-hero__welcome">
+                    {% blocktrans with sitename=writeitinstance.name %}
+                        Welcome to {{ sitename }}
+                    {% endblocktrans %}
+                </p>
                 <h2 class="instance-hero__heading">
                     {{ writeitinstance.description|default:_("Write to the people who represent you.<br />In public.<br /><br />Get answers.<br />In public.") }}
                 </h2>
@@ -43,10 +47,10 @@
 
     <form action="{% url 'instance_search' subdomain=writeitinstance.slug %}" class="navbar-form navbar-right" method="get"  role="form">
         <div class="form-group">
-            <label class="sr-only" for="exampleInputEmail2">Search within messages</label>
+            <label class="sr-only" for="exampleInputEmail2">{% trans 'Search within messages' %}</label>
             <input type="text" class="form-control" name="q" id="id_q" placeholder="{% trans 'Search within messages' %}">
         </div>
         <button type="submit" class="btn btn-success" >{% trans 'Search' %}</button>
     </form>
 
-{% endblock search_form%}
+{% endblock search_form %}
