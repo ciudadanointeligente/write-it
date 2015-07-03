@@ -115,28 +115,28 @@ msgstr ""
 
 #: nuntium/models.py:566 nuntium/tests/outbound_message_test.py:99
 msgid "Newly created"
-msgstr ""
+msgstr "Nemrég létrehozva"
 
 #: nuntium/models.py:567 nuntium/tests/outbound_message_test.py:100
 msgid "Ready to send"
-msgstr ""
+msgstr "Küldésre vár"
 
 #: nuntium/models.py:568 nuntium/tests/outbound_message_test.py:101
 msgid "Sent"
-msgstr ""
+msgstr "Elküldve"
 
 #: nuntium/models.py:569 nuntium/tests/outbound_message_test.py:102
 msgid "Error sending it"
-msgstr ""
+msgstr "Hiba küldéskor"
 
 #: nuntium/models.py:570 nuntium/tests/outbound_message_test.py:103
 msgid "Needs moderation"
-msgstr ""
+msgstr "Moderálásra vár"
 
 #: nuntium/models.py:632
 #, python-format
 msgid "%(subject)s sent to %(person)s "
-msgstr ""
+msgstr "%(subject)s tárgyú üzenet elküldve neki: %(person)s"
 
 #: nuntium/models.py:735 nuntium/models.py:739 nuntium/models.py:744
 msgid ""
@@ -161,19 +161,19 @@ msgstr ""
 
 #: nuntium/models.py:958
 msgid "Error"
-msgstr ""
+msgstr "Hiba"
 
 #: nuntium/models.py:959
 msgid "Success"
-msgstr ""
+msgstr "Sikerült"
 
 #: nuntium/models.py:960
 msgid "Waiting"
-msgstr ""
+msgstr "Még várunk"
 
 #: nuntium/models.py:961
 msgid "In Progress"
-msgstr ""
+msgstr "Folyamatban"
 
 #: nuntium/templates/base_instance.html:17
 msgid "Toggle navigation"
@@ -191,106 +191,107 @@ msgstr ""
 #: nuntium/templates/registration/password_reset_done.html:7
 #: nuntium/templates/registration/password_reset_form.html:7
 msgid "Home"
-msgstr ""
+msgstr "Kezdőlap"
 
 #: nuntium/templates/base_instance.html:34
 msgid "About"
-msgstr ""
+msgstr "Mi ez"
 
 #: nuntium/templates/base_instance.html:36
 #: nuntium/templates/nuntium/instance_detail.html:15
 msgid "Send a message"
-msgstr ""
+msgstr "Üzenek"
 
 #: nuntium/templates/base_instance.html:38
 msgid "Browse messages"
-msgstr ""
+msgstr "Üzenetek olvasása"
 
 #: nuntium/templates/base_instance.html:42
 #: nuntium/templates/registration/login.html:9
 msgid "Sign in"
-msgstr ""
+msgstr "Belépés"
 
 #: nuntium/templates/base_instance.html:61
 #: nuntium/templates/base_manager.html:67
 #: nuntium/templates/nuntium/profiles/profile-navigation.html:6
 msgid "Your Profile"
-msgstr ""
+msgstr "Profilom"
 
 #: nuntium/templates/base_instance.html:76
 #: nuntium/templates/base_manager.html:68
 msgid "Site Manager"
-msgstr ""
+msgstr "Oldal beállításai"
 
 #: nuntium/templates/base_instance.html:82
 msgid "Sign out"
-msgstr ""
+msgstr "Kilépés"
 
 #: nuntium/templates/base_instance.html:96
 msgid "This site is read-only."
-msgstr ""
+msgstr "Ezen az oldalon nem lehet változtatásokat eszközölni."
 
 #: nuntium/templates/base_instance.html:97 nuntium/templates/write/who.html:47
 msgid "You can’t currently create new messages using this site."
-msgstr ""
+msgstr "Jelenleg nem lehet új üzeneteket küldeni az oldal segítségével."
 
 #: nuntium/templates/base_instance.html:99
 msgid "Change this in Settings"
-msgstr ""
+msgstr "Ezt a Beállítások részen megváltoztathatja"
 
 #: nuntium/templates/base_instance.html:106
 msgid "This site has no recipients."
-msgstr ""
+msgstr "Az oldal üzeneteihez nem tartozik fogadó."
 
 #: nuntium/templates/base_instance.html:107
 msgid "There is no-one to write to yet. Please check back soon."
-msgstr ""
+msgstr "Még nem lehet üzenetet küldeni, nézzen vissza később."
 
 #: nuntium/templates/base_instance.html:109
 msgid "Import people from PopIt"
-msgstr ""
+msgstr "Emberek importálása PopIt segítségével"
 
 #: nuntium/templates/base_instance.html:116
 msgid "This site is in Test Mode."
-msgstr ""
+msgstr "Ezt egy teszt oldal"
 
 #: nuntium/templates/base_instance.html:117
 msgid ""
 "Any messages you write will be sent to the site administrator rather than "
 "real representatives."
-msgstr ""
+msgstr "Az üzeneteket az oldal adminisztrátorai kapják meg, és nem valódi címzettek."
 
 #: nuntium/templates/footer.html:13
 msgid ""
 "Built by <a href=\"http://www.ciudadanointeligente.org\">Fundación Ciudadano "
 "Inteligente</a>"
-msgstr ""
+msgstr "Az oldalt a <a href=\"http://www.ciudadanointeligente.org\">Fundación Ciudadano "
+"Inteligente hozta létre.</a>"
 
 #: nuntium/templates/footer.html:18
 msgid "Find the code at Github"
-msgstr ""
+msgstr "Kódbázis a Githubon"
 
 #: nuntium/templates/home.html:12
 msgid ""
 "Make sites that empower citizens to send emails to representatives and "
 "politicians."
-msgstr ""
+msgstr "Olyan oldalakat hozunk létre, amelyek segítenek az állampolgároknak e-mailben kapcsolatba lépni a politikusokkal."
 
 #: nuntium/templates/home.html:13
 msgid "No coding required."
-msgstr ""
+msgstr "Nem kell hozzá programozni."
 
 #: nuntium/templates/home.html:15
 msgid "Create your own site"
-msgstr ""
+msgstr "Hozza létre a saját oldalát"
 
 #: nuntium/templates/home.html:18
 msgid "Or see ones other people have created."
-msgstr ""
+msgstr "Vagy próbálja ki azokat, amiket mások hoztak létre."
 
 #: nuntium/templates/nuntium/create_new_writeitinstance.html:10
 msgid "Create your new Site"
-msgstr ""
+msgstr "Létrehozom a saját oldalam"
 
 #: nuntium/templates/nuntium/create_new_writeitinstance.html:13
 msgid ""
@@ -335,72 +336,72 @@ msgstr ""
 msgid ""
 "Write to the people who represent you.<br />In public.<br /><br />Get "
 "answers.<br />In public."
-msgstr ""
+msgstr "Írjon azoknak, akik képviselik! <br /> Kérjen tőlük válaszokat nyilvánosan. </ br>"
 
 #: nuntium/templates/nuntium/instance_detail.html:24
 msgid "Recent messages"
-msgstr ""
+msgstr "Legutóbbi üzenetek"
 
 #: nuntium/templates/nuntium/instance_detail.html:31
 msgid "Most popular representatives"
-msgstr ""
+msgstr "Legnépszerűbb képviselők"
 
 #: nuntium/templates/nuntium/instance_detail.html:47
 #: nuntium/templates/nuntium/instance_search.html:43
 msgid "Search within messages"
-msgstr ""
+msgstr "Keresés az üzenetek közt"
 
 #: nuntium/templates/nuntium/instance_detail.html:49
 #: nuntium/templates/nuntium/instance_search.html:45
 #: nuntium/templates/nuntium/search.html:18
 msgid "Search"
-msgstr ""
+msgstr "Keresés"
 
 #: nuntium/templates/nuntium/instance_search.html:12
 #: nuntium/templates/nuntium/search.html:27
 msgid "Results"
-msgstr ""
+msgstr "Találatok"
 
 #: nuntium/templates/nuntium/instance_search.html:23
 #: nuntium/templates/nuntium/search.html:38
 msgid "No results found."
-msgstr ""
+msgstr "Nincs találat"
 
 #: nuntium/templates/nuntium/moderation_accepted.html:6
 msgid "Thanks! the message will be sent very soon!"
-msgstr ""
+msgstr "Köszönjük, az üzenetét hamarosan továbbítjuk!"
 
 #: nuntium/templates/nuntium/moderation_rejected.html:6
 msgid "The message has been deleted!"
-msgstr ""
+msgstr "Az üzenetet törölték."
 
 #: nuntium/templates/nuntium/template_list.html:10
 msgid "Current Sites"
-msgstr ""
+msgstr "Most futó oldalak"
 
 #: nuntium/templates/nuntium/template_list.html:20
 msgid "Test Mode"
-msgstr ""
+msgstr "Teszt módban"
 
 #: nuntium/templates/nuntium/template_list.html:28
 msgid "There are no sites yet!"
-msgstr ""
+msgstr "Még nincsenek oldalak"
 
 #: nuntium/templates/nuntium/template_list.html:29
 msgid "Create a Site"
-msgstr ""
+msgstr "Létrehozok egy oldalt"
 
 #: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:14
 msgid "Message settings"
-msgstr ""
+msgstr "Üzenet beállításai"
 
 #: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:15
 msgid "back to messages"
-msgstr ""
+msgstr "vissza az üzenetekhez"
 
 #: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:22
 msgid "Answer notification"
-msgstr ""
+msgstr "Értesítés a válaszról"
 
 #: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:23
 msgid ""
@@ -408,7 +409,7 @@ msgid ""
 "    If you turn on “Answer Notification”, you will receive copies of all\n"
 "    responses to messages to your email address.\n"
 "    "
-msgstr ""
+msgstr "Ha bekapcsolja az “Értesítés a válaszról” funkciót, minden válaszról kap értesítést az e-mail címére."
 
 #: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:33
 #: nuntium/templates/nuntium/writeitinstance_autoconfirm_form.html:36
@@ -421,22 +422,22 @@ msgstr ""
 #: nuntium/templates/nuntium/profiles/templates.html:48
 #: nuntium/templates/nuntium/profiles/templates.html:60
 msgid "Save changes"
-msgstr ""
+msgstr "Mentés"
 
 #: nuntium/templates/nuntium/writeitinstance_api_docs.html:7
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:31
 msgid "API"
-msgstr ""
+msgstr "API"
 
 #: nuntium/templates/nuntium/writeitinstance_api_docs.html:8
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:24
 #: nuntium/templates/nuntium/profiles/contacts/contacts-per-writeitinstance.html:39
 msgid "Settings"
-msgstr ""
+msgstr "Beállítások"
 
 #: nuntium/templates/nuntium/writeitinstance_api_docs.html:10
 msgid "Creating a message using the API"
-msgstr ""
+msgstr "Üzenet küldése API-n keresztül"
 
 #: nuntium/templates/nuntium/writeitinstance_api_docs.html:12
 msgid "To create a message using the API, send a POST request to"
@@ -448,19 +449,19 @@ msgstr ""
 
 #: nuntium/templates/nuntium/writeitinstance_api_docs.html:17
 msgid "Message content here"
-msgstr ""
+msgstr "Üzenet tartalma"
 
 #: nuntium/templates/nuntium/writeitinstance_api_docs.html:24
 msgid "Name of sender"
-msgstr ""
+msgstr "Küldő neve"
 
 #: nuntium/templates/nuntium/writeitinstance_api_docs.html:25
 msgid "Message subject here"
-msgstr ""
+msgstr "Üzenet tárgya"
 
 #: nuntium/templates/nuntium/writeitinstance_autoconfirm_form.html:14
 msgid "API settings"
-msgstr ""
+msgstr "API beállítások"
 
 #: nuntium/templates/nuntium/writeitinstance_autoconfirm_form.html:15
 msgid "back to API"
@@ -481,11 +482,11 @@ msgstr ""
 
 #: nuntium/templates/nuntium/writeitinstance_max_recipients_form.html:14
 msgid "Recipients settings"
-msgstr ""
+msgstr "Címzett beállításai"
 
 #: nuntium/templates/nuntium/writeitinstance_max_recipients_form.html:15
 msgid "back to recipients"
-msgstr ""
+msgstr "Vissza a címzettekhez"
 
 #: nuntium/templates/nuntium/writeitinstance_max_recipients_form.html:22
 msgid ""
@@ -507,11 +508,11 @@ msgstr ""
 
 #: nuntium/templates/nuntium/writeitinstance_moderation_form.html:14
 msgid "Moderation settings"
-msgstr ""
+msgstr "Moderálás beállításai"
 
 #: nuntium/templates/nuntium/writeitinstance_moderation_form.html:15
 msgid "back to moderation"
-msgstr ""
+msgstr "vissza a moderáláshoz"
 
 #: nuntium/templates/nuntium/writeitinstance_moderation_form.html:22
 msgid ""
@@ -579,7 +580,7 @@ msgstr ""
 #: nuntium/templates/nuntium/message/from_person.html:13
 #: nuntium/templates/thread/all.html:17
 msgid "There are currently no public messages on this site."
-msgstr ""
+msgstr "Még nincsenek nyilvános üzenetek az oldalon."
 
 #: nuntium/templates/nuntium/message/message_detail.html:13
 msgid "This message was sent to"
@@ -590,26 +591,26 @@ msgstr ""
 #: nuntium/templates/nuntium/profiles/message_detail.html:26
 #, python-format
 msgid "See all messages sent to %(person_name)s"
-msgstr ""
+msgstr "Mutassa az összes üzenetet tőle: %(person_name)s"
 
 #: nuntium/templates/nuntium/message/message_detail.html:22
 #, python-format
 msgid ""
 "Asked by \n"
 "    <a href=\"%(other_messages_by)s\">%(name)s</a>."
-msgstr ""
+msgstr "<a href=\"%(other_messages_by)s\">%(name)s</a> kérdése"
 
 #: nuntium/templates/nuntium/message/message_detail.html:40
 msgid "Answers"
-msgstr ""
+msgstr "Válaszok"
 
 #: nuntium/templates/nuntium/message/message_detail.html:47
 msgid " Get back to the messages."
-msgstr ""
+msgstr "Vissza az üzenetekhez"
 
 #: nuntium/templates/nuntium/message/message_in_list.html:13
 msgid "There are no answers yet"
-msgstr ""
+msgstr "Még nem érkezett válasz"
 
 #: nuntium/templates/nuntium/message/message_in_list.html:15
 #, python-format
@@ -638,11 +639,11 @@ msgstr ""
 
 #: nuntium/templates/nuntium/message/message_in_search_list.html:19
 msgid "People"
-msgstr ""
+msgstr "Személyek"
 
 #: nuntium/templates/nuntium/profiles/contact.html:8
 msgid "Contact Us"
-msgstr ""
+msgstr "Kapcsolat"
 
 #: nuntium/templates/nuntium/profiles/contact.html:11
 msgid ""
@@ -665,7 +666,7 @@ msgstr ""
 #: nuntium/templates/nuntium/profiles/create_answer.html:25
 #: nuntium/templates/nuntium/profiles/update_answer.html:20
 msgid "Close"
-msgstr ""
+msgstr "Bezárás"
 
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:11
 #: nuntium/templates/nuntium/profiles/message_detail.html:24
@@ -673,86 +674,86 @@ msgstr ""
 #: nuntium/templates/nuntium/profiles/your-instances.html:85
 #: nuntium/templates/nuntium/profiles/contacts/contacts-per-writeitinstance.html:36
 msgid "Recipients"
-msgstr ""
+msgstr "Címzettek"
 
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:17
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:23
 #: nuntium/templates/nuntium/profiles/your-instances.html:23
 #: nuntium/templates/nuntium/profiles/your-instances.html:86
 msgid "Messages"
-msgstr ""
+msgstr "Üzenetek"
 
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:22
 msgid "Data sources"
-msgstr ""
+msgstr "Adat forrása"
 
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:26
 #: nuntium/templates/nuntium/profiles/templates.html:25
 msgid "Templates"
-msgstr ""
+msgstr "Sablonok"
 
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:36
 msgid "Stats"
-msgstr ""
+msgstr "Statisztika"
 
 #: nuntium/templates/nuntium/profiles/message_detail.html:20
 #: nuntium/templates/thread/message.html:32
 #: nuntium/templates/write/draft.html:17
 msgid "Subject"
-msgstr ""
+msgstr "Tárgy"
 
 #: nuntium/templates/nuntium/profiles/message_detail.html:22
 msgid "Author"
-msgstr ""
+msgstr "Szerző"
 
 #: nuntium/templates/nuntium/profiles/message_detail.html:28
 msgid "Confirmed"
-msgstr ""
+msgstr "Jóváhagyva"
 
 #: nuntium/templates/nuntium/profiles/message_detail.html:32
 msgid "Moderated"
-msgstr ""
+msgstr "Moderálva"
 
 #: nuntium/templates/nuntium/profiles/message_detail.html:36
 msgid "This message has not yet been moderated — click here to accept it"
-msgstr ""
+msgstr "Ez az üzenet még nem lett jóváhagyva, kattintson ide az elfogadásához"
 
 #: nuntium/templates/nuntium/profiles/message_detail.html:37
 msgid "Accept"
-msgstr ""
+msgstr "Jóváhagyom"
 
 #: nuntium/templates/nuntium/profiles/message_detail.html:44
 msgid "Link"
-msgstr ""
+msgstr "Link"
 
 #: nuntium/templates/nuntium/profiles/message_detail.html:45
 msgid "Public page"
-msgstr ""
+msgstr "Nyilvános oldal"
 
 #: nuntium/templates/nuntium/profiles/message_detail.html:47
 msgid "Creation Date"
-msgstr ""
+msgstr "Létrehozás dátuma"
 
 #: nuntium/templates/nuntium/profiles/message_detail.html:49
 #: nuntium/templates/nuntium/profiles/message_detail.html:65
 msgid "Content"
-msgstr ""
+msgstr "Tartalom"
 
 #: nuntium/templates/nuntium/profiles/message_detail.html:55
 msgid "Create a reply"
-msgstr ""
+msgstr "Válasz hozzáadása"
 
 #: nuntium/templates/nuntium/profiles/message_detail.html:64
 msgid "Person"
-msgstr ""
+msgstr "Személy"
 
 #: nuntium/templates/nuntium/profiles/message_detail.html:66
 msgid "Actions"
-msgstr ""
+msgstr "Opciók"
 
 #: nuntium/templates/nuntium/profiles/message_detail.html:72
 msgid "Edit reply"
-msgstr ""
+msgstr "Válasz szerkesztése"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:27
 #, python-format
@@ -773,19 +774,19 @@ msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:39
 msgid "Thread"
-msgstr ""
+msgstr "Levélfolyam"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:40
 msgid "Replies"
-msgstr ""
+msgstr "Válaszok"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:41
 msgid "Public?"
-msgstr ""
+msgstr "Nyilvános?"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:42
 msgid "Confirmed?"
-msgstr ""
+msgstr "Jóváhagyva?"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:44
 msgid "Moderated?"
@@ -793,11 +794,11 @@ msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:46
 msgid "Make private/public"
-msgstr ""
+msgstr "Beállítás nyilvánosra/rejtettre"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:53
 msgid "Link to message admin"
-msgstr ""
+msgstr "Admin üzenet linkje"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:56
 #, python-format
@@ -815,11 +816,11 @@ msgstr ""
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:73
 #: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:84
 msgid "Add"
-msgstr ""
+msgstr "Hozzáadás"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:79
 msgid "This message can be seen by everyone"
-msgstr ""
+msgstr "Ezt az üzenetet bárki láthatja"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:83
 msgid "This message can't be seen by anyone"
@@ -827,15 +828,15 @@ msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:91
 msgid "The author has confirmed that this was sent from their email"
-msgstr ""
+msgstr "A szerző megerősítette, hogy az ő e-mailjéről érkezett az üzenet"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:95
 msgid "The author has not yet confirmed their email address"
-msgstr ""
+msgstr "A szerző még nem erősítette meg az e-mail címét"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:104
 msgid "This message has been accepted"
-msgstr ""
+msgstr "Üzenet elfogadva"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:108
 msgid "This message has not yet been moderated"
@@ -851,11 +852,11 @@ msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:131
 msgid "You have no messages"
-msgstr ""
+msgstr "Nincsen üzenet"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:142
 msgid "Delete this message?"
-msgstr ""
+msgstr "Üzenet törlése?"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:145
 msgid "Are you sure you want to delete this message? This can't be undone."
