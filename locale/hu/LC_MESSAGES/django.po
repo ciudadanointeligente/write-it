@@ -1450,48 +1450,48 @@ msgstr ""
 #: nuntium/templates/thread/message.html:10
 #, python-format
 msgid "Show all messages to %(name)s"
-msgstr ""
+msgstr "Mutassa a %(name)s részére küldött üzeneteket"
 
 #: nuntium/templates/thread/answer.html:20
 #: nuntium/templates/thread/message.html:36
 msgid "Date"
-msgstr ""
+msgstr "Dátum"
 
 #: nuntium/templates/thread/message.html:6
 #: nuntium/templates/write/draft.html:13
 msgid "To"
-msgstr ""
+msgstr "Címzett"
 
 #: nuntium/templates/thread/message.html:22
 #, python-format
 msgid "Show all messages from %(name)s"
-msgstr ""
+msgstr "Mutassa %(name)s összes válaszát"
 
 #: nuntium/templates/thread/message.html:28
 msgid "Recipients will not see your email address"
-msgstr ""
+msgstr "A címzett nem fogja látni az Ön e-mail címét"
 
 #: nuntium/templates/thread/read.html:15
 msgid "Your message is on its way."
-msgstr ""
+msgstr "Az üzenetet elküldtük."
 
 #: nuntium/templates/thread/read.html:16
 msgid "We'll email you as soon as there‘s a reply."
-msgstr ""
+msgstr "Ha válasz érkezik, azonnal értesítőt küldünk."
 
 #: nuntium/templates/thread/read.html:17
 msgid ""
 "We’ve published it too: your letter and any replies will be visible to "
 "everyone, on this page."
-msgstr ""
+msgstr "Az üzenetet közzétettük, a levél és az arra érkező válaszok nyilvánosan elérhetők lesznek ezen az oldalon."
 
 #: nuntium/templates/thread/read.html:21 nuntium/templates/thread/read.html:41
 msgid "Future replies will be published here."
-msgstr ""
+msgstr "A válaszokat itt tesszük majd közzé."
 
 #: nuntium/templates/thread/read.html:24 nuntium/templates/thread/read.html:47
 msgid "Back to all messages"
-msgstr ""
+msgstr "Vissz az összes üzenethez"
 
 #: nuntium/templates/thread/read.html:49
 msgid "Report for abuse"
@@ -1499,7 +1499,7 @@ msgstr ""
 
 #: nuntium/templates/thread/to.html:11
 msgid "Messages to"
-msgstr ""
+msgstr "Üzenetek neki:"
 
 #: nuntium/templates/thread/to.html:29
 msgid "Write to this person"
