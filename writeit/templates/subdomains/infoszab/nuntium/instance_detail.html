@@ -7,9 +7,9 @@
     <div class="site-content">
         <div class="container">
             <div class="instance-hero">
-                <p class="instance-hero__welcome">Welcome to {{ writeitinstance.name }}</p>
+                <p class="instance-hero__welcome">Kérdezzen az igazságügyi minisztertől, amíg még lehet</p>
                 <h2 class="instance-hero__heading">
-                    {{ writeitinstance.description|default:_("Write to the people who represent you.<br />In public.<br /><br />Get answers.<br />In public.") }}
+                    Hétfőn szavaz a Parlament az információszabadság-törvény módosításáról. Ha elfogadják a javaslatot, akkor nehezebb és drágább lesz hozzáférni a közérdekű adatokhoz. <br /><br />Ha szeretné tudni,  mire fordítják az adóját, írjon levelet az igazságügyi miniszternek. Kérje a törvénymódosítás visszavonását.<br />
                 </h2>
                 {% if writeitinstance.contacts.exists and writeitinstance.config.allow_messages_using_form %}
                     <a class="btn btn-primary btn-lg" href="{% url 'write_message' subdomain=writeitinstance.slug %}">{% trans "Send a message" %}</a>
