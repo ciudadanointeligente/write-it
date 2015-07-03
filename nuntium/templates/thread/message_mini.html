@@ -3,8 +3,8 @@
 <div class="mini-thread">
     <a href="{% url 'thread_read' slug=message.slug %}" class="mini-thread__message mini-thread__message--selected">
         <h3 class="mini-thread__message__summary">{{ message.subject }}</h3>
-        <p class="mini-thread__message__person">To:
-        {% for person in message.people %}{% if not forloop.first and forloop.last %} and {% elif not forloop.first %}, {% endif %}{{ person.name }}{% endfor %}
+        <p class="mini-thread__message__person">{% trans "To:" %}
+        {% for person in message.people %}{% if not forloop.first and forloop.last %} {% trans "and" %} {% elif not forloop.first %}, {% endif %}{{ person.name }}{% endfor %}
         </p>
         {% if message.created %}
         <p class="mini-thread__message__date">{{ message.created }}</p>
@@ -13,7 +13,11 @@
 
     {% for answer in message.answers.all %}
     <a href="{% url 'thread_read' slug=message.slug %}" class="mini-thread__message mini-thread__message--reply">
-        <p class="mini-thread__message__person">Reply from {{ answer.person.name }}</p>
+        <p class="mini-thread__message__person">
+            {% blocktrans with name=answer.person.name %}
+                Reply from {{ name }}
+            {% endblocktrans %}
+        </p>
         {% if answer.created %}
         <p class="mini-thread__message__date">{{ answer.created }}</p>
         {% endif %}

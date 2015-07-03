@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-02 15:04+0000\n"
+"POT-Creation-Date: 2015-07-03 10:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1470,6 +1470,23 @@ msgstr "Mutassa %(name)s összes válaszát"
 #: nuntium/templates/thread/message.html:28
 msgid "Recipients will not see your email address"
 msgstr "A címzett nem fogja látni az Ön e-mail címét"
+
+#: nuntium/templates/thread/message_mini.html:6
+#, fuzzy
+msgid "To:"
+msgstr "Címzett"
+
+#: nuntium/templates/thread/message_mini.html:7
+msgid "and"
+msgstr ""
+
+#: nuntium/templates/thread/message_mini.html:17
+#, fuzzy, python-format
+msgid ""
+"\n"
+"                Reply from %(name)s\n"
+"            "
+msgstr "Címzett kiválasztása"
 
 #: nuntium/templates/thread/read.html:15
 msgid "Your message is on its way."
