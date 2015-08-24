@@ -94,6 +94,16 @@ class EmailCreationWhenPullingFromPopit(TestCase):
         contacts = Contact.objects.filter(person=fiera)
         self.assertEquals(contacts.count(), 1)
 
+    @popit_load_data(fixture_name='persons_with_null_values')
+    def test_accept_null_values(self):
+        '''It can process information that has null values'''
+        self.instance.load_persons_from_a_popit_api(
+            settings.TEST_POPIT_API_URL
+        )
+        print self.instance.persons.all()
+        fiera = self.instance.persons.get(name="Fiera Feroz")
+        self.assertFalse(Contact.objects.filter(person=fiera))
+
     @popit_load_data(fixture_name='person_with_preferred_email_and_contact_detail')
     def test_bug_506(self):
         '''If the same email is in preferred email and
@@ -141,7 +151,6 @@ class EmailCreationWhenPullingFromPopit(TestCase):
             raton = self.instance.persons.get(name="Ratón Inteligente")
             contacts = Contact.objects.filter(person=raton)
             self.assertTrue(contacts.filter(enabled=True))
-
 
 class IsActiveTestCase(TestCase):
     def test_validating_if_a_membership_is_active(self):

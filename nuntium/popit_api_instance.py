@@ -83,7 +83,7 @@ class PopitPerson(Person):
                     contact.enabled = enable_contacts
                     contact.save()
                     created_emails.append(contact.value)
-        if 'email' in doc and doc['email'] not in created_emails:
+        if 'email' in doc and doc['email'] is not None and doc['email'] not in created_emails:
             contact, created = Contact.objects.get_or_create(
                 contact_type=contact_type,
                 writeitinstance=writeitinstance,
