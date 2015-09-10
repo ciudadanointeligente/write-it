@@ -476,4 +476,4 @@ try:
     activate(LANGUAGE_CODE)
     LOGIN_URL = reverse('login', subdomain=None)
 except:
-    LOGIN_URL = '/accounts/login'
+    LOGIN_URL = '/accounts/login/'
