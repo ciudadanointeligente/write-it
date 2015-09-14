@@ -8,6 +8,7 @@ from global_test_case import popit_load_data
 from django.conf import settings
 import re
 from django.utils.encoding import force_text
+from nuntium.popit_api_instance import PopitApiInstance
 
 
 class InstanceResourceTestCase(ResourceTestCase):
@@ -143,6 +144,7 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
 
         # creating messages
         self.pedro = Person.objects.get(id=1)
+        self.writeitinstance.add_person(self.pedro)
         # Setting that the contact is related to self.writeitinstance rather than to the user
         self.contact = self.pedro.contact_set.all()[0]
         self.contact.writeitinstance = self.writeitinstance
@@ -215,6 +217,22 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
 
         self.assertEquals(len(messages), 1)
         self.assertEquals(messages[0]['id'], self.message1.id)
+
+    def test_create_a_message_with_a_person_that_is_in_2_api_instances(self):
+        api = PopitApiInstance.objects.create(id=3,
+                                              url="https://popit.org/api/v1")
+        p = Person.objects.create(api_instance=api,
+                                  name="Otro",
+                                  popit_url="https://popit.org/api/v1/persons/1",
+                                  popit_id="52bc7asdasd34567"
+                                  )
+        url = '/api/v1/instance/%(writeitinstance_id)i/messages/' % {
+            'writeitinstance_id': self.writeitinstance.id,
+        }
+        data = self.data
+        data['person__popit_id'] = p.popit_id
+        response = self.api_client.get(url, data=data)
+        self.assertValidJSONResponse(response)
 
     def test_it_raises_error_404_when_filtering_by_someone_that_doesnot_exist(self):
         url = '/api/v1/instance/%(writeitinstance_id)i/messages/' % {

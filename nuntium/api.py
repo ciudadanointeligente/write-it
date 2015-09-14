@@ -160,15 +160,18 @@ class MessageResource(ModelResource):
 
     def build_filters(self, filters=None):
         result = super(MessageResource, self).build_filters(filters)
+        queryset = Person.objects.all()
+        if 'writeitinstance__exact' in result:
+            queryset = result['writeitinstance__exact'].persons.all()
         person = None
         if 'person' in filters:
             try:
-                person = Person.objects.get(id=filters['person'])
+                person = queryset.get(id=filters['person'])
             except:
                 raise Http404("Person does not exist")
         if 'person__popit_id' in filters:
             try:
-                person = Person.objects.get(popit_id=filters['person__popit_id'])
+                person = queryset.get(popit_id=filters['person__popit_id'])
             except ObjectDoesNotExist:
                 raise Http404("Person does not exist")
         if person:
