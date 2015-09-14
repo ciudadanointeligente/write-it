@@ -39,7 +39,7 @@ pyOpenSSL
 ndg-httpsclient
 pyasn1
 django-pagination
-django-annoying
+django-annoying==0.8.1
 celery-haystack==0.8
 django-celery-transactions<0.2.0
 django-downloadview==1.6
