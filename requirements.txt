@@ -24,7 +24,7 @@ django-object-actions
 unidecode
 python-social-auth==0.2.3
 django-nose
-mock
+mock==1.0.1
 python-dateutil
 #things required in heroku
 gunicorn
