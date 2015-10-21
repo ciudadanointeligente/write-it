@@ -13,38 +13,19 @@
 {% blocktrans %}
 <p>You’re going to make a site that enables people to contact their
 politicians.</p>
-
-<p>You will need:</p>
-
-<ul>
-  <li> Names and contact details for those politicians</li>
-  <li> A <a href="http://popit.poplus.org/">PopIt</a> site to store them in</li>
-</ul>
-
-<p>Both sites work hand in hand: PopIt stores your data, and we fetch the
-names and contact details we need from there.</p>
-
-<h4>No PopIt site?</h4>
-
-Don’t worry, it takes just minutes to set one up. All you need is a spreadsheet with the basic data for your politicians. 
-
-The <a href="http://everypolitician.org/upload/">CSV importer at EveryPolitician</a> 
-will turn that data into the right format, and create a PopIt for you.
-
-<h4>Got your PopIt?</h4>
-
-<p>Great - you’re ready to begin!</p>
-
-<hr>
-
 {% endblocktrans %}
 <form method="POST">
-  <select class="js-countries-list">
-    {% for country in countries %}
-    <option data-slug="{{ country.slug }}" value="{{ country.url }}">{{ country.country }} - {{ country.legislature }}</option>
-    {% endfor %}
-  </select>
-  <a href="#" class="js-show-manual-popolo">I have my own suitably formatted popolo</a>
+  <div class="form-group">
+    <label>Legislature</label>
+    <select class="form-control js-countries-list">
+      <option>Select a legislature</option>
+      <option disabled></option>
+      {% for country in countries %}
+      <option data-slug="{{ country.slug }}" value="{{ country.url }}">{{ country.country }} - {{ country.legislature }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <p><a href="#" class="js-show-manual-popolo">I have my own suitably formatted popolo</a></p>
     {% csrf_token %}
     {{form.as_p}}
     <button class='btn btn-primary'>{% trans 'Create' %}</button>
@@ -57,7 +38,7 @@ will turn that data into the right format, and create a PopIt for you.
   $('.js-show-manual-popolo').click(function(e) {
     e.preventDefault();
     popitUrl.show();
-    countriesList.hide();
+    countriesList.closest('div').hide();
     $(this).hide();
   });
   countriesList.change(function(e) {
