@@ -21,10 +21,16 @@ politicians.</p>
       <option>Select a legislature</option>
       <option disabled></option>
       {% for country in countries %}
-      <option data-slug="{{ country.slug }}" data-email-count="{{ country.people_with_contact_details }}" value="{{ country.url }}">{{ country.country }} - {{ country.legislature }}</option>
+      <option
+      data-slug="{{ country.slug }}"
+      data-email-count="{{ country.people_with_contact_details }}"
+      data-person-count="{{ country.person_count }}"
+      value="{{ country.url }}"
+      >{{ country.country }} - {{ country.legislature }}</option>
       {% endfor %}
     </select>
-    <span class="helptext js-not-enough-contact-details">Not enough contact details</span>
+    <span class="helptext js-not-enough-contact-details">No contact details</span>
+    <span class="helptext js-low-contact-count-warning"></span>
   </div>
   <p><a href="#" class="js-show-manual-popolo">I have my own suitably formatted popolo</a></p>
     {% csrf_token %}
@@ -39,6 +45,8 @@ politicians.</p>
   popitUrl.hide();
   var countriesList = $('.js-countries-list');
   var submitButton = $('.js-submit-button');
+  var lowContactCountWarning = $('.js-low-contact-count-warning');
+  lowContactCountWarning.hide();
   submitButton.prop('disabled', true);
   $('.js-show-manual-popolo').click(function(e) {
     e.preventDefault();
@@ -48,13 +56,20 @@ politicians.</p>
   });
   countriesList.change(function(e) {
     notEnoughContactDetails.hide();
+    lowContactCountWarning.hide();
     var option = $('option:selected', this);
     var slug = option.data('slug');
     var emailCount = option.data('email-count');
+    var personCount = option.data('person-count');
     if (emailCount > 0) {
       submitButton.removeAttr('disabled');
       $('#id_popit_url').val($(this).val());
       $('#id_slug').val(slug);
+      if ((emailCount / personCount) <= 0.5) {
+        var text = 'We only have email addresses for ' + emailCount + ' out of ' + personCount + ' people.';
+        lowContactCountWarning.text(text);
+        lowContactCountWarning.show();
+      }
     } else {
       submitButton.prop('disabled', true);
       notEnoughContactDetails.show();
