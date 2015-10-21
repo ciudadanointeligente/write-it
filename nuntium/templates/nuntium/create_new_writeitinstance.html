@@ -44,13 +44,23 @@ will turn that data into the right format, and create a PopIt for you.
     <option data-slug="{{ country.slug }}" value="{{ country.url }}">{{ country.country }} - {{ country.legislature }}</option>
     {% endfor %}
   </select>
+  <a href="#" class="js-show-manual-popolo">I have my own suitably formatted popolo</a>
     {% csrf_token %}
     {{form.as_p}}
     <button class='btn btn-primary'>{% trans 'Create' %}</button>
 </form>
 
 <script>
-  $('.js-countries-list').change(function(e) {
+  var popitUrl = $('#id_popit_url').closest('p');
+  popitUrl.hide();
+  var countriesList = $('.js-countries-list');
+  $('.js-show-manual-popolo').click(function(e) {
+    e.preventDefault();
+    popitUrl.show();
+    countriesList.hide();
+    $(this).hide();
+  });
+  countriesList.change(function(e) {
     $('#id_popit_url').val($(this).val());
     $('#id_slug').val($('option:selected', this).data('slug'));
   });
