@@ -182,8 +182,8 @@ class SimpleInstanceCreateFormPopitUrl(WriteItInstanceCreateFormPopitUrl):
 class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
     slug = CharField(
         label=_("The subdomain your site will run at"),
-        help_text=_("Choose wisely; this can't be changed. If you leave this blank, we'll generate one for you."),
-        required=False,
+        help_text=_("Choose wisely; this can't be changed."),
+        required=True,
         min_length=4,
         )
 
@@ -214,13 +214,12 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
     def save(self, commit=True):
         instance = super(WriteItInstanceCreateForm, self).save(commit=False)
         slug = self.cleaned_data['slug']
-        if slug:
-            instance.slug = slug
+        instance.slug = slug
         instance.owner = self.owner
         popit_url = self.cleaned_data['popit_url']
         about = get_about(popit_url)
         subdomain = urlparse(popit_url).netloc.split('.')[0]
-        instance.name = about.get('name', subdomain)
+        instance.name = about.get('name', slug)
         instance.save()
         self.relate_with_people()
         return instance
