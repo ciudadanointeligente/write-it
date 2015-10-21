@@ -1,3 +1,5 @@
+import requests
+
 from django.contrib.auth.decorators import login_required
 from subdomains.utils import reverse
 from django.http import HttpResponse, Http404
@@ -256,6 +258,11 @@ class WriteItInstanceCreateView(CreateView):
         kwargs = super(WriteItInstanceCreateView, self).get_form_kwargs()
         kwargs['owner'] = self.request.user
         return kwargs
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(WriteItInstanceCreateView, self).get_context_data(*args, **kwargs)
+        context['countries'] = requests.get('https://fake-popit.herokuapp.com/countries.json').json()
+        return context
 
 
 class YourInstancesView(UserSectionListView):
