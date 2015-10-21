@@ -38,12 +38,24 @@ will turn that data into the right format, and create a PopIt for you.
 <hr>
 
 {% endblocktrans %}
-
 <form method="POST">
+  <select class="js-countries-list">
+    {% for country in countries %}
+    <option data-slug="{{ country.slug }}" value="{{ country.url }}">{{ country.country }} - {{ country.legislature }}</option>
+    {% endfor %}
+  </select>
     {% csrf_token %}
     {{form.as_p}}
     <button class='btn btn-primary'>{% trans 'Create' %}</button>
 </form>
+
+<script>
+  $('.js-countries-list').change(function(e) {
+    $('#id_popit_url').val($(this).val());
+    $('#id_slug').val($('option:selected', this).data('slug'));
+  });
+</script>
+
 
 {% endblock content %}
 
