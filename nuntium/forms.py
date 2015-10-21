@@ -161,7 +161,7 @@ class PopitParsingFormMixin(object):
 
 class WriteItInstanceCreateFormPopitUrl(ModelForm, PopitParsingFormMixin):
     popit_url = URLField(
-        label=_('PopIt URL'),
+        label=_('Popolo URL'),
         help_text=_("Example: https://eduskunta.popit.mysociety.org/"),
         required=True,
         )
