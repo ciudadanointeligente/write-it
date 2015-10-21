@@ -32,7 +32,6 @@ from nuntium.models import (
     default_new_answer_content_template,
     default_new_answer_subject_template,
     )
-from nuntium.popit_api_instance import get_about
 
 from ..forms import (
     WriteItInstanceCreateFormPopitUrl,
@@ -215,11 +214,8 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
         instance = super(WriteItInstanceCreateForm, self).save(commit=False)
         slug = self.cleaned_data['slug']
         instance.slug = slug
+        instance.name = slug
         instance.owner = self.owner
-        popit_url = self.cleaned_data['popit_url']
-        about = get_about(popit_url)
-        subdomain = urlparse(popit_url).netloc.split('.')[0]
-        instance.name = about.get('name', slug)
         instance.save()
         self.relate_with_people()
         return instance
