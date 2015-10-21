@@ -508,7 +508,7 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         super(CreateUserSectionInstanceTestCase, self).setUp()
         self.user = User.objects.first()
         self.data = {
-            "slug": 'instance',
+            "slug": 'test-instance-slug',
             "popit_url": settings.TEST_POPIT_API_URL,
             }
 
@@ -533,7 +533,7 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         form = WriteItInstanceCreateForm(data=self.data, owner=self.user)
         instance = form.save()
         self.assertTrue(instance)
-        self.assertEquals(instance.name, "popit-django-test")
+        self.assertEquals(instance.name, "test-instance-slug")
         self.assertEquals(instance.owner, self.user)
         self.assertTrue(instance.persons.all())
 
@@ -544,7 +544,7 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         url = reverse('create_writeit_instance')
 
         response = c.post(url, data=self.data)
-        instance = WriteItInstance.objects.get(slug='instance', owner=self.user)
+        instance = WriteItInstance.objects.get(slug='test-instance-slug', owner=self.user)
         self.assertRedirects(response, reverse('welcome', subdomain=instance.slug))
         self.assertTrue(instance.persons.all())
 
