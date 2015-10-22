@@ -261,7 +261,9 @@ class WriteItInstanceCreateView(CreateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(WriteItInstanceCreateView, self).get_context_data(*args, **kwargs)
-        context['countries'] = requests.get('http://everypolitician.github.io/everypolitician-writeinpublic/countries.json').json()
+        countries_json_url = ('http://everypolitician.github.io/'
+            'everypolitician-writeinpublic/countries.json')
+        context['countries'] = requests.get(countries_json_url).json()
         return context
 
 
