@@ -261,7 +261,7 @@ class WriteItInstanceCreateView(CreateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(WriteItInstanceCreateView, self).get_context_data(*args, **kwargs)
-        context['countries'] = requests.get('https://fake-popit.herokuapp.com/countries.json').json()
+        context['countries'] = requests.get('http://everypolitician.github.io/everypolitician-writeinpublic/countries.json').json()
         return context
 
 
