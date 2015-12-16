@@ -84,11 +84,27 @@ class WriteMessageView(NamedUrlSessionWizardView):
         return super(WriteMessageView, self).dispatch(request=request, *args, **kwargs)
 
     def get(self, *args, **kwargs):
+        the_person = None
+
+        # If we have an ID in the URL and it matches someone, go straight to
+        # /draft
+        if kwargs.get('step') == 'who' and 'person_id' in self.request.GET:
+            person_id = self.request.GET['person_id']
+            try:
+                the_person = self.writeitinstance.persons.get(popit_id=person_id)
+            except Person.DoesNotExist:
+                pass
+
+        # If we've come to /who but there is only one person possible to
+        # contact, go straight to /draft
         if self.steps.current == 'who' and self.writeitinstance.persons_with_contacts.count() == 1:
             the_person = self.writeitinstance.persons_with_contacts.first()
+
+        if the_person is not None:
             self.storage.set_step_data('who', {self.get_form_prefix() + '-persons': [the_person.id]})
             self.storage.current_step = 'draft'
             return redirect(self.get_step_url('draft'))
+
         # Check that the form contains valid data
         if self.steps.current == 'preview' or self.steps.current == 'draft':
             message = self.get_form_values()
