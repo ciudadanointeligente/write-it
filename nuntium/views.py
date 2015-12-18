@@ -225,7 +225,11 @@ class MessagesPerPersonView(ListView):
     template_name = "thread/to.html"
 
     def dispatch(self, request, *args, **kwargs):
-        self.person = get_object_or_404(Person, pk=self.kwargs['pk'])
+        if 'pk' in self.kwargs:
+            params = {'pk': self.kwargs['pk']}
+        elif 'person_id' in self.kwargs:
+            params = {'popit_id': self.kwargs['person_id']}
+        self.person = get_object_or_404(Person, **params)
         self.writeitinstance = get_object_or_404(WriteItInstance, slug=request.subdomain)
         return super(MessagesPerPersonView, self).dispatch(request, *args, **kwargs)
 

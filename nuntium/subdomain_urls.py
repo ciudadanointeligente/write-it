@@ -106,6 +106,7 @@ urlpatterns = i18n_patterns('',
     url(r'^threads/$', MessageThreadsView.as_view(), name='message_threads'),
     url(r'^thread/(?P<slug>[-\w]+)/$', MessageThreadView.as_view(), name='thread_read'),
     url(r'^per_person/(?P<pk>[-\d]+)/$', MessagesPerPersonView.as_view(), name='messages_per_person'),
+    url(r'^per_person_id/(?P<person_id>.+)/$', MessagesPerPersonView.as_view(), name='messages_per_person_id'),
     url(r'^from/(?P<message_slug>[-\w]+)/?$', MessagesFromPersonView.as_view(), name='all-messages-from-the-same-author-as'),
     url(r'^to/(?P<pk>[-\d]+)/$', MessagesPerPersonView.as_view(), name='thread_to'),
 
