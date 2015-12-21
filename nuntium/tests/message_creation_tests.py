@@ -15,6 +15,19 @@ class MessageCreationTestCase(TestCase):
         self.writeitinstance.add_person(self.person1)
         self.writeitinstance.add_person(self.person2)
 
+    def test_go_straight_to_draft_given_person_id(self):
+        url = reverse('write_message_step',
+            subdomain=self.writeitinstance.slug,
+            kwargs={'step': 'who'})
+        url2 = reverse('write_message_step',
+            subdomain=self.writeitinstance.slug,
+            kwargs={'step': 'draft'})
+
+        response = self.client.get(url, {'person_id': self.person1.popit_id})
+        self.assertRedirects(response, url2)
+        response = self.client.get(url2)
+        self.assertEquals(response.context['message']['persons'][0].id, self.person1.id)
+
     def test_if_theres_a_single_contact_skip_the_first_step(self):
         '''If theres a single contact skip the first step and select the single person'''
         url = reverse('write_message_step',

@@ -48,6 +48,17 @@ class MessagesPerPersonViewTestCase(TestCase):
             [repr(r) for r in response.context['message_list']],
             )
 
+    def test_person_id_param(self):
+        url = reverse(
+            'messages_per_person_id',
+            subdomain=self.writeitinstance.slug,
+            kwargs={
+                'person_id': self.pedro.popit_id,
+                }
+            )
+        response = self.client.get(url)
+        self.assertEquals(response.context['person'], self.pedro)
+
     def test_it_does_not_show_private_messages(self):
         private_message = Message.objects.create(
             content='Content 1',
