@@ -81,8 +81,12 @@ politicians.</p>
 {% endblock content %}
 
 {% block extrajs %}
-  $('#id_popit_url').keyup(function () {
-    var generated_slug = this.value.split('/')[2].split('.')[0];
-    $('#id_slug').val(generated_slug.toLowerCase());
+  $('#id_popit_url').keyup(function(e) {
+    var slug = '',
+        domain = this.value.split('/')[2];
+    if (domain) {
+        slug = domain.split('.')[0].toLowerCase();
+    }
+    $('#id_slug').val(slug);
   });
 {% endblock extrajs %}
