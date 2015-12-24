@@ -19,6 +19,41 @@
                     ]
                 },
                 "method": "GET",
+                "uri": "http://popit-django-test.127.0.0.1.xip.io:3000/api"
+            },
+            "response": {
+                "status": {
+                    "message": "OK",
+                    "code": 200
+                },
+                "headers": {
+                    "content-type": [
+                        "application/json; charset=utf-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\n \"note\": \"This is the API entry point - use a '*_api_url' link in 'meta' to search a collection.\",\n \"info\": {\n \"databaseName\": \"popit_django_test\",\n \"version\": \"0.0.14\" },\n \"meta\": {\n \"persons_api_url\": \"http://popit-django-test.127.0.0.1.xip.io:3000/api/persons\",\n \"organizations_api_url\": \"http://popit-django-test.127.0.0.1.xip.io:3000/api/organizations\",\n \"memberships_api_url\": \"http://popit-django-test.127.0.0.1.xip.io:3000/api/memberships\",\n \"posts_api_url\": \"http://popit-django-test.127.0.0.1.xip.io:3000/api/posts\"\n }\n }"
+                }
+            }
+        },
+        {
+            "request": {
+                "body": null,
+                "headers": {
+                    "content-type": [
+                        "application/json"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "accept": [
+                        "application/json"
+                    ],
+                    "User-Agent": [
+                        "python-requests/2.3.0 CPython/2.7.6 Linux/3.13.0-49-generic"
+                    ]
+                },
+                "method": "GET",
                 "uri": "http://popit-django-test.127.0.0.1.xip.io:3000/api/persons/?per_page=50&page=1"
             },
             "response": {
