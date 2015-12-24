@@ -50,6 +50,7 @@ politicians.</p>
   submitButton.prop('disabled', true);
   $('.js-show-manual-popolo').click(function(e) {
     e.preventDefault();
+    submitButton.removeAttr('disabled');
     popitUrl.show();
     countriesList.closest('div').hide();
     $(this).hide();
