@@ -29,7 +29,7 @@ politicians.</p>
       >{{ country.country }} - {{ country.legislature }}</option>
       {% endfor %}
     </select>
-    <span class="helptext js-not-enough-contact-details">No contact details</span>
+    <span class="helptext js-not-enough-contact-details"></span>
     <span class="helptext js-low-contact-count-warning"></span>
   </div>
   <p><a href="#" class="js-show-manual-popolo">I have my own suitably formatted popolo</a></p>
@@ -72,6 +72,7 @@ politicians.</p>
       }
     } else {
       submitButton.prop('disabled', true);
+      notEnoughContactDetails.text('No contact details');
       notEnoughContactDetails.show();
     }
   });
