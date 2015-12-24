@@ -162,7 +162,7 @@ class PopitParsingFormMixin(object):
 class WriteItInstanceCreateFormPopitUrl(ModelForm, PopitParsingFormMixin):
     popit_url = URLField(
         label=_('Popolo URL'),
-        help_text=_("Example: https://eduskunta.popit.mysociety.org/"),
+        help_text=_("Example: https://cdn.rawgit.com/everypolitician/everypolitician-data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"),
         required=True,
         )
 

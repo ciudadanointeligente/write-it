@@ -247,7 +247,7 @@ class AnswerForm(ModelForm):
 class RelatePopitInstanceWithWriteItInstance(Form, PopitParsingFormMixin):
     popit_url = URLField(
         label=_('PopIt URL'),
-        help_text=_("Example: https://eduskunta.popit.mysociety.org/"),
+        help_text=_("Example: https://cdn.rawgit.com/everypolitician/everypolitician-data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"),
         )
 
     def __init__(self, *args, **kwargs):
