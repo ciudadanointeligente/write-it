@@ -257,6 +257,9 @@ class WriteItInstanceCreateView(CreateView):
     def get_form_kwargs(self):
         kwargs = super(WriteItInstanceCreateView, self).get_form_kwargs()
         kwargs['owner'] = self.request.user
+        if 'data' in kwargs and kwargs['data'].get('legislature'):
+            kwargs['data'] = kwargs['data'].copy()
+            kwargs['data']['popit_url'] = kwargs['data']['legislature']
         return kwargs
 
     def get_context_data(self, *args, **kwargs):

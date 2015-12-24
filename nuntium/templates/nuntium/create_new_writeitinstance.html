@@ -17,8 +17,8 @@ politicians.</p>
 <form method="POST">
   <div class="form-group">
     <label>Legislature</label>
-    <select class="form-control js-countries-list">
-      <option>Select a legislature</option>
+    <select name="legislature" class="form-control js-countries-list">
+      <option value="">Select a legislature</option>
       <option disabled></option>
       {% for country in countries %}
       <option
