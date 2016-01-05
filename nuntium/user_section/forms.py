@@ -246,8 +246,8 @@ class AnswerForm(ModelForm):
 
 class RelatePopitInstanceWithWriteItInstance(Form, PopitParsingFormMixin):
     popit_url = URLField(
-        label=_('PopIt URL'),
-        help_text=_("Example: https://eduskunta.popit.mysociety.org/"),
+        label=_('Popolo URL'),
+        help_text=_("Example: https://cdn.rawgit.com/everypolitician/everypolitician-data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"),
         )
 
     def __init__(self, *args, **kwargs):
@@ -264,7 +264,7 @@ class RelatePopitInstanceWithWriteItInstance(Form, PopitParsingFormMixin):
         cleaned_data = super(RelatePopitInstanceWithWriteItInstance, self).clean(*args, **kwargs)
         if self.writeitinstance.writeitinstancepopitinstancerecord_set.filter(popitapiinstance__url=cleaned_data.get('popit_url')):
             self.relate()
-            raise ValidationError(_("You have already added this PopIt. But we will fetch the data from it again now."))
+            raise ValidationError(_("You have already added this source. But we will fetch the data from it again now."))
         return cleaned_data
 
 

@@ -11,7 +11,7 @@ django-markdown-deux
 requests
 django-extensions
 django-haystack==2.4.0
-django-pipeline
+django-pipeline==1.5.4
 libsass
 elasticsearch==1.6.0
 celery

@@ -17,8 +17,8 @@ politicians.</p>
 <form method="POST">
   <div class="form-group">
     <label>Legislature</label>
-    <select class="form-control js-countries-list">
-      <option>Select a legislature</option>
+    <select name="legislature" class="form-control js-countries-list">
+      <option value="">Select a legislature</option>
       <option disabled></option>
       {% for country in countries %}
       <option
@@ -29,7 +29,7 @@ politicians.</p>
       >{{ country.country }} - {{ country.legislature }}</option>
       {% endfor %}
     </select>
-    <span class="helptext js-not-enough-contact-details">No contact details</span>
+    <span class="helptext js-not-enough-contact-details"></span>
     <span class="helptext js-low-contact-count-warning"></span>
   </div>
   <p><a href="#" class="js-show-manual-popolo">I have my own suitably formatted popolo</a></p>
@@ -50,6 +50,7 @@ politicians.</p>
   submitButton.prop('disabled', true);
   $('.js-show-manual-popolo').click(function(e) {
     e.preventDefault();
+    submitButton.removeAttr('disabled');
     popitUrl.show();
     countriesList.closest('div').hide();
     $(this).hide();
@@ -72,6 +73,7 @@ politicians.</p>
       }
     } else {
       submitButton.prop('disabled', true);
+      notEnoughContactDetails.text('No contact details');
       notEnoughContactDetails.show();
     }
   });
@@ -81,8 +83,12 @@ politicians.</p>
 {% endblock content %}
 
 {% block extrajs %}
-  $('#id_popit_url').keyup(function () {
-    var generated_slug = this.value.split('/')[2].split('.')[0];
-    $('#id_slug').val(generated_slug.toLowerCase());
+  $('#id_popit_url').keyup(function(e) {
+    var slug = '',
+        domain = this.value.split('/')[2];
+    if (domain) {
+        slug = domain.split('.')[0].toLowerCase();
+    }
+    $('#id_slug').val(slug);
   });
 {% endblock extrajs %}

@@ -2,7 +2,7 @@ from popit.models import ApiInstance, Person, get_paginated_generator
 from contactos.models import Contact
 from mailit import MailChannel
 from datetime import datetime
-import slumber
+import requests
 
 
 def get_date_or_none(membership_doc, key, format="%Y-%m-%d"):
@@ -38,13 +38,26 @@ class PopitPerson(Person):
         Get all the documents from the API and save them locally.
         """
         cls = Person
-        api_client = instance.api_client(cls.api_collection_name)
 
-        # This is hacky, but I can't see a documented way to get to the url.
-        # Liable to change if slumber changes their internals.
-        collection_url = api_client._store['base_url']
+        data = requests.get(instance.url).json()
+        if 'persons' in data:
+            # Direct Popolo data, list of persons with name/email/image/summary/inline memberships
+            collection_url = instance.url
+            people = data['persons']
+            for p in people:
+                # XXX IDs in transformed EP have person/ at the front?
+                p['id'] = 'person/%s' % p['id']
+                p.setdefault('memberships', []).extend(
+                    [m for m in data['memberships'] if m['person_id'] == p['id']])
+        else:
+            api_client = instance.api_client(cls.api_collection_name)
 
-        for doc in get_paginated_generator(api_client):
+            # This is hacky, but I can't see a documented way to get to the url.
+            # Liable to change if slumber changes their internals.
+            collection_url = api_client._store['base_url']
+            people = get_paginated_generator(api_client)
+
+        for doc in people:
 
             # Add url to the doc
             url = collection_url + '/' + doc['id']
