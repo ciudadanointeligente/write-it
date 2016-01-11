@@ -53,6 +53,20 @@ class TasksTestCase(TestCase):
             send_mails_task()  # It returns a result
             info.assert_called_with(expected_log)
 
+    def test_handling_unexpected_exceptions_in_send(self):
+        for outbound_message in OutboundMessage.objects.all():
+            outbound_message.status = "ready"
+            outbound_message.save()
+
+        instance = WriteItInstance.objects.get(id=1)
+        instance.mailit_template.content_template = '{autor}'
+        instance.mailit_template.save()
+
+        send_mails_task()
+
+        other_instance = WriteItInstance.objects.get(id=2)
+        self.assertTrue(OutboundMessage.objects.filter(message__writeitinstance=other_instance, status="sent"))
+
 
 class PullFromPopitTask(TestCase):
     def setUp(self):

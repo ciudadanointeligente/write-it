@@ -57,9 +57,20 @@ class MailChannel(OutputPlugin):
             'site_name': writeitinstance.name,
             'owner_email': writeitinstance.owner.email,
             }
-        text_content = template.get_content_template().format(**context)
-        html_content = template.content_html_template.format(**escape_dictionary_values(context))
-        subject = template.subject_template.format(**context)
+        try:
+            text_content = template.get_content_template().format(**context)
+            html_content = template.content_html_template.format(**escape_dictionary_values(context))
+            subject = template.subject_template.format(**context)
+        except KeyError, error:
+            log = "Error with templates for instance %(instance)s and the error was '%(error)s'"
+            log = log % {
+                'instance': writeitinstance.name,
+                'error': error.__unicode__()
+                }
+            mail_admins("Problem sending an email", log)
+            logging.info(log)
+            return False, True
+
 
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = author_name + " <" + settings.DEFAULT_FROM_EMAIL + ">"
