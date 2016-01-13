@@ -7,24 +7,50 @@
     <h2>{% trans "API" %}</h2>
     <a href="{% url 'writeitinstance_api_autoconfirm_update' subdomain=writeitinstance.slug %}" class="page-header__settings-link btn btn-default btn-sm"><i class="glyphicon glyphicon-wrench"></i>{% trans "Settings" %}</a>
   </div>
-            <h2>{% trans "Creating a message using the API" %}</h2>
+            <h3>{% trans "Messages" %}</h3>
 
-            <p>{% trans "To create a message using the API, send a POST request to" %}<br>
-            <code>{{ api_base_url }}message/?format=json&username={{ user.username }}&api_key={{ user.api_key.key }}</code><br>
-            {% trans "with payload data like" %}<br>
-            <code>
-              {<br>
-              &nbsp;&nbsp;&nbsp;&nbsp;'content': '{% trans "Message content here" %}', <br>
-              &nbsp;&nbsp;&nbsp;&nbsp;'writeitinstance': '/api/v1/instance/{{ writeitinstance.id }}/', <br>
-              &nbsp;&nbsp;&nbsp;&nbsp;'persons': [<br>
-              {% for person in writeitinstance.persons.all %}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'{{ person.popit_url }}'{% if not forloop.last %},{% endif %}</code> ## For {{ person }}<br><code>
-              {% endfor %}
-              &nbsp;&nbsp;&nbsp;&nbsp;], <br>
-              &nbsp;&nbsp;&nbsp;&nbsp;'author_name': '{% trans "Name of sender" %}', <br>
-              &nbsp;&nbsp;&nbsp;&nbsp;'subject': '{% trans "Message subject here" %}'<br>
-            }
-            </code>
-            </p>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">{% trans "Create a Message [POST]" %}</h4>
+              </div>
+              <div class="panel-body">
+
+                        <div>
+                            <h4>{% trans "Http request (application/json)" %}</h4>
+                            <code>
+                        {
+                            'content': 'the content thing', 
+                            'writeitinstance': '/api/v1/instance/1/', 
+                            'persons': ['http://popit.mysociety.org/api/v1/persons/1'], 
+                            'author_name': 'Felipipoo', 
+                            'subject': 'new message'
+                        }
+                        </code> 
+                        </div>
+            <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">{% trans 'Example:' %}</a>
+            <div class="collapse" id="collapseExample">
+              <div class="well">
+                        <div class="code-example">
+                        <p>{% trans "To create a message using the API, send a POST request to" %}<br></p>
+                        <code>{{ api_base_url }}message/?format=json&username={{ user.username }}&api_key={{ user.api_key.key }}</code><br>
+                        {% trans "with payload data like" %}<br>
+                        <code>
+                          {<br>
+                          &nbsp;&nbsp;&nbsp;&nbsp;'content': '{% trans "Message content here" %}', <br>
+                          &nbsp;&nbsp;&nbsp;&nbsp;'writeitinstance': '/api/v1/instance/{{ writeitinstance.id }}/', <br>
+                          &nbsp;&nbsp;&nbsp;&nbsp;'persons': [<br>
+                          {% for person in writeitinstance.persons.all %}
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'{{ person.popit_url }}'{% if not forloop.last %},{% endif %}</code> ## For {{ person }}<br><code>
+                          {% endfor %}
+                          &nbsp;&nbsp;&nbsp;&nbsp;], <br>
+                          &nbsp;&nbsp;&nbsp;&nbsp;'author_name': '{% trans "Name of sender" %}', <br>
+                          &nbsp;&nbsp;&nbsp;&nbsp;'subject': '{% trans "Message subject here" %}'<br>
+                        }
+                        </code>
+                        </div><!--code-example-->
+                </div>
+            </div>
+              </div>
+            </div>
 
 {% endblock content %}
