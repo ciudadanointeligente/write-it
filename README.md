@@ -80,7 +80,8 @@ Install the requirements:
 
 Set up the database, creating an admin user when prompted:
 
-    ./manage.py syncdb && ./manage.py migrate
+    ./manage.py syncdb --noinput --migrate
+
 
 Troubleshooting database migration
 ----------------------------------
