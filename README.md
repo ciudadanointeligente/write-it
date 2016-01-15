@@ -112,7 +112,7 @@ LOCAL_ELASTICSEARCH = False
 Running tests
 --------------
 
-For testing you need to run ```./test.py```
+For testing you need to run ```./manage.py test nuntium contactos mailit```
 
 Coverage Analysis
 -----------------
