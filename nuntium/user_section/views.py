@@ -29,6 +29,7 @@ import json
 from nuntium.popit_api_instance import PopitApiInstance
 from nuntium.tasks import pull_from_popit
 from nuntium.user_section.forms import WriteItPopitUpdateForm
+from django.contrib.sites.models import Site
 
 
 class UserAccountView(TemplateView):
@@ -83,8 +84,8 @@ class WriteItInstanceApiDocsView(WriteItInstanceDetailBaseView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(WriteItInstanceApiDocsView, self).get_context_data(*args, **kwargs)
-
-        context['api_base_url'] = self.request.build_absolute_uri('/api/v1/')
+        current_domain = Site.objects.get_current().domain
+        context['api_base_url'] = 'http://' + current_domain + '/api/v1/'
         return context
 
 

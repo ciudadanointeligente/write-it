@@ -3,6 +3,33 @@
 {% load subdomainurls %}
 
 {% block content %}
+<div class="modal fade" id="availablePeople" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{% trans  'Available people for your instance'%}</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+            
+        <tr>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'popit_url' %}</th>
+        </tr>
+        {% for person in writeitinstance.persons.all %}
+        <tr>
+            <td>{{person.name}}</td>
+            <td>{{ person.popit_url }}</td>
+        </tr>
+        {% endfor %}
+        </table>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 <div class="page-header">
     <h2>{% trans "API" %}</h2>
     <a href="{% url 'writeitinstance_api_autoconfirm_update' subdomain=writeitinstance.slug %}" class="page-header__settings-link btn btn-default btn-sm"><i class="glyphicon glyphicon-wrench"></i>{% trans "Settings" %}</a>
@@ -14,38 +41,42 @@
                 <h4 class="panel-title">{% trans "Create a Message [POST]" %}</h4>
               </div>
               <div class="panel-body">
-
                         <div>
-                            <h4>{% trans "Http request (application/json)" %}</h4>
+                            <h5>{% trans 'The endpoint' %}</h5>
                             <code>
-                        {
-                            'content': 'the content thing', 
-                            'writeitinstance': '/api/v1/instance/1/', 
-                            'persons': ['http://popit.mysociety.org/api/v1/persons/1'], 
-                            'author_name': 'Felipipoo', 
-                            'subject': 'new message'
-                        }
-                        </code> 
+                                {{ api_base_url }}message/?format=json&username={{user.username}}&api_key={{user.api_key.key}}
+                            </code>
+                            
                         </div>
-            <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">{% trans 'Example:' %}</a>
+                        <div>
+                            <h5>{% trans 'The headers' %}</h5>
+                        </div>
+                        <div>
+                            <h5>{% trans "The payload" %}</h5>
+                            
+                            <code>
+                                {<br />
+                                'content': '{% trans 'The content can be a long text' %}', <br />
+                                'writeitinstance': '/api/v1/instance/{{ writeitinstance.id }}/', <br />
+                                'persons': [{% for person in writeitinstance.persons.all|slice:":2" %}"{{ person.popit_url }}" ## {{person.name}}<br />{% if not forloop.last %},{% endif %}{% endfor %}], <br />
+                                'author_name': '{% trans 'Your Name' %}', <br />
+                                'subject': '{% trans 'The subject has to be a one line description of the content' %}'<br />                             
+                                }<br />
+                            </code>
+                            {% blocktrans %}
+                            We have selected just a few people for the example but you can see the entire list 
+                            <a class="" data-toggle="modal" data-target="#availablePeople">
+                                  here
+                              </a>
+                              {% endblocktrans %}
+                        </div>
+
+            <a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">{% trans 'Example using CURL:' %}</a>
             <div class="collapse" id="collapseExample">
               <div class="well">
                         <div class="code-example">
-                        <p>{% trans "To create a message using the API, send a POST request to" %}<br></p>
-                        <code>{{ api_base_url }}message/?format=json&username={{ user.username }}&api_key={{ user.api_key.key }}</code><br>
-                        {% trans "with payload data like" %}<br>
                         <code>
-                          {<br>
-                          &nbsp;&nbsp;&nbsp;&nbsp;'content': '{% trans "Message content here" %}', <br>
-                          &nbsp;&nbsp;&nbsp;&nbsp;'writeitinstance': '/api/v1/instance/{{ writeitinstance.id }}/', <br>
-                          &nbsp;&nbsp;&nbsp;&nbsp;'persons': [<br>
-                          {% for person in writeitinstance.persons.all %}
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'{{ person.popit_url }}'{% if not forloop.last %},{% endif %}</code> ## For {{ person }}<br><code>
-                          {% endfor %}
-                          &nbsp;&nbsp;&nbsp;&nbsp;], <br>
-                          &nbsp;&nbsp;&nbsp;&nbsp;'author_name': '{% trans "Name of sender" %}', <br>
-                          &nbsp;&nbsp;&nbsp;&nbsp;'subject': '{% trans "Message subject here" %}'<br>
-                        }
+                            curl --dump-header - -H 'Accept: application/json' -H "Content-Type: application/json" -X POST  --data '{"content": "{% trans 'The content can be a long text' %}","writeitinstance": "/api/v1/instance/{{ writeitinstance.id }}/","persons": [{% for person in writeitinstance.persons.all|slice:":2" %}"{{ person.popit_url }}"{% if not forloop.last %},{% endif %}{% endfor %}],"author_name": "{% trans 'Your Name' %}","subject": "{% trans 'The subject has to be a one line description of the content' %}"}' "{{ api_base_url }}message/?format=json&username={{user.username}}&api_key={{user.api_key.key}}"
                         </code>
                         </div><!--code-example-->
                 </div>
