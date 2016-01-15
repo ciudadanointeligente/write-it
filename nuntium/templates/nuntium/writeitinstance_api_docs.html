@@ -31,7 +31,7 @@
 
 
 <div class="page-header">
-    <h2>{% trans "API" %}</h2>
+    <h2>{% trans "API docs" %}</h2>
     <a href="{% url 'writeitinstance_api_autoconfirm_update' subdomain=writeitinstance.slug %}" class="page-header__settings-link btn btn-default btn-sm"><i class="glyphicon glyphicon-wrench"></i>{% trans "Settings" %}</a>
   </div>
             <h3>{% trans "Messages" %}</h3>
@@ -50,6 +50,15 @@
                         </div>
                         <div>
                             <h5>{% trans 'The headers' %}</h5>
+                            {% blocktrans %}
+                            You need to set the Accept header with either <code>application/json</code> or <code>application/xml</code> depending on the format of the response.
+                            {% endblocktrans %}
+                        </div>
+                        <div>
+                            <h5>{% trans 'The response' %}</h5>
+                            {% blocktrans %}
+                            This endpoint returns in the content the information of the recently created message.
+                            {% endblocktrans %}
                         </div>
                         <div>
                             <h5>{% trans "The payload" %}</h5>
