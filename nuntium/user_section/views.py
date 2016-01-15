@@ -646,7 +646,9 @@ class WriteItInstanceCreateWebHooksView(CreateView):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         self.kwargs['slug'] = request.subdomain
-        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.kwargs['slug'])
+        self.writeitinstance = get_object_or_404(WriteItInstance,
+            slug=self.kwargs['slug'],
+            owner=self.request.user)
         return super(WriteItInstanceCreateWebHooksView, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):

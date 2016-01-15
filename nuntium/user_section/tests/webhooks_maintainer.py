@@ -1,11 +1,12 @@
-from global_test_case import GlobalTestCase as TestCase
 from subdomains.utils import reverse
 from nuntium.models import WriteItInstance
 from nuntium.user_section.forms import WebhookCreateForm
 from nuntium.models import AnswerWebHook
+from django.contrib.auth.models import User
+from nuntium.user_section.tests.user_section_views_tests import UserSectionTestCase
 
 
-class WebhooksMaintainerTestCase(TestCase):
+class WebhooksMaintainerTestCase(UserSectionTestCase):
     def setUp(self):
         super(WebhooksMaintainerTestCase, self).setUp()
         self.writeitinstance = WriteItInstance.objects.all()[0]
@@ -47,3 +48,25 @@ class WebhooksMaintainerTestCase(TestCase):
         self.assertRedirects(response, url_listing_webhooks)
         webhook = self.writeitinstance.answer_webhooks.first()
         self.assertEquals(webhook.url, data['url'])
+
+    def test_webhook_listing_security(self):
+        '''Basic security for listing webhooks'''
+        url = reverse('writeitinstance_create_webhooks', subdomain=self.writeitinstance.slug)
+        response = self.client.get(url)
+        self.assertRedirectToLogin(response)
+        otheruser = User.objects.create_user(username="otheruser", password='passw')
+        self.client.login(username=otheruser.username, password='passw')
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 404)
+
+    def test_webhook_creation_security(self):
+        '''Basic security for creating webhooks'''
+        url = reverse('writeitinstance_create_webhooks', subdomain=self.writeitinstance.slug)
+        data = {'url': 'http://new.answers.will.be.posted/here'}
+        self.client.post(url, data=data)
+        self.assertFalse(self.writeitinstance.answer_webhooks.all())
+
+        otheruser = User.objects.create_user(username="otheruser", password='passw')
+        self.client.login(username=otheruser.username, password='passw')
+        self.client.post(url, data=data)
+        self.assertFalse(self.writeitinstance.answer_webhooks.all())
