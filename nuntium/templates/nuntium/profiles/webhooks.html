@@ -21,10 +21,36 @@
     <div class="page-header">
       <h2>{% trans "Webhooks" %}</h2>
     </div>
+
+    <h3>{% trans 'Expected payload'%}</h3>
+      {% blocktrans %}
+      Webhooks are a mechanism for sending another system notifications when things happen. <br />
+      In this case when a new answer is created a post is sent to the URLs below. The content of the POST's payload is as follows:
+      <br /><code>
+        {<br />
+            "message_id": "/api/v1/message/MESSAGE_ID/",<br />
+            "content": "Answer content",<br />
+            "person": PERSONS_NAME,<br />
+            "person_id": PERSONS_POPIT_URL<br />
+            }<br />
+      </code>
+      The following is an example payload:<br />
+      <code>
+        {<br />
+            "message_id": "/api/v1/message/1/",<br />
+            "content": "This is an answer",<br />
+            "person": "Alberto Robles Pantoja",<br />
+            "person_id": "https://everypolitician-writeinpublic.herokuapp.com/Chile/Deputies/persons/person/7ffa8d98-60f6-4a56-9c94-f4e6e097d812"<br />
+            }
+
+      </code>
+
+      {% endblocktrans %}
+    <h3>{% trans 'List of webhooks'%}</h3>
     {% for webhook in writeitinstance.answer_webhooks.all %}
-    <ul class="list-of-webhooks">
-      <li class="list-of-webhooks__webhook">
-        <h3 class="webhook__url">{{ webhook.url }}</h3>
+    <ul class="list-of-data-sources">
+      <li class="list-of-data-sources__data-source">
+        <h3 class="data-source__title">{{ webhook.url }}</h3>
       </li>
     </ul>
     {% empty %}
