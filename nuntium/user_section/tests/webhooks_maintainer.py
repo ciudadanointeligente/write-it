@@ -2,12 +2,25 @@ from global_test_case import GlobalTestCase as TestCase
 from subdomains.utils import reverse
 from nuntium.models import WriteItInstance
 # from django.forms import ModelForm
+from nuntium.user_section.forms import WebhookCreateForm
+from nuntium.models import AnswerWebHook
 
 
 class WebhooksMaintainerTestCase(TestCase):
     def setUp(self):
         super(WebhooksMaintainerTestCase, self).setUp()
         self.writeitinstance = WriteItInstance.objects.all()[0]
+
+    def test_create_a_new_webhook_form(self):
+        data = {
+            'url': "http://new.answers.will.be.posted/here"
+        }
+        form = WebhookCreateForm(data=data, writeitinstance=self.writeitinstance)
+        self.assertTrue(form.is_valid())
+        webhook = form.save()
+        self.assertIsInstance(webhook, AnswerWebHook)
+        self.assertEquals(webhook.writeitinstance, self.writeitinstance)
+        self.assertEquals(webhook.url, data['url'])
 
     def test_the_url_is_reachable_and_contains_previously_created_webhooks(self):
         '''There is a url that lists all previously created webhooks'''
