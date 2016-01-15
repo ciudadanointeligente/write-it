@@ -1,7 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
 from subdomains.utils import reverse
 from nuntium.models import WriteItInstance
-# from django.forms import ModelForm
 from nuntium.user_section.forms import WebhookCreateForm
 from nuntium.models import AnswerWebHook
 
@@ -10,6 +9,7 @@ class WebhooksMaintainerTestCase(TestCase):
     def setUp(self):
         super(WebhooksMaintainerTestCase, self).setUp()
         self.writeitinstance = WriteItInstance.objects.all()[0]
+        self.writeitinstance.answer_webhooks.all().delete()
 
     def test_create_a_new_webhook_form(self):
         data = {
@@ -26,13 +26,24 @@ class WebhooksMaintainerTestCase(TestCase):
         '''There is a url that lists all previously created webhooks'''
 
         url = reverse('writeitinstance_webhooks', subdomain=self.writeitinstance.slug)
-        self.assertTrue(url)
         c = self.client
         c.login(username=self.writeitinstance.owner.username, password='admin')
 
         response = c.get(url)
         self.assertTemplateUsed(response, "nuntium/profiles/webhooks.html")
-        # self.assertIn('form', response.context)
-        # form = response.context['form']
+        self.assertIn('form', response.context)
+        form = response.context['form']
 
-        # self.assertIsInstance(form, ModelForm)
+        self.assertIsInstance(form, WebhookCreateForm)
+        self.assertEquals(form.writeitinstance, self.writeitinstance)
+
+    def test_there_is_a_url_for_posting_new_webhooks(self):
+        '''There is a url where we can post information for a new webhook'''
+        url = reverse('writeitinstance_create_webhooks', subdomain=self.writeitinstance.slug)
+        self.client.login(username=self.writeitinstance.owner.username, password='admin')
+        data = {'url': 'http://new.answers.will.be.posted/here'}
+        response = self.client.post(url, data=data)
+        url_listing_webhooks = reverse('writeitinstance_webhooks', subdomain=self.writeitinstance.slug)
+        self.assertRedirects(response, url_listing_webhooks)
+        webhook = self.writeitinstance.answer_webhooks.first()
+        self.assertEquals(webhook.url, data['url'])

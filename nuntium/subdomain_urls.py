@@ -47,7 +47,8 @@ from nuntium.user_section.views import (
     ReSyncFromPopit,
     WelcomeView,
     WriteItPopitUpdateView,
-    WriteItInstanceWebHooksView
+    WriteItInstanceWebHooksView,
+    WriteItInstanceCreateWebHooksView
 )
 from nuntium.user_section.stats import StatsView
 
@@ -66,6 +67,7 @@ managepatterns = patterns('',
     url(r'^settings/webbased/$', WriteItInstanceWebBasedView.as_view(), name='writeitinstance_webbased_update'),
     url(r'^settings/api/$', WriteItInstanceApiDocsView.as_view(), name='writeitinstance_api_docs'),
     url(r'^settings/webhooks/$', WriteItInstanceWebHooksView.as_view(), name='writeitinstance_webhooks'),
+    url(r'^settings/create_webhooks/$', WriteItInstanceCreateWebHooksView.as_view(), name='writeitinstance_create_webhooks'),
     url(r'^settings/sources/$', WriteitPopitRelatingView.as_view(), name='relate-writeit-popit'),
     url(r'^settings/sources/resync/(?P<popit_api_pk>[-\d]+)/$', ReSyncFromPopit.as_view(), name='resync-from-popit'),
     url(r'^settings/sources/update/(?P<pk>[-\d]+)/$', WriteItPopitUpdateView.as_view(), name='update-popit-writeit-relation'),

@@ -30,5 +30,18 @@
     {% empty %}
     {% trans 'There are no webhooks yet.' %}
     {% endfor %}
-
+    <div class="add-new-data-source">
+    <form action="{% url 'writeitinstance_create_webhooks' subdomain=writeitinstance.slug %}" method="POST" role="form">
+    <h3>{% trans "Add a new Webhook" %}</h3>
+      {% csrf_token %}
+      <div class="form-element">
+        <div class="form-inline">
+          <p>{{ form.non_field_errors.as_text }}</p>
+          {{ form.url.label_tag }}
+          {{ form.url }}
+          <button type="submit" class="btn btn-primary">{% trans 'Add' %}</button>
+        </div>
+      </div>
+    </form>
+  </div>
 {% endblock content%}
