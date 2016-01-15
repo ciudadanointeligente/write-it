@@ -19,7 +19,7 @@ pyyaml
 django-celery
 django-autoslug
 pytz>=2013b
-django-admin-bootstrapped
+django-admin-bootstrapped==2.3.6
 django-object-actions
 unidecode
 python-social-auth==0.2.3
