@@ -10,9 +10,9 @@ echo "$now Running provision.sh"
 # Use the en_GB.utf8 locale
 sudo update-locale LANG=en_GB.utf8
 
-# Instructions from: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup-repositories.html
+# Instructions from: https://www.elastic.co/guide/en/elasticsearch/reference/1.4/setup-repositories.html
 wget -qO - https://packages.elasticsearch.org/GPG-KEY-elasticsearch | sudo apt-key add -
-echo 'deb http://packages.elasticsearch.org/elasticsearch/0.90/debian stable main' | sudo tee /etc/apt/sources.list.d/elasticsearch.list
+echo 'deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main' | sudo tee /etc/apt/sources.list.d/elasticsearch.list
 
 # Instructions from: http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
