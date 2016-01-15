@@ -1,0 +1,34 @@
+{% extends "base_manager.html" %}
+{% load i18n %}
+{% load subdomainurls %}
+{% load staticfiles %}
+
+{% block extrajs %}
+{% endblock extrajs %}
+
+
+{% block extrascripts %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+{% endblock extrascripts %}
+
+
+{% block header %}
+{% include 'nuntium/profiles/top_menu.html' with section='account' %}
+{% endblock header %}
+
+{% block content %}
+    <div class="page-header">
+      <h2>{% trans "Webhooks" %}</h2>
+    </div>
+    {% for webhook in writeitinstance.answer_webhooks.all %}
+    <ul class="list-of-webhooks">
+      <li class="list-of-webhooks__webhook">
+        <h3 class="webhook__url">{{ webhook.url }}</h3>
+      </li>
+    </ul>
+    {% empty %}
+    {% trans 'There are no webhooks yet.' %}
+    {% endfor %}
+
+{% endblock content%}
