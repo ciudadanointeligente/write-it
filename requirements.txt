@@ -13,7 +13,7 @@ django-extensions
 django-haystack==2.4.0
 django-pipeline==1.5.4
 libsass
-elasticsearch==1.6.0
+elasticsearch<1.0.0
 celery
 pyyaml
 django-celery
