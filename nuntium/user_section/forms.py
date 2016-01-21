@@ -27,6 +27,7 @@ from nuntium.models import (
     WriteItInstance,
     WriteItInstanceConfig,
     WriteitInstancePopitInstanceRecord,
+    AnswerWebHook,
     default_confirmation_template_content_text,
     default_confirmation_template_subject,
     default_new_answer_content_template,
@@ -272,3 +273,19 @@ class WriteItPopitUpdateForm(ModelForm):
     class Meta:
         model = WriteitInstancePopitInstanceRecord
         fields = ['periodicity']
+
+
+class WebhookCreateForm(ModelForm):
+    class Meta:
+        model = AnswerWebHook
+        fields = ['url']
+
+    def __init__(self, *args, **kwargs):
+        self.writeitinstance = kwargs.pop('writeitinstance')
+        super(WebhookCreateForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        webhook = super(WebhookCreateForm, self).save(commit=False)
+        webhook.writeitinstance = self.writeitinstance
+        webhook.save()
+        return webhook

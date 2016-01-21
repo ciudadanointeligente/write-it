@@ -12,7 +12,8 @@ from mailit.forms import MailitTemplateForm
 
 from ..models import WriteItInstance, Message,\
     NewAnswerNotificationTemplate, ConfirmationTemplate, \
-    Answer, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord, Moderation
+    Answer, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord, Moderation, \
+    AnswerWebHook
 from .forms import WriteItInstanceBasicForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \
     WriteItInstanceAnswerNotificationForm, \
@@ -22,13 +23,15 @@ from .forms import WriteItInstanceBasicForm, \
     WriteItInstanceMaxRecipientsForm, \
     WriteItInstanceRateLimiterForm, \
     WriteItInstanceWebBasedForm, \
-    AnswerForm, RelatePopitInstanceWithWriteItInstance
+    AnswerForm, RelatePopitInstanceWithWriteItInstance, \
+    WebhookCreateForm
 from django.contrib import messages as view_messages
 from django.utils.translation import ugettext as _
 import json
 from nuntium.popit_api_instance import PopitApiInstance
 from nuntium.tasks import pull_from_popit
 from nuntium.user_section.forms import WriteItPopitUpdateForm
+from django.contrib.sites.models import Site
 
 
 class UserAccountView(TemplateView):
@@ -83,8 +86,8 @@ class WriteItInstanceApiDocsView(WriteItInstanceDetailBaseView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(WriteItInstanceApiDocsView, self).get_context_data(*args, **kwargs)
-
-        context['api_base_url'] = self.request.build_absolute_uri('/api/v1/')
+        current_domain = Site.objects.get_current().domain
+        context['api_base_url'] = 'http://' + current_domain + '/api/v1/'
         return context
 
 
@@ -625,3 +628,36 @@ class WelcomeView(DetailView):
         context['url_recipients'] = reverse('contacts-per-writeitinstance', subdomain=self.request.subdomain)
         context['url_data_sources'] = reverse('relate-writeit-popit', subdomain=self.request.subdomain)
         return context
+
+
+class WriteItInstanceWebHooksView(WriteItInstanceDetailBaseView):
+    template_name = 'nuntium/profiles/webhooks.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(WriteItInstanceWebHooksView, self).get_context_data(*args, **kwargs)
+        context['form'] = WebhookCreateForm(writeitinstance=self.object)
+        return context
+
+
+class WriteItInstanceCreateWebHooksView(CreateView):
+    model = AnswerWebHook
+    form_class = WebhookCreateForm
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.kwargs['slug'] = request.subdomain
+        self.writeitinstance = get_object_or_404(WriteItInstance,
+            slug=self.kwargs['slug'],
+            owner=self.request.user)
+        return super(WriteItInstanceCreateWebHooksView, self).dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super(WriteItInstanceCreateWebHooksView, self).get_form_kwargs()
+        kwargs['writeitinstance'] = self.writeitinstance
+        return kwargs
+
+    def get_success_url(self):
+        return reverse(
+            'writeitinstance_webhooks',
+            subdomain=self.writeitinstance.slug,
+            )
