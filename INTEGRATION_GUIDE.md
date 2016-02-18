@@ -14,7 +14,7 @@ https://australia-representatives.writeit.ciudadanointeligente.org/manage/settin
 
 You should see a screen like this:
 
-TODO: Screenshot
+![API screenshot](http://i.imgur.com/tEHefQu.png)
 
 It contains all the details you need for sending a message via the API. You can use a `curl` command similar to the following to test this from the command line:
 
