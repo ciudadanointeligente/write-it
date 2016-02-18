@@ -27,7 +27,27 @@ curl -H "Content-Type: application/json" \
 
 ## Templates
 
-TODO: You need to ensure the email templates are configured correctly as the standard ones will send people to the WriteIt interface.
+There are 3 message templates in WriteIt; _Mail Template_, _Confirmation Template_, and _New answer notification template_. These are configured on the Templates page which is at the `/manage/settings/templates/` address of your Site, e.g.
+
+https://australia-representatives.writeit.ciudadanointeligente.org/manage/settings/templates/
+
+### Mail Template
+
+This template should probably be emptied out to only contain
+
+    {content}
+
+This will give your application the greatest control over the messages it sends as you will be able to specify the full content and subject in your API call.
+
+### Confirmation Template
+
+WriteIt should be configured by default to not require confirmation for messages sent via the API, therefore this template will not be used. You can check this setting at the `/manage/api/settings/` address for your site, e.g.
+
+https://australia-representatives.writeit.ciudadanointeligente.org/manage/api/settings/
+
+### New answer notification template
+
+TODO: This template should also be disabled, how?
 
 ## Receiving messages
 
