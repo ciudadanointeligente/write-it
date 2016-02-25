@@ -33,6 +33,7 @@ politicians.</p>
     <span class="helptext js-low-contact-count-warning"></span>
   </div>
   <p><a href="#" class="js-show-manual-popolo">I have my own suitably formatted popolo</a></p>
+  <p><a href="#" class="js-show-legislature-list">I'd like to choose from the list of countries</a></p>
     {% csrf_token %}
     {{form.as_p}}
     <button class='btn btn-primary js-submit-button'>{% trans 'Create' %}</button>
@@ -41,8 +42,12 @@ politicians.</p>
 <script>
   var notEnoughContactDetails = $('.js-not-enough-contact-details');
   notEnoughContactDetails.hide();
+  var showLegislatureList = $('.js-show-legislature-list').closest('p');
+  showLegislatureList.hide();
+  var showPopitUrl = $('.js-show-manual-popolo');
   var popitUrl = $('#id_popit_url').closest('p');
   popitUrl.hide();
+  popitUrl.after(showLegislatureList);
   var countriesList = $('.js-countries-list');
   var submitButton = $('.js-submit-button');
   var lowContactCountWarning = $('.js-low-contact-count-warning');
@@ -52,8 +57,17 @@ politicians.</p>
     e.preventDefault();
     submitButton.removeAttr('disabled');
     popitUrl.show();
+    showLegislatureList.show();
     countriesList.closest('div').hide();
     $(this).hide();
+  });
+  $('.js-show-legislature-list').click(function(e) {
+    e.preventDefault();
+    submitButton.prop('disabled', true);
+    countriesList.closest('div').show();
+    popitUrl.hide();
+    showPopitUrl.show();
+    $(this).closest('p').hide();
   });
   countriesList.change(function(e) {
     notEnoughContactDetails.hide();
