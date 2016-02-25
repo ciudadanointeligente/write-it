@@ -21,7 +21,7 @@
             <p class="results__actions__info">{{ person.summary }}</p>
           {% endif %}
 
-          {% if writeitinstance.contacts.exists and writeitinstance.config.allow_messages_using_form %}
+          {% if writeitinstance.can_create_messages %}
             <form action="{% url 'write_message_step' step='who' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="write_message_view-current_step" value="who">

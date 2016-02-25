@@ -11,7 +11,7 @@
                 <h2 class="instance-hero__heading">
                     Hétfőn szavaz a Parlament az információszabadság-törvény módosításáról. Ha elfogadják a javaslatot, akkor nehezebb és drágább lesz hozzáférni a közérdekű adatokhoz. <br /><br />Ha szeretné tudni,  mire fordítják az adóját, írjon levelet az igazságügyi miniszternek. Kérje a törvénymódosítás visszavonását.<br />
                 </h2>
-                {% if writeitinstance.contacts.exists and writeitinstance.config.allow_messages_using_form %}
+                {% if writeitinstance.can_create_messages %}
                     <a class="btn btn-primary btn-lg" href="{% url 'write_message' subdomain=writeitinstance.slug %}">{% trans "Send a message" %}</a>
                 {% endif %}
             </div>

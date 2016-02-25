@@ -18,7 +18,7 @@
 
 {% block content_inner %}
 
-  {% if writeitinstance.contacts.exists and writeitinstance.config.allow_messages_using_form %}
+  {% if writeitinstance.can_create_messages %}
 
     {% include "write/breadcrumb.html" with current_step=1 %}
 

@@ -136,8 +136,17 @@ class WriteItInstance(models.Model):
             result[record.status] += 1
         return result
 
+    @property
+    def can_create_messages(self):
+        if self.config.allow_messages_using_form and \
+                self.contacts.exists():
+            return True
+
+        return False
+
     def __unicode__(self):
         return self.name
+
 
 
 def new_write_it_instance(sender, instance, created, **kwargs):

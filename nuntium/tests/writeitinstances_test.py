@@ -136,6 +136,29 @@ class InstanceTestCase(TestCase):
 
         popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
 
+    @popit_load_data()
+    def test_can_create_messages(self):
+        writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
+
+        self.assertTrue(writeitinstance.config.allow_messages_using_form)
+        self.assertFalse(writeitinstance.can_create_messages)
+        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+
+        email_type = ContactType.objects.get(id=1)
+        person = Person.objects.get(id=1)
+        Contact.objects.create(
+            person=person,
+            contact_type=email_type,
+            writeitinstance=writeitinstance,
+            value='email@mail.com',
+            )
+        self.assertEquals(writeitinstance.contacts.all().count(), 1)
+        self.assertTrue(writeitinstance.can_create_messages)
+
+        writeitinstance.config.allow_messages_using_form = False
+        self.assertFalse(writeitinstance.config.allow_messages_using_form)
+        self.assertFalse(writeitinstance.can_create_messages)
+
 
 class PersonsWithContactsTestCase(TestCase):
     def setUp(self):
