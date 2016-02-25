@@ -28,7 +28,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
   git libffi-dev libssl-dev build-essential yui-compressor sqlite3 postfix \
   python-dev python-pip python-virtualenv \
   rabbitmq-server \
-  openjdk-6-jre elasticsearch \
+  openjdk-7-jre elasticsearch \
   mongodb-org nodejs
 
 # Set virtualenv directory and create it if needed.
