@@ -373,12 +373,22 @@ EXTRA_APPS = ()
 
 GOOGLE_ANALYTICS_PROPERTY_ID = None # Override this in local_settings.py or environment.
 
+# Override these in local_setting.py or environment
 # SOCIAL AUTH DETAILS
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'Key'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'S3Cr3t'
 
+SOCIAL_AUTH_FACEBOOK_KEY = ''
+SOCIAL_AUTH_FACEBOOK_SECRET = ''
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+
+SOCIAL_AUTH_TWITTER_KEY = ''
+SOCIAL_AUTH_TWITTER_SECRET = ''
+
 AUTHENTICATION_BACKENDS = (
     'social.backends.google.GoogleOAuth2',
+    'social.backends.twitter.TwitterOAuth',
+    'social.backends.facebook.FacebookOAuth2',
     'django.contrib.auth.backends.ModelBackend',
     )
 

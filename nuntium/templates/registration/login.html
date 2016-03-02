@@ -8,11 +8,17 @@
     <div class="accounts-box__instructions">
         <h1>{% trans 'Sign in' %}</h1>
         <p>If you've got an account, sign in with it here. If not, you
-        can create one using the “Sign in with Google” button.</p>
+        can create one using one of the buttons below.</p>
         <hr />
         <p>{% trans 'You can also&hellip;' %}</p>
         <a class="btn btn-primary btn-full-width btn-google" href="{% url 'social:begin' 'google-oauth2' %}{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}">
             <i class="fa fa-google"></i> Sign in with Google
+        </a>
+        <a class="btn btn-primary btn-full-width btn-google" href="{% url 'social:begin' 'facebook' %}{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}">
+            <i class="fa fa-facebook"></i> Sign in with Facebook
+        </a>
+        <a class="btn btn-primary btn-full-width btn-google" href="{% url 'social:begin' 'twitter' %}{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}">
+            <i class="fa fa-twitter"></i> Sign in with Twitter
         </a>
     </div>
     {% block sidebar %}
