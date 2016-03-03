@@ -389,7 +389,22 @@ AUTHENTICATION_BACKENDS = (
     'social.backends.google.GoogleOAuth2',
     'social.backends.twitter.TwitterOAuth',
     'social.backends.facebook.FacebookOAuth2',
+    'social.backends.email.EmailAuth',
     'django.contrib.auth.backends.ModelBackend',
+    )
+
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+    'social.pipeline.user.get_username',
+    'social.pipeline.user.create_user',
+    'nuntium.user_section.auth.user_password',
+    'nuntium.user_section.auth.set_active',
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details',
     )
 
 SESSION_COOKIE_DOMAIN = '.127.0.0.1.xip.io'

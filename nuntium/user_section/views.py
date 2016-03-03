@@ -42,6 +42,10 @@ class UserAccountView(TemplateView):
         return super(UserAccountView, self).dispatch(*args, **kwargs)
 
 
+class UserRegisterView(TemplateView):
+    template_name = 'registration/signup.html'
+
+
 class WriteItInstanceDetailBaseView(DetailView):
     model = WriteItInstance
 
