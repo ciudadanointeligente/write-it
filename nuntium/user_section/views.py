@@ -46,6 +46,10 @@ class UserRegisterView(TemplateView):
     template_name = 'registration/signup.html'
 
 
+class EmailSentView(TemplateView):
+    template_name = 'registration/email-sent.html'
+
+
 class WriteItInstanceDetailBaseView(DetailView):
     model = WriteItInstance
 

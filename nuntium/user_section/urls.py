@@ -6,12 +6,14 @@ from .views import (
     YourInstancesView,
     WriteItInstanceCreateView,
     UserRegisterView,
+    EmailSentView,
     )
 
 urlpatterns = patterns('',
     url(r'^accounts/profile/?$', UserAccountView.as_view(), name='account'),
     url(r'^accounts/your_instances/?$', YourInstancesView.as_view(), name='your-instances'),
     url(r'^accounts/register/?$', UserRegisterView.as_view(), name='register'),
+    url(r'^accounts/email-sent/?$', EmailSentView.as_view(), name='email-sent'),
 
     url(r'^writeitinstance/create/?$',
         WriteItInstanceCreateView.as_view(),

@@ -1,0 +1,12 @@
+{% extends "base_manager.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block bodyclass %}login-screen page-with-centered-box{% endblock bodyclass %}
+
+{% block content %}
+    {% block sidebar %}
+    {% endblock sidebar %}
+
+    <p class="alert alert-success">{% trans "We've sent you a confirmation email." %}</p>
+
+{% endblock %}

@@ -385,6 +385,9 @@ SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_TWITTER_KEY = ''
 SOCIAL_AUTH_TWITTER_SECRET = ''
 
+SOCIAL_AUTH_EMAIL_VALIDATION_FUNCTION = 'nuntium.user_section.auth.send_validation'
+SOCIAL_AUTH_EMAIL_VALIDATION_URL = '/accounts/email-sent/'
+
 AUTHENTICATION_BACKENDS = (
     'social.backends.google.GoogleOAuth2',
     'social.backends.twitter.TwitterOAuth',
@@ -401,6 +404,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.user.get_username',
     'social.pipeline.user.create_user',
     'nuntium.user_section.auth.user_password',
+    'nuntium.user_section.auth.require_email',
+    'social.pipeline.mail.mail_validation',
     'nuntium.user_section.auth.set_active',
     'social.pipeline.social_auth.associate_user',
     'social.pipeline.social_auth.load_extra_data',
