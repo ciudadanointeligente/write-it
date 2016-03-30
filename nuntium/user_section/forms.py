@@ -14,6 +14,7 @@ from django.forms import (
     Textarea,
     URLField,
     ValidationError,
+    ChoiceField,
     )
 
 from django.utils.translation import ugettext as _
@@ -41,6 +42,18 @@ from ..forms import (
 
 
 class WriteItInstanceBasicForm(ModelForm):
+    language = ChoiceField(choices=settings.LANGUAGES)
+
+    def __init__(self, *args, **kwargs):
+        kwargs['initial']['language'] = kwargs['instance'].config.default_language
+        super(WriteItInstanceBasicForm, self).__init__(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        ret = super(WriteItInstanceBasicForm, self).save(*args, **kwargs)
+        ret.config.default_language = self.cleaned_data['language']
+        ret.config.save()
+        return ret
+
     class Meta:
         model = WriteItInstance
         fields = ['name', 'description']
