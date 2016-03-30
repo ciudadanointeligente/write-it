@@ -15,6 +15,7 @@ from django.forms import (
     URLField,
     ValidationError,
     ChoiceField,
+    Select,
     )
 
 from django.utils.translation import ugettext as _
@@ -42,7 +43,7 @@ from ..forms import (
 
 
 class WriteItInstanceBasicForm(ModelForm):
-    language = ChoiceField(choices=settings.LANGUAGES)
+    language = ChoiceField(choices=settings.LANGUAGES, widget=Select(attrs={'class':'form-control'}))
 
     def __init__(self, *args, **kwargs):
         try:
