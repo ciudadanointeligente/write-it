@@ -45,7 +45,10 @@ class WriteItInstanceBasicForm(ModelForm):
     language = ChoiceField(choices=settings.LANGUAGES)
 
     def __init__(self, *args, **kwargs):
-        kwargs['initial']['language'] = kwargs['instance'].config.default_language
+        try:
+            kwargs['initial']['language'] = kwargs['instance'].config.default_language
+        except KeyError:
+            pass
         super(WriteItInstanceBasicForm, self).__init__(*args, **kwargs)
 
     def save(self, *args, **kwargs):
