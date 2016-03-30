@@ -231,6 +231,8 @@ class WriteItInstanceCreateForm(WriteItInstanceCreateFormPopitUrl):
         instance.name = slug
         instance.owner = self.owner
         instance.save()
+        instance.config.default_language = settings.LANGUAGE_CODE
+        instance.config.save()
         self.relate_with_people()
         return instance
 
