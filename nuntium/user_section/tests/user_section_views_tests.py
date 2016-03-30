@@ -306,27 +306,6 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         response = client.get(url)
         self.assertRedirectToLogin(response, next_url=url)
 
-    def test_writeitinstance_basic_form(self):
-        form = WriteItInstanceBasicForm()
-        self.assertEquals(form._meta.model, WriteItInstance)
-        self.assertEquals(form._meta.fields, ['name', 'description'])
-
-    def test_writeitinstance_basic_form_save(self):
-        data = {
-            'name': 'name 1',
-            'maximum_recipients': 5,
-            'rate_limiter': 0,
-            }
-        url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
-        c = self.client
-        c.login(username=self.owner.username, password='admin')
-        response = c.post(url, data=data)
-        # self.assertEquals(response.status_code, 200)
-        self.assertRedirects(response, url)
-        writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
-        self.assertEquals(writeitinstance.name, data['name'])
-        self.assertEquals(writeitinstance.config.maximum_recipients, data['maximum_recipients'])
-
     def test_when_a_non_owner_saves_it_does_not_get_200_status_code(self):
         # I think that this test is unnecesary but
         # it could be of some use in the future
@@ -406,14 +385,17 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         data = {
             'name': 'new name',
             'description': 'new description',
+            'language': 'cs',
             }
         url = reverse('writeitinstance_basic_update', subdomain=self.writeitinstance.slug)
         c = self.client
         c.login(username=self.owner.username, password='admin')
-        c.post(url, data=data)
+        response = c.post(url, data=data)
+        self.assertRedirects(response, url)
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
         self.assertEquals(writeitinstance.name, data['name'])
         self.assertEquals(writeitinstance.description, data['description'])
+        self.assertEquals(writeitinstance.config.default_language, data['language'])
 
 
 class WriteItInstanceApiDocsTestCase(UserSectionTestCase):

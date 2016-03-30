@@ -1,4 +1,5 @@
 # coding=utf-8
+from urlparse import urlsplit, urlunsplit
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from subdomains.utils import reverse
 from nuntium.models import WriteItInstance, Message, Membership, Confirmation
@@ -76,6 +77,26 @@ class InstanceTestCase(TestCase):
         response = self.client.get(writeitinstance1.get_absolute_url())
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'nuntium/instance_detail.html')
+
+    def test_redirected_to_instance_default_language(self):
+        writeitinstance2 = WriteItInstance.objects.get(id=2)
+        url = reverse('instance_detail', subdomain=writeitinstance2.slug)
+        uri = list(urlsplit(url))
+        uri[2] = '/'
+        url = urlunsplit(uri)
+        response = self.client.get(url)
+        uri[2] = '/es/'
+        url = urlunsplit(uri)
+        self.assertRedirects(response, url)
+
+    def test_no_redirect_with_specified_language(self):
+        writeitinstance2 = WriteItInstance.objects.get(id=2)
+        url = reverse('instance_detail', subdomain=writeitinstance2.slug)
+        uri = list(urlsplit(url))
+        uri[2] = '/cs/'
+        url = urlunsplit(uri)
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
 
     def test_get_non_existing_instance(self):
         url = reverse('instance_detail',
