@@ -77,11 +77,11 @@ class WriteItInstanceResource(ModelResource):
     def handle_instance_answers(self, request, *args, **kwargs):
         basic_bundle = self.build_bundle(request=request)
         obj = self.cached_obj_get(bundle=basic_bundle,
-                        **self.remove_api_resource_names(kwargs))
+                                  **self.remove_api_resource_names(kwargs))
         return AnswerResource().get_list(request, writeitinstance=obj)
 
     def dehydrate(self, bundle):
-        #not completely sure that this is the right way to get the messages
+        # not completely sure that this is the right way to get the messages
         bundle.data['messages_uri'] = bundle.data['resource_uri'] + 'messages/'
         self.add_persons_to_bundle(bundle)
         return bundle
@@ -133,16 +133,21 @@ class AnswerResource(ModelResource):
         return bundle
 
 
+class MessageAuthorization(Authorization):
+    def read_list(self, object_list, bundle):
+        return object_list.filter(writeitinstance__in=bundle.request.user.writeitinstances.all())
+
+
 class MessageResource(ModelResource):
     writeitinstance = fields.ToOneField(WriteItInstanceResource,
-        'writeitinstance')
+                                        'writeitinstance')
     answers = fields.ToManyField(AnswerResource, 'answers',
-        null=True,
-        full=True)
+                                 null=True,
+                                 full=True)
     people = fields.ToManyField(PersonResource, 'people',
-        null=True,
-        readonly=True,
-        full=True)
+                                null=True,
+                                readonly=True,
+                                full=True)
 
     class Meta:
         queryset = Message.public_objects.all().order_by('-created')
@@ -150,7 +155,7 @@ class MessageResource(ModelResource):
         # ordering = ['-created']
         # should work but it doesn't so I put it in the queryset
         resource_name = 'message'
-        authorization = Authorization()
+        authorization = MessageAuthorization()
         authentication = ApiKeyAuthentication()
         always_return_data = True
         paginator_class = PagePaginator

@@ -27,7 +27,43 @@ class MessageResourceTestCase(ResourceTestCase):
         self.assertValidJSONResponse(response)
 
         messages = self.deserialize(response)['objects']
-        self.assertEqual(len(messages), Message.public_objects.count())  # All the instances
+        # Only listing my messages
+        expected_messages = Message.public_objects.filter(writeitinstance__in=self.user.writeitinstances.all())
+        self.assertEqual(len(messages), expected_messages.count())  # Only my instances
+
+    def test_only_listing_my_messages(self):
+        not_me = User.objects.create_user(username='not_me', password='not_my_password')
+        writeitinstance = WriteItInstance.objects.create(name=u"a test", slug=u"a-test", owner=not_me)
+        person1 = Person.objects.get(id=1)
+        writeitinstance.add_person(person1)
+        i_should_not_see_this_message = Message.objects.create(
+            content='Content 1 Public message',
+            author_name='Felipe',
+            author_email="falvarez@votainteligente.cl",
+            subject='Fiera es una perra feroz',
+            writeitinstance=writeitinstance,
+            persons=[person1],
+            )
+        Confirmation.objects.create(message=i_should_not_see_this_message)
+        i_should_not_see_this_message.recently_confirmated()
+        self.assertTrue(i_should_not_see_this_message.public)
+        expected_messages = Message.public_objects.filter(writeitinstance__in=self.user.writeitinstances.all())
+        self.assertNotIn(i_should_not_see_this_message, expected_messages)
+        self.assertIn(i_should_not_see_this_message, Message.public_objects.all())
+        url = '/api/v1/message/'
+        response = self.api_client.get(url, data=self.data)
+
+        self.assertValidJSONResponse(response)
+
+        messages = self.deserialize(response)['objects']
+        i_should_not_see_this_message_as_json = None
+        # Seriously, this can be done in a way more elegant way
+        # I'll keep on working with this and I'll return to this test
+        # later
+        for message in messages:
+            if message['id'] == i_should_not_see_this_message.id:
+                i_should_not_see_this_message_as_json = message
+        self.assertIsNone(i_should_not_see_this_message_as_json)
 
     def test_list_of_messages_is_ordered(self):
         """ The list of messages shown in the API is ordered by created date"""
@@ -163,8 +199,8 @@ class MessageResourceTestCase(ResourceTestCase):
         self.assertTrue(the_message.confirmated)
 
     def test_create_a_new_message_to_all_persons_in_the_instance(self):
-        #here it is the thing I don't know yet how to do this and I'll go for
-        #saying all in the persons array instead of having an array or an empty
+        # here it is the thing I don't know yet how to do this and I'll go for
+        # saying all in the persons array instead of having an array or an empty
         writeitinstance = WriteItInstance.objects.get(id=1)
         message_data = {
             'author_name': 'Felipipoo',
