@@ -162,6 +162,23 @@ class MessageResourceTestCase(ResourceTestCase):
         for outbound_message in outbound_messages:
             self.assertEquals(outbound_message.status, 'ready')
 
+    def test_create_a_new_message_in_not_my_instance(self):
+        not_me = User.objects.create_user(username='not_me', password='not_my_password')
+        writeitinstance = WriteItInstance.objects.create(name=u"a test", slug=u"a-test", owner=not_me)
+        person1 = Person.objects.get(id=1)
+        writeitinstance.add_person(person1)
+        message_data = {
+            'author_name': 'Felipipoo',
+            'subject': 'new message',
+            'content': 'the content thing',
+            'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
+            'persons': [person1.popit_url],
+        }
+
+        url = '/api/v1/message/'
+        response = self.api_client.post(url, data=message_data, format='json', authentication=self.get_credentials())
+        self.assertHttpUnauthorized(response)
+
     def test_create_a_new_message_with_a_non_existing_person(self):
         writeitinstance = WriteItInstance.objects.get(id=1)
         message_data = {

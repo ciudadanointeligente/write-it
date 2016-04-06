@@ -16,6 +16,7 @@ from django.http import Http404, HttpResponseBadRequest
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from tastypie.bundle import Bundle
+from tastypie.exceptions import Unauthorized
 
 
 class PagePaginator(Paginator):
@@ -67,6 +68,7 @@ class WriteItInstanceResource(ModelResource):
             ]
 
     def handle_instance_messages(self, request, *args, **kwargs):
+        self.is_authenticated(request)
         basic_bundle = self.build_bundle(request=request)
         obj = self.cached_obj_get(
             bundle=basic_bundle,
@@ -135,7 +137,20 @@ class AnswerResource(ModelResource):
 
 class MessageAuthorization(Authorization):
     def read_list(self, object_list, bundle):
+        if not bundle.request.user.is_authenticated():
+            raise Unauthorized('Not Authorized')
         return object_list.filter(writeitinstance__in=bundle.request.user.writeitinstances.all())
+
+    def create_list(self, object_list, bundle):
+        raise Unauthorized('Not Authorized')
+
+    def create_detail(self, object_list, bundle):
+        writeitinstance = WriteItInstanceResource().get_via_uri(
+            bundle.data["writeitinstance"]
+            )
+        if writeitinstance.owner != bundle.request.user:
+            raise Unauthorized('Not Authorized')
+        return super(MessageAuthorization, self).create_detail(object_list, bundle)
 
 
 class MessageResource(ModelResource):
