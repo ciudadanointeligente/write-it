@@ -30,6 +30,8 @@ class MessageResourceTestCase(ResourceTestCase):
         # Only listing my messages
         expected_messages = Message.public_objects.filter(writeitinstance__in=self.user.writeitinstances.all())
         self.assertEqual(len(messages), expected_messages.count())  # Only my instances
+        first_message = messages[0]
+        self.assertNotIn('author_email', first_message.keys())
 
     def test_only_listing_my_messages(self):
         not_me = User.objects.create_user(username='not_me', password='not_my_password')
@@ -57,13 +59,18 @@ class MessageResourceTestCase(ResourceTestCase):
 
         messages = self.deserialize(response)['objects']
         i_should_not_see_this_message_as_json = None
-        # Seriously, this can be done in a way more elegant way
+        # Seriously, this can be done in a more elegant way
         # I'll keep on working with this and I'll return to this test
         # later
         for message in messages:
             if message['id'] == i_should_not_see_this_message.id:
                 i_should_not_see_this_message_as_json = message
         self.assertIsNone(i_should_not_see_this_message_as_json)
+
+        # The detail of a message
+        url = '/api/v1/message/{0}/'.format(i_should_not_see_this_message.id)
+        response = self.api_client.get(url, data=self.data)
+        self.assertHttpUnauthorized(response)
 
     def test_list_of_messages_is_ordered(self):
         """ The list of messages shown in the API is ordered by created date"""

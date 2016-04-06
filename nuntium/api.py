@@ -136,6 +136,9 @@ class AnswerResource(ModelResource):
 
 
 class MessageAuthorization(Authorization):
+    def read_detail(self, object_list, bundle):
+        return bundle.obj.writeitinstance.owner == bundle.request.user
+
     def read_list(self, object_list, bundle):
         if not bundle.request.user.is_authenticated():
             raise Unauthorized('Not Authorized')
@@ -229,6 +232,8 @@ class MessageResource(ModelResource):
 
     def dehydrate(self, bundle):
         bundle.data['persons'] = []
+        if 'author_email' in bundle.data:
+            bundle.data.pop('author_email', None)
         for person in bundle.obj.people:
             bundle.data['persons'].append(person.popit_url)
         return bundle
