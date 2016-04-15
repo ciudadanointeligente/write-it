@@ -49,7 +49,7 @@ https://australia-representatives.writeit.ciudadanointeligente.org/manage/api/se
 
 If WriteIt is integrated into your application you probably want your application to be responsible for sending new answer notifications instead of them being sent by WriteIt. When your application receives a message from WriteIt it should notify the original sender that they have a new message and to visit your application to see it.
 
-To achieve this set the `author_email` to an administrator mailbox you control when you create new messgaes via the API. This will redirect these WriteIt new answer messages to you and is a handy check that your application should be getting messages from WriteIt.
+To achieve this set the `author_email` to an administrator mailbox you control when you create new messages via the API. This will redirect these WriteIt new answer messages to you and is a handy check that your application should be getting messages from WriteIt.
 
 ## Receiving messages
 
