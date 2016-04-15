@@ -33,7 +33,7 @@ https://australia-representatives.writeit.ciudadanointeligente.org/manage/settin
 
 ### Mail Template
 
-This template should probably be emptied out to only contain
+This template should probably be emptied out to only contain:
 
     {content}
 
