@@ -41,7 +41,7 @@ This will give your application the greatest control over the messages it sends 
 
 ### Confirmation Template
 
-WriteIt should be configured by default to not require confirmation for messages sent via the API, therefore this template will not be used. You can check this setting at the `/manage/api/settings/` address for your site, e.g.
+By default WriteIt is configured to not require confirmation for messages sent via the API, therefore this template will not be used. You can check this setting at the `/manage/api/settings/` address for your site, e.g.
 
 https://australia-representatives.writeit.ciudadanointeligente.org/manage/api/settings/
 
