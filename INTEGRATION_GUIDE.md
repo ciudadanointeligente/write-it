@@ -53,4 +53,18 @@ To achieve this set the `author_email` to an administrator mailbox you control w
 
 ## Receiving messages
 
-TODO: When someone replies to a message, how does it get to your application?
+When a message sent via WriteIt gets a new response it can be configured to notify your application via a [webhook](https://en.wikipedia.org/wiki/Webhook). You can add webhooks for your instance at `/manage/webooks/`, e.g.
+
+https://australia-representatives.writeit.ciudadanointeligente.org/manage/settings/webhooks/
+
+Details of what is sent in the payload of the webhook is shown on that page.
+
+### Fetching messages and all their replies
+
+If the webhook payload does not contain all the reply details you need you can use the webhook as a way to trigger fetching the full message and replies from the API.
+
+This is how [PlanningAlerts](https://github.com/openaustralia/planningalerts/) integrates with WriteIt. When the application receives a webhook it uses the `message_id` from the payload to do a full fetch of the message from the API.
+
+A GET request is all that's needed to get a message and all its replies as JSON:
+
+    http://writeit.ciudadanointeligente.org/api/v1/message/1234/?format=json&username=henare&api_key=ABC123
