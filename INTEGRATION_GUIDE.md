@@ -21,7 +21,7 @@ It contains all the details you need for sending a message via the API. You can 
 ```
 curl -H "Content-Type: application/json" \
      -X POST \
-     -d '{"content": "This is an API test message", "writeitinstance": "/api/v1/instance/1893/","persons":["https://everypolitician-writeinpublic.herokuapp.com/Australia/Senate/persons/person/b6b705a5-0355-4f1c-8951-273aed19156d"], "author_name": "Henare API", "subject": "API test"}' \
+     -d '{"content": "This is an API test message", "writeitinstance": "/api/v1/instance/1893/","persons":["https://everypolitician-writeinpublic.herokuapp.com/Australia/Senate/persons/person/b6b705a5-0355-4f1c-8951-273aed19156d"], "author_name": "Henare API", "author_email": "henare@example.org", "subject": "API test"}' \
      https://australia-representatives.writeit.ciudadanointeligente.org/api/v1/message/?format=json&username=henare&api_key=ABC123
 ```
 
