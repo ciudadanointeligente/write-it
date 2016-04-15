@@ -11,6 +11,8 @@ Write-it is a layer on top of [popit](http://popit.mysociety.org) from where it 
 
 Future uses are in [congresoabierto](http://www.congresoabierto.cl) to replace the old "preguntales" (You can [check here](http://congresoabierto.cl/comunicaciones), to see how it used to work) feature, it was inspired by [writetothem](http://www.writetothem.com/).
 
+Installation instructions for developers are below. If you'd like to integrate WriteIt with your civic tech application it's recommended that you use the [hosted version](http://writeit.ciudadanointeligente.org/en/) and read `INTEGRATION_GUIDE.md` in this directory for integration instructions.
+
 
 Quick Installation (Vagrant)
 ============================
