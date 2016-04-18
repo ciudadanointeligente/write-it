@@ -63,7 +63,7 @@ Details of what is sent in the payload of the webhook is shown on that page.
 
 If the webhook payload does not contain all the reply details you need you can use the webhook as a way to trigger fetching the full message and replies from the API.
 
-This is how [PlanningAlerts](https://github.com/openaustralia/planningalerts/) integrates with WriteIt. When the application receives a webhook it uses the `message_id` from the payload to do a full fetch of the message from the API.
+This is how [PlanningAlerts](https://github.com/openaustralia/planningalerts/) integrates with WriteIt. When the application [receives a webhook](https://github.com/openaustralia/planningalerts/blob/6ba2ec93a5eee1ec25d081a5d15d3eb10163c4dd/app/controllers/comments_controller.rb#L42-L49) it uses the `message_id` from the payload to do a [full fetch of the message from the API](https://github.com/openaustralia/planningalerts/blob/6ba2ec93a5eee1ec25d081a5d15d3eb10163c4dd/app/models/comment.rb#L62-L83).
 
 A GET request is all that's needed to get a message and all its replies as JSON:
 
