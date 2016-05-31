@@ -64,7 +64,7 @@ Run the tests with:
   ./manage.py test nuntium contactos mailit
 
 -------------------------------------------------------
-" | sudo tee /etc/motd.tail > /dev/null
+" | sudo tee /etc/motd > /dev/null
 
 # Add cd /vagrant to ~/.bashrc
 grep -qG "cd /vagrant" "$HOME/.bashrc" || echo "cd /vagrant" >> "$HOME/.bashrc"
