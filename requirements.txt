@@ -3,7 +3,7 @@ Django==1.6.10
 django-plugins
 -e git://github.com/mysociety/popit-django.git#egg=popit-django
 python-mimeparse
-django-tastypie==0.11.0
+django-tastypie==0.13.3
 email_reply_parser
 flufl.bounce
 django-markdown-deux
