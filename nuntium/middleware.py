@@ -8,10 +8,8 @@ from nuntium.models import WriteItInstanceConfig
 
 
 def get_language_from_request(request, check_path=False):
-    supported = OrderedDict(settings.LANGUAGES)
-
     if check_path:
-        lang_code = translation.get_language_from_path(request.path_info, supported)
+        lang_code = translation.get_language_from_path(request.path_info)
         if lang_code is not None:
             return lang_code
 
@@ -20,7 +18,7 @@ def get_language_from_request(request, check_path=False):
     except WriteItInstanceConfig.DoesNotExist:
         lang_code = None
 
-    if lang_code in supported and lang_code is not None and translation.check_for_language(lang_code):
+    if lang_code is not None and translation.check_for_language(lang_code):
         return lang_code
 
     # Call with check_path False as we've already done that above!
