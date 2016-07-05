@@ -18,10 +18,14 @@
 
         <dt>{% trans "From" %}</dt>
         <dd>
-          {% if person_links %}
-          <a href="{% url 'all-messages-from-the-same-author-as' message_slug=message.slug %}" title="{% blocktrans with name=message.author_name %}Show all messages from {{ name }}{% endblocktrans %}">{{ message.author_name }}</a>
+          {% if message.author_name %} 
+            {% if person_links %}
+            <a href="{% url 'all-messages-from-the-same-author-as' message_slug=message.slug %}" title="{% blocktrans with name=message.author_name %}Show all messages from {{ name }}{% endblocktrans %}">{{ message.author_name }}</a>
+            {% else %}
+              {{ message.author_name }}
+            {% endif %}
           {% else %}
-            {{ message.author_name }}
+          {% trans "Anonymous" %}
           {% endif %}
 
           {% if recently_sent %}
