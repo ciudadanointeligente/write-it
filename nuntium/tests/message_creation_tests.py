@@ -138,3 +138,70 @@ class MessageCreationTestCase(TestCase):
         response_get_to_draft_second_instance = self.client.get(url_who_second_instance, subdomain=second_instance.slug)
         who_form_for_second_instance = response_get_to_draft_second_instance.context['form']
         self.assertFalse(who_form_for_second_instance.errors)
+
+    def test_message_creation_with_anonymous_author_process(self):
+        '''check we can have anonymous authors'''
+        self.assertTrue(self.person1.contact_set.all())
+        self.writeitinstance.config.allow_anonymous_messages = True
+        self.writeitinstance.config.save()
+
+        url = reverse('write_message_step',
+            subdomain=self.writeitinstance.slug,
+            kwargs={'step': 'who'})
+
+        response = self.client.get(url)
+        who_form = response.context['form']
+        self.assertIsInstance(who_form, WhoForm)
+        self.assertIn(self.person1, who_form.fields['persons'].queryset)
+        # I'm expecting someone without contacts not to be in the
+        # 'who' step.
+        self.assertIn('writeitinstance', response.context)
+        self.assertEquals(response.context['writeitinstance'], self.writeitinstance)
+        recipient1 = self.writeitinstance.persons.get(id=1)
+        response = self.client.post(url, data={
+            'who_instance1-persons': [recipient1.id],
+            'write_message_view-current_step': 'who'
+            })
+        url2 = reverse('write_message_step',
+            subdomain=self.writeitinstance.slug,
+            kwargs={'step': 'draft'})
+
+        self.assertRedirects(response, url2)
+
+        response = self.client.get(url2)
+        self.assertIsInstance(response.context['form'], DraftForm)
+        response = self.client.post(url2, data={
+            'draft_instance1-subject': 'This is the subjectand is very specific',
+            'draft_instance1-content': "This is the content",
+            'draft_instance1-author_email': 'email@mail.com',
+            'write_message_view-current_step': 'draft'
+            })
+
+        url3 = reverse('write_message_step',
+            subdomain=self.writeitinstance.slug,
+            kwargs={'step': 'preview'})
+
+        self.assertRedirects(response, url3)
+        response = self.client.get(url3)
+        self.assertEquals(response.context['message']['persons'][0].id, self.person1.id)
+        # in this step I'm going to replicate the content of
+        # response.context['message']['persons']
+        # and
+        # response.context['message']['people']
+        # so we can use them in the template
+        message_dict = response.context['message']
+        self.assertEquals(message_dict['persons'], message_dict['people'])
+        response = self.client.post(url3, data={
+            'write_message_view-current_step': 'preview'
+            })
+        url4 = reverse('write_message_step',
+            subdomain=self.writeitinstance.slug,
+            kwargs={'step': 'done'})
+        self.assertRedirects(response, url4)
+        response = self.client.get(url4)
+        url5 = reverse('write_message_sign', subdomain=self.writeitinstance.slug)
+        self.assertEquals(response.url, url5)
+        self.assertRedirects(response, url5)
+
+        the_message = Message.objects.get(subject="This is the subjectand is very specific")
+        self.assertTrue(the_message)
