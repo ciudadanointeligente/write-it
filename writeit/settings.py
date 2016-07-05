@@ -207,7 +207,6 @@ INSTALLED_APPS = (
     'djangoplugins',
     'pagination',
     'popit',
-    'south',
     'contactos',
     'mailit',
     'tastypie',
