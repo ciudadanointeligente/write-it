@@ -55,6 +55,7 @@ class WriteItInstanceResource(ModelResource):
         authorization = Authorization()
         authentication = ApiKeyAuthentication()
         always_return_data = True
+        filtering = {'id': 'exact'}
 
     def prepend_urls(self):
         return [
