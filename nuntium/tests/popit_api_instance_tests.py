@@ -100,7 +100,6 @@ class EmailCreationWhenPullingFromPopit(TestCase):
         self.instance.load_persons_from_a_popit_api(
             settings.TEST_POPIT_API_URL
         )
-        print self.instance.persons.all()
         fiera = self.instance.persons.get(name="Fiera Feroz")
         self.assertFalse(Contact.objects.filter(person=fiera))
 
