@@ -1,10 +1,9 @@
 urllib3
-Django==1.6.10
+Django==1.7.11
 django-plugins
-South
 -e git://github.com/mysociety/popit-django.git#egg=popit-django
 python-mimeparse
-django-tastypie==0.11.0
+django-tastypie==0.13.3
 email_reply_parser
 flufl.bounce
 django-markdown-deux
@@ -29,7 +28,7 @@ python-dateutil
 #things required in heroku
 gunicorn
 dj-database-url==0.2.2
-dj-static==0.0.5
+dj-static==0.0.6
 #psycopg2==2.5.1
 static==0.4
 wsgiref==0.1.2

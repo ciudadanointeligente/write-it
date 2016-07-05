@@ -1,52 +1,48 @@
 # -*- coding: utf-8 -*-
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    depends_on = (
-        ("nuntium", "0004_auto__del_instance__add_writeitinstance"),
-    )
+    dependencies = [
+    ]
 
-    def forwards(self, orm):
-        # Adding model 'MailItTemplate'
-        db.create_table(u'mailit_mailittemplate', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('subject_template', self.gf('django.db.models.fields.CharField')(max_length=255)),
-            ('content_template', self.gf('django.db.models.fields.TextField')()),
-            ('writeitinstance', self.gf('django.db.models.fields.related.OneToOneField')(related_name='mailit_template', unique=True, to=orm['nuntium.WriteItInstance'])),
-        ))
-        db.send_create_signal(u'mailit', ['MailItTemplate'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'MailItTemplate'
-        db.delete_table(u'mailit_mailittemplate')
-
-
-    models = {
-        u'mailit.mailittemplate': {
-            'Meta': {'object_name': 'MailItTemplate'},
-            'content_template': ('django.db.models.fields.TextField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'subject_template': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'writeitinstance': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'mailit_template'", 'unique': 'True', 'to': u"orm['nuntium.WriteItInstance']"})
-        },
-        u'nuntium.writeitinstance': {
-            'Meta': {'object_name': 'WriteItInstance'},
-            'api_instance': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['popit.ApiInstance']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'slug': ('django.db.models.fields.CharField', [], {'max_length': '255'})
-        },
-        u'popit.apiinstance': {
-            'Meta': {'object_name': 'ApiInstance'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'url': ('popit.fields.ApiInstanceURLField', [], {'unique': 'True', 'max_length': '200'})
-        }
-    }
-
-    complete_apps = ['mailit']
+    operations = [
+        migrations.CreateModel(
+            name='BouncedMessageRecord',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('bounce_text', models.TextField()),
+                ('date', models.DateTimeField(auto_now=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='MailItTemplate',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('subject_template', models.CharField(default=b'{subject}', help_text='You can use {subject}, {content}, {person}, {author}, {site_url}, {site_name}, and {owner_email}', max_length=255)),
+                ('content_template', models.TextField(help_text='You can use {subject}, {content}, {person}, {author}, {site_url}, {site_name}, and {owner_email}', blank=True)),
+                ('content_html_template', models.TextField(help_text='You can use {subject}, {content}, {person}, {author}, {site_url}, {site_name}, and {owner_email}', blank=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='RawIncomingEmail',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('content', models.TextField()),
+                ('problem', models.BooleanField(default=False)),
+                ('message_id', models.CharField(default=b'', max_length=2048)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+    ]

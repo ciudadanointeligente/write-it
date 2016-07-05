@@ -54,6 +54,7 @@ class WriteItInstanceResource(ModelResource):
         authorization = Authorization()
         authentication = ApiKeyAuthentication()
         always_return_data = True
+        filtering = {'id': 'exact'}
 
     def prepend_urls(self):
         return [
@@ -181,8 +182,8 @@ class MessageResource(ModelResource):
             'writeitinstance': ALL_WITH_RELATIONS
         }
 
-    def build_filters(self, filters=None):
-        result = super(MessageResource, self).build_filters(filters)
+    def build_filters(self, filters=None, ignore_bad_filters=False):
+        result = super(MessageResource, self).build_filters(filters, ignore_bad_filters)
         queryset = Person.objects.all()
         if 'writeitinstance__exact' in result:
             queryset = result['writeitinstance__exact'].persons.all()
