@@ -107,7 +107,7 @@ class Message(models.Model):
     """Message: Class that contain the info for a model, \
     despite of the input and the output channels. Subject \
     and content are mandatory fields"""
-    author_name = models.CharField(max_length=512)
+    author_name = models.CharField(max_length=512, default='', blank=True)
     author_email = models.EmailField()
     subject = models.CharField(max_length=255)
     content = models.TextField()
