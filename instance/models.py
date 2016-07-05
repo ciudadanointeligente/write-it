@@ -444,6 +444,9 @@ class WriteItInstanceConfig(models.Model):
     autoconfirm_api_messages = models.BooleanField(
         help_text=_("Messages pushed to the api should \
             be confirmed automatically"), default=True)
+    allow_anonymous_messages = models.BooleanField(
+        help_text=_("Messages can have empty Author \
+            names"), default=False)
 
     custom_from_domain = models.CharField(max_length=512, null=True, blank=True)
     email_host = models.CharField(max_length=512, null=True, blank=True)
