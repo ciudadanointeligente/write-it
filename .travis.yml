@@ -1,3 +1,7 @@
+# Build on Travis's container-based infrastructure, which starts builds
+# much faster:
+sudo: false
+
 language: python
 python:
   - "2.7"
