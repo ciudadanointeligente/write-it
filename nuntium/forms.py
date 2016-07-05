@@ -105,10 +105,10 @@ class DraftForm(ModelForm):
         model = Message
         fields = ['content', 'subject', 'author_name', 'author_email']
         widgets = {
-            'content': Textarea(attrs={'class': 'form-control', 'required': True}),
-            'subject': TextInput(attrs={'class': 'form-control', 'required': True}),
-            'author_name': TextInput(attrs={'class': 'form-control', 'required': True}),
-            'author_email': EmailInput(attrs={'class': 'form-control', 'required': True}),
+            'content': Textarea(attrs={'class': 'form-control', 'required': 'True'}),
+            'subject': TextInput(attrs={'class': 'form-control', 'required': 'True'}),
+            'author_name': TextInput(attrs={'class': 'form-control', 'required': 'True'}),
+            'author_email': EmailInput(attrs={'class': 'form-control', 'required': 'True'}),
         }
 
 
