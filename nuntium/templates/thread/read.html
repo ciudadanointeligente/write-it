@@ -31,7 +31,11 @@
         <div class="thread__messages">
             <h1>{{ message.subject }}</h1>
             <p>
+              {% if message.author_name == '' %}
+                An anonymous user sent a message to {% for person in message.people %}{% if not forloop.first and forloop.last %} and {% elif not forloop.first %}, {% endif %}<a href="{% url 'messages_per_person' pk=person.pk %}">{{ person.name }}</a>{% endfor %}.
+              {% else %}
                 <a href="{% url 'all-messages-from-the-same-author-as' message_slug=message.slug %}">{{ message.author_name }}</a> sent a message to {% for person in message.people %}{% if not forloop.first and forloop.last %} and {% elif not forloop.first %}, {% endif %}<a href="{% url 'messages_per_person' pk=person.pk %}">{{ person.name }}</a>{% endfor %}.
+              {% endif %}
             </p>
             {% include "thread/message.html" with person_links=True message=message %}
 
