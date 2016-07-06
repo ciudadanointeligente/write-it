@@ -45,6 +45,46 @@ class SeeAllMessagesFromAPersonTestCase(TestCase):
         self.assertIn('author_name', response.context)
         self.assertEquals(response.context['author_name'], self.message.author_name)
 
+    def test_anonymous_messages_not_listed_from_non_anonymous_link(self):
+        self.anonymous_message = Message.objects.create(subject=u"A message",
+            content="that should not be in the list because it is anonymous",
+            author_name="",
+            author_email="fiera@ciudadanointeligente.org",
+            writeitinstance=self.writeitinstance,
+            persons=list(self.message.people))
+        self.anonymous_message.recently_confirmated()
+
+        url = reverse('all-messages-from-the-same-author-as', subdomain=self.message.writeitinstance.slug,
+            kwargs={
+                'message_slug': self.message.slug
+            })
+
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertIn('message_list', response.context)
+        self.assertEquals(len(response.context['message_list']), 1)
+        self.assertEquals(response.context['message_list'][0].id, 2)
+
+    def test_non_anonymous_messages_not_listed_from_anonymous_link(self):
+        self.anonymous_message = Message.objects.create(subject=u"A message",
+            content="that should not be in the list because it is anonymous",
+            author_name="",
+            author_email="fiera@ciudadanointeligente.org",
+            writeitinstance=self.writeitinstance,
+            persons=list(self.message.people))
+        self.anonymous_message.recently_confirmated()
+
+        url = reverse('all-messages-from-the-same-author-as', subdomain=self.message.writeitinstance.slug,
+            kwargs={
+                'message_slug': self.anonymous_message.slug
+            })
+
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertIn('message_list', response.context)
+        self.assertEquals(len(response.context['message_list']), 1)
+        self.assertEquals(response.context['message_list'][0].id, self.anonymous_message.id)
+
     def test_get_messages_404(self):
         '''Gets a 404 if the slug of an instance does not exist'''
         url = reverse('all-messages-from-the-same-author-as', subdomain='non-existing', kwargs={
