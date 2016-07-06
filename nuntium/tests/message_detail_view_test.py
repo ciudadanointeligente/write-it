@@ -55,8 +55,11 @@ class MessageDetailView(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.context['message'], self.anonymous_message)
 
-        match_anonymous = r'From</dt>\s+<dd>\s+Anonymous'
-        self.assertTrue(re.search(match_anonymous, response.content))
+        match_anonymous_from = r'From</dt>\s+<dd>\s+Anonymous'
+        self.assertTrue(re.search(match_anonymous_from, response.content))
+
+        match_anonymous_title = r'An anonymous user sent a message to'
+        self.assertTrue(re.search(match_anonymous_title, response.content))
 
     def test_get_message_detail_that_was_created_using_the_api(self):
         message = Message.objects.create(
