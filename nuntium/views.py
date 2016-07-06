@@ -262,6 +262,8 @@ class MessagesFromPersonView(ListView):
     def dispatch(self, *args, **kwargs):
         self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.request.subdomain)
         self.message = get_object_or_404(Message, slug=self.kwargs['message_slug'])
+        if self.message.author_name == '':
+            raise Http404
         return super(MessagesFromPersonView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
