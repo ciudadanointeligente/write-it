@@ -175,6 +175,13 @@ class Message(models.Model):
         return people
 
     @property
+    def author_name_for_display(self):
+        name = self.author_name
+        if name == '':
+            name = _('Anonymous')
+        return name
+
+    @property
     def outbound_messages(self):
         no_contact_oms = NoContactOM.objects.filter(message=self)
         outbound_messages = OutboundMessage.objects.filter(message=self)
@@ -263,7 +270,7 @@ class Message(models.Model):
 
         context = {
             'owner_name': self.writeitinstance.owner.username,
-            'author_name': self.author_name,
+            'author_name': self.author_name_for_display,
             'author_email': self.author_email,
             'recipients': u', '.join([x.name for x in self.people]),
             'subject': self.subject,
@@ -347,7 +354,7 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
             message_url = reverse('thread_read', subdomain=writeitinstance.slug, kwargs={'slug': answer.message.slug})
 
         context = {
-            'author_name': answer.message.author_name,
+            'author_name': answer.message.author_name_for_display,
             'person': answer.person.name,
             'subject': answer.message.subject,
             'content': answer.content,
@@ -643,7 +650,7 @@ def send_confirmation_email(sender, instance, created, **kwargs):
         subject = subject.rstrip()
 
         context = {
-            'author_name': confirmation.message.author_name,
+            'author_name': confirmation.message.author_name_for_display,
             'site_name': confirmation.message.writeitinstance.name,
             'subject': confirmation.message.subject,
             'content': confirmation.message.content,
