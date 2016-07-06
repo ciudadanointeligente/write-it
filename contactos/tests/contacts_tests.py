@@ -14,7 +14,7 @@ from django.test.client import RequestFactory, Client
 from django.forms import ModelForm
 from subdomains.utils import reverse
 import simplejson as json
-from nuntium.models import WriteItInstance
+from instance.models import WriteItInstance
 from django.db.models import Q
 from django.contrib.sites.models import Site
 

@@ -2,7 +2,8 @@
 import urlparse
 
 from django.forms import ModelForm, ModelMultipleChoiceField, SelectMultiple, URLField, Form, Textarea, TextInput, EmailInput
-from .models import Message, WriteItInstance, Confirmation
+from instance.models import WriteItInstance
+from .models import Message, Confirmation
 
 from contactos.models import Contact
 from django.forms import ValidationError

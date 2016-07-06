@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.core.management import call_command
-from ...models import Message, WriteItInstance, Confirmation
+from instance.models import WriteItInstance
+from ...models import Message, Confirmation
 from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
 from popit.models import Person

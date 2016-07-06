@@ -2,7 +2,8 @@
 from global_test_case import GlobalTestCase as TestCase
 from mailit.models import RawIncomingEmail
 from ..bin.handleemail import EmailHandler
-from nuntium.models import WriteItInstance, Answer, OutboundMessage
+from instance.models import WriteItInstance
+from nuntium.models import Answer, OutboundMessage
 from ..bin import config
 from django.contrib.auth.models import User
 from mailit.bin.handleemail import EmailAnswer

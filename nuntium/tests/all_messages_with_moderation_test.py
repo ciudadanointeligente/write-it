@@ -1,6 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from ..models import Message, WriteItInstance, Moderation
+from instance.models import WriteItInstance
+from ..models import Message, Moderation
 from popit.models import Person
 from django.core import mail
 

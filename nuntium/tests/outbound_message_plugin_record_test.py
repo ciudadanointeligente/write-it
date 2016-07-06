@@ -1,5 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
-from ..models import Message, WriteItInstance, OutboundMessage, OutboundMessagePluginRecord
+from instance.models import WriteItInstance
+from ..models import Message, OutboundMessage, OutboundMessagePluginRecord
 from plugin_mock.mental_message_plugin import MentalMessage
 from contactos.models import Contact
 # from djangoplugins.models import Plugin

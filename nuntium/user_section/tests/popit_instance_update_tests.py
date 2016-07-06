@@ -1,6 +1,7 @@
 from global_test_case import popit_load_data
 from subdomains.utils import reverse
-from nuntium.models import WriteItInstance, Membership, WriteitInstancePopitInstanceRecord
+from instance.models import (
+    Membership, WriteItInstance, WriteitInstancePopitInstanceRecord)
 from django.contrib.auth.models import User
 from django.forms import Form, URLField
 from django.conf import settings

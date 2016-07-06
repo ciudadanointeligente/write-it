@@ -1,7 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from nuntium.models import WriteItInstance, WriteItInstanceConfig, \
-    Message, Membership
+from instance.models import Membership, WriteItInstance, WriteItInstanceConfig
+from nuntium.models import Message
 from popit.models import ApiInstance, Person
 from django.contrib.auth.models import User
 from mailit import MailChannel

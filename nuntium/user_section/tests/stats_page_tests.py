@@ -1,5 +1,5 @@
 from global_test_case import GlobalTestCase as TestCase
-from nuntium.models import WriteItInstance
+from instance.models import WriteItInstance
 from subdomains.utils import reverse
 from nuntium.user_section.stats import StatsPerInstance
 

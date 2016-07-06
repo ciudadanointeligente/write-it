@@ -1,5 +1,6 @@
 from subdomains.utils import reverse
-from ...models import WriteItInstance, Message, Answer
+from instance.models import WriteItInstance
+from ...models import Message, Answer
 from django.contrib.auth.models import User
 from ..forms import AnswerForm
 from popit.models import Person

@@ -10,7 +10,8 @@ from haystack.views import SearchView
 from itertools import chain
 from popit.models import Person
 from django.db.models import Q
-from .models import WriteItInstance, Confirmation, Message, Moderation
+from instance.models import WriteItInstance
+from .models import Confirmation, Message, Moderation
 from .forms import MessageSearchForm, PerInstanceSearchForm
 
 from nuntium import forms

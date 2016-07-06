@@ -1,8 +1,10 @@
 from django.contrib import admin
-from .models import Message, WriteItInstance, OutboundMessage, MessageRecord, \
+from instance.models import WriteItInstanceConfig
+from .models import Message, OutboundMessage, MessageRecord, \
     Answer, AnswerWebHook, NewAnswerNotificationTemplate, \
-    ConfirmationTemplate, WriteItInstanceConfig
+    ConfirmationTemplate
 
+from instance.models import WriteItInstance
 from popit.models import ApiInstance, Person
 from mailit.models import MailItTemplate
 from django_object_actions import DjangoObjectActions

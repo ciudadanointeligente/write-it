@@ -3,7 +3,7 @@ from datetime import datetime
 from mock import patch
 
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
-from nuntium.models import WriteItInstance
+from instance.models import WriteItInstance
 from contactos.models import Contact, ContactType
 from django.conf import settings
 from django.contrib.auth.models import User

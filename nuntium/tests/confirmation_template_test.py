@@ -1,7 +1,8 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
+from instance.models import WriteItInstance
 from ..models import Confirmation, send_confirmation_email
-from ..models import Message, WriteItInstance, ConfirmationTemplate
+from ..models import Message, ConfirmationTemplate
 from django.core import mail
 from subdomains.utils import reverse
 from django.contrib.auth.models import User

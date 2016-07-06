@@ -1,6 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from ..models import Message, WriteItInstance, Confirmation
+from instance.models import WriteItInstance
+from ..models import Message, Confirmation
 from popit.models import Person
 import datetime
 from nuntium.views import MessageThreadView

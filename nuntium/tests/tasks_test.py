@@ -1,6 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
-from nuntium.models import OutboundMessage, WriteItInstance, WriteitInstancePopitInstanceRecord
+from instance.models import WriteItInstance, WriteitInstancePopitInstanceRecord
+from nuntium.models import OutboundMessage
 from ..tasks import send_mails_task
 from mock import patch
 from popit.models import Person

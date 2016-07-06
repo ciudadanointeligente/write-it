@@ -1,5 +1,5 @@
 from subdomains.utils import reverse
-from ...models import WriteItInstance
+from instance.models import WriteItInstance
 from .user_section_views_tests import UserSectionTestCase
 from nuntium.user_section.views import WriteItDeleteView
 
