@@ -3,6 +3,7 @@ from global_test_case import GlobalTestCase as TestCase
 from instance.models import WriteItInstance
 from nuntium.models import Message
 from subdomains.utils import reverse
+from django.utils.unittest import skip
 
 
 class SeeAllMessagesFromAPersonTestCase(TestCase):
@@ -65,6 +66,7 @@ class SeeAllMessagesFromAPersonTestCase(TestCase):
         self.assertEquals(len(response.context['message_list']), 1)
         self.assertEquals(response.context['message_list'][0].id, 2)
 
+    @skip("we don't allow links to all authors for anonymous messages")
     def test_non_anonymous_messages_not_listed_from_anonymous_link(self):
         self.anonymous_message = Message.objects.create(subject=u"A message",
             content="that should not be in the list because it is anonymous",
@@ -84,6 +86,23 @@ class SeeAllMessagesFromAPersonTestCase(TestCase):
         self.assertIn('message_list', response.context)
         self.assertEquals(len(response.context['message_list']), 1)
         self.assertEquals(response.context['message_list'][0].id, self.anonymous_message.id)
+
+    def test_anonymous_messages_are_404(self):
+        self.anonymous_message = Message.objects.create(subject=u"A message",
+            content="that should not be in the list because it is anonymous",
+            author_name="",
+            author_email="fiera@ciudadanointeligente.org",
+            writeitinstance=self.writeitinstance,
+            persons=list(self.message.people))
+        self.anonymous_message.recently_confirmated()
+
+        url = reverse('all-messages-from-the-same-author-as', subdomain=self.message.writeitinstance.slug,
+            kwargs={
+                'message_slug': self.anonymous_message.slug
+            })
+
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 404)
 
     def test_get_messages_404(self):
         '''Gets a 404 if the slug of an instance does not exist'''
