@@ -1,4 +1,6 @@
 # coding=utf-8
+import re
+
 from global_test_case import GlobalTestCase as TestCase
 from instance.models import WriteItInstance
 from ..models import Message, Confirmation
@@ -22,6 +24,16 @@ class MessageDetailView(TestCase):
             confirmated=True,
             )
         Confirmation.objects.create(message=self.message, confirmated_at=datetime.datetime.now())
+        self.anonymous_message = Message.objects.create(
+            content='Content 2',
+            author_name='',
+            author_email="falvarez@votainteligente.cl",
+            subject='Subject 2',
+            writeitinstance=self.writeitinstance1,
+            persons=[self.person1],
+            confirmated=True,
+            )
+        Confirmation.objects.create(message=self.anonymous_message, confirmated_at=datetime.datetime.now())
 
     def test_get_message_detail_page(self):
         # I'm kind of feeling like I need
@@ -33,6 +45,18 @@ class MessageDetailView(TestCase):
 
         self.assertEquals(response.status_code, 200)
         self.assertEquals(response.context['message'], self.message)
+
+    def test_get_anonymous_message_detail_page(self):
+        url = self.anonymous_message.get_absolute_url()
+        self.assertTrue(url)
+
+        response = self.client.get(url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.context['message'], self.anonymous_message)
+
+        match_anonymous = r'From</dt>\s+<dd>\s+Anonymous'
+        self.assertTrue(re.search(match_anonymous, response.content))
 
     def test_get_message_detail_that_was_created_using_the_api(self):
         message = Message.objects.create(
