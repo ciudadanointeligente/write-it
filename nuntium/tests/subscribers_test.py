@@ -183,6 +183,14 @@ class NewAnswerNotificationToSubscribers(TestCase):
             [(u'<b>Subject 1</b>', 'text/html')]
             )
 
+    def test_answer_to_anonymous_message(self):
+        self.message.author_name = ''
+        self.message.save()
+
+        self.create_a_new_answer()
+
+        self.assertIn('Dear Anonymous', mail.outbox[0].body)
+
     @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
     def test_send_subscribers_notice_from_a_single_unified_email(self):
         '''Send emails from default from email'''
