@@ -269,6 +269,10 @@ class MessagesFromPersonView(ListView):
         qs = qs.filter(writeitinstance=self.writeitinstance).\
             filter(public=True).filter(confirmated=True).\
             filter(author_email=self.message.author_email)
+        if self.message.author_name == '':
+            qs = qs.filter(author_name='')
+        else:
+            qs = qs.exclude(author_name='')
         return qs
 
     def get_context_data(self, **kwargs):
