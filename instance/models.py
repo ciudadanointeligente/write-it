@@ -11,6 +11,8 @@ from annoying.fields import AutoOneToOneField
 from autoslug import AutoSlugField
 from nuntium.popit_api_instance import PopitApiInstance
 from popit.models import Person, ApiInstance
+from popolo.models import Person as PopoloPerson
+from popolo_sources.models import PopoloSource
 from requests.exceptions import ConnectionError
 from subdomains.utils import reverse
 
@@ -24,6 +26,9 @@ class WriteItInstance(models.Model):
     persons = models.ManyToManyField(Person,
         related_name='writeit_instances',
         through='Membership')
+    popolo_persons = models.ManyToManyField(PopoloPerson,
+        related_name='writeit_instances',
+        through='InstanceMembership')
     owner = models.ForeignKey(User, related_name="writeitinstances")
 
     def add_person(self, person):
@@ -115,6 +120,11 @@ class Membership(models.Model):
     writeitinstance = models.ForeignKey(WriteItInstance)
 
 
+class InstanceMembership(models.Model):
+    person = models.ForeignKey(PopoloPerson)
+    writeitinstance = models.ForeignKey(WriteItInstance)
+
+
 def new_write_it_instance(sender, instance, created, **kwargs):
     from nuntium.models import (
         NewAnswerNotificationTemplate, ConfirmationTemplate)
@@ -147,6 +157,7 @@ class WriteitInstancePopitInstanceRecord(models.Model):
         )
     writeitinstance = models.ForeignKey(WriteItInstance)
     popitapiinstance = models.ForeignKey(ApiInstance)
+    popolo_source = models.ForeignKey(PopoloSource, null=True, blank=True)
     periodicity = models.CharField(
         max_length="2",
         choices=PERIODICITY,
