@@ -1,4 +1,7 @@
+import os
 from django import template
+from django.conf import settings
+from django.contrib.staticfiles import finders
 from contactos.models import Contact
 from django.db.models import Q
 from subdomains.templatetags.subdomainurls import url as subdomainsurls, UNSET
@@ -35,3 +38,15 @@ def join_with_commas(obj_list):
 @register.assignment_tag(takes_context=True)
 def assignment_url_with_subdomain(context, view, subdomain=UNSET, *args, **kwargs):
     return subdomainsurls(context, view, subdomain, *args, **kwargs)
+
+
+@register.simple_tag(takes_context=True)
+def custom_stylesheet(context):
+    output = ''
+    if hasattr(context['request'], 'subdomain') and context['request'].subdomain is not None:
+        path = os.path.join(context['request'].subdomain, 'css/custom.css')
+        file_path = finders.find(path)
+        if file_path is not None:
+            path = os.path.join(settings.STATIC_URL, path)
+            output = '<link rel="stylesheet" href="{0}" type="text/css" media="screen" />'.format(path)
+    return output

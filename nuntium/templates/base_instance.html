@@ -4,9 +4,11 @@
 {% load pipeline %}
 {% load i18n %}
 {% load subdomainurls %}
+{% load nuntium_tags %}
 
 {% block css %}
     {% stylesheet 'writeit-instance' %}
+    {% custom_stylesheet %}
 {% endblock css %}
 
 {% block header %}
