@@ -16,7 +16,7 @@ install:
 # command to run tests
 before_script:
   - psql -c 'create database writeit;' -U postgres
-  - mysql -e 'create database writeit;'
+  - mysql -e 'create database writeit CHARACTER SET utf8 COLLATE utf8_general_ci;'
 script:
   - coverage run --source=nuntium,contactos,mailit manage.py test nuntium contactos mailit
   - coverage report -m
