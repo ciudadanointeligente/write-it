@@ -10,7 +10,8 @@ from django.contrib.auth.models import User
 from django.utils.translation import activate
 from django.utils.translation import ugettext as _
 from django.conf import settings
-from mock import patch
+from mock import patch, Mock
+from nuntium.templatetags.nuntium_tags import custom_stylesheet
 from requests.exceptions import ConnectionError
 from contactos.models import Contact, ContactType
 
@@ -450,3 +451,17 @@ class InstanceDetailView(TestCase):
         response = self.client.get(url)
 
         self.assertIn('There is no-one to write to yet', response.content)
+
+    def test_custom_css(self):
+        self.assertEquals(
+            custom_stylesheet({'request': Mock(subdomain='example-domain')}),
+            '<link rel="stylesheet" href="/static/example-domain/css/custom.css" type="text/css" media="screen" />'
+        )
+        self.assertEquals(
+            custom_stylesheet({'request': Mock(subdomain='domain-with-no-custom-css')}),
+            ''
+        )
+        self.assertEquals(
+            custom_stylesheet({'request': Mock(subdomain=None)}),
+            ''
+        )
