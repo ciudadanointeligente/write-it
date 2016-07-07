@@ -108,7 +108,5 @@ class AnswersResourceTestCase(ResourceTestCase):
             person=person,
             )
         answers_json = self.deserialize(AnswerResource().get_list(HttpRequest()))['objects']
-        for answer in answers_json:
-            print answer['id'], answer['created']
         self.assertEquals(answers_json[0]['id'], answer1.id)
         self.assertEquals(answers_json[1]['id'], answer2.id)

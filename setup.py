@@ -4,9 +4,8 @@ from setuptools import find_packages, setup
 
 install_requires = ['Django',
 'django-plugins',
-'South',
 'python-mimeparse',
-'django-tastypie==0.11.0',
+'django-tastypie==0.13.3',
 'email_reply_parser',
 'flufl.bounce',
 'django-markdown-deux',
