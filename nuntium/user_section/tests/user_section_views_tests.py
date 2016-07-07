@@ -331,7 +331,7 @@ class WriteitInstanceUpdateTestCase(UserSectionTestCase):
         view = WriteItInstanceUpdateView()
         form_class = view.get_form_class()
 
-        self.assertEquals(view.template_name_suffix, '_update_form')
+        self.assertEquals(view.template_name, 'nuntium/writeitinstance_update_form.html')
         self.assertEquals(form_class, WriteItInstanceBasicForm)
 
     def test_updating_is_not_reachable_by_a_non_owner(self):
