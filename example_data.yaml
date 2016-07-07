@@ -16,6 +16,11 @@
     username: admin
   model: auth.user
   pk: 1
+- fields:
+    user: 1
+    key: 'not a real API key'
+  model: tastypie.apikey
+  pk: 1
 - fields: {name: instance 1, slug: instance1, owner: 1}
   model: instance.writeitinstance
   pk: 1
