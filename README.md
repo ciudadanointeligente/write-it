@@ -56,6 +56,16 @@ System Requirements
 
  It's required if you want to play around seaching messages and answers, this part is optional.
 
+ Your version of the Python `elasticsearch` package must match
+ the version of Elasticsearch you have.  The `requirements.txt`
+ file in this repository currently specifies
+ `elasticsearch==1.6.0`, which will only work with Elasticsearch
+ with a major version of 1. If you have a 0.x or 2.x version of
+ Elasticsearch you will need to install a different version of
+ the Python `elasticsearch` package. For more details on how to
+ pick the right version to use, see:
+ https://elasticsearch-py.readthedocs.io/en/master/#compatibility
+
  * [Urllib3](http://urllib3.readthedocs.org/en/latest/)
 
  * [libffi](https://sourceware.org/libffi/)
