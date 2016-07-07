@@ -11,8 +11,14 @@ from annoying.fields import AutoOneToOneField
 from autoslug import AutoSlugField
 from nuntium.popit_api_instance import PopitApiInstance
 from popit.models import Person, ApiInstance
+from popolo.models import Person as PopoloPerson
 from requests.exceptions import ConnectionError
 from subdomains.utils import reverse
+
+
+class PopoloSource(models.Model):
+    url = models.URLField(max_length=255)
+    persons = models.ManyToManyField(PopoloPerson)
 
 
 class WriteItInstance(models.Model):
