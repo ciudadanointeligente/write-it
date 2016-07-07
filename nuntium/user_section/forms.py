@@ -22,13 +22,15 @@ from django.utils.translation import ugettext as _
 
 from popit.models import Person
 
+from instance.models import (
+    WriteItInstance,
+    WriteItInstanceConfig,
+    WriteitInstancePopitInstanceRecord,
+)
 from nuntium.models import (
     Answer,
     ConfirmationTemplate,
     NewAnswerNotificationTemplate,
-    WriteItInstance,
-    WriteItInstanceConfig,
-    WriteitInstancePopitInstanceRecord,
     AnswerWebHook,
     default_confirmation_template_content_text,
     default_confirmation_template_subject,

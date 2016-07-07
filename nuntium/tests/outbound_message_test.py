@@ -3,7 +3,8 @@ from django.db import IntegrityError
 from django.db import models
 from django.utils.translation import ugettext as _
 from contactos.models import Contact, ContactType
-from ..models import Message, WriteItInstance, OutboundMessage, \
+from instance.models import WriteItInstance
+from ..models import Message, OutboundMessage, \
     MessageRecord, OutboundMessagePluginRecord, \
     OutboundMessageIdentifier, Answer, \
     NoContactOM, AbstractOutboundMessage

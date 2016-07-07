@@ -4,7 +4,7 @@ from .forms import MailitTemplateForm
 from subdomains.utils import reverse
 from django.shortcuts import get_object_or_404
 from django.http import Http404
-from nuntium.models import WriteItInstance
+from instance.models import WriteItInstance
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 

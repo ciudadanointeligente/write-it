@@ -1,6 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from ..models import Message, WriteItInstance
+from instance.models import WriteItInstance
+from ..models import Message
 from popit.models import Person
 
 

@@ -1,7 +1,8 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
 from subdomains.utils import reverse
-from ..models import WriteItInstance, Message
+from instance.models import WriteItInstance
+from ..models import Message
 from popit.models import Person
 
 

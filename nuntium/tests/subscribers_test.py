@@ -1,5 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
-from ..models import Subscriber, Message, WriteItInstance, \
+from instance.models import WriteItInstance
+from ..models import Subscriber, Message, \
     Confirmation, Answer, NewAnswerNotificationTemplate
 from popit.models import Person
 from django.contrib.auth.models import User

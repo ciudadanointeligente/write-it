@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from tastypie.resources import ModelResource, ALL_WITH_RELATIONS, Resource
-from .models import WriteItInstance, Message, Answer, \
+from instance.models import WriteItInstance
+from .models import Message, Answer, \
     OutboundMessageIdentifier, OutboundMessage, Confirmation
 from tastypie.authentication import ApiKeyAuthentication
 from tastypie.authorization import Authorization

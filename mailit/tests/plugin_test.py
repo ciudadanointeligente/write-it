@@ -12,7 +12,8 @@ from django.test.utils import override_settings
 from django.utils.translation import activate
 
 from contactos.models import Contact, ContactType
-from nuntium.models import Message, WriteItInstance, OutboundMessage
+from instance.models import WriteItInstance
+from nuntium.models import Message, OutboundMessage
 from nuntium.plugins import OutputPlugin
 from nuntium.user_section.tests.user_section_views_tests import UserSectionTestCase
 

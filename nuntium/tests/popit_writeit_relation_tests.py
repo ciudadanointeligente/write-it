@@ -1,7 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
-from ..models import WriteItInstance, Membership
-from ..models import WriteitInstancePopitInstanceRecord
+from instance.models import (
+    Membership, WriteItInstance, WriteitInstancePopitInstanceRecord)
 from popit.models import ApiInstance
 from django.utils.unittest import skip
 from django.contrib.auth.models import User

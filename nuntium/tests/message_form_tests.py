@@ -2,7 +2,8 @@
 from global_test_case import GlobalTestCase as TestCase
 from popit.models import Person
 from contactos.models import Contact
-from ..models import Message, Confirmation, WriteItInstance, OutboundMessage, Membership
+from instance.models import Membership, WriteItInstance
+from ..models import Message, Confirmation, OutboundMessage
 from ..forms import MessageCreateForm, PersonMultipleChoiceField
 
 from django.forms import ValidationError, SelectMultiple

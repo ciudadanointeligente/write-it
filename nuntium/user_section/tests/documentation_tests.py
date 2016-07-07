@@ -1,6 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
 from subdomains.utils import reverse
-from nuntium.models import WriteItInstance
+from instance.models import WriteItInstance
 
 
 class DocumentationTestCase(TestCase):

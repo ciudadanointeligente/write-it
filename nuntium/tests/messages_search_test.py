@@ -9,8 +9,8 @@ from haystack import indexes
 from haystack.fields import CharField
 from haystack.forms import SearchForm
 from subdomains.utils import reverse
+from instance.models import WriteItInstance
 from ..views import MessageSearchView, PerInstanceSearchView
-from ..models import WriteItInstance
 from haystack.views import SearchView
 from popit.models import Person
 import urllib

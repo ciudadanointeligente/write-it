@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
-from nuntium.models import WriteItInstance, OutboundMessage, Answer, read_template_as_string
+from instance.models import WriteItInstance
+from nuntium.models import OutboundMessage, Answer, read_template_as_string
 from django.utils.translation import ugettext_lazy as _
 
 

@@ -4,7 +4,7 @@ from django.middleware.locale import LocaleMiddleware
 from django.utils import translation
 from django.conf import settings
 
-from nuntium.models import WriteItInstanceConfig
+from instance.models import WriteItInstanceConfig
 
 
 def get_language_from_request(request, check_path=False):

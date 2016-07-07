@@ -203,6 +203,7 @@ INSTALLED_APPS = (
     'annoying',
     'celery_haystack',
 
+    'instance',
     'nuntium',
     'djangoplugins',
     'pagination',

@@ -1,6 +1,7 @@
 from global_test_case import GlobalTestCase as TestCase
+from instance.models import WriteItInstance
 from ..models import Confirmation, OutboundMessage
-from ..models import Message, WriteItInstance
+from ..models import Message
 from popit.models import Person
 from contactos.models import Contact
 from datetime import datetime

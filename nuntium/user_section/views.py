@@ -10,9 +10,10 @@ from django.views.generic.edit import UpdateView, DeleteView, FormView
 
 from mailit.forms import MailitTemplateForm
 
-from ..models import WriteItInstance, Message,\
+from instance.models import WriteItInstance, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord
+from ..models import Message,\
     NewAnswerNotificationTemplate, ConfirmationTemplate, \
-    Answer, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord, Moderation, \
+    Answer, Moderation, \
     AnswerWebHook
 from .forms import WriteItInstanceBasicForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm, \

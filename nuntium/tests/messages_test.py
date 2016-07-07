@@ -5,7 +5,8 @@ from global_test_case import UsingDbMixin
 from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 from contactos.models import Contact
-from ..models import Message, WriteItInstance, OutboundMessage, NoContactOM
+from instance.models import WriteItInstance
+from ..models import Message, OutboundMessage, NoContactOM
 from popit.models import Person, ApiInstance
 from subdomains.utils import reverse
 from django.contrib.auth.models import User

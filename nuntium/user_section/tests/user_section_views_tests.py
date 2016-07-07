@@ -6,7 +6,7 @@ from popit.models import Person
 from mailit.forms import MailitTemplateForm
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 
-from nuntium.models import WriteItInstance, WriteitInstancePopitInstanceRecord
+from instance.models import WriteItInstance, WriteitInstancePopitInstanceRecord
 from nuntium.user_section.views import WriteItInstanceUpdateView, WriteItInstanceApiDocsView
 from nuntium.user_section.forms import WriteItInstanceBasicForm, \
     WriteItInstanceCreateForm, \
