@@ -128,7 +128,7 @@ class WriteItInstanceTemplateUpdateView(DetailView):
 
 class WriteItInstanceUpdateView(UpdateView):
     form_class = WriteItInstanceBasicForm
-    template_name_suffix = '_update_form'
+    template_name = "nuntium/writeitinstance_update_form.html"
     model = WriteItInstance
 
     @method_decorator(login_required)
