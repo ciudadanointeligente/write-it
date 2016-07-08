@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load pipeline %}
+{% load i18n %}
+{% load subdomainurls %}
+{% load nuntium_tags %}
+
+{% block css %}
+    {% stylesheet 'writeit-instance' %}
+    {% custom_stylesheet %}
+{% endblock css %}
+
+{% block header %}
+<header class="header">
+  <nav class="navbar">
+    <ul>
+      <li>
+        <a href="/index.html">Home</a>
+      </li>
+      <li>
+        <a href="/about.html">About</a>
+      </li>
+    </ul>
+
+    <a class="write-link" href="/write/who.html">Write to Majlis</a>
+  </nav>
+
+  <div class="promo-wrapper full-width-wrapper">
+    <div class="promo centred">
+      <p>Write to your members of parliament.</p>
+      <p>Have your voice be heard.</p>
+      <div class="button-centring-container">
+        <a href="/write/who.html" class="button send-letter">Send letter</a>
+      </div>
+    </div>
+  </div>
+
+</header>
+
+{% comment %}
+  {% if writeitinstance and not writeitinstance.config.allow_messages_using_form %}
+    <div class="site-alert">
+        <div class="container">
+            <h3 class="site-alert__heading">{% trans "This site is read-only." %}</h3>
+            <p class="site-alert__description">{% trans "You can’t currently create new messages using this site." %}</p>
+          {% if user.is_authenticated %}
+            <a class="site-alert__cta" href="{% url 'writeitinstance_webbased_update' subdomain=writeitinstance.slug %}">{% trans "Change this in Settings" %}</a>
+          {% endif %}
+        </div>
+    </div>
+  {% elif writeitinstance and not writeitinstance.persons_with_contacts %}
+    <div class="site-alert">
+        <div class="container">
+            <h3 class="site-alert__heading">{% trans "This site has no recipients." %}</h3>
+            <p class="site-alert__description">{% trans "There is no-one to write to yet. Please check back soon." %}</p>
+          {% if user.is_authenticated %}
+            <a class="site-alert__cta" href="{% url 'relate-writeit-popit' subdomain=writeitinstance.slug %}">{% trans "Import people from PopIt" %}</a>
+          {% endif %}
+        </div>
+    </div>
+  {% elif writeitinstance and writeitinstance.config.testing_mode %}
+    <div class="site-alert">
+        <div class="container">
+            <h3 class="site-alert__heading">{% trans "This site is in Test Mode." %}</h3>
+            <p class="site-alert__description">{% trans "Any messages you write will be sent to the site administrator rather than real representatives." %}</p>
+        </div>
+    </div>
+  {% endif %}
+  {% endcomment %}
+
+{% endblock header %}
+
+{% block content %}
+  {% block content_inner %}
+  {% endblock content_inner %}
+{% endblock content %}
+
+{% block footer %}{% include 'footer.html' %}{% endblock footer %}
