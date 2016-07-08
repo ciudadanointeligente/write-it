@@ -1,0 +1,38 @@
+{% extends "base_instance.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block promo %}
+{% endblock %}
+
+{% block content_inner %}
+<div class="full-width-wrapper write-wrapper">
+  <main class="centred write confirmation">
+  {% include "write/breadcrumb.html" with current_step=4 %}
+
+
+  <div class="writing-step writing-step--confirm-email">
+
+    <img src="{% static 'img/check-your-email.png' %}">
+
+    <h2>{% trans "Please confirm your email address" %}</h2>
+
+    {% if email %}
+    <p>{% blocktrans %}We have sent a confirmation link to {{ email }}{% endblocktrans %}</p>
+    {% if inbox_link %}
+    <p><a href="http://{{ inbox_link }}" class="btn btn-primary">Go to {{ inbox_link }}</a></p>
+    {% endif %}
+    {% else %}
+    <p>{% trans "We have emailed you a confirmation link. Please click it." %}</p>
+    {% endif %}
+
+  </div>
+
+
+  <div class="button-centring-container">
+    <a class="button filled" href="/">Go to home page</a>
+  </div>
+
+  </main>
+</div>
+{% endblock content_inner %}
