@@ -16,10 +16,10 @@
             <h2>{{ message.message_author }} <img src="{% static 'afghanistan/images/afghanistan/arrow-grey-left.svg' %}" onerror="this.src='{% static 'afghanistan/images/afghanistan/arrow-grey-left.png' %}'; this.onerror=null;" alt="to"> {% for person in message.people %}{{ person.name }}{% endfor %}</h2>
           </a>
           <div class="content container">
-            Dear {% for person in message.people %}{{ person.name }}{% endfor %},<br /><br />
+            {% trans 'Dear' %} {% for person in message.people %}{{ person.name }}{% if not forloop.first and forloop.last %} {% trans "and" %} {% elif not forloop.first %}, {% endif %}{% endfor %}<br /><br />
             {{ message.content }}
             <br /><br />
-            Yours sincerely,
+            {% trans 'Yours sincerely' %},
             <br />
             {{ message.message_author }}
           </div>
