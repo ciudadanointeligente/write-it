@@ -16,14 +16,17 @@
   <nav class="navbar">
     <ul>
       <li>
-        <a href="/index.html">Home</a>
+      <li>
+        <a href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{% trans "Home" %}</a>
       </li>
       <li>
-        <a href="/about.html">About</a>
+        <a href="{% url 'about' subdomain=writeitinstance.slug %}">{% trans "About" %}</a>
       </li>
     </ul>
 
-    <a class="write-link" href="/write/who.html">Write to Majlis</a>
+    {% if writeitinstance.can_create_messages %}
+    <a class="write-link" href="{% url 'write_message' subdomain=writeitinstance.slug %}">Write to Majlis</a>
+    {% endif %}
   </nav>
 
   {% block promo %}
