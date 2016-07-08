@@ -1,13 +1,14 @@
 {% load staticfiles %}
 {% load i18n %}
+{% load subdomainurls %}
 <footer class="footer full-width-wrapper">
         <nav class="navbar">
             <ul>
     <li>
-        <a href="/index.html">Home</a>
+        <a href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{% trans "Home" %}</a>
     </li>
     <li>
-        <a href="/about.html">About</a>
+        <a href="{% url 'about' subdomain=writeitinstance.slug %}">{% trans "About" %}</a>
     </li>
 </ul>
 
