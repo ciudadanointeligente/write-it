@@ -1,0 +1,659 @@
+/* =============
+   === FONTS ===
+   ============= */
+@font-face {
+    font-family: "Iran Sans";
+    font-style: normal;
+    font-weight: normal;
+    src: url('../fonts/afghanistan/iran-sans-fa-numerals.eot');
+    src: url('../fonts/afghanistan/iran-sans-fa-numerals.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/afghanistan/iran-sans-fa-numerals.woff2') format('woff2'),
+         url('../fonts/afghanistan/iran-sans-fa-numerals.woff') format('woff'),
+         url('../fonts/afghanistan/iran-sans-fa-numerals.ttf') format('truetype');
+}
+@font-face {
+    font-family: "Iran Sans";
+    font-style: normal;
+    font-weight: bold;
+    src: url('../fonts/afghanistan/iran-sans-fa-numerals-bold.eot');
+    src: url('../fonts/afghanistan/iran-sans-fa-numerals-bold.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/afghanistan/iran-sans-fa-numerals-bold.woff2') format('woff2'),
+         url('../fonts/afghanistan/iran-sans-fa-numerals-bold.woff') format('woff'),
+         url('../fonts/afghanistan/iran-sans-fa-numerals-bold.ttf') format('truetype');
+}
+
+.interface {
+    font-family: 'Iran Sans', Tahoma, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.west-arabic-digits {
+    font-family: Tahoma, Helvetica, Arial, sans-serif;
+}
+/* Use Tahoma for elements that accept user input or include digits intended to show West Arabic digits (such “@asl19.org”) */
+input,
+textarea,
+.button {
+    font-family: Tahoma, Helvetica, Arial, sans-serif !important;
+}
+
+/* ===============
+   === GENERAL ===
+   =============== */
+html {
+     overflow-y: scroll;
+     -webkit-text-size-adjust: 100%;
+}
+body {
+    color: #212121;
+    background: #ffffff;
+    font-family: 'Iran Sans', Tahoma, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5em;
+    font-weight: 400;
+    text-rendering: optimizelegibility;
+    margin: 0em;
+    direction: rtl;
+    min-width: 240px;
+    width: 100%;
+    position: relative;
+    float: right;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+body * {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+img {
+    border: none;
+}
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+button {
+    cursor: pointer;
+    border: none;
+}
+input, textarea, keygen, select, button {
+    font-size: 1em;
+    font-family: inherit;
+    border-radius: 0px;
+}
+a {
+    text-decoration: none;
+    color: #6C65C9;
+}
+h1, h2, h3, h4, h5 {
+    color: #6C65C9;
+    line-height: 1.5;
+    font-weight: bold;
+}
+[aria-hidden] {
+    display: none;
+}
+.full-width-wrapper {
+    float: right;
+    width: 100%;
+}
+.centred {
+    display: block;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 1em;
+}
+.container {
+    float: right;
+    width: 100%;
+}
+.container.half-width {
+    width: 50%;
+}
+.container.half-width {
+    padding-left: 0.5em;
+}
+.container.half-width + .container.half-width {
+    padding-left: 0;
+    padding-right: 0.5em;
+}
+/* For buttons/links with background-images. Fills the button with the image and pushes the text (for accessibility) out of view */
+.image-button {
+    display: block;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    background-color: transparent;
+    background-position: 49.9999% 49.9999%;
+    text-indent: -9999px;
+    overflow: hidden;
+}
+/* Hides an element while keeping it visible to screen readers (good for semantic headers) */
+.invisible {
+    position: absolute !important;
+    clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+}
+.view-frame {
+    margin: 0;
+}
+
+/* === BUTTONS === */
+.button {
+    display: block;
+    float: none;
+    text-align: center;
+    margin: 0 auto;
+    height: 3em;
+    width: auto;
+    padding: 1em;
+    line-height: 1em;
+    background-color: #fff;
+    background-repeat: no-repeat;
+    color: #6C65C9;
+    border-radius: 0;
+    text-transform: uppercase;
+}
+
+.button.filled {
+    background-color: #6C65C9;
+    color: #fff;
+}
+.button.filled.forward {
+    float: left;
+    background-image: url(../images/arrow-white-left.png);
+    background-image: url(../images/arrow-white-left.svg), linear-gradient(transparent, transparent);
+    padding-left: 2em;
+    background-position: 0.5em 50%;
+    background-size: auto 50%;
+}
+
+.button.greyed {
+    background-color: #939598;
+    color: #ffffff;
+}
+.button.greyed.back {
+    float: right;
+    background-image: url(../images/arrow-white-right.png);
+    background-image: url(../images/arrow-white-right.svg), linear-gradient(transparent, transparent);
+    padding-right: 2em;
+    background-position: 95%;
+    background-position: calc(100% - 0.5em) 50%;
+    background-size: auto 50%;
+}
+
+.button.outlined {
+    background-color: #fff;
+    color: #6C65C9;
+    border: 2px solid #6C65C9;
+}
+
+.button-centring-container {
+    margin-top: 1em;
+    width: 100%;
+    text-align: center;
+}
+.button-centring-container .button {
+    display: inline-block;
+}
+
+@media (max-width: 399px) {
+    body {
+        font-size: 13px;
+    }
+}
+
+/* ===============
+   === NAV BAR ===
+   =============== */
+.navbar {
+    height: 5em;
+    padding: 1em;
+    line-height: 4em;
+    background-color: #001635;
+}
+.navbar * {
+    color: #fff;
+}
+.navbar .logo-link {
+    height: 100%;
+    float: right;
+    line-height: 3em;
+}
+/* This is here to work around an (apparent) problem with the way Android 4.1 (maybe later?) WebKit sizes SVG images */
+.navbar .logo-link .logo-sizing-container {
+    height: 3em;
+    width: 3em;
+    float: right;
+}
+.navbar .logo-link .logo {
+    height: 100%;
+    width: 100%;
+    float: right;
+}
+.navbar .logo-link span {
+    float: right;
+    margin-right: 1em;
+    font-size: 1.25em;
+    height: 3rem;
+    line-height: 3em;
+}
+
+.navbar .write-link {
+    float: right;
+    display: block;
+    height: 3em;
+    line-height: 3em;
+    padding: 0 0.5em;
+}
+
+.navbar ul {
+    float: left;
+    margin: 0;
+    height: 3em;
+}
+.navbar li,
+.navbar li a {
+    display: block;
+    float: left;
+    height: inherit;
+    line-height: 3em;
+}
+.navbar li a {
+    padding: 0 0.5em;
+    margin: 0 0.5em;
+}
+.navbar li:first-child a {
+    margin-left: 0;
+}
+
+@media (max-width: 319px) {
+    .navbar {
+        font-size: 0.9em;
+    }
+}
+
+/* ==============
+   === HEADER ===
+   ============== */
+
+.header {
+    background-color: #6C65C9;
+    float: right;
+    width: 100%;
+}
+
+/* ====================
+   === HEADER PROMO ===
+   ==================== */
+.promo-wrapper {
+    position: relative;
+    background-color: rgb(25,7,104);
+    background-image: url(../images/afghanistan/cover-cropped.png), none;
+    background-origin: padding-box;
+    background-repeat: no-repeat;
+    background-size: auto 80%;
+    background-position: bottom center;
+}
+.promo {
+    margin: 4em auto;
+    max-width: 600px;
+    color: #fff;
+}
+.promo::after {
+    content: ' ';
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #6C65C9;
+    opacity: 0.75;
+    z-index: 0;
+}
+.promo p,
+.promo .button {
+    position: relative;
+    z-index: 2;
+}
+.promo p {
+    margin: 0.5em 0;
+    font-size: 2em;
+    line-height: 1.2;
+    text-align: center;
+}
+.promo .button {
+    margin-top: 2em;
+}
+
+@media (max-width: 399px) {
+    .promo {
+        margin: 2em auto;
+    }
+    .promo p {
+        font-size: 1.5em;
+    }
+}
+@media (max-width: 319px) {
+    .promo p {
+        font-size: 1.25em;
+    }
+}
+
+/* ============
+   === HOME ===
+   ============ */
+
+.recent-letters {
+    margin-bottom: 4em;
+}
+
+/* ==============
+   === LETTER ===
+   ============== */
+.letter-list-item {
+    padding: 1em 0 2em 0;
+    margin: 0 0 1em 0;
+    border-bottom: 1px solid #939598;
+}
+.letter-list-item:last-child {
+    border-bottom: none;
+}
+.letter-list-item h2 {
+    margin: 0;
+    color: #212121;
+    font-size: 1.25em;
+    float: right;
+}
+.letter-list-item h2 img {
+    height: 0.7em;
+    width: auto;
+    display: inline;
+}
+.letter-list-item .content {
+    margin: 1em 0;
+}
+.letter-list-item ul.share {
+    float: right;
+}
+.letter-list-item ul.share {
+    margin: 0;
+    height: 2em;
+    line-height: 2em;
+}
+.letter-list-item ul.share li {
+    float: right;
+    margin-left: 0.5em;
+    padding: 0;
+    display: block;
+    width: 2em;
+    height: 2em;
+}
+.letter-list-item ul.share li:last-child {
+    margin-left: 0;
+}
+.letter-list-item ul.share a {
+    line-height: 0;
+    display: block;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+}
+.letter-list-item ul.share a img {
+    height: 100%;
+}
+
+.letter-list-item time {
+    float: left;
+    color: #939598;
+    text-transform: uppercase;
+}
+
+/* ==============
+   === FOOTER ===
+   ============== */
+.footer .navbar {
+    background-color: #E6E7E8;
+}
+.footer .navbar * {
+    color: #212121;
+}
+
+/* ==================
+   === WRITE FORM ===
+   ================== */
+
+.write {
+    margin-top: 2em;
+}
+.write .breadcrumb-container {
+    text-align: center;
+}
+/* Centre breadcrumb nav with flex layout if available (otherwise, it’ll be right-aligned) */
+.write .breadcrumb {
+    display: inline-block;
+    display: -webkit-flex;
+    display: -ms-flex;
+    display: flex;
+    -webkit-align-items: center;
+    -ms-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    -ms-justify-content: center;
+    justify-content: center;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-basis: auto;
+    -ms-flex-basis: auto;
+    flex-basis: auto;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+.write .breadcrumb li {
+    float: right;
+    margin-left: 1em;
+}
+.write .breadcrumb li::after {
+    content: '\00BB';
+    margin-right: 1em;
+}
+.write .breadcrumb li:last-child::after {
+    content: '';
+    margin: 0;
+}
+.write .breadcrumb a {
+    font-weight: bold;
+}
+.write .breadcrumb.who .who {
+    color: #001635;
+}
+.write .breadcrumb.draft .draft {
+    color: #001635;
+}
+.write .breadcrumb.preview .preview {
+    color: #001635;
+}
+.write .breadcrumb.confirmation .confirmation {
+    color: #001635;
+}
+.write h1 {
+    margin: 1rem 0;
+    width: 100%;
+    float: right;
+}
+.write-form {
+    margin: 0 0 2em 0;
+}
+.write-form.who {
+    margin-top: 1em;
+}
+
+/* The <select> needs to be styled as a fallback. Also of note: Chosen.js deliberately doesn’t load on mobile browsers, though they’re considering solutions: https://github.com/harvesthq/chosen/issues/2438 */
+.write-form select {
+    display: block;
+    margin-bottom: 1em;
+    height: 2em;
+}
+.write-form select option {
+    height: 2em;
+    line-height: 2em;
+}
+/* This is a crude workaround for the fact that Mobile Safari, Mobile Chrome, and presumably other mobile browsers take over the rendering/interactivity of <select>s and only show a single <option> at a time. */
+@media (min-width: 450px) {
+    .write-form select {
+        height: 20em;
+    }
+}
+.write-form label {
+    display: block;
+    font-weight: bold;
+}
+.write-form .input {
+    border: 1px solid #939598;
+    padding: 0.75em;
+    width: 100%;
+    margin: 1em 0;
+}
+.write-form textarea.letter-content {
+    height: 14em;
+}
+.write-form .button {
+    margin-bottom: 1em;
+}
+.write-form .button.forward {
+    margin-right: 0.5em;
+}
+.write-form .button.back {
+    margin-left: 0.5em;
+}
+
+.write-form .agree-public.container {
+    margin-bottom: 1em;
+    height: 2em;
+}
+.write-form .agree-public.container label,
+.write-form .agree-public.container input {
+    height: 2rem;
+    margin: 0;
+    float: right;
+}
+.write-form .agree-public.container label {
+    line-height: 2rem;
+    margin-right: 0.5em;
+}
+.write-form .agree-public.container input {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.write-form .instructions {
+    margin-bottom: 2rem;
+}
+.write-form .instructions p {
+    margin: 0 0 0.5em 0;
+}
+
+/* Override chosen styles */
+.write-form .chosen-container {
+    width: 100% !important;
+    margin: 1em 0;
+}
+.write-form .chosen-container * {
+    float: initial;
+}
+.write-form .chosen-choices {
+    border: 1px solid #939598 !important;
+    padding: 0.75rem 0.75rem 0.25rem 0.25rem !important;
+    background-image: none !important;
+}
+.write-form .chosen-choices .search-choice {
+    background-image: none !important;
+    background-color: #E6E7E8 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 0 0.5rem 0.5rem !important;
+    padding: 0 0.5em 0 2em !important;
+    height: 2em !important;
+    line-height: 2em !important;
+    float: right;
+    display: block;
+}
+.write-form .chosen-choices .search-choice-close {
+    background-image: none !important;
+    background-image: url(../images/close.svg) !important;
+    background-size: 50% auto !important;
+    background-position: 50% 50% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    font-size: 1em !important;
+    width: 2em !important;
+    background-origin: content-box !important;
+}
+@media (max-width: 449px) {
+    .write-form .container.half-width {
+        width: 100%;
+        padding: 0 !important;
+    }
+}
+
+.letter-preview-form {
+    margin-bottom: 2em;
+}
+.letter-preview-form .letter-view {
+    margin: 0 0 2em 0;
+}
+.letter-view {
+    border: 1px solid #939598;
+    margin: 1em 0;
+    padding: 1.5em;
+}
+.letter-view .address {
+    width: 100%;
+    border-bottom: 1px solid #939598;
+    margin-bottom: 2em;
+}
+.letter-view .address p {
+    margin: 0 0 1em 0;
+}
+.letter-view .address span {
+    width: 6em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.write.confirmation {
+    margin-top: 2rem;
+    margin-bottom: 4rem;
+}
+.write.confirmation .confirmation-message {
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: center;
+}
+.write.confirmation .confirmation-message h1 {
+    font-size: 1.5em;
+}
+.write.confirmation h2 {
+    width: 100%;
+    font-size: 2.5em;
+    margin: 0.5rem 0;
+}
+
+.page {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+.page ul {
+    list-style-type: disc;
+    padding-right: 2em;
+}
+
+.view {
+    margin: 2em 0 4em 0;
+}
