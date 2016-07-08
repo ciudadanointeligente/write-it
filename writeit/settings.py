@@ -211,6 +211,8 @@ INSTALLED_APPS = (
     'celery_haystack',
     'djcelery',
 
+    'debug_toolbar',
+
     'instance',
     'nuntium',
     'djangoplugins',
