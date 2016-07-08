@@ -50,7 +50,7 @@ def template_with_wrap(template, context):
 
 class MessageRecord(models.Model):
     status = models.CharField(max_length=255)
-    datetime = models.DateField(default=now())
+    datetime = models.DateField(default=now)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
@@ -606,7 +606,7 @@ class ConfirmationTemplate(models.Model):
 class Confirmation(models.Model):
     message = models.OneToOneField(Message)
     key = models.CharField(max_length=64, unique=True)
-    created = models.DateField(default=now())
+    created = models.DateField(default=now)
     confirmated_at = models.DateField(default=None, null=True)
 
     def save(self, *args, **kwargs):
