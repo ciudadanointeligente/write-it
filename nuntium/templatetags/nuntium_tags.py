@@ -43,10 +43,15 @@ def assignment_url_with_subdomain(context, view, subdomain=UNSET, *args, **kwarg
 @register.simple_tag(takes_context=True)
 def custom_stylesheet(context):
     output = ''
-    if hasattr(context['request'], 'subdomain') and context['request'].subdomain is not None:
-        path = os.path.join(context['request'].subdomain, 'css/custom.css')
-        file_path = finders.find(path)
-        if file_path is not None:
-            path = os.path.join(settings.STATIC_URL, path)
-            output = '<link rel="stylesheet" href="{0}" type="text/css" media="screen" />'.format(path)
+    try:
+        subdomain = context['request'].subdomain
+    except AttributeError:
+        return output
+
+    path = os.path.join(subdomain, 'css/custom.css')
+    file_path = finders.find(path)
+    if file_path is not None:
+        path = os.path.join(settings.STATIC_URL, path)
+        output = '<link rel="stylesheet" href="{0}" type="text/css" media="screen" />'.format(path)
+
     return output
