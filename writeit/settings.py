@@ -67,6 +67,10 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
+# If the site is being served over https change this to 'https' so that links
+# to subdomains use the correct scheme.
+DEFAULT_URL_SCHEME = 'http'
+
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
 MEDIA_ROOT = ''
