@@ -1,0 +1,32 @@
+{% extends "base_instance.html" %}
+{% load nuntium_tags %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block content_inner %}
+
+    <div class="full-width-wrapper recent-letters-wrapper">
+    {% if recent_messages %}
+    <main class="centred recent-letters">
+        <h1>Recent letters</h1>
+        <ul>
+          {% for message in recent_messages %}
+          <li class="letter-list-item container">
+          <a href="{% url 'thread_read' slug=message.slug %}">
+            <h2>{{ message.message_author }} <img src="{% static 'afghanistan/images/afghanistan/arrow-grey-left.svg' %}" onerror="this.src='{% static 'afghanistan/images/afghanistan/arrow-grey-left.png' %}'; this.onerror=null;" alt="to"> {% for person in message.people %}{{ person.name }}{% endfor %}</h2>
+          </a>
+          <div class="content container">
+            Dear {% for person in message.people %}{{ person.name }}{% endfor %},<br /><br />
+            {{ message.content }}
+            <br /><br />
+            Yours sincerely,
+            <br />
+            {{ message.message_author }}
+          </div>
+          {% endfor %}
+          </li>
+        </ul>
+    </main>
+    {% endif %}
+  </div>
+{% endblock content_inner %}
