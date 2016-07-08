@@ -1,257 +1,72 @@
-<!DOCTYPE html>
-<html lang="fa-IR">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta property="og:locale" content="fa_IR" />
-    <meta property="og:type" content="website" />
-    
-    <title>Write In Public</title>
-    <meta property="og:title" content="Write In Public"/>
+{% extends "base_instance.html" %}
+{% load i18n %}
+{% load nuntium_tags %}
 
-    <!-- <meta name="description" content="برای دریافت جدیدترین فیلترشکنها راه بهتری وجود دارد" />
-    <meta property="og:description" content="برای دریافت جدیدترین فیلترشکنها راه بهتری وجود دارد" />
-    <meta property="twitter:description" content="برای دریافت جدیدترین فیلترشکنها راه بهتری وجود دارد" /> -->
+{% block promo %}
+{% endblock %}
 
-    <!-- <meta name="twitter:card" content="summary" />
-    <meta name="twitter:site" content="@aslnoozdah" />
-    <meta name="twitter:creator" content="@aslnoozdah" /> -->
+{% block content_inner %}
 
-    <!-- <meta property="og:image" content="https://paskoocheh.com/images/logo-300w-padded.png?v=2016-06-13" />
-    <meta property="twitter:image" content="https://paskoocheh.com/images/logo-1000w-padded.png?v=2016-06-13" /> -->
+<div class="full-width-wrapper write-wrapper">
+  <main class="centred write">
+    {% include "write/breadcrumb.html" with current_step=2 %}
 
-    <link rel="stylesheet" href="/stylesheets/global.css" type="text/css" />
-    
-    <link rel="stylesheet" href="/libraries/chosen-1.6.1.min.css" type="text/css" />
-    
+    <form class="writing-step" action="" method="post">{% csrf_token %}
+        {{ wizard.management_form }}
+        {{ form.non_field_errors }}
+        <p class="form-group">
+            <label>{% trans "To" %}</label>
+            <span class="form-control writing-draft-recipients">{{ message.persons|join_with_commas }}</span>
+        </p>
+        <p class="form-group">
+            <label for="id_draft-subject">{% trans "Subject" %}</label>
+            {{ form.subject.errors }}
+            {{ form.subject }}
+        </p>
+        <p class="form-group">
+            <label for="id_draft-content" class="label-with-hint">
+              {% trans "Your message" %}
+              <small>{% trans "This will be published, on this site." %}</small>
+            </label>
+            {{ form.content.errors }}
+            {{ form.content }}
+        </p>
 
-    <!--[if lte IE 8]>
-        <script src="/libraries/html5shiv-printshiv-3.7.3.min.js" type="text/javascript"></script>
-        <script src="/libraries/rem-unit-polyfill-1.3.4.min.js" type="text/javascript"></script>
-    <![endif]-->
-
-    <!-- RealFaviconGenerator.net favicons -->
-    <!-- <link rel="apple-touch-icon" sizes="57x57" href="/favicons/apple-touch-icon-57x57.png?v=2016-06-13">
-    <link rel="apple-touch-icon" sizes="60x60" href="/favicons/apple-touch-icon-60x60.png?v=2016-06-13">
-    <link rel="apple-touch-icon" sizes="72x72" href="/favicons/apple-touch-icon-72x72.png?v=2016-06-13">
-    <link rel="apple-touch-icon" sizes="76x76" href="/favicons/apple-touch-icon-76x76.png?v=2016-06-13">
-    <link rel="apple-touch-icon" sizes="114x114" href="/favicons/apple-touch-icon-114x114.png?v=2016-06-13">
-    <link rel="apple-touch-icon" sizes="120x120" href="/favicons/apple-touch-icon-120x120.png?v=2016-06-13">
-    <link rel="apple-touch-icon" sizes="144x144" href="/favicons/apple-touch-icon-144x144.png?v=2016-06-13">
-    <link rel="apple-touch-icon" sizes="152x152" href="/favicons/apple-touch-icon-152x152.png?v=2016-06-13">
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon-180x180.png?v=2016-06-13">
-    <link rel="icon" type="image/png" href="/favicons/favicon-32x32.png?v=2016-06-13" sizes="32x32">
-    <link rel="icon" type="image/png" href="/favicons/favicon-194x194.png?v=2016-06-13" sizes="194x194">
-    <link rel="icon" type="image/png" href="/favicons/favicon-96x96.png?v=2016-06-13" sizes="96x96">
-    <link rel="icon" type="image/png" href="/favicons/android-chrome-192x192.png?v=2016-06-13" sizes="192x192">
-    <link rel="icon" type="image/png" href="/favicons/favicon-16x16.png?v=2016-06-13" sizes="16x16">
-    <link rel="manifest" href="/favicons/manifest.json?v=2016-06-13">
-    <link rel="shortcut icon" href="/favicons/favicon.ico?v=2016-06-13">
-    <meta name="apple-mobile-web-app-title" content="پس‌کوچه">
-    <meta name="application-name" content="پس‌کوچه">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="msapplication-TileImage" content="/favicons/mstile-144x144.png?v=2016-06-13">
-    <meta name="msapplication-config" content="/favicons/browserconfig.xml?v=2016-06-13">
-    <meta name="theme-color" content="#1b75ba"> -->
-</head>
-<body>
-    <header class="header">
-        <nav class="navbar">
-            <ul>
-    <li>
-        <a href="/index.html">Home</a>
-    </li>
-    <li>
-        <a href="/about.html">About</a>
-    </li>
-</ul>
-
-            <a class="write-link" href="/write/who.html">Write to Majlis</a>
-        </nav>
-        
-    </header>
-    <div class="full-width-wrapper write-wrapper">
-    <main class="centred write">
-        <div class="breadcrumb-container container">
-    
-    <ul class="breadcrumb draft">
-    
-        <li><a class="who" href="/write/who.html">Select recipients</a></li>
-        <li><a class="draft" href="/write/draft.html">Draft letter</a></li>
-        <li><a class="preview" href="/write/preview.html">Preview letter</a></li>
-        <li><a class="confirmation" href="/write/confirmation.html">Send letter</a></li>
-    </ul>
-</div>
-
-        <h1>Draft letter</h1>
-        <form class="write-form draft container" action="/write/preview.html">
-            <label class="label" for="recipient">Recipient</label>
-<select multiple="multiple" class="recipient chosen-select chosen-rtl" id="recipient" name="recipient" aria-label="Letter recipient" data-placeholder=" ">
-    <option value="50792">Adam Allan</option>
-    <option value="46636">Adam Gill</option>
-    <option value="48839">Adam Hain</option>
-    <option value="47787">Adam Meyer</option>
-    <option value="49877">Adam Michael Kovalevs</option>
-    <option value="47937">Adam Sherwood</option>
-    <option value="43392">Adele Heasman</option>
-    <option value="47793">Adriaan Sakko</option>
-    <option value="47435">Adrian Raedel</option>
-    <option value="47628">Adrian Rosevear</option>
-    <option value="47307">Adrian Schrinner</option>
-    <option value="47828">Adrian Shackley</option>
-    <option value="47630">Adriana Christopoulos</option>
-    <option value="48258">Agapios (Peter) Rentoulis</option>
-    <option value="48228">Airlie Keen</option>
-    <option value="48146">Al Medwin</option>
-    <option value="50829">Alan Barr</option>
-    <option value="43151">Alan Haselden</option>
-    <option value="48224">Alan Headon</option>
-    <option value="47845">Alan Hill</option>
-    <option value="42916">Alan Karanouh</option>
-    <option value="43386">Alan Le Surf</option>
-    <option value="42664">Alan Pendleton</option>
-    <option value="42602">Alan Purtill</option>
-    <option value="42906">Alan White</option>
-    <option value="48236">Alan Zubrinich</option>
-    <option value="42806">Alana Matheson</option>
-    <option value="48128">Albert van Zetten</option>
-    <option value="48737">Albert van Zetten</option>
-    <option value="48198">Alex Antic</option>
-    <option value="43350">Ali Karnib</option>
-    <option value="48215">Alice Campbell</option>
-    <option value="42555">Alice Glachan</option>
-    <option value="43078">Alison Balind</option>
-    <option value="48336">Alison Bowman</option>
-    <option value="47705">Allan Aughey OAM</option>
-    <option value="47994">Allan Dunsford</option>
-    <option value="42679">Allan Ewin</option>
-    <option value="47971">Allan Maddocks</option>
-    <option value="43504">Allan Robinson</option>
-    <option value="42849">Allan Stapleford</option>
-    <option value="47702">Allan Suter</option>
-    <option value="47434">Allan Sutherland</option>
-    <option value="47966">Allen Harris</option>
-    <option value="48066">Alvwyn Boyd</option>
-    <option value="48141">Alwyn Friedersdorff</option>
-    <option value="50912">Amanda Camm</option>
-    <option value="47308">Amanda Cooper</option>
-    <option value="46457">Amanda Stapledon</option>
-    <option value="46954">Amanda Stone</option>
-    <option value="47616">Amanda Wilson</option>
-    <option value="46374">Amy Johnson</option>
-    <option value="48318">Andrea Broadfoot</option>
-    <option value="42653">Andrea O&#39;Neill</option>
-    <option value="43505">Andrea Rufo</option>
-    <option value="47395">Andrew Antoniolli</option>
-    <option value="48230">Andrew Baltensperger</option>
-    <option value="48156">Andrew Cameron</option>
-    <option value="49297">Andrew Charles Sullivan</option>
-    <option value="47665">Andrew Connor</option>
-    <option value="47939">Andrew Craig</option>
-    <option value="43899">Andrew Cusack</option>
-    <option value="47714">Andrew Dawes</option>
-    <option value="46779">Andrew Dixon</option>
-    <option value="48331">Andrew Grieger</option>
-    <option value="43147">Andrew Jefferies</option>
-    <option value="47627">Andrew Kassebaum</option>
-    <option value="47900">Andrew Lee</option>
-    <option value="42565">Andrew Murat</option>
-    <option value="47601">Andrew Stratford</option>
-    <option value="47639">Andrew Tilley</option>
-    <option value="43573">Andrew Wilson</option>
-    <option value="47309">Andrew Wines</option>
-    <option value="46963">Andy Witlox</option>
-    <option value="43897">Angela Burrill</option>
-    <option value="48161">Angela Keneally</option>
-    <option value="50789">Angela Owen</option>
-    <option value="46355">Angela Vithoulkas</option>
-    <option value="48067">Anita Dow</option>
-    <option value="47888">Ann Ferguson</option>
-    <option value="47809">Ann Johnston</option>
-    <option value="43974">Ann Martin</option>
-    <option value="42635">Ann Mawhinney</option>
-    <option value="48821">Ann-Maree Greaney</option>
-    <option value="47695">Anna Leombruno</option>
-    <option value="47522">Anne Glasheen</option>
-    <option value="50864">Anne Maddern</option>
-    <option value="47686">Anne Monceaux</option>
-    <option value="47562">Anne Moran</option>
-    <option value="43082">Anne Napoli</option>
-    <option value="47881">Anne Picard</option>
-    <option value="46780">Anne Shaw</option>
-    <option value="47670">Anne Woolford</option>
-    <option value="47584">Anne-Marie Hubycz</option>
-    <option value="42688">Annette Bennett</option>
-    <option value="47622">Annette Bradshaw</option>
-    <option value="48130">Annette Waddle</option>
-    <option value="42799">Anoulack Chanthivong</option>
-    <option value="42658">Anthony Bleasdale</option>
-    <option value="48015">Anthony Lapidge</option>
-    <option value="42696">Anton von Schulenburg</option>
-    <option value="46785">Antonella Celi</option>
-    <option value="46705">Arron Wood</option>
-    <option value="48540">Arron Wood</option>
-    <option value="48040">Arthur Mangos</option>
-    <option value="48088">Ashley Popowski</option>
-</select>
-<noscript>
-    <p class="multiple-select-instructions"><strong>Note:</strong> Hold down the Ctrl/Cmd key to select multiple recipients.</p>
-</noscript>
-
-            <label for="subject">Subject</label>
-            <input class="input" id="subject" name="subject" />
-
-            <label for="letter">Letter</label>
-            <textarea class="letter-content input" id="letter" name="letter"></textarea>
-
-            <div class="container half-width name">
-                <label class="name" for="name">Your name</label>
-                <input class="name input" id="name" name="name" />
+        <div class="row">
+            <div class="col-sm-6">
+                <p class="form-group">
+                    <label for="id_draft-author_name" class="label-with-hint">
+                        {% trans "Your name" %}
+                        <small>{% trans "This will be published, on this site." %}</small>
+                        </label>
+                    {{ form.author_name.errors }}
+                    {{ form.author_name }}
+                </p>
             </div>
-            <div class="container half-width email">
-                <label class="email" for="email">Your email</label>
-                <input class="email input" id="email" name="email" />
+            <div class="col-sm-6">
+                <p class="form-group">
+                    <label for="id_draft-author_email" class="label-with-hint">
+                        {% trans "Your email" %}
+                        <small>{% trans "Nobody will see this, ever." %}</small>
+                    </label>
+                    {{ form.author_email.errors }}
+                    {{ form.author_email }}
+                </p>
             </div>
+        </div>
 
-            <div class="agree-public container">
-                <input type="checkbox" id="agree-public" name="agree-public" />
-                <label for="agree-public">This letter will be shared publicly.</label>
-            </div>
+        <p class="writing-buttons">
+            <a class="writing-buttons__button--previous" href="{% url 'write_message_step' step=wizard.steps.prev %}">
+                {% blocktrans count counter=writeitinstance.config.maximum_recipients %}
+                    Change recipient
+                {% plural %}
+                    Change recipients
+                {% endblocktrans %}
+            </a>
+            <input class="writing-buttons__button--next" type="submit" value="{% trans "Preview message" %}"/>
+        </p>
+    </form>
 
-            <div class="instructions container">
-                <p>Please be polite, concise and to the point; if you abuse your councillor you devalue the service for all users. It’s a waste of time writing to councillors other than your own; your letter will be ignored.</p>
-                <p>Do not write confidential or identifiable information into the body of the letter.</p>
-            </div>
-
-            <button class="button filled forward" type="submit">Preview letter</button>
-            <button class="button greyed back" type="submit">Change recipient</button>
-        </form>
     </main>
-</div>
-
-    <footer class="footer full-width-wrapper">
-        <nav class="navbar">
-            <ul>
-    <li>
-        <a href="/index.html">Home</a>
-    </li>
-    <li>
-        <a href="/about.html">About</a>
-    </li>
-</ul>
-
-        </nav>
-    </footer>
-
-    
-    <script type="text/javascript" src="/libraries/jquery-1.12.4.min.js"></script>
-    <script type="text/javascript" src="/libraries/chosen-1.6.1.min.js"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('.recipient').chosen();
-        });
-    </script>
-    
-</body>
-</html>
+  </div>
+{% endblock content_inner %}
