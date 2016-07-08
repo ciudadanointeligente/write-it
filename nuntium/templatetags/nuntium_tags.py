@@ -1,6 +1,9 @@
 import os
+import re
 from django import template
 from django.conf import settings
+from django.core.exceptions import SuspiciousOperation
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.staticfiles import finders
 from contactos.models import Contact
 from django.db.models import Q
@@ -47,6 +50,12 @@ def custom_stylesheet(context):
         subdomain = context['request'].subdomain
     except AttributeError:
         return output
+
+    if not subdomain:
+        return output
+
+    if re.search(r'[^_a-zA-Z0-9\-]', subdomain):
+        raise SuspiciousOperation(_('Invalid subdomain for custom CSS'))
 
     path = os.path.join(subdomain, 'css/custom.css')
     file_path = finders.find(path)
