@@ -1,0 +1,60 @@
+{% extends "base_instance.html" %}
+{% load nuntium_tags %}
+{% load subdomainurls %}
+{% load i18n %}
+
+{% block content_inner %}
+
+    <div class="full-width-wrapper">
+    <div class="centred">
+
+  {% if user_came_via_confirmation_link %}
+
+    {% include "write/breadcrumb.html" with current_step=5 %}
+
+    <div class="writing-step">
+        <div class="writing-step__congratulations">
+            <h2>{% trans "Your message is on its way." %}</h2>
+            <p>{% trans "We'll email you as soon as there‘s a reply." %}
+            <p>{% trans "We’ve published it too: your letter and any replies will be visible to everyone, on this page." %}</p>
+        </div>
+
+        {% include "thread/message.html" with recently_sent=True person_links=True message=message %}
+        <p class="thread__messages__no-replies">{% trans "Future replies will be published here." %}</p>
+
+        <div class="post-message-actions">
+            <a href="{% url 'message_threads' subdomain=writeitinstance.slug %}" class="post-message-actions__back">{% trans "Back to all messages" %}</a>
+        </div>
+    </div>
+
+  {% else %}
+
+        <article class="view container">
+            <h1>{{ message.subject }}</h1>
+
+            {% include "thread/message.html" with person_links=True message=message %}
+
+            {% for answer in message.answers.all %}
+              {% include "thread/answer.html" with person_links=True answer=answer original=answer.message %}
+            {% empty %}
+              <p class="thread__messages__no-replies">{% trans "Future replies will be published here." %}</p>
+            {% endfor %}
+
+        <div class="thread__actions">
+          <h3 class="thead__actions__heading">{% trans "Actions" %}</h3>
+            <ul>
+              <li><a href="{% url 'message_threads' subdomain=writeitinstance.slug %}">{% trans "Back to all messages" %}</a></li>
+              {% comment "Commenting out the report part until we know the best way to solve this" %}
+              <li><a href="#">{% trans "Report for abuse" %}</a></li>
+              {% endcomment %}
+            </ul>
+        </div>
+
+        </article>
+
+  {% endif %}
+
+    </div>
+</div>
+
+{% endblock content_inner %}
