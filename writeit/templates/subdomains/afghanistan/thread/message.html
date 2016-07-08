@@ -1,0 +1,38 @@
+{% load i18n %}
+
+            <div class="letter-view container">
+                <div class="address">
+
+                    <p><span>{% trans "To" %}: </span>
+          {% for person in message.people %}
+            {% if person_links %}
+              <a href="{% url 'thread_to' pk=person.pk %}" title="{% blocktrans with name=person.name %}Show all messages to {{ name }}{% endblocktrans %}">{{ person.name }}</a>{% if not forloop.last %},{% endif %}
+            {% else %}
+              {{ person.name }}{% if not forloop.last %},{% endif %}
+            {% endif %}
+          {% empty %}
+            &nbsp;
+          {% endfor %}
+                    </p>
+
+                    <p><span>{% trans "From" %}: </span>
+        {% if person_links %}
+          <a href="{% url 'all-messages-from-the-same-author-as' message_slug=message.slug %}" title="{% blocktrans with name=message.author_name %}Show all messages from {{ name }}{% endblocktrans %}">{{ message.author_name }}</a>
+          {% else %}
+            {{ message.author_name }}
+          {% endif %}
+
+          {% if recently_sent %}
+            <small class="text-muted">({% trans "Recipients will not see your email address" %})</small>
+          {% endif %}
+                    </p>
+
+                    <p><span>{% trans "Subject" %}: </span>{{ message.subject }}</p>
+
+        {% if message.created %}
+                    <p><span>{% trans "Date" %}: </span>{{ message.created }}</p>
+        {% endif %}
+
+              </div>
+              <div class="content">{{ message.content|linebreaksbr }}</div>
+            </div>
