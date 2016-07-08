@@ -6,6 +6,7 @@ from django.db import models
 from django.utils.translation import override, ugettext_lazy as _
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from popit.models import Person
+from popolo.models import Person as PopoloPerson
 from contactos.models import Contact
 from .plugins import OutputPlugin
 from django.contrib.contenttypes.models import ContentType
@@ -318,6 +319,7 @@ class Answer(models.Model):
     content = models.TextField()
     content_html = models.TextField()
     person = models.ForeignKey(Person)
+    popolo_person = models.ForeignKey(PopoloPerson, null=True, blank=True)
     message = models.ForeignKey(Message, related_name='answers')
     created = models.DateTimeField(auto_now=True, null=True)
 
@@ -436,6 +438,7 @@ class AbstractOutboundMessage(models.Model):
 
 class NoContactOM(AbstractOutboundMessage):
     person = models.ForeignKey(Person)
+    popolo_person = models.ForeignKey(PopoloPerson, null=True, blank=True)
 
 
 # This will happen everytime a contact is created

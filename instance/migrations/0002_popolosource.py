@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('popolo', '0003_auto_20160708_0338'),
+        ('popolo', '0002_update_models_from_upstream'),
         ('instance', '0001_initial'),
     ]
 
