@@ -65,6 +65,7 @@ class SeeAllMessagesFromAPersonTestCase(TestCase):
         self.assertIn('message_list', response.context)
         self.assertEquals(len(response.context['message_list']), 1)
         self.assertEquals(response.context['message_list'][0].id, 2)
+        self.assertNotIn('because it is anonymous', response.content)
 
     @skip("we don't allow links to all authors for anonymous messages")
     def test_non_anonymous_messages_not_listed_from_anonymous_link(self):
@@ -86,6 +87,8 @@ class SeeAllMessagesFromAPersonTestCase(TestCase):
         self.assertIn('message_list', response.context)
         self.assertEquals(len(response.context['message_list']), 1)
         self.assertEquals(response.context['message_list'][0].id, self.anonymous_message.id)
+        self.assertIn('because it is anonymous', response.content)
+        self.assertNotIn('Content 1', response.content)
 
     def test_anonymous_messages_are_404(self):
         self.anonymous_message = Message.objects.create(subject=u"A message",
