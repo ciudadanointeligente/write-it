@@ -188,8 +188,10 @@ class ConfirmView(RedirectView):
 
 
 class RootRedirectView(RedirectView):
-    def get_redirect_url(self, **kwargs):
 
+    permanent = False
+
+    def get_redirect_url(self, **kwargs):
         url = reverse("home")
         return url
 
