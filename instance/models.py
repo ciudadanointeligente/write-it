@@ -23,7 +23,7 @@ class WriteItInstance(models.Model):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=512, blank=True)
     slug = AutoSlugField(populate_from='name', unique=True)
-    popolo_persons = models.ManyToManyField(PopoloPerson,
+    persons = models.ManyToManyField(PopoloPerson,
         related_name='writeit_instances',
         through='InstanceMembership')
     owner = models.ForeignKey(User, related_name="writeitinstances")
