@@ -16,7 +16,7 @@ class PersonInline(admin.TabularInline):
 
 
 class MembershipInline(admin.TabularInline):
-    model = WriteItInstance.popolo_persons.through
+    model = WriteItInstance.persons.through
 
 
 class NewAnswerNotificationTemplateAdmin(admin.TabularInline):
