@@ -1,5 +1,4 @@
 from django.db import models
-from popit.models import Person
 from popolo.models import Person as PopoloPerson
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
@@ -22,7 +21,6 @@ class ContactType(models.Model):
 class Contact(models.Model):
     """docstring for Contact"""
     contact_type = models.ForeignKey('ContactType')
-    person = models.ForeignKey(Person)
     popolo_person = models.ForeignKey(PopoloPerson)
     value = models.CharField(max_length=512)
     is_bounced = models.BooleanField(default=False)

@@ -318,7 +318,6 @@ pre_save.connect(slugify_message, sender=Message)
 class Answer(models.Model):
     content = models.TextField()
     content_html = models.TextField()
-    person = models.ForeignKey(Person)
     popolo_person = models.ForeignKey(PopoloPerson)
     message = models.ForeignKey(Message, related_name='answers')
     created = models.DateTimeField(auto_now=True, null=True)
@@ -437,7 +436,6 @@ class AbstractOutboundMessage(models.Model):
 
 
 class NoContactOM(AbstractOutboundMessage):
-    person = models.ForeignKey(Person)
     popolo_person = models.ForeignKey(PopoloPerson)
 
 
