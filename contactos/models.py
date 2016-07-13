@@ -23,7 +23,7 @@ class Contact(models.Model):
     """docstring for Contact"""
     contact_type = models.ForeignKey('ContactType')
     person = models.ForeignKey(Person)
-    popolo_person = models.ForeignKey(PopoloPerson, null=True, blank=True)
+    popolo_person = models.ForeignKey(PopoloPerson)
     value = models.CharField(max_length=512)
     is_bounced = models.BooleanField(default=False)
     owner = models.ForeignKey(User, related_name="contacts", null=True)
