@@ -43,7 +43,7 @@ mock==1.0.1
 ndg-httpsclient==0.4.1
 nose==1.3.7
 oauthlib==1.1.2
--e git://github.com/mysociety/popit-django.git@94accb3fc38d2205f298e7177f6f1a206707288b#egg=popit_django
+-e git://github.com/mysociety/popit-django.git@django-1.7#egg=popit-django
 pyasn1==0.1.9
 pycparser==2.14
 PyJWT==1.4.0
