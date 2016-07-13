@@ -23,9 +23,6 @@ class WriteItInstance(models.Model):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=512, blank=True)
     slug = AutoSlugField(populate_from='name', unique=True)
-    persons = models.ManyToManyField(Person,
-        related_name='writeit_instances',
-        through='Membership')
     popolo_persons = models.ManyToManyField(PopoloPerson,
         related_name='writeit_instances',
         through='InstanceMembership')
@@ -113,11 +110,6 @@ class WriteItInstance(models.Model):
 
     def __unicode__(self):
         return self.name
-
-
-class Membership(models.Model):
-    person = models.ForeignKey(Person)
-    writeitinstance = models.ForeignKey(WriteItInstance)
 
 
 class InstanceMembership(models.Model):
