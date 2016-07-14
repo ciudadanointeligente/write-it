@@ -4,15 +4,11 @@ from .models import Message, OutboundMessage, MessageRecord, \
     Answer, AnswerWebHook, NewAnswerNotificationTemplate, \
     ConfirmationTemplate
 
-from instance.models import WriteItInstance
-from popit.models import ApiInstance, Person
+from instance.models import PopoloSource, WriteItInstance
 from mailit.models import MailItTemplate
+from popolo.models import Person
 from django_object_actions import DjangoObjectActions
 from nuntium.forms import WriteItInstanceCreateFormPopitUrl
-
-
-class PersonInline(admin.TabularInline):
-    model = Person
 
 
 class MembershipInline(admin.TabularInline):
@@ -106,14 +102,9 @@ class MessageRecordAdmin(admin.ModelAdmin):
 admin.site.register(MessageRecord, MessageRecordAdmin)
 
 
-class ApiInstanceAdmin(admin.ModelAdmin):
+class PopoloSourceAdmin(admin.ModelAdmin):
     pass
-admin.site.register(ApiInstance, ApiInstanceAdmin)
-
-
-class PersonAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(Person, PersonAdmin)
+admin.site.register(PopoloSource, PopoloSourceAdmin)
 
 
 class NewAnswerNotificationTemplateAdmin(admin.ModelAdmin):
