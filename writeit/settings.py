@@ -207,7 +207,11 @@ INSTALLED_APPS = (
     'nuntium',
     'djangoplugins',
     'pagination',
+
+    # Although django-popit is unused now, we need to keep it
+    # installed because the earlier migrations depend on it presence.
     'popit',
+
     'popolo',
     'contactos',
     'mailit',
