@@ -281,8 +281,16 @@ h1, h2, h3, h4, h5 {
 
 .header {
     background-color: #6C65C9;
-    float: right;
-    width: 100%;
+}
+
+.site-alert .container {
+    width: auto;
+    float: none;
+}
+
+.site-alert__description {
+    float: none;
+    width: auto;
 }
 
 /* ====================
