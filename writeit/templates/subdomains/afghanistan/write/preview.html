@@ -12,9 +12,8 @@
 
     {% include "write/breadcrumb.html" with current_step=3 %}
 
-    <h1>Preview letter</h1>
-
     <div class="writing-step">
+        <h1>Preview letter</h1>
         <!-- :TODO: break this out into separate template, so we can re-use it on message/thread viewing pages -->
         {% include "thread/message.html" with message=message %}
         <div class="privacy-reminder">
