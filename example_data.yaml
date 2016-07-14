@@ -60,20 +60,46 @@
 - fields: {contact: 1, message: 4, site: 1}
   model: nuntium.outboundmessage
   pk: 5
-- fields: {url: 'http://popit.org/api/v1'}
-  model: popit.apiinstance
+- fields:
+    url: 'http://popit.org/api/v1'
+  model: popolo_sources.popolosource
   pk: 1
-- fields: {url: 'http://popit.mysociety.org/api/v1/'}
-  model: popit.apiinstance
+- fields:
+    url: 'http://popit.mysociety.org/api/v1/'
+  model: popolo_sources.popolosource
   pk: 2
-- fields: {api_instance: 1, name: Pedro, popit_url: 'http://popit.mysociety.org/api/v1/persons/1', popit_id: '52bc7asdasd34567'}
-  model: popit.person
+
+- model: popolo_sources.linktopopolosource
+  fields:
+    popolo_source: 1
+    deleted_from_source: false
+    content_type: [popolo, person]
+    object_id: 1
   pk: 1
-- fields: {api_instance: 2, name: Marcel, popit_url: 'http://popit.mysociety.org/api/v1/persons/2', popit_id: '52bc7asdasd34568'}
-  model: popit.person
+- model: popolo_sources.linktopopolosource
+  fields:
+    popolo_source: 2
+    deleted_from_source: false
+    content_type: [popolo, person]
+    object_id: 2
   pk: 2
-- fields: {api_instance: 2, name: Felipe, popit_url: 'http://popit.mysociety.org/api/v1/persons/3', popit_id: '52bc7asdasd34569'}
-  model: popit.person
+- model: popolo_sources.linktopopolosource
+  fields:
+    popolo_source: 2
+    deleted_from_source: false
+    content_type: [popolo, person]
+    object_id: 3
+  pk: 2
+
+
+- fields: {name: Pedro}
+  model: popolo.person
+  pk: 1
+- fields: {name: Marcel}
+  model: popolo.person
+  pk: 2
+- fields: {name: Felipe}
+  model: popolo.person
   pk: 3
 - fields: {content: Public Answer,message: 2,person: 1}
   model: nuntium.answer
@@ -82,10 +108,10 @@
   model: nuntium.answer
   pk: 2
 - fields: {person: 1, writeitinstance: 1}
-  model: instance.membership
+  model: instance.instancemembership
   pk: 1
 - fields: {person: 1, writeitinstance: 2}
-  model: instance.membership
+  model: instance.instancemembership
   pk: 2
 - fields: {label_name: Electronic Mail, name: e-mail}
   model: contactos.contacttype
@@ -102,3 +128,66 @@
 - fields: {contact_type: 1, person: 3, value: falvarez@ciudadanointeligente.cl, writeitinstance: 1}
   model: contactos.contact
   pk: 4
+- fields:
+    content_type: [popolo, person]
+    identifier: 52bc7asdasd34567
+    object_id: 1
+    scheme: popit_id
+  model: popolo.identifier
+  pk: 1
+- fields:
+    content_type: [popolo, person]
+    identifier: http://popit.mysociety.org/api/v1/persons/1
+    object_id: 1
+    scheme: popit_url
+  model: popolo.identifier
+  pk: 2
+- fields:
+    content_type: [popolo, person]
+    identifier: 52bc7asdasd34567
+    object_id: 1
+    scheme: popolo:person
+  model: popolo.identifier
+  pk: 3
+- fields:
+    content_type: [popolo, person]
+    identifier: 52bc7asdasd34568
+    object_id: 2
+    scheme: popit_id
+  model: popolo.identifier
+  pk: 4
+- fields:
+    content_type: [popolo, person]
+    identifier: http://popit.mysociety.org/api/v1/persons/2
+    object_id: 2
+    scheme: popit_url
+  model: popolo.identifier
+  pk: 5
+- fields:
+    content_type: [popolo, person]
+    identifier: 52bc7asdasd34568
+    object_id: 2
+    scheme: popolo:person
+  model: popolo.identifier
+  pk: 6
+- fields:
+    content_type: [popolo, person]
+    identifier: 52bc7asdasd34569
+    object_id: 3
+    scheme: popit_id
+  model: popolo.identifier
+  pk: 7
+- fields:
+    content_type: [popolo, person]
+    identifier: http://popit.mysociety.org/api/v1/persons/3
+    object_id: 3
+    scheme: popit_url
+  model: popolo.identifier
+  pk: 8
+- fields:
+    content_type: [popolo, person]
+    identifier: 52bc7asdasd34569
+    object_id: 3
+    scheme: popolo:person
+  model: popolo.identifier
+  pk: 9
