@@ -210,6 +210,7 @@ h1, h2, h3, h4, h5 {
 .navbar {
     height: 5em;
     padding: 1em;
+    margin-bottom: 0;
     line-height: 4em;
     background-color: #001635;
 }
@@ -408,6 +409,18 @@ h1, h2, h3, h4, h5 {
     float: left;
     color: #939598;
     text-transform: uppercase;
+}
+.letter-list-item .container {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.thread__actions {
+  width: auto;
+  padding: 0;
+  float: none;
+  left: auto;
+  margin-top: 2em;
 }
 
 /* ==============
