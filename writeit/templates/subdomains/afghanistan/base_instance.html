@@ -28,22 +28,8 @@
     <a class="write-link" href="{% url 'write_message' subdomain=writeitinstance.slug %}">Write to Majlis</a>
     {% endif %}
   </nav>
-
-  {% block promo %}
-  <div class="promo-wrapper full-width-wrapper">
-    <div class="promo centred">
-      <p>Write to your members of parliament.</p>
-      <p>Have your voice be heard.</p>
-      <div class="button-centring-container">
-        <a href="/write/who.html" class="button send-letter">Send letter</a>
-      </div>
-    </div>
-  </div>
-  {% endblock %}
-
 </header>
 
-{% comment %}
   {% if writeitinstance and not writeitinstance.config.allow_messages_using_form %}
     <div class="site-alert">
         <div class="container">
@@ -72,7 +58,18 @@
         </div>
     </div>
   {% endif %}
-  {% endcomment %}
+
+  {% block promo %}
+  <div class="promo-wrapper full-width-wrapper">
+    <div class="promo centred">
+      <p>Write to your members of parliament.</p>
+      <p>Have your voice be heard.</p>
+      <div class="button-centring-container">
+        <a href="/write/who.html" class="button send-letter">Send letter</a>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
 
 {% endblock header %}
 
