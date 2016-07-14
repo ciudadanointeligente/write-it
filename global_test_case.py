@@ -6,7 +6,6 @@ from django.core.management import call_command
 from tastypie.test import ResourceTestCase
 from django.conf import settings
 from django.contrib.sites.models import Site
-from popit.tests import instance_helpers
 import os
 import subprocess
 import threading
