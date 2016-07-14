@@ -6,7 +6,7 @@
     <script src="{% static 'js/chosen.jquery.min.js' %}"></script>
 {% endblock extrascripts %}
 {% block extrajs %}
-    $(".chosen-person-select").chosen({
+    $(".chosen-person-select").addClass('chosen-rtl').chosen({
       width: '100%',
       max_selected_options: {{ writeitinstance.config.maximum_recipients }},
       no_results_text: '{% trans "No recipients match" %}',
