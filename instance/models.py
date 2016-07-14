@@ -18,7 +18,7 @@ from subdomains.utils import reverse
 
 class PopoloSource(models.Model):
     url = models.URLField(max_length=255)
-    persons = models.ManyToManyField(PopoloPerson)
+    persons = models.ManyToManyField(PopoloPerson, related_name='popolo_sources')
 
 
 class WriteItInstance(models.Model):
