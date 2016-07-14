@@ -30,8 +30,8 @@
         {% include "write/breadcrumb.html" with current_step=1 %}
       </div>
 
-      <h1>Select recipients</h1>
       <form class="write-form who container" action="" method="post">{% csrf_token %}
+        <h1>Select recipients</h1>
         {{ wizard.management_form }}
         <p class="form-group">
             <label for="id_who-persons">

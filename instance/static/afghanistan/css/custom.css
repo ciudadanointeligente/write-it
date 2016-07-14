@@ -657,3 +657,26 @@ h1, h2, h3, h4, h5 {
 .view {
     margin: 2em 0 4em 0;
 }
+
+
+
+/* TODO: This right-to-left support should be refactored into core. */
+.writing-buttons__button--previous {
+  float: right;
+}
+
+.writing-buttons__button--next {
+  float: left;
+}
+
+.writing-buttons__button--previous:before {
+  content: "\f054"; /* fa-chevron-right */
+  margin-right: 0;
+  margin-left: 0.5em;
+}
+
+.writing-buttons__button--next:before {
+  content: "\f053"; /* fa-chevron-left */
+  margin-left: 0;
+  margin-right: 0.5em;
+}
