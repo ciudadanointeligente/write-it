@@ -152,7 +152,6 @@ class WriteitInstancePopitInstanceRecord(models.Model):
         ("inprogress", _("In Progress")),
         )
     writeitinstance = models.ForeignKey(WriteItInstance)
-    popitapiinstance = models.ForeignKey(ApiInstance)
     popolo_source = models.ForeignKey(PopoloSource)
     periodicity = models.CharField(
         max_length="2",
