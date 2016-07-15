@@ -101,12 +101,6 @@
 - fields: {name: Felipe}
   model: popolo.person
   pk: 3
-- fields: {content: Public Answer,message: 2,person: 1}
-  model: nuntium.answer
-  pk: 1
-- fields: {content: Private Answer,message: 3,person: 1}
-  model: nuntium.answer
-  pk: 2
 - fields: {person: 1, writeitinstance: 1}
   model: instance.instancemembership
   pk: 1
@@ -191,3 +185,9 @@
     scheme: popolo:person
   model: popolo.identifier
   pk: 9
+- fields: {content: Public Answer,message: 2,person: 1}
+  model: nuntium.answer
+  pk: 1
+- fields: {content: Private Answer,message: 3,person: 1}
+  model: nuntium.answer
+  pk: 2

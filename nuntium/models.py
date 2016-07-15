@@ -391,8 +391,10 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
             'message_id': '/api/v1/message/{0}/'.format(answer.message.id),
             'content': answer.content,
             'person': answer.person.name,
-            'person_id': answer.person.popit_url,
-            }
+            'person_id': answer.person.uri_for_api(),
+            'person_id_in_popolo_source': answer.person.id_in_popolo_source,
+            'person_popolo_source_url': answer.person.popolo_source_url,
+        }
 
         for webhook in writeitinstance.answer_webhooks.all():
             requests.post(webhook.url, data=payload)
