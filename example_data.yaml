@@ -60,19 +60,23 @@
 - fields: {contact: 1, message: 4, site: 1}
   model: nuntium.outboundmessage
   pk: 5
-- fields: {url: 'http://popit.org/api/v1'}
+- fields:
+    persons: [1]
+    url: 'http://popit.org/api/v1'
   model: instance.popolosource
   pk: 1
-- fields: {url: 'http://popit.mysociety.org/api/v1/'}
+- fields:
+    persons: [2, 3]
+    url: 'http://popit.mysociety.org/api/v1/'
   model: instance.popolosource
   pk: 2
-- fields: {popolo_sources: [1], name: Pedro}
+- fields: {name: Pedro}
   model: popolo.person
   pk: 1
-- fields: {popolo_sources: [2], name: Marcel}
+- fields: {name: Marcel}
   model: popolo.person
   pk: 2
-- fields: {popolo_sources: [2], name: Felipe}
+- fields: {name: Felipe}
   model: popolo.person
   pk: 3
 - fields: {content: Public Answer,message: 2,person: 1}
@@ -82,10 +86,10 @@
   model: nuntium.answer
   pk: 2
 - fields: {person: 1, writeitinstance: 1}
-  model: instance.membership
+  model: instance.instancemembership
   pk: 1
 - fields: {person: 1, writeitinstance: 2}
-  model: instance.membership
+  model: instance.instancemembership
   pk: 2
 - fields: {label_name: Electronic Mail, name: e-mail}
   model: contactos.contacttype

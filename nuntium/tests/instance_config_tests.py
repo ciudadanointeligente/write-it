@@ -1,8 +1,8 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from instance.models import Membership, WriteItInstance, WriteItInstanceConfig
+from instance.models import InstanceMembership, WriteItInstance, WriteItInstanceConfig
 from nuntium.models import Message
-from popit.models import ApiInstance, Person
+from popolo.models import Person
 from django.contrib.auth.models import User
 from mailit import MailChannel
 from contactos.models import Contact
@@ -85,7 +85,7 @@ class TestingModeTestCase(TestCase):
             name='instance 1',
             slug='instance-1',
             owner=self.owner)
-        Membership.objects.create(writeitinstance=self.writeitinstance, person=self.person1)
+        InstanceMembership.objects.create(writeitinstance=self.writeitinstance, person=self.person1)
 
         self.channel = MailChannel()
         self.contact = Contact.objects.create(

@@ -2,7 +2,7 @@
 from urlparse import urlsplit, urlunsplit
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from subdomains.utils import reverse
-from instance.models import Membership, WriteItInstance
+from instance.models import InstanceMembership, WriteItInstance
 from nuntium.models import Message, Confirmation
 from popit.models import ApiInstance, Person
 from django.utils.unittest import skip
@@ -108,7 +108,7 @@ class InstanceTestCase(TestCase):
     def test_membership(self):
         writeitinstance = WriteItInstance.objects.create(name=u'instance 1', slug=u'instance-1', owner=self.owner)
 
-        Membership.objects.create(writeitinstance=writeitinstance, person=self.person1)
+        InstanceMembership.objects.create(writeitinstance=writeitinstance, person=self.person1)
         self.assertEquals(writeitinstance.persons.get(id=self.person1.id), self.person1)
         self.assertEquals(self.person1.writeit_instances.get(id=writeitinstance.id), writeitinstance)
 

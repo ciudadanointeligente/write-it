@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand
-from popit.models import ApiInstance
 from instance.models import WriteitInstancePopitInstanceRecord
 from django.contrib.auth.models import User
 import logging

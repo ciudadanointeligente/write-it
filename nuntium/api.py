@@ -10,7 +10,7 @@ from django.conf.urls import url
 from tastypie import fields
 from tastypie.exceptions import ImmediateHttpResponse
 from tastypie import http
-from popit.models import Person
+from popolo.models import Person
 from contactos.models import Contact
 from tastypie.paginator import Paginator
 from django.http import Http404, HttpResponseBadRequest
