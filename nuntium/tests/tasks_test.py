@@ -4,7 +4,7 @@ from instance.models import WriteItInstance, WriteitInstancePopitInstanceRecord
 from nuntium.models import OutboundMessage
 from ..tasks import send_mails_task
 from mock import patch
-from popit.models import Person
+from popolo.models import Person
 from nuntium.popit_api_instance import PopitApiInstance
 from django.contrib.auth.models import User
 from django.conf import settings

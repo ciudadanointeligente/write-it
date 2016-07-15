@@ -5,7 +5,7 @@ from plugin_mock.mental_message_plugin import MentalMessage
 from contactos.models import Contact
 # from djangoplugins.models import Plugin
 from django.contrib.auth.models import User
-from popit.models import Person
+from popolo.models import Person
 '''
 This testcase is intented to test the OutboundMessageRecord model
 and it's creation when sending an outbound_message, the calculation of

@@ -2,7 +2,7 @@ from subdomains.utils import reverse
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.test.client import RequestFactory
-from popit.models import Person
+from popolo.models import Person
 from mailit.forms import MailitTemplateForm
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 

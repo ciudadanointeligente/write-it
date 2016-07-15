@@ -11,7 +11,7 @@ from django.template import Context, Template
 from django.test.utils import override_settings
 
 from contactos.models import Contact, ContactType
-from popit.models import Person
+from popolo.models import Person
 
 import codecs
 import os

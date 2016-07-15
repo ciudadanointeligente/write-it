@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.forms import Form, URLField
 from django.conf import settings
 from django.core.management import call_command
-from popit.models import Person, ApiInstance
+from popolo.models import Person, ApiInstance
 from django.utils.unittest import skip
 from user_section_views_tests import UserSectionTestCase
 from django.utils.translation import ugettext as _

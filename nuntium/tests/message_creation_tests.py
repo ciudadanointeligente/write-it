@@ -3,7 +3,7 @@ from global_test_case import GlobalTestCase as TestCase
 from instance.models import WriteItInstance
 from nuntium.models import Message
 from subdomains.utils import reverse
-from popit.models import Person
+from popolo.models import Person
 from nuntium.forms import WhoForm, DraftForm
 
 

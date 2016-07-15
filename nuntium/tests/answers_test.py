@@ -1,6 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
 from ..models import Message, Answer
-from popit.models import Person
+from popolo.models import Person
 from django.utils.translation import ugettext as _
 
 
