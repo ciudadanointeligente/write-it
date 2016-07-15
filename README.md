@@ -37,13 +37,20 @@ Then run the development server with:
 
 And visit http://127.0.0.1.xip.io:8000 on your host machine to use WriteIt.
 
-You will also need to start a celery worker with:
+### Background jobs
 
     ./manage.py celery worker
 
-which will handle syncing contact details from popit instances. If you
+This handles syncing contact details from remote sources. If you
 have created a new instance and the contacts do not seem to be syncing
 it is probably because a celery worker is not running.
+
+### Scheduled jobs
+
+    ./manage.py celery beat
+
+This sends emails to politicians and periodically re-sync contacts from
+remote sources.
 
 
 Manual Installation (without Vagrant)
