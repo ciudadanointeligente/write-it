@@ -102,3 +102,66 @@
 - fields: {contact_type: 1, person: 3, value: falvarez@ciudadanointeligente.cl, writeitinstance: 1}
   model: contactos.contact
   pk: 4
+- fields:
+    content_type: [popolo, person]
+    identifier: 52bc7asdasd34567
+    object_id: 1
+    scheme: popit_id
+  model: popolo.identifier
+  pk: 1
+- fields:
+    content_type: [popolo, person]
+    identifier: http://popit.mysociety.org/api/v1/persons/1
+    object_id: 1
+    scheme: popit_url
+  model: popolo.identifier
+  pk: 2
+- fields:
+    content_type: [popolo, person]
+    identifier: 52bc7asdasd34567
+    object_id: 1
+    scheme: popolo_source_id
+  model: popolo.identifier
+  pk: 3
+- fields:
+    content_type: [popolo, person]
+    identifier: 52bc7asdasd34568
+    object_id: 2
+    scheme: popit_id
+  model: popolo.identifier
+  pk: 4
+- fields:
+    content_type: [popolo, person]
+    identifier: http://popit.mysociety.org/api/v1/persons/2
+    object_id: 2
+    scheme: popit_url
+  model: popolo.identifier
+  pk: 5
+- fields:
+    content_type: [popolo, person]
+    identifier: 52bc7asdasd34568
+    object_id: 2
+    scheme: popolo_source_id
+  model: popolo.identifier
+  pk: 6
+- fields:
+    content_type: [popolo, person]
+    identifier: 52bc7asdasd34569
+    object_id: 3
+    scheme: popit_id
+  model: popolo.identifier
+  pk: 7
+- fields:
+    content_type: [popolo, person]
+    identifier: http://popit.mysociety.org/api/v1/persons/3
+    object_id: 3
+    scheme: popit_url
+  model: popolo.identifier
+  pk: 8
+- fields:
+    content_type: [popolo, person]
+    identifier: 52bc7asdasd34569
+    object_id: 3
+    scheme: popolo_source_id
+  model: popolo.identifier
+  pk: 9
