@@ -49,7 +49,7 @@ it is probably because a celery worker is not running.
 
     ./manage.py celery beat
 
-This sends emails to politicians and periodically re-sync contacts from
+This sends emails to recipients and periodically re-sync contacts from
 remote sources.
 
 

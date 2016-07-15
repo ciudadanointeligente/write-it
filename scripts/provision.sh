@@ -60,6 +60,9 @@ Add some seed data to your instance with:
 Run a celery worker with:
   ./manage.py celery worker
 
+Run celery beat with:
+  ./manage.py celery beat
+
 Run the tests with:
   ./manage.py test nuntium contactos mailit
 
