@@ -2,14 +2,14 @@
   model: sites.site
   pk: 1
 - fields:
-    date_joined: 2013-04-26 21:09:22.224616+00:00
+    date_joined: '2013-04-26T21:09:22Z'
     email: admin@admines.cl
     first_name: 'Administrador del system'
     groups: []
     is_active: true
     is_staff: true
     is_superuser: true
-    last_login: 2013-06-10 16:06:46.989439+00:00
+    last_login: '2013-06-10T16:06:46Z'
     last_name: ''
     password: pbkdf2_sha256$10000$LoeTDV2yMCWT$fgkQ++r4O7wurfFSAtHT1/a9WTjb32cHq63dFgXU+rI=
     user_permissions: []
