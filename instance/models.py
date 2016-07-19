@@ -9,8 +9,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from annoying.fields import AutoOneToOneField
 from autoslug import AutoSlugField
-# from nuntium.popit_api_instance import PopitApiInstance
-# from popolo.models import Person, ApiInstance
 from popolo.models import Person as PopoloPerson
 from requests.exceptions import ConnectionError
 from subdomains.utils import reverse
@@ -50,7 +48,7 @@ class WriteItInstance(models.Model):
         except Exception, e:
             self.do_something_with_a_vanished_popit_api_instance(popit_api_instance)
             return (False, e)
-        persons = Person.objects.filter(api_instance=popit_api_instance)
+        persons = PopoloPerson.objects.filter(api_instance=popit_api_instance)
         for person in persons:
             # There could be several memberships created.
             memberships = InstanceMembership.objects.filter(writeitinstance=self, person=person)

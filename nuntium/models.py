@@ -168,7 +168,7 @@ class Message(models.Model):
 
     @property
     def people(self):
-        people = Person.objects.filter(
+        people = PopoloPerson.objects.filter(
             Q(contact__outboundmessage__message=self) |
             Q(nocontactom__message=self)
             ).distinct()
@@ -322,7 +322,7 @@ class Answer(models.Model):
     created = models.DateTimeField(auto_now=True, null=True)
 
     def save(self, *args, **kwargs):
-        memberships = self.message.writeitinstance.membership_set.filter(person=self.person)
+        memberships = self.message.writeitinstance.instancemembership_set.filter(person=self.person)
         if memberships.count() == 0:
             raise AttributeError(_("This guy does not belong here"))
         super(Answer, self).save(*args, **kwargs)

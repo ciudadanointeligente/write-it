@@ -1,12 +1,11 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from instance.models import (
-    Membership, WriteItInstance, WriteitInstancePopitInstanceRecord)
-from popit.models import ApiInstance
+    InstanceMembership, WriteItInstance, WriteitInstancePopitInstanceRecord,
+    PopoloSource)
 from django.utils.unittest import skip
 from django.contrib.auth.models import User
 from django.conf import settings
-from nuntium.popit_api_instance import PopitApiInstance
 from datetime import timedelta
 from django.utils import timezone
 from mock import patch, call
@@ -29,19 +28,19 @@ class PopitWriteitRelationRecord(TestCase):
     '''
     def setUp(self):
         self.writeitinstance = WriteItInstance.objects.first()
-        self.api_instance = ApiInstance.objects.first()
+        self.popolo_source = PopoloSource.objects.first()
         self.owner = User.objects.first()
 
     def test_instanciate(self):
         '''Instanciate a WriteitInstancePopitInstanceRelation'''
         record = WriteitInstancePopitInstanceRecord.objects.create(
             writeitinstance=self.writeitinstance,
-            popitapiinstance=self.api_instance,
+            popitapiinstance=self.popolo_source,
             )
 
         self.assertTrue(record)
         self.assertEquals(record.writeitinstance, self.writeitinstance)
-        self.assertEquals(record.popitapiinstance, self.api_instance)
+        self.assertEquals(record.popitapiinstance, self.popolo_source)
         self.assertTrue(record.updated)
         self.assertTrue(record.created)
         self.assertEquals(record.status, 'nothing')
@@ -52,7 +51,7 @@ class PopitWriteitRelationRecord(TestCase):
         '''A WriteitInstancePopitInstanceRelation has a __unicode__ method'''
         record = WriteitInstancePopitInstanceRecord.objects.create(
             writeitinstance=self.writeitinstance,
-            popitapiinstance=self.api_instance,
+            popitapiinstance=self.popolo_source,
             )
         expected_unicode = "The people from http://popit.org/api/v1 were loaded into instance 1"
         self.assertEquals(record.__unicode__(), expected_unicode)
@@ -67,7 +66,7 @@ class PopitWriteitRelationRecord(TestCase):
         writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
         writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
 
-        amount_of_memberships = Membership.objects.filter(writeitinstance=writeitinstance).count()
+        amount_of_memberships = InstanceMembership.objects.filter(writeitinstance=writeitinstance).count()
 
         # There are only 2
         self.assertEquals(amount_of_memberships, 2)
@@ -80,22 +79,22 @@ class PopitWriteitRelationRecord(TestCase):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         # there should be an amount of memberships
         writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
-        amount_of_memberships = Membership.objects.filter(writeitinstance=writeitinstance).count()
-        previous_memberships = list(Membership.objects.filter(writeitinstance=writeitinstance))
+        amount_of_memberships = InstanceMembership.objects.filter(writeitinstance=writeitinstance).count()
+        previous_memberships = list(InstanceMembership.objects.filter(writeitinstance=writeitinstance))
 
         person = writeitinstance.persons.all()[0]
 
         # Creating a new one
-        Membership.objects.create(writeitinstance=writeitinstance, person=person)
+        InstanceMembership.objects.create(writeitinstance=writeitinstance, person=person)
         try:
             with popit_load_data():
                 writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
-        except Membership.MultipleObjectsReturned, e:
-            self.fail("There are more than one Membership " + e)
+        except InstanceMembership.MultipleObjectsReturned, e:
+            self.fail("There are more than one InstanceMembership " + e)
 
         # It deletes the bad membership
-        new_amount_of_memberships = Membership.objects.filter(writeitinstance=writeitinstance).count()
-        later_memberships = list(Membership.objects.filter(writeitinstance=writeitinstance))
+        new_amount_of_memberships = InstanceMembership.objects.filter(writeitinstance=writeitinstance).count()
+        later_memberships = list(InstanceMembership.objects.filter(writeitinstance=writeitinstance))
         self.assertEquals(amount_of_memberships, new_amount_of_memberships)
         self.assertEquals(previous_memberships, later_memberships)
 
@@ -192,7 +191,7 @@ class PopitWriteitRelationRecord(TestCase):
         '''Setting the record status'''
         record = WriteitInstancePopitInstanceRecord.objects.create(
             writeitinstance=self.writeitinstance,
-            popitapiinstance=self.api_instance,
+            popitapiinstance=self.popolo_source,
             )
 
         record.set_status('error', 'Error 404')

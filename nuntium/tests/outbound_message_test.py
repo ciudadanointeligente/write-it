@@ -10,7 +10,7 @@ from ..models import Message, OutboundMessage, \
     NoContactOM, AbstractOutboundMessage
 from django.contrib.sites.models import Site
 
-from popolo.models import Person, ApiInstance
+from popolo.models import Person
 from mock import patch
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType

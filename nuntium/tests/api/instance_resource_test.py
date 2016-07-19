@@ -9,7 +9,6 @@ from global_test_case import popit_load_data
 from django.conf import settings
 import re
 from django.utils.encoding import force_text
-from nuntium.popit_api_instance import PopitApiInstance
 
 
 class InstanceResourceTestCase(ResourceTestCase):
