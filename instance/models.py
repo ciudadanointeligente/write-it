@@ -81,7 +81,7 @@ class WriteItInstance(models.Model):
                 record.set_status('error', error.message)
         return (success_relating_people, error)
 
-    def load_persons_from_a_popit_api(self, popit_url):
+    def load_persons_from_popolo_json(self, popit_url):
         '''This is an async wrapper for getting people from the api'''
         popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=popit_url)
         record, created = WriteitInstancePopitInstanceRecord.objects.get_or_create(

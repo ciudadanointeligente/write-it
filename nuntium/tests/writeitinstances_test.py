@@ -115,7 +115,7 @@ class InstanceTestCase(TestCase):
     def test_create_an_instance_and_load_persons_from_an_api(self):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
 
-        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        writeitinstance.load_persons_from_popolo_json(settings.TEST_POPIT_API_URL)
 
         self.assertEquals(writeitinstance.persons.all().count(), 2)
 
@@ -135,7 +135,7 @@ class InstanceTestCase(TestCase):
         this is the easyest to know if the method was used.
         '''
         with patch('nuntium.tasks.pull_from_popolo_json.delay') as async_pulling_from_popit:
-            writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+            writeitinstance.load_persons_from_popolo_json(settings.TEST_POPIT_API_URL)
             async_pulling_from_popit.assert_called_with(writeitinstance, popit_api_instance)
 
     @popit_load_data()
@@ -146,7 +146,7 @@ class InstanceTestCase(TestCase):
             'inprogress': 0,
             'success': 0,
             'error': 0})
-        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        writeitinstance.load_persons_from_popolo_json(settings.TEST_POPIT_API_URL)
         self.assertEquals(writeitinstance.pulling_from_popit_status,
             {
                 'nothing': 0,
@@ -163,7 +163,7 @@ class InstanceTestCase(TestCase):
 
         self.assertTrue(writeitinstance.config.allow_messages_using_form)
         self.assertFalse(writeitinstance.can_create_messages)
-        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        writeitinstance.load_persons_from_popolo_json(settings.TEST_POPIT_API_URL)
 
         email_type = ContactType.objects.get(id=1)
         person = Person.objects.get(id=1)

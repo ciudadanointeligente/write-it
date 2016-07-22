@@ -277,7 +277,7 @@ class RelatePopitInstanceWithWriteItInstance(Form, PopitParsingFormMixin):
         super(RelatePopitInstanceWithWriteItInstance, self).__init__(*args, **kwargs)
 
     def relate(self):
-        result = self.writeitinstance.load_persons_from_a_popit_api(
+        result = self.writeitinstance.load_persons_from_popolo_json(
             self.cleaned_data['popit_url']
             )
         return result

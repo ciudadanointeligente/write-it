@@ -62,7 +62,7 @@ class InstanceCreateFormTestCase(TestCase):
 
     def test_it_uses_popit_main_url_as_well(self):
         '''It accepts main popit url as well'''
-        with patch('instance.models.WriteItInstance.load_persons_from_a_popit_api') as method_load:
+        with patch('instance.models.WriteItInstance.load_persons_from_popolo_json') as method_load:
             data = {
                 'owner': self.user.id,
                 'popit_url': 'https://kenyan-politicians.popit.mysociety.org/',

@@ -109,7 +109,7 @@ class PopitWriteitRelationRecord(TestCase):
             owner=self.owner,
             )
 
-        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        writeitinstance.load_persons_from_popolo_json(settings.TEST_POPIT_API_URL)
 
         popit_instance = ApiInstance.objects.get(url=settings.TEST_POPIT_API_URL)
 
@@ -132,7 +132,7 @@ class PopitWriteitRelationRecord(TestCase):
             )
 
         non_existing_url = "http://nonexisting.url"
-        writeitinstance.load_persons_from_a_popit_api(non_existing_url)
+        writeitinstance.load_persons_from_popolo_json(non_existing_url)
         popit_instance_count = ApiInstance.objects.filter(url=non_existing_url).count()
 
         self.assertFalse(popit_instance_count)
@@ -147,11 +147,11 @@ class PopitWriteitRelationRecord(TestCase):
             owner=self.owner,
             )
 
-        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        writeitinstance.load_persons_from_popolo_json(settings.TEST_POPIT_API_URL)
 
         popit_instance = ApiInstance.objects.get(url=settings.TEST_POPIT_API_URL)
 
-        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        writeitinstance.load_persons_from_popolo_json(settings.TEST_POPIT_API_URL)
 
         record = WriteitInstancePopitInstanceRecord.objects.get(
             writeitinstance=writeitinstance,
@@ -170,7 +170,7 @@ class PopitWriteitRelationRecord(TestCase):
             owner=self.owner,
             )
 
-        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        writeitinstance.load_persons_from_popolo_json(settings.TEST_POPIT_API_URL)
         popit_instance = ApiInstance.objects.get(url=settings.TEST_POPIT_API_URL)
         record = WriteitInstancePopitInstanceRecord.objects.get(
             writeitinstance=writeitinstance,
@@ -182,7 +182,7 @@ class PopitWriteitRelationRecord(TestCase):
         record.created = created_and_updated
         record.save()
 
-        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        writeitinstance.load_persons_from_popolo_json(settings.TEST_POPIT_API_URL)
         record_again = WriteitInstancePopitInstanceRecord.objects.get(id=record.id)
         self.assertNotEqual(record_again.updated, created_and_updated)
         self.assertEquals(record_again.created, created_and_updated)
@@ -206,7 +206,7 @@ class PopitWriteitRelationRecord(TestCase):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
 
         with patch.object(WriteitInstancePopitInstanceRecord, 'set_status', return_value=None) as set_status:
-            writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+            writeitinstance.load_persons_from_popolo_json(settings.TEST_POPIT_API_URL)
 
         calls = [call('inprogress'), call('success')]
 
@@ -217,7 +217,7 @@ class PopitWriteitRelationRecord(TestCase):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         non_existing_url = "http://nonexisting.url"
         with patch.object(WriteitInstancePopitInstanceRecord, 'set_status', return_value=None) as set_status:
-            writeitinstance.load_persons_from_a_popit_api(non_existing_url)
+            writeitinstance.load_persons_from_popolo_json(non_existing_url)
 
         calls = [call('inprogress'), call('error', _('We could not connect with the URL'))]
 

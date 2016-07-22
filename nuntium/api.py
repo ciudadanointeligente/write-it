@@ -104,7 +104,7 @@ class WriteItInstanceResource(ModelResource):
         bundle = super(WriteItInstanceResource, self).obj_create(bundle)
         instance = bundle.obj
         if "popit-api" in bundle.data and bundle.data["popit-api"]:
-            instance.load_persons_from_a_popit_api(bundle.data["popit-api"])
+            instance.load_persons_from_popolo_json(bundle.data["popit-api"])
         return bundle
 
 

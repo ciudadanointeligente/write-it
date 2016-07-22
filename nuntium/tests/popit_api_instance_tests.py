@@ -18,7 +18,7 @@ class EmailCreationWhenPullingFromPopit(TestCase):
     def test_it_pulls_and_creates_contacts(self):
         '''When pulling from popit it also creates emails'''
 
-        self.instance.load_persons_from_a_popit_api(
+        self.instance.load_persons_from_popolo_json(
             settings.TEST_POPIT_API_URL
         )
         User.objects.create_user(username="perro", password="gato")
@@ -35,10 +35,10 @@ class EmailCreationWhenPullingFromPopit(TestCase):
     @popit_load_data(fixture_name='persons_with_emails')
     def test_it_does_not_replicate_contacts(self):
         '''It does not replicate a contact several times'''
-        self.instance.load_persons_from_a_popit_api(
+        self.instance.load_persons_from_popolo_json(
             settings.TEST_POPIT_API_URL
         )
-        self.instance.load_persons_from_a_popit_api(
+        self.instance.load_persons_from_popolo_json(
             settings.TEST_POPIT_API_URL
         )
         User.objects.create_user(username="perro", password="gato")
@@ -51,13 +51,13 @@ class EmailCreationWhenPullingFromPopit(TestCase):
         '''The value of an email has changed in popit but in writeit it should just update the value'''
         # Creating and loading the data
         with popit_load_data(fixture_name='persons_with_emails'):
-            self.instance.load_persons_from_a_popit_api(
+            self.instance.load_persons_from_popolo_json(
                 settings.TEST_POPIT_API_URL
             )
 
         # Updating the data and loading again
         with popit_load_data(fixture_name='persons_with_emails2'):
-            self.instance.load_persons_from_a_popit_api(
+            self.instance.load_persons_from_popolo_json(
                 settings.TEST_POPIT_API_URL
             )
 
@@ -68,7 +68,7 @@ class EmailCreationWhenPullingFromPopit(TestCase):
     @popit_load_data(fixture_name='other_people_with_popolo_emails')
     def test_get_emails_in_the_popolo_format(self):
         '''Get emails contact if it comes in the popolo format'''
-        self.instance.load_persons_from_a_popit_api(
+        self.instance.load_persons_from_popolo_json(
             settings.TEST_POPIT_API_URL
         )
         fiera = self.instance.persons.filter(name="Fiera Feroz")
@@ -83,10 +83,10 @@ class EmailCreationWhenPullingFromPopit(TestCase):
     @popit_load_data(fixture_name='other_people_with_popolo_emails')
     def test_get_twice_from_popit_does_not_repeat_the_email(self):
         '''Ít does not duplicate emails if they are comming in the field preferred email'''
-        self.instance.load_persons_from_a_popit_api(
+        self.instance.load_persons_from_popolo_json(
             settings.TEST_POPIT_API_URL
         )
-        self.instance.load_persons_from_a_popit_api(
+        self.instance.load_persons_from_popolo_json(
             settings.TEST_POPIT_API_URL
         )
         fiera = self.instance.persons.filter(name="Fiera Feroz")
@@ -96,7 +96,7 @@ class EmailCreationWhenPullingFromPopit(TestCase):
     @popit_load_data(fixture_name='persons_with_null_values')
     def test_accept_null_values(self):
         '''It can process information that has null values'''
-        self.instance.load_persons_from_a_popit_api(
+        self.instance.load_persons_from_popolo_json(
             settings.TEST_POPIT_API_URL
         )
         fiera = self.instance.persons.get(name="Fiera Feroz")
@@ -106,7 +106,7 @@ class EmailCreationWhenPullingFromPopit(TestCase):
     def test_bug_506(self):
         '''If the same email is in preferred email and
         in the list of contact_details it creates a single one'''
-        self.instance.load_persons_from_a_popit_api(
+        self.instance.load_persons_from_popolo_json(
             settings.TEST_POPIT_API_URL
         )
 
@@ -128,7 +128,7 @@ class EmailCreationWhenPullingFromPopit(TestCase):
             mock_datetime.today.return_value = datetime(2015, 1, 1)
             mock_datetime.strptime = lambda *args, **kw: datetime.strptime(*args, **kw)
 
-            self.instance.load_persons_from_a_popit_api(
+            self.instance.load_persons_from_popolo_json(
                 settings.TEST_POPIT_API_URL
             )
             # Benito was the boss between 1987-03-21
