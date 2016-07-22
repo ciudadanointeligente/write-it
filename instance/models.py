@@ -81,19 +81,19 @@ class WriteItInstance(models.Model):
                 record.set_status('error', error.message)
         return (success_relating_people, error)
 
-    def load_persons_from_popolo_json(self, popit_url):
+    def load_persons_from_popolo_json(self, popolo_json_url):
         '''This is an async wrapper for getting people from the api'''
-        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=popit_url)
+        popolo_source, created = PopoloSource.objects.get_or_create(url=popolo_json_url)
         record, created = WriteitInstancePopitInstanceRecord.objects.get_or_create(
             writeitinstance=self,
-            popitapiinstance=popit_api_instance
+            popolo_source=popolo_source
             )
         if not created:
             record.updated = datetime.datetime.today()
             record.save()
         record.set_status('inprogress')
         from nuntium.tasks import pull_from_popolo_json
-        return pull_from_popolo_json.delay(self, popit_api_instance)
+        return pull_from_popolo_json.delay(self, popolo_source)
 
     def get_absolute_url(self):
         return reverse('instance_detail', subdomain=self.slug)
