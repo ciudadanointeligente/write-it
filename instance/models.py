@@ -41,7 +41,7 @@ class WriteItInstance(models.Model):
     def persons_with_contacts(self):
         return self.persons.filter(contact__writeitinstance=self, contact__isnull=False).distinct()
 
-    def relate_with_persons_from_popit_api_instance(self, popit_api_instance):
+    def relate_with_persons_from_popolo_json(self, popit_api_instance):
         try:
             popit_api_instance.fetch_all_from_api(writeitinstance=self)
         except ConnectionError, e:
@@ -67,7 +67,7 @@ class WriteItInstance(models.Model):
         pass
 
     def _load_persons_from_popolo_json(self, popolo_source):
-        success_relating_people, error = self.relate_with_persons_from_popit_api_instance(popolo_source)
+        success_relating_people, error = self.relate_with_persons_from_popolo_json(popolo_source)
         record = WriteitInstancePopitInstanceRecord.objects.get(
             writeitinstance=self,
             popolo_source=popolo_source

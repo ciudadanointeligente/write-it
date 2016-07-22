@@ -238,7 +238,7 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
         '''Loading persons from a popit api'''
         popit_api_instance, created = PopoloSource.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
-        writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        writeitinstance.relate_with_persons_from_popolo_json(popit_api_instance)
 
         self.assertEquals(writeitinstance.persons.all().count(), 2)
 
@@ -253,7 +253,7 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
         '''Returns a tuple'''
         popit_api_instance, created = PopoloSource.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
-        result = writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        result = writeitinstance.relate_with_persons_from_popolo_json(popit_api_instance)
         self.assertIsInstance(result, tuple)
         self.assertTrue(result[0])
         self.assertIsNone(result[1])
@@ -263,7 +263,7 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
         non_existing_url = "http://nonexisting.url"
         popit_api_instance = PopoloSource.objects.create(url=non_existing_url)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
-        result = writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        result = writeitinstance.relate_with_persons_from_popolo_json(popit_api_instance)
         self.assertIsInstance(result, tuple)
         self.assertFalse(result[0])
         self.assertIsInstance(result[1], ConnectionError)

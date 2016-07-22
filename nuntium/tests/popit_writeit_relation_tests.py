@@ -63,8 +63,8 @@ class PopitWriteitRelationRecord(TestCase):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
 
         # Doing it twice so I can replicate the bug
-        writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
-        writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        writeitinstance.relate_with_persons_from_popolo_json(popit_api_instance)
+        writeitinstance.relate_with_persons_from_popolo_json(popit_api_instance)
 
         amount_of_memberships = InstanceMembership.objects.filter(writeitinstance=writeitinstance).count()
 
@@ -78,7 +78,7 @@ class PopitWriteitRelationRecord(TestCase):
         popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         # there should be an amount of memberships
-        writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        writeitinstance.relate_with_persons_from_popolo_json(popit_api_instance)
         amount_of_memberships = InstanceMembership.objects.filter(writeitinstance=writeitinstance).count()
         previous_memberships = list(InstanceMembership.objects.filter(writeitinstance=writeitinstance))
 
@@ -88,7 +88,7 @@ class PopitWriteitRelationRecord(TestCase):
         InstanceMembership.objects.create(writeitinstance=writeitinstance, person=person)
         try:
             with popit_load_data():
-                writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+                writeitinstance.relate_with_persons_from_popolo_json(popit_api_instance)
         except InstanceMembership.MultipleObjectsReturned, e:
             self.fail("There are more than one InstanceMembership " + e)
 
