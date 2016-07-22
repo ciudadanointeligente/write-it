@@ -7,7 +7,7 @@ from mock import patch
 from popolo.models import Person
 from django.contrib.auth.models import User
 from django.conf import settings
-from nuntium.tasks import pull_from_popit, update_all_popits
+from nuntium.tasks import pull_from_popolo_json, update_all_instances
 
 
 class TasksTestCase(TestCase):
@@ -78,7 +78,7 @@ class PullFromPopitTask(TestCase):
 
     def test_the_pulling_task_name(self):
         '''The pulling from Popit Task has a name'''
-        self.assertEquals(pull_from_popit.name, 'nuntium.tasks.pull_from_popit')
+        self.assertEquals(pull_from_popolo_json.name, 'nuntium.tasks.pull_from_popit')
 
     @popit_load_data()
     def test_do_the_pulling(self):
@@ -89,7 +89,7 @@ class PullFromPopitTask(TestCase):
             writeitinstance=writeitinstance,
             popitapiinstance=self.api_instance1
             )
-        pull_from_popit.delay(writeitinstance, self.api_instance1)  # Returns result
+        pull_from_popolo_json.delay(writeitinstance, self.api_instance1)  # Returns result
         self.assertTrue(writeitinstance.persons.all())
 
 
@@ -116,7 +116,7 @@ class PeriodicallyPullFromPopitClass(TestCase):
 
         # This means that if I run the task then it should update the persons
         # I'm running the weekly job by default
-        update_all_popits.delay()
+        update_all_instances.delay()
 
         persons_after_updating = list(self.writeitinstance.persons.all())
         self.assertNotEquals(self.previously_created_persons, persons_after_updating)
@@ -133,7 +133,7 @@ class PeriodicallyPullFromPopitClass(TestCase):
         writeitinstance_popit_record.save()
 
         # The record has been set to autosync False
-        update_all_popits.delay()
+        update_all_instances.delay()
         # Loading new data
         persons_after_updating = list(self.writeitinstance.persons.all())
         # It should not have updated our writeit instance
@@ -151,13 +151,13 @@ class PeriodicallyPullFromPopitClass(TestCase):
 
         # Now because it is receiving the default value = '1W'
         # it should not pull anyone
-        update_all_popits.delay()
+        update_all_instances.delay()
 
         persons_after_updating = list(self.writeitinstance.persons.all())
         self.assertEquals(self.previously_created_persons, persons_after_updating)
 
         # But If I tell the runner that I'm running the daily
         # process then it should change it
-        update_all_popits.delay(periodicity="1D")
+        update_all_instances.delay(periodicity="1D")
         persons_after_updating = list(self.writeitinstance.persons.all())
         self.assertNotEquals(self.previously_created_persons, persons_after_updating)

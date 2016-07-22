@@ -89,8 +89,8 @@ class WriteItInstance(models.Model):
             record.updated = datetime.datetime.today()
             record.save()
         record.set_status('inprogress')
-        from nuntium.tasks import pull_from_popit
-        return pull_from_popit.delay(self, popit_api_instance)
+        from nuntium.tasks import pull_from_popolo_json
+        return pull_from_popolo_json.delay(self, popit_api_instance)
 
     def get_absolute_url(self):
         return reverse('instance_detail', subdomain=self.slug)

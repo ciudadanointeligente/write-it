@@ -29,7 +29,7 @@ from .forms import WriteItInstanceBasicForm, \
 from django.contrib import messages as view_messages
 from django.utils.translation import ugettext as _
 import json
-from nuntium.tasks import pull_from_popit
+from nuntium.tasks import pull_from_popolo_json
 from nuntium.user_section.forms import WriteItPopitUpdateForm
 from django.contrib.sites.models import Site
 
@@ -524,7 +524,7 @@ class ReSyncFromPopit(View):
             writeitinstancepopitinstancerecord__writeitinstance=writeitinstance)
 
         popit_api_instance = get_object_or_404(popits_previously_related, pk=kwargs['popit_api_pk'])
-        pull_from_popit.delay(writeitinstance, popit_api_instance)
+        pull_from_popolo_json.delay(writeitinstance, popit_api_instance)
         return HttpResponse()
 
 

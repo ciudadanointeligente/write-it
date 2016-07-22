@@ -134,7 +134,7 @@ class InstanceTestCase(TestCase):
         I'm going to patch the method to know that it was run, I could do some other properties but I'm thinking that
         this is the easyest to know if the method was used.
         '''
-        with patch('nuntium.tasks.pull_from_popit.delay') as async_pulling_from_popit:
+        with patch('nuntium.tasks.pull_from_popolo_json.delay') as async_pulling_from_popit:
             writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
             async_pulling_from_popit.assert_called_with(writeitinstance, popit_api_instance)
 
