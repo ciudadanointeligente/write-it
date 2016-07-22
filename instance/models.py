@@ -18,6 +18,9 @@ class PopoloSource(models.Model):
     url = models.URLField(max_length=255)
     persons = models.ManyToManyField(PopoloPerson, related_name='popolo_sources')
 
+    def __unicode__(self):
+        return self.url
+
 
 class WriteItInstance(models.Model):
     """WriteItInstance: Entity that groups messages and people
