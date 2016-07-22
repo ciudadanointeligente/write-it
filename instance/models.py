@@ -66,7 +66,7 @@ class WriteItInstance(models.Model):
     def do_something_with_a_vanished_popit_api_instance(self, popit_api_instance):
         pass
 
-    def _load_persons_from_a_popit_api(self, popit_api_instance):
+    def _load_persons_from_popolo_json(self, popit_api_instance):
         success_relating_people, error = self.relate_with_persons_from_popit_api_instance(popit_api_instance)
         record = WriteitInstancePopitInstanceRecord.objects.get(
             writeitinstance=self,

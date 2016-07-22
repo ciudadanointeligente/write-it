@@ -14,7 +14,7 @@ def send_mails_task():
 
 @task()
 def pull_from_popolo_json(writeitinstance, popolo_source):
-    result = writeitinstance._load_persons_from_a_popit_api(popolo_source)
+    result = writeitinstance._load_persons_from_popolo_json(popolo_source)
     logger.info(u'Resyncing {0} with {1}'.format(
         writeitinstance, popolo_source))
     return result

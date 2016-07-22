@@ -234,7 +234,7 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
         self.owner = User.objects.get(id=1)
 
     @popit_load_data()
-    def test_load_persons_from_a_popit_api(self):
+    def test_load_persons_from_popolo_json(self):
         '''Loading persons from a popit api'''
         popit_api_instance, created = PopoloSource.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)

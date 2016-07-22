@@ -107,7 +107,7 @@ class PeriodicallyPullFromPopitClass(TestCase):
             )
         #loading data from popit in a sync way
         with popit_load_data():
-            self.writeitinstance._load_persons_from_a_popit_api(self.popit_api_instance)
+            self.writeitinstance._load_persons_from_popolo_json(self.popit_api_instance)
         self.previously_created_persons = list(self.writeitinstance.persons.all())
 
     @popit_load_data("other_persons")
