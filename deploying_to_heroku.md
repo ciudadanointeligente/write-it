@@ -8,6 +8,7 @@
 - Add heroku postgres (get add-ons) `heroku addons:add heroku-postgresql`
 - Push the code over to heroku `git push heroku current_branch:master`
 - heroku run python manage.py syncdb --noinput --migrate
+- heroku run python manage.py compilemessages
 - Create a super user `heroku run python manage.py createsuperuser` and answer the questions in the prompt
 - Allow google oauth login:
 

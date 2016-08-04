@@ -107,6 +107,10 @@ Set up the database, creating an admin user when prompted:
 
     ./manage.py syncdb && ./manage.py migrate
 
+Compile all the available translations:
+
+    ./manage.py compilemessages
+
 Troubleshooting database migration
 ----------------------------------
 There's a problem migrating and the problem looks like
