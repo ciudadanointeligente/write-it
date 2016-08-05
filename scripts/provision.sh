@@ -45,6 +45,9 @@ cd /vagrant
 "$virtualenv_dir/bin/python" /vagrant/manage.py syncdb --noinput
 "$virtualenv_dir/bin/python" /vagrant/manage.py migrate
 
+# Make sure message files for other languages are compiled:
+"$virtualenv_dir/bin/python" /vagrant/manage.py compilemessages
+
 # Set shell login message
 echo "-------------------------------------------------------
 Welcome to the WriteIt vagrant machine
