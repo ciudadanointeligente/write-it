@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.conf.urls import patterns, url, include
 from django.conf.urls.i18n import i18n_patterns
 
@@ -124,3 +125,9 @@ urlpatterns = i18n_patterns('',
     url(r'^help/(?P<section_name>\w+)/?$', HelpView.as_view(), name='help_section'),
     url(r'^help/?$', HelpView.as_view()),
 )
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += patterns('',
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    )
