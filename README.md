@@ -159,8 +159,62 @@ It will ask you the username and password (which you will need to repeat).
 
 With that done you will be able to access '/accounts/login/'.
 
+Updating Translations
+---------------------
+
+The following procedure should safely get new translations from
+Transifex and push any new messages for translation back to
+Transifex:
+
+```
+tx pull -a -f
+```
+
+Commit those changes, since Transifex has no history, and when
+we push back to Transifex any removed translations will no
+longer appear there:
+
+```
+git commit -m "Recording the latest translations from Transifex" -- locale
+```
+
+Extract all translation strings from the code, and update the
+`.po` files so that any new strings for translation are added:
 
 
+```
+./manage.py makemessages -a --no-wrap
+```
+
+This will add fuzzily inferred translations to the `.po`
+files, but they won't be added to Transifex when we upload
+(since it doesn't support fuzzy translations) and later we'll
+pull back from transifex to remove them.
+
+Push any new strings to Transifex with:
+
+```
+tx push -s -t --skip
+```
+
+If you pull from Transifex again, that should remove the fuzzy
+translations:
+
+```
+tx pull -a -f
+```
+
+Now you can commit the result:
+
+```
+git commit -m "Updated .po files from makemessages" -- locale
+```
+
+And run:
+
+```
+./manage.py compilemessages
+```
 
 API clients
 ===========
