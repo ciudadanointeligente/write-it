@@ -1,22 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# 
+# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: writeinpublic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-03 10:20-0500\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2015-07-02 15:04+0000\n"
+"PO-Revision-Date: 2016-05-31 09:44+0000\n"
+"Last-Translator: mySociety <transifex@mysociety.org>\n"
+"Language-Team: Czech (http://www.transifex.com/mysociety/writeinpublic/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: contactos/models.py:33 contactos/tests/contacts_tests.py:157
 #, python-format
@@ -48,6 +47,7 @@ msgid "You can send messages to at most %(count)d person"
 msgid_plural "You can send messages to at most %(count)d people"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: nuntium/forms.py:164 nuntium/user_section/forms.py:254
 msgid "PopIt URL"
@@ -262,10 +262,9 @@ msgstr "Zprávy budou odeslány administrátorovi a ne skutečným zastupitelům
 
 #: nuntium/templates/footer.html:13
 msgid ""
-"Built by <a href=\"http://www.ciudadanointeligente.org\">Fundación Ciudadano "
-"Inteligente</a>"
-msgstr "Autor <a href=\"http://www.ciudadanointeligente.org\">Fundación Ciudadano "
-"</a>"
+"Built by <a href=\"http://www.ciudadanointeligente.org\">Fundación Ciudadano"
+" Inteligente</a>"
+msgstr "Autor <a href=\"http://www.ciudadanointeligente.org\">Fundación Ciudadano </a>"
 
 #: nuntium/templates/footer.html:18
 msgid "Find the code at Github"
@@ -303,8 +302,7 @@ msgid ""
 "\n"
 "<ul>\n"
 "  <li> Names and contact details for those politicians</li>\n"
-"  <li> A <a href=\"http://popit.poplus.org/\">PopIt</a> site to store them "
-"in</li>\n"
+"  <li> A <a href=\"http://popit.poplus.org/\">PopIt</a> site to store them in</li>\n"
 "</ul>\n"
 "\n"
 "<p>Both sites work hand in hand: PopIt stores your data, and we fetch the\n"
@@ -312,11 +310,9 @@ msgid ""
 "\n"
 "<h4>No PopIt site?</h4>\n"
 "\n"
-"Don’t worry, it takes just minutes to set one up. All you need is a "
-"spreadsheet with the basic data for your politicians. \n"
+"Don’t worry, it takes just minutes to set one up. All you need is a spreadsheet with the basic data for your politicians. \n"
 "\n"
-"The <a href=\"http://everypolitician.org/upload/\">CSV importer at "
-"EveryPolitician</a> \n"
+"The <a href=\"http://everypolitician.org/upload/\">CSV importer at EveryPolitician</a> \n"
 "will turn that data into the right format, and create a PopIt for you.\n"
 "\n"
 "<h4>Got your PopIt?</h4>\n"
@@ -548,6 +544,7 @@ msgid "Please correct the error below."
 msgid_plural "Please correct the errors below."
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: nuntium/templates/nuntium/writeitinstance_update_form.html:21
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:7
@@ -624,6 +621,7 @@ msgid_plural ""
 "            "
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: nuntium/templates/nuntium/message/message_in_list.html:34
 #, python-format
@@ -767,6 +765,7 @@ msgid_plural ""
 "    "
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:38
 msgid "Message"
@@ -804,8 +803,7 @@ msgstr "Link do administrace zprávy"
 #, python-format
 msgid ""
 "\n"
-"                  Sent <strong>%(created)s</strong> ago to <strong>%(to)s</"
-"strong> from <strong>%(author_name)s</strong>\n"
+"                  Sent <strong>%(created)s</strong> ago to <strong>%(to)s</strong> from <strong>%(author_name)s</strong>\n"
 "                "
 msgstr ""
 
@@ -884,8 +882,7 @@ msgid ""
 "\n"
 "        This site is in <a href=\"%(welcome_page)s\">testing mode.</a>\n"
 "        All mails will be sent to you, rather than the representatives.\n"
-"        <a href=\"%(contact_page)s\">Contact us</a> when you're ready to go "
-"live!\n"
+"        <a href=\"%(contact_page)s\">Contact us</a> when you're ready to go live!\n"
 "      "
 msgstr ""
 
@@ -954,8 +951,7 @@ msgid ""
 "      You're currently running in <strong>testing mode</strong>, so all\n"
 "      the emails sent will go to you (and not the recipients).\n"
 "      <a href=\"%(contact_page)s\">Contact us</a> when you want this \n"
-"      restriction lifted and you're ready to send real messages to real "
-"people!\n"
+"      restriction lifted and you're ready to send real messages to real people!\n"
 "    "
 msgstr ""
 
@@ -963,18 +959,17 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"      You've got only <a href=\"%(url_recipients)s\">one contactable "
-"recipient</a> in your database.\n"
+"      You've got only <a href=\"%(url_recipients)s\">one contactable recipient</a> in your database.\n"
 "      But that‘s enough to test out the process of writing to them!\n"
 "    "
 msgid_plural ""
 "\n"
-"      You've got <a href=\"%(url_recipients)s\">%(contactable_count)s "
-"contactable recipients</a> in your database.\n"
+"      You've got <a href=\"%(url_recipients)s\">%(contactable_count)s contactable recipients</a> in your database.\n"
 "      That‘s great — now you can test out the process of writing to them!\n"
 "    "
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: nuntium/templates/nuntium/profiles/welcome.html:42
 #, python-format
@@ -1007,6 +1002,7 @@ msgid_plural ""
 "     "
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: nuntium/templates/nuntium/profiles/welcome.html:60
 msgid ""
@@ -1029,8 +1025,7 @@ msgstr ""
 #: nuntium/templates/nuntium/profiles/welcome.html:75
 msgid ""
 "\n"
-"     Here are the things you need to check you've done before everything "
-"will work properly.\n"
+"     Here are the things you need to check you've done before everything will work properly.\n"
 "  "
 msgstr ""
 
@@ -1055,8 +1050,7 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"        <a href=\"%(url_template_update)s\">update the email templates</a> "
-"so the\n"
+"        <a href=\"%(url_template_update)s\">update the email templates</a> so the\n"
 "        messages your site sends out are exactly how you want them\n"
 "      "
 msgstr ""
@@ -1072,8 +1066,7 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"            <a href=\"%(url_maxrecipients_update)s\">how many recipients</"
-"a>\n"
+"            <a href=\"%(url_maxrecipients_update)s\">how many recipients</a>\n"
 "            a message can go to (just one, or many?)\n"
 "          "
 msgstr ""
@@ -1093,8 +1086,7 @@ msgstr ""
 msgid ""
 "\n"
 "            do you want to\n"
-"             <a href=\"%(url_answernotification_update)s\">receive a "
-"notification email</a>\n"
+"             <a href=\"%(url_answernotification_update)s\">receive a notification email</a>\n"
 "             every time someone gets a reply? \n"
 "          "
 msgstr ""
@@ -1197,8 +1189,8 @@ msgstr ""
 #, python-format
 msgid ""
 "Sites are set to Testing Mode by default. Use the 'Edit' link and make sure "
-"that your site is set up in the way that you want it. When you are ready, <a "
-"href=\"%(contact_page)s\">contact us</a> to let us know and we’ll put your "
+"that your site is set up in the way that you want it. When you are ready, <a"
+" href=\"%(contact_page)s\">contact us</a> to let us know and we’ll put your "
 "site live."
 msgstr ""
 
@@ -1213,6 +1205,7 @@ msgid_plural ""
 "            "
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: nuntium/templates/nuntium/profiles/your-instances.html:88
 msgid "Delete"
@@ -1257,6 +1250,7 @@ msgid_plural ""
 "    "
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: nuntium/templates/nuntium/profiles/contacts/contacts-per-writeitinstance.html:73
 msgid "There are no People linked from Popit."
@@ -1320,8 +1314,8 @@ msgstr ""
 
 #: nuntium/templates/registration/password_change_form.html:24
 msgid ""
-"Please enter your old password, for security's sake, and then enter your new "
-"password twice so we can verify you typed it in correctly."
+"Please enter your old password, for security's sake, and then enter your new"
+" password twice so we can verify you typed it in correctly."
 msgstr ""
 
 #: nuntium/templates/registration/password_change_form.html:30
@@ -1471,23 +1465,6 @@ msgstr "Zobrazit všechny zprávy od: %(name)s"
 msgid "Recipients will not see your email address"
 msgstr "Adresáti neuvidí Vaší emailovou adresu"
 
-#: nuntium/templates/thread/message_mini.html:6
-#, fuzzy
-msgid "To:"
-msgstr "Komu:"
-
-#: nuntium/templates/thread/message_mini.html:7
-msgid "and"
-msgstr ""
-
-#: nuntium/templates/thread/message_mini.html:17
-#, fuzzy, python-format
-msgid ""
-"\n"
-"                Reply from %(name)s\n"
-"            "
-msgstr "Odpověď od:  %(name)s\n"
-
 #: nuntium/templates/thread/read.html:15
 msgid "Your message is on its way."
 msgstr "Vaše zpráva je na cestě."
@@ -1532,8 +1509,9 @@ msgid_plural ""
 "\n"
 "            Select recipients\n"
 "        "
-msgstr[0] "\nVyberte adresáta"
-msgstr[1] "\nVyberte adresáty"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: nuntium/templates/write/breadcrumb.html:16
 msgid ""
@@ -1544,8 +1522,9 @@ msgid_plural ""
 "\n"
 "                Select recipients\n"
 "            "
-msgstr[0] "\nVyberte adresáta"
-msgstr[1] "\nVyberte adresáty"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: nuntium/templates/write/breadcrumb.html:33
 #: nuntium/templates/write/breadcrumb.html:35
@@ -1603,8 +1582,9 @@ msgid_plural ""
 "\n"
 "                    Change recipients\n"
 "                "
-msgstr[0] "\nZměnit adresáta"
-msgstr[1] "\nZměnit adresáty"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: nuntium/templates/write/preview.html:14
 msgid "Are you happy for this message to be made public?"
@@ -1642,17 +1622,16 @@ msgstr "Žádný adresát"
 #, python-format
 msgid ""
 "\n"
-"                    Search for the recipient by name, or select from the "
-"drop-down.\n"
+"                    Search for the recipient by name, or select from the drop-down.\n"
 "                "
 msgid_plural ""
 "\n"
-"                    Search for recipients by name, or select from the drop-"
-"down. <br/ ><br />\n"
+"                    Search for recipients by name, or select from the drop-down. <br/ ><br />\n"
 "                    You can send your message to up to %(counter)s people.\n"
 "                "
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: nuntium/tests/answers_test.py:31
 #, python-format
@@ -1675,20 +1654,19 @@ msgstr ""
 
 #: nuntium/tests/record_system_test.py:30
 #, python-format
-msgid ""
-"The message \"%(subject)s\" at %(instance)s turned %(status)s at %(date)s"
+msgid "The message \"%(subject)s\" at %(instance)s turned %(status)s at %(date)s"
 msgstr ""
 
 #: nuntium/tests/writeitinstances_test.py:352
 msgid ""
-"Thanks for submitting your message, please check your email and click on the "
-"confirmation link"
+"Thanks for submitting your message, please check your email and click on the"
+" confirmation link"
 msgstr "Děkujeme. Prosím, zkontrolujte si email a klikněte na potvrzovací link."
 
 #: nuntium/tests/writeitinstances_test.py:391
 msgid ""
-"Thanks for submitting your message, please check your email and click on the "
-"confirmation link, after that your message will be waiting form moderation"
+"Thanks for submitting your message, please check your email and click on the"
+" confirmation link, after that your message will be waiting form moderation"
 msgstr ""
 
 #: nuntium/user_section/forms.py:53
