@@ -25,7 +25,7 @@
     </ul>
 
     {% if writeitinstance.can_create_messages %}
-    <a class="write-link" href="{% url 'write_message' subdomain=writeitinstance.slug %}">Write to Majlis</a>
+    <a class="write-link" href="{% url 'write_message' subdomain=writeitinstance.slug %}">{% trans "Write to Majlis" %}</a>
     {% endif %}
   </nav>
 </header>
@@ -65,7 +65,7 @@
       <p>Write to your members of parliament.</p>
       <p>Have your voice be heard.</p>
       <div class="button-centring-container">
-        <a href="/write/who.html" class="button send-letter">Send letter</a>
+        <a href="/write/who.html" class="button send-letter">{% trans "Send message" %}</a>
       </div>
     </div>
   </div>

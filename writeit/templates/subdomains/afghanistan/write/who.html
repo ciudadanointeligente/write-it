@@ -31,7 +31,7 @@
       </div>
 
       <form class="write-form who container" action="" method="post">{% csrf_token %}
-        <h1>Select recipients</h1>
+        <h1>{% trans "Select recipients" %}</h1>
         {{ wizard.management_form }}
         <p class="form-group">
             <label for="id_who-persons">

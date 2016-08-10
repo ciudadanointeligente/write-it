@@ -8,7 +8,7 @@
     <div class="full-width-wrapper recent-letters-wrapper">
     {% if recent_messages %}
     <main class="centred recent-letters">
-        <h1>Recent letters</h1>
+        <h1>{% trans "Recent messages" %}</h1>
         <ul>
           {% for message in recent_messages %}
           <li class="letter-list-item container">
