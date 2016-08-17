@@ -5,11 +5,13 @@ from django.contrib.auth.models import User
 from django.core import mail
 from django.db import models
 from django.db.models.signals import post_save
+from django.db import transaction
 from django.utils.translation import ugettext_lazy as _
 
 from annoying.fields import AutoOneToOneField
 from autoslug import AutoSlugField
 from popolo.models import Person as PopoloPerson
+import requests
 from requests.exceptions import ConnectionError
 from subdomains.utils import reverse
 
@@ -20,6 +22,26 @@ class PopoloSource(models.Model):
 
     def __unicode__(self):
         return self.url
+
+    def get_popolo_data(self, url):
+
+
+
+    def update_from_source(self):
+        with transaction.atomic():
+            popolo_source_id_to_existing_person = {
+                i.identifier: p
+                for p in self.persons.all()
+                for i in p.identifiers.all()
+                if i.source == 'popolo_source_id'
+            }
+            popolo_data = self.get_popolo_data(self.url)
+
+
+            r = requests.get(self.url)
+
+            pass
+
 
 
 class WriteItInstance(models.Model):
@@ -41,7 +63,10 @@ class WriteItInstance(models.Model):
     def persons_with_contacts(self):
         return self.persons.filter(contact__writeitinstance=self, contact__isnull=False).distinct()
 
-    def relate_with_persons_from_popolo_json(self, popit_api_instance):
+    def relate_with_persons_from_popolo_json(self, popolo_source):
+
+
+
         try:
             popit_api_instance.fetch_all_from_api(writeitinstance=self)
         except ConnectionError, e:
