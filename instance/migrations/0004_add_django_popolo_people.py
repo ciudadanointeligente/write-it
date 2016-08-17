@@ -5,6 +5,7 @@ import re
 from urlparse import urlsplit, urlunsplit
 
 from django.db import migrations
+from django.contrib.contenttypes.management import update_contenttypes
 
 def update_source_url(original_url):
     split_url = urlsplit(original_url)
@@ -34,17 +35,14 @@ def update_source_url(original_url):
 
 
 def forwards(apps, schema_editor):
+    # Make sure the content types for django-popolo exist, with a
+    # hacky workaround from: http://stackoverflow.com/a/35353170/223092
+    popolo_app = apps.app_configs['popolo']
+    popolo_app.models_module = popolo_app.models_module or True
+    update_contenttypes(popolo_app, verbosity=1, interactive=False)
     ContentType = apps.get_model('contenttypes', 'ContentType')
-    # If you're migrating from scratch in one go, the content types
-    # won't exist, but it doesn't actually matter because there won't
-    # be any people to add identifiers for either. So just get the
-    # content type if it's possible to do so:
-    person_content_type = None
-    try:
-        person_content_type = ContentType.objects.get(
-            app_label='popolo', model='person')
-    except ContentType.DoesNotExist:
-        pass
+    person_content_type = ContentType.objects.get(
+        app_label='popolo', model='person')
     # Create a PopoloSource for each old APIInstance
     ApiInstance = apps.get_model('popit', 'ApiInstance')
     PopoloSource = apps.get_model('instance', 'PopoloSource')
