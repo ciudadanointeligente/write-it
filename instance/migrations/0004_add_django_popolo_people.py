@@ -1,7 +1,36 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import re
+from urlparse import urlsplit, urlunsplit
+
 from django.db import migrations
+
+def update_source_url(original_url):
+    split_url = urlsplit(original_url)
+    is_proxy_url = (
+        split_url.netloc == 'everypolitician-writeinpublic.herokuapp.com')
+    has_popit_in_domain = 'popit' in split_url.netloc.split('.')
+    is_possible_api_url = re.match(r'/?$|^/api', split_url.path)
+    if is_proxy_url:
+        # If this is one of the faked PopIt instances for
+        # EveryPolitician, change that to the EveryPolitican JSON.
+        country, house = split_url.path.lstrip('/').split('/')
+        url = ('https://raw.githubusercontent.com'
+               '/everypolitician/everypolitician-data/master/data/'
+               '{country}/{house}/ep-popolo-v1.0.json').format(
+                   country=country, house=house)
+    elif has_popit_in_domain and is_possible_api_url:
+        # If looks like a PopIt instance, then replace that with a
+        # link to the PopIt instance's export.json:
+        split_as_list = list(split_url)
+        split_as_list[2] = '/api/v0.1/export.json'
+        split_as_list[3] = ''
+        split_as_list[4] = ''
+        url = urlunsplit(split_as_list)
+    else:
+        url = original_url
+    return url
 
 
 def forwards(apps, schema_editor):
@@ -21,7 +50,8 @@ def forwards(apps, schema_editor):
     PopoloSource = apps.get_model('instance', 'PopoloSource')
     ai_to_ps = {}
     for ai in ApiInstance.objects.all():
-        ps = PopoloSource.objects.create(url=ai.url)
+        url = update_source_url(ai.url)
+        ps = PopoloSource.objects.create(url=url)
         ai_to_ps[ai] = ps
     # Now create a django-popolo Person for each old django-popit
     # Person:
