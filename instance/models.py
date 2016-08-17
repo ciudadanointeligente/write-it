@@ -1,4 +1,5 @@
 import datetime
+from urlparse import urljoin
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -23,9 +24,13 @@ class PopoloSource(models.Model):
     def __unicode__(self):
         return self.url
 
-    def get_popolo_data(self, url):
-
-
+    def get_popolo_data(self):
+        r = requests.get(self.url)
+        # These should all be single Popolo JSON file URLs after the
+        # migration; the only subtlety is that some might have
+        # 'memberships' inline in person objects, while in others you
+        # have to look at a top-level 'memberships' array.
+        data = r.json()
 
     def update_from_source(self):
         with transaction.atomic():
