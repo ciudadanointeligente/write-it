@@ -51,7 +51,9 @@ class NewAnswerWebhooks(TestCase):
             'message_id': '/api/v1/message/{0}/'.format(message.id),
             'content': 'holiwi',
             'person': pedro.name,
-            'person_id': pedro.popit_url,
+            'person_popolo_source_id': pedro.popolo_source_id,
+            'person_popolo_source_url': pedro.popolo_source_url,
+            'person_id': pedro.old_person_id,
             }
         with patch('requests.post') as post:
             post.return_value = PostMock()
@@ -72,7 +74,8 @@ class NewAnswerWebhooks(TestCase):
             'message_id': '/api/v1/message/{0}/'.format(message.id),
             'content': 'holiwi',
             'person': pedro.name,
-            'person_id': pedro.popit_url,
+            'person_popolo_source_id': pedro.popolo_source_id,
+            'person_popolo_source_url': pedro.popolo_source_url,
             }
         with patch('requests.post') as post:
             post.return_value = PostMock()

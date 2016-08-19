@@ -284,7 +284,7 @@ class RelatePopitInstanceWithWriteItInstance(Form, PopitParsingFormMixin):
 
     def clean(self, *args, **kwargs):
         cleaned_data = super(RelatePopitInstanceWithWriteItInstance, self).clean(*args, **kwargs)
-        if self.writeitinstance.writeitinstancepopitinstancerecord_set.filter(popitapiinstance__url=cleaned_data.get('popit_url')):
+        if self.writeitinstance.writeitinstancepopitinstancerecord_set.filter(popolo_source__url=cleaned_data.get('popit_url')):
             self.relate()
             raise ValidationError(_("You have already added this source. But we will fetch the data from it again now."))
         return cleaned_data

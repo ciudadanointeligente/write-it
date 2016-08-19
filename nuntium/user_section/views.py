@@ -10,7 +10,7 @@ from django.views.generic.edit import UpdateView, DeleteView, FormView
 
 from mailit.forms import MailitTemplateForm
 
-from instance.models import WriteItInstance, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord
+from instance.models import PopoloSource, WriteItInstance, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord
 from ..models import Message,\
     NewAnswerNotificationTemplate, ConfirmationTemplate, \
     Answer, Moderation, \
@@ -520,11 +520,11 @@ class ReSyncFromPopit(View):
         writeitinstance = get_object_or_404(WriteItInstance,
             slug=self.request.subdomain,
             owner=self.request.user)
-        popits_previously_related = PopitApiInstance.objects.filter(
+        popolo_sources_previously_related = PopoloSource.objects.filter(
             writeitinstancepopitinstancerecord__writeitinstance=writeitinstance)
 
-        popit_api_instance = get_object_or_404(popits_previously_related, pk=kwargs['popit_api_pk'])
-        pull_from_popolo_json.delay(writeitinstance, popit_api_instance)
+        popolo_source = get_object_or_404(popolo_sources_previously_related, pk=kwargs['popit_api_pk'])
+        pull_from_popolo_json.delay(writeitinstance, popolo_source)
         return HttpResponse()
 
 
