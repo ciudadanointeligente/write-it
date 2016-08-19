@@ -4,7 +4,7 @@
 
   {% if current_step == 1 %}
     <li class="writing-breadcrumb__step writing-breadcrumb__step--current">
-        {% blocktrans count counter=writeitinstance.config.maximum_recipients %}
+        {% blocktrans trimmed count counter=writeitinstance.config.maximum_recipients %}
             Select recipient
         {% plural %}
             Select recipients
@@ -13,7 +13,7 @@
   {% elif current_step > 1 and current_step < 4 %}
     <li class="writing-breadcrumb__step">
         <a href="{% url 'write_message_step' step='who' %}">
-            {% blocktrans count counter=writeitinstance.config.maximum_recipients %}
+            {% blocktrans trimmed count counter=writeitinstance.config.maximum_recipients %}
                 Select recipient
             {% plural %}
                 Select recipients
@@ -21,7 +21,7 @@
         </a></li>
   {% else %}
     <li class="writing-breadcrumb__step">
-        {% blocktrans count counter=writeitinstance.config.maximum_recipients %}
+        {% blocktrans trimmed count counter=writeitinstance.config.maximum_recipients %}
             Select recipient
         {% plural %}
             Select recipients
