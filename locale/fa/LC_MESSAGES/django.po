@@ -1823,7 +1823,7 @@ msgstr ""
 #: writeit/templates/subdomains/afghanistan/index.html:67
 #: writeit/templates/subdomains/afghanistan/view.html:67
 msgid "Write to Majlis"
-msgstr ""
+msgstr "مجلس‌نامه"
 
 #: writeit/templates/subdomains/afghanistan/nuntium/instance_detail.html:19
 msgid "Dear"
