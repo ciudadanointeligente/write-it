@@ -64,14 +64,14 @@
     </li>
 </ul>
 
-            <a class="write-link" href="/write/who.html">{% trans "Write to Majlis" %}</a>
+            <a class="write-link" href="{% url 'write_message_step' step='who' %}">{% trans "Write to Majlis" %}</a>
         </nav>
         
         <div class="promo-wrapper full-width-wrapper">
             <div class="promo centred">
                 <p>به نمایندگان مجلس نامه بفرستید. صدای‌تان را به گوش‌شان برسانید</p>
                 <div class="button-centring-container">
-                    <a href="/write/who.html" class="button send-letter">{% trans "Send message" %}</a>
+                    <a href="{% url 'write_message_step' step='who' %}" class="button send-letter">{% trans "Send message" %}</a>
                 </div>
             </div>
         </div>
