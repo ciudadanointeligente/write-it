@@ -1571,27 +1571,11 @@ msgid "Write to this person"
 msgstr ""
 
 #: nuntium/templates/write/breadcrumb.html:7
-#: nuntium/templates/write/breadcrumb.html:24
-msgid ""
-"\n"
-"            Select recipient\n"
-"        "
-msgid_plural ""
-"\n"
-"            Select recipients\n"
-"        "
-msgstr[0] ""
-msgstr[1] ""
-
 #: nuntium/templates/write/breadcrumb.html:16
-msgid ""
-"\n"
-"                Select recipient\n"
-"            "
-msgid_plural ""
-"\n"
-"                Select recipients\n"
-"            "
+#: nuntium/templates/write/breadcrumb.html:24
+#: writeit/templates/subdomains/afghanistan/write/who.html:34
+msgid "Select recipient"
+msgid_plural "Select recipients"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1791,8 +1775,4 @@ msgstr ""
 
 #: writeit/templates/subdomains/afghanistan/nuntium/instance_detail.html:22
 msgid "Yours sincerely"
-msgstr ""
-
-#: writeit/templates/subdomains/afghanistan/write/who.html:34
-msgid "Select recipients"
 msgstr ""

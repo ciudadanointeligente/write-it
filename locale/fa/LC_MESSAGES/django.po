@@ -1606,27 +1606,11 @@ msgid "Write to this person"
 msgstr "به این شخص نامه بنویسید."
 
 #: nuntium/templates/write/breadcrumb.html:7
-#: nuntium/templates/write/breadcrumb.html:24
-msgid ""
-"\n"
-"            Select recipient\n"
-"        "
-msgid_plural ""
-"\n"
-"            Select recipients\n"
-"        "
-msgstr[0] "\nگیرندگان نامه‌ را انتخاب کنید"
-
 #: nuntium/templates/write/breadcrumb.html:16
-msgid ""
-"\n"
-"                Select recipient\n"
-"            "
-msgid_plural ""
-"\n"
-"                Select recipients\n"
-"            "
-msgstr[0] "\nگیرندگان نامه‌ را انتخاب کنید"
+#: nuntium/templates/write/breadcrumb.html:24
+msgid "Select recipient"
+msgid_plural "Select recipients"
+msgstr[0] "گیرندگان نامه‌ را انتخاب کنید"
 
 #: nuntium/templates/write/breadcrumb.html:33
 #: nuntium/templates/write/breadcrumb.html:35
@@ -1831,8 +1815,4 @@ msgstr ""
 
 #: writeit/templates/subdomains/afghanistan/nuntium/instance_detail.html:22
 msgid "Yours sincerely"
-msgstr ""
-
-#: writeit/templates/subdomains/afghanistan/write/who.html:34
-msgid "Select recipients"
 msgstr ""
