@@ -25,8 +25,7 @@
         </p>
         <p class="form-group">
             <label for="id_draft-content" class="label-with-hint">
-              {% trans "Your message" %}
-              <small>{% trans "This will be published, on this site." %}</small>
+              {% trans "Your message <small>This will be published, on this site.</small>" %}
             </label>
             {{ form.content.errors }}
             {{ form.content }}
@@ -36,8 +35,7 @@
             <div class="col-sm-6">
                 <p class="form-group">
                     <label for="id_draft-author_name" class="label-with-hint">
-                        {% trans "Your name" %}
-                        <small>{% trans "This will be published, on this site." %}</small>
+                        {% trans "Your name <small>This will be published, on this site.</small>" %}
                         </label>
                     {{ form.author_name.errors }}
                     {{ form.author_name }}
@@ -46,8 +44,7 @@
             <div class="col-sm-6">
                 <p class="form-group">
                     <label for="id_draft-author_email" class="label-with-hint">
-                        {% trans "Your email" %}
-                        <small>{% trans "Nobody will see this, ever." %}</small>
+                        {% trans "Your email <small>Nobody will see this, ever.</small>" %}
                     </label>
                     {{ form.author_email.errors }}
                     {{ form.author_email }}
