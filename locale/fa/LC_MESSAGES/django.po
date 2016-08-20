@@ -1819,12 +1819,12 @@ msgstr ""
 
 #: writeit/templates/subdomains/afghanistan/write/draft.html:28
 msgid "Your message <small>This will be published, on this site.</small>"
-msgstr "FIXME"
+msgstr " .متن نامه؛ این متن در وبسایت منتشر خواهد شد "
 
 #: writeit/templates/subdomains/afghanistan/write/draft.html:38
 msgid "Your name <small>This will be published, on this site.</small>"
-msgstr "FIXME"
+msgstr " .نام نویسنده؛ این نام در وبسایت منتشر خواهد شد "
 
 #: writeit/templates/subdomains/afghanistan/write/draft.html:47
 msgid "Your email <small>Nobody will see this, ever.</small>"
-msgstr "FIXME"
+msgstr " !ایمیل نویسنده؛ کسی این ایمیل را نخواهد دید. هرگز "
