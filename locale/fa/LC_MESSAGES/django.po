@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: writeinpublic\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-08-19 07:41-0500\n"
-"PO-Revision-Date: 2016-08-19 12:42+0000\n"
+"PO-Revision-Date: 2016-08-20 07:37+0000\n"
 "Last-Translator: mySociety <transifex@mysociety.org>\n"
 "Language-Team: Persian (http://www.transifex.com/mysociety/writeinpublic/language/fa/)\n"
 "MIME-Version: 1.0\n"
@@ -100,7 +100,7 @@ msgstr[0] "این نامه می‌تواند حداکثر به %(count)d نفر 
 
 #: nuntium/forms.py:121
 msgid "Author name is required"
-msgstr ""
+msgstr "ذکر نام نویسنده ضروری است. "
 
 #: nuntium/forms.py:174 nuntium/user_section/forms.py:271
 msgid "Popolo URL"
@@ -1608,6 +1608,7 @@ msgstr "به این شخص نامه بنویسید."
 #: nuntium/templates/write/breadcrumb.html:7
 #: nuntium/templates/write/breadcrumb.html:16
 #: nuntium/templates/write/breadcrumb.html:24
+#: writeit/templates/subdomains/afghanistan/write/who.html:34
 msgid "Select recipient"
 msgid_plural "Select recipients"
 msgstr[0] "گیرندگان نامه‌ را انتخاب کنید"
