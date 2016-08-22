@@ -1,0 +1,120 @@
+{% extends "base_manager.html" %}
+{% load i18n %}
+{% load subdomainurls %}
+{% load staticfiles %}
+{% load pagination_tags %}
+{% block extrajs %}
+{% endblock extrajs %}
+{% load nuntium_tags %}
+
+
+
+
+
+
+{% block header %}
+
+{% include 'nuntium/profiles/per_instance_top_menu.html' with section='messages_per_writeitinstance' %}
+
+{% endblock header %}
+
+{% block content %}
+  <div class="page-header">
+    <h2>{% trans "Messages" %}</h2>
+    <a href="{% url 'writeitinstance_answernotification_update' subdomain=writeitinstance.slug %}" class="page-header__settings-link btn btn-default btn-sm"><i class="glyphicon glyphicon-wrench"></i> {% trans "Settings" %}</a>
+  </div>
+  <div class="manager-overview">
+    {% blocktrans count message_count=writeitinstance.message_set.count %}
+    There is <strong>1</strong> message 
+    {% plural %}
+    There are <strong>{{ message_count }}</strong> messages 
+    {% endblocktrans %}
+  </div>
+    {% autopaginate message_list %}
+      {% paginate %}
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>{% trans "Message" %}</th>
+            <th class="text-center">{% trans "Thread" %}</th>
+            <th class="text-center">{% trans "Replies" %}</th>
+            <th class="text-center">{% trans "Public?" %}</th>
+            <th class="text-center">{% trans "Moderated?" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for message in message_list %}
+          <tr class="message-in-message-list">
+            <td>
+              <h3><a class="explanation" data-toggle="tooltip" data-placement="right" title="{% trans "Link to message admin" %}" 
+                href="{% url 'message_detail_private' subdomain=writeitinstance.slug pk=message.pk %}">{{ message.subject }}</a> </h3>
+              <p class="message-in-message-list__meta">
+                {% blocktrans with created=message.created|timesince author_name=message.author_name to=message.people|join_with_commas %}
+                  Sent <strong>{{ created }}</strong> ago to <strong>{{ to }}</strong> from <strong>{{ author_name }}</strong>
+                {% endblocktrans %}
+              </p>
+            </td>
+
+            <td class="text-center">
+              {% if message.public and message.confirmated %}
+                <a class="explanation" data-toggle="tooltip" data-placement="left" 
+                  title="{% trans "Link to public message" %}" 
+                  href="{% url 'thread_read' slug=message.slug subdomain=message.writeitinstance.slug %}"><i class="fa fa-external-link"></i></a>
+              {% endif %}
+            </td>
+
+            <td class="text-center">
+              {{ message.answers.count }}
+              {% if writeitinstance.config.can_create_answer %}
+                <a data-toggle="modal" data-target="#modal" href="{% url 'create_answer' subdomain=writeitinstance.slug pk=message.pk %}" alt="{% trans "Add"%}"><i class="fa fa-plus"></i></a>
+              {% endif %}
+            </td>
+
+            <td class="text-center">
+              {% if message.public %}
+              <div class="explanation" data-toggle="tooltip" data-placement="left" title="{% trans 'This message can be seen by everyone' %}">
+                <i class="glyphicon glyphicon-ok"></i>
+              </div>
+              {% else %}
+              <div class="explanation" data-toggle="tooltip" data-placement="left" title="{% trans "This message can't be seen by anyone" %}">
+                <i class="glyphicon glyphicon-remove"></i>
+              </div>
+              {% endif %}
+            </td>
+
+            {% if message.moderated %}
+            <td class="text-center">
+              <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has been accepted' %}"><i class="fa fa-check"></i></div>
+            </td>
+            {% else %}
+            <td class="text-center">
+              <div class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not yet been moderated' %}"><i class="fa fa-times"></i></div>
+            </td>
+            {% endif %}
+
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" class="text-center">{% trans "You have no messages" %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% paginate %}
+
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+     <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{% trans "Delete this message?"%}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{% trans "Are you sure you want to delete this message? This can't be undone."%}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "No, keep it"%}</button>
+        <button type="button" class="btn btn-primary">{% trans "Yes, delete it"%}</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
