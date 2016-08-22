@@ -478,6 +478,29 @@ class RejectModerationView(ModerationView):
         return get
 
 
+class ModerationQueue(LoginRequiredMixin, ListView):
+    model = Message
+    template_name = 'nuntium/profiles/moderation_queue.html'
+
+    def get_queryset(self):
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.request.subdomain, owner=self.request.user)
+        qs = super(ModerationQueue, self) \
+            .get_queryset() \
+            .filter(writeitinstance=self.writeitinstance) \
+            .exclude(moderated=True) \
+            .exclude(confirmated=False)
+
+        if not self.writeitinstance.config.moderation_needed_in_all_messages:
+            qs = qs.exclude(public=True)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(ModerationQueue, self).get_context_data(**kwargs)
+        context['writeitinstance'] = self.writeitinstance
+        return context
+
+
 class WriteitPopitRelatingView(FormView):
     form_class = RelatePopitInstanceWithWriteItInstance
     template_name = 'nuntium/profiles/writeitinstance_and_popit_relations.html'
