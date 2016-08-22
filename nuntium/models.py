@@ -302,7 +302,18 @@ class Message(models.Model):
             raise ValidationError(_('The message needs '
                 + 'to be confirmated first'))
         self.set_to_ready()
-        self.moderation.success()
+        # if we turn on moderation after some messages have been created then
+        # they will not have associated Moderation objects so we need to catch
+        # that, create the moderation object and then try again.
+        try:
+            self.moderation.success()
+        except Moderation.DoesNotExist:
+            if self.writeitinstance.config.moderation_needed_in_all_messages:
+                moderation, created = Moderation.objects.create(message=self)
+                if created:
+                    self.moderation.success()
+                    return
+            raise
 
     def __unicode__(self):
         return _('%(subject)s at %(instance)s') % {
