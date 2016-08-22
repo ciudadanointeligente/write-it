@@ -212,6 +212,53 @@ A gaf i dynnu sylw'r Prif Weinidog hefyd at y sefyllfa yn Ysbyty Gwynedd yn ddiw
         outbound_message_to_pedro = OutboundMessage.objects.get(message=message)
         self.assertEquals(outbound_message_to_pedro.status, 'new')
 
+    def test_error_if_moderate_public_message_created_when_moderation_off(self):
+        self.writeitinstance1.config.moderation_needed_in_all_messages = False
+        self.writeitinstance1.config.save()
+        message = Message.objects.create(
+            content='Content 1',
+            author_name='Felipe',
+            author_email="falvarez@votainteligente.cl",
+            subject='Fiera es una perra feroz',
+            public=True,
+            writeitinstance=self.writeitinstance1,
+            persons=[self.person1],
+            )
+
+        message.recently_confirmated()
+
+        with self.assertRaises(Moderation.DoesNotExist):
+            message.moderate()
+
+        self.assertFalse(message.moderated)
+        outbound_message_to_pedro = OutboundMessage.objects.get(message=message)
+        self.assertEquals(outbound_message_to_pedro.status, 'ready')
+
+    # for https://github.com/ciudadanointeligente/write-it/issues/704
+    def test_moderation_created_for_old_messages_after_moderation_turned_on(self):
+        # we use a private message because they always require
+        # moderation
+        message = Message.objects.create(
+            content='Content 1',
+            author_name='Felipe',
+            author_email="falvarez@votainteligente.cl",
+            subject='Fiera es una perra feroz',
+            public=False,
+            writeitinstance=self.writeitinstance1,
+            persons=[self.person1],
+            )
+
+        message.recently_confirmated()
+
+        self.writeitinstance1.config.moderation_needed_in_all_messages = True
+        self.writeitinstance1.config.save()
+
+        message.moderate()
+
+        self.assertTrue(message.moderated)
+        outbound_message_to_pedro = OutboundMessage.objects.get(message=message)
+        self.assertEquals(outbound_message_to_pedro.status, 'ready')
+
     def test_there_is_a_moderation_url_that_sets_the_message_to_ready(self):
         self.client.login(username=self.owner.username, password='feroz')
         self.confirmation.confirmated_at = datetime.datetime.now()
