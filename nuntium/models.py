@@ -154,7 +154,6 @@ class Message(models.Model):
         if not self.public or \
                 self.writeitinstance.config.moderation_needed_in_all_messages:
             moderation, created = Moderation.objects.get_or_create(message=self)
-            self.send_moderation_mail()
             status = 'needmodera'
         for outbound_message in self.outbound_messages:
             outbound_message.status = status

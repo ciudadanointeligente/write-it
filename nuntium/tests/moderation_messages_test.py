@@ -152,6 +152,7 @@ A gaf i dynnu sylw'r Prif Weinidog hefyd at y sefyllfa yn Ysbyty Gwynedd yn ddiw
 
     # issue 114 found at https://github.com/ciudadanointeligente/write-it/issues/114
 
+    @skip("we don't send moderation emails anymore")
     def test_send_mails_only_once(self):
         with patch('nuntium.models.Message.send_moderation_mail') as send_moderation_mail:
             self.writeitinstance1.config.moderation_needed_in_all_messages = True
@@ -326,28 +327,7 @@ A gaf i dynnu sylw'r Prif Weinidog hefyd at y sefyllfa yn Ysbyty Gwynedd yn ddiw
 
     def test_when_moderation_needed_a_mail_for_its_owner_is_sent(self):
         self.private_message.recently_confirmated()
-        # There should be two
-        # One is created for confirmation
-        # The other one is created for the moderation thing
-        self.assertEquals(len(mail.outbox), 2)
-        moderation_mail = mail.outbox[1]
-        # it is sent to the owner of the instance
-        self.assertEquals(moderation_mail.to[0], self.private_message.writeitinstance.owner.email)
-        self.assertTrue(self.private_message.content in moderation_mail.body)
-        self.assertTrue(self.private_message.subject in moderation_mail.body)
-        self.assertTrue(self.private_message.author_name in moderation_mail.body)
-        self.assertTrue(self.private_message.author_email in moderation_mail.body)
-        url_rejected = (reverse('moderation_rejected',
-                                subdomain=self.private_message.writeitinstance.slug,
-                                kwargs={'slug': self.private_message.moderation.key})
-                        )
-        url_accept = (reverse('moderation_accept',
-                              subdomain=self.private_message.writeitinstance.slug,
-                              kwargs={'slug': self.private_message.moderation.key})
-                      )
-
-        self.assertIn(url_rejected, moderation_mail.body)
-        self.assertIn(url_accept, moderation_mail.body)
+        self.assertEquals(len(mail.outbox), 1)
 
     def test_creates_automatically_a_moderation_when_a_private_message_is_created(self):
         message = Message.objects.create(
