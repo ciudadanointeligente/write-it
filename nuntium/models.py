@@ -95,8 +95,8 @@ class PublicMessagesManager(MessagesManager):
 class NonModeratedMessagesManager(MessagesManager):
     def get_queryset(self):
         queryset = super(NonModeratedMessagesManager, self).get_queryset()
-        return queryset.filter(Q(public=True), Q(confirmated=True))\
-            .exclude(Q(moderated=True) | Q(moderated=None))
+        return queryset.filter(Q(confirmated=True))\
+            .exclude(moderated=True)
 
 
 moderation_subject = read_template_as_string('templates/nuntium/mails/moderation_subject.txt').strip()
