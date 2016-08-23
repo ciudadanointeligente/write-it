@@ -4,6 +4,7 @@ from instance.models import WriteItInstance
 from ..models import Message, Moderation
 from popolo.models import Person
 from django.core import mail
+from django.utils.unittest import skip
 
 
 class AllMessagesWithModerationInAWriteItInstances(TestCase):
@@ -37,6 +38,7 @@ class AllMessagesWithModerationInAWriteItInstances(TestCase):
     def test_a_message_does_not_have_a_moderation_previous_to_confirmation(self):
         self.assertEquals(Moderation.objects.filter(message=self.message).count(), 0)
 
+    @skip("We no longer send moderation emails")
     def test_when_you_create_a_public_message_in_the_instance(self):
         self.assertEquals(len(mail.outbox), 0)
         # the message is confirmated
