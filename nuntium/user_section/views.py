@@ -484,16 +484,7 @@ class ModerationQueue(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.request.subdomain, owner=self.request.user)
-        qs = super(ModerationQueue, self) \
-            .get_queryset() \
-            .filter(writeitinstance=self.writeitinstance) \
-            .exclude(moderated=True) \
-            .exclude(confirmated=False)
-
-        if not self.writeitinstance.config.moderation_needed_in_all_messages:
-            qs = qs.exclude(public=True)
-
-        return qs
+        return Message.moderation_required_objects.filter(writeitinstance=self.writeitinstance)
 
     def get_context_data(self, **kwargs):
         context = super(ModerationQueue, self).get_context_data(**kwargs)
