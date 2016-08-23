@@ -24,7 +24,7 @@
     <a href="{% url 'writeitinstance_answernotification_update' subdomain=writeitinstance.slug %}" class="page-header__settings-link btn btn-default btn-sm"><i class="glyphicon glyphicon-wrench"></i> {% trans "Settings" %}</a>
   </div>
   <div class="manager-overview">
-    {% blocktrans count message_count=writeitinstance.message_set.count %}
+    {% blocktrans count message_count=message_list.count %}
     There is <strong>1</strong> message 
     {% plural %}
     There are <strong>{{ message_count }}</strong> messages 
