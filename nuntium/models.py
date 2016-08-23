@@ -301,6 +301,8 @@ class Message(models.Model):
             raise ValidationError(_('The message needs '
                 + 'to be confirmated first'))
         self.set_to_ready()
+        if self.moderated:
+            raise ValidationError(_('Cannot moderate an already moderated message'))
         # if we turn on moderation after some messages have been created then
         # they will not have associated Moderation objects so we need to catch
         # that, create the moderation object and then try again.
