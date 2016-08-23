@@ -2,6 +2,8 @@ from subdomains.utils import reverse
 from instance.models import WriteItInstance
 from ...models import Message, Answer
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext as _
 from ..forms import AnswerForm
 from popolo.models import Person
 from user_section_views_tests import UserSectionTestCase
@@ -366,6 +368,86 @@ class ModerateURL(UserSectionTestCase):
         '''Redirecting'''
         allmessages_url = reverse('messages_per_writeitinstance', subdomain=self.writeitinstance.slug)
         self.assertRedirects(response, allmessages_url)
+
+    def test_moderate_reject_url(self):
+        '''
+        There is a url to moderate a message
+        '''
+        message = Message.objects.create(
+            content='Content 1',
+            author_name='Felipe',
+            author_email="falvarez@votainteligente.cl",
+            subject='Fiera es una perra feroz',
+            public=False,
+            writeitinstance=self.writeitinstance,
+            persons=[self.person1],
+            )
+        message.recently_confirmated()
+        url = reverse('reject_message', subdomain=message.writeitinstance.slug, kwargs={'pk': message.pk})
+        self.client.login(username=self.writeitinstance.owner.username, password='admin')
+        response = self.client.post(url)
+
+        message_again = Message.objects.get(id=message.id)
+        self.assertTrue(message_again.moderated)
+        self.assertFalse(message.public)
+
+        '''Redirecting'''
+        allmessages_url = reverse('messages_per_writeitinstance', subdomain=self.writeitinstance.slug)
+        self.assertRedirects(response, allmessages_url)
+
+    def test_moderate_url_only_works_once(self):
+        '''
+        There is a url to moderate a message
+        '''
+        message = Message.objects.create(
+            content='Content 1',
+            author_name='Felipe',
+            author_email="falvarez@votainteligente.cl",
+            subject='Fiera es una perra feroz',
+            public=True,
+            moderated=True,
+            confirmated=True,
+            writeitinstance=self.writeitinstance,
+            persons=[self.person1],
+            )
+
+        url = reverse('accept_message', subdomain=message.writeitinstance.slug, kwargs={'pk': message.pk})
+        self.client.login(username=self.writeitinstance.owner.username, password='admin')
+
+        with self.assertRaises(ValidationError):
+            try:
+                self.client.post(url)
+            except ValidationError as e:
+                self.assertEqual(e.message,
+                    _('Cannot moderate an already moderated message',))
+                raise
+
+    def test_reject_url_only_works_once(self):
+        '''
+        There is a url to moderate a message
+        '''
+        message = Message.objects.create(
+            content='Content 1',
+            author_name='Felipe',
+            author_email="falvarez@votainteligente.cl",
+            subject='Fiera es una perra feroz',
+            public=True,
+            moderated=True,
+            confirmated=True,
+            writeitinstance=self.writeitinstance,
+            persons=[self.person1],
+            )
+
+        url = reverse('reject_message', subdomain=message.writeitinstance.slug, kwargs={'pk': message.pk})
+        self.client.login(username=self.writeitinstance.owner.username, password='admin')
+
+        with self.assertRaises(ValidationError):
+            try:
+                self.client.post(url)
+            except ValidationError as e:
+                self.assertEqual(e.message,
+                    _('Cannot moderate an already moderated message',))
+                raise
 
     def test_logged_user(self):
         '''
