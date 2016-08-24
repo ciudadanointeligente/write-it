@@ -151,10 +151,15 @@ class Message(models.Model):
     #TODO: only new outbound_messages
     def recently_confirmated(self):
         status = 'ready'
-        if not self.public or \
+        # unless moderation is turned on mark messages as moderated to
+        # save us pain later on if someone turns on moderation.
+        if self.public and not \
                 self.writeitinstance.config.moderation_needed_in_all_messages:
+            self.moderated = True
+        else:
             moderation, created = Moderation.objects.get_or_create(message=self)
             status = 'needmodera'
+
         for outbound_message in self.outbound_messages:
             outbound_message.status = status
             outbound_message.save()
