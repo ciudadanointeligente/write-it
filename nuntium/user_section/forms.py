@@ -100,6 +100,16 @@ class WriteItInstanceModerationForm(ModelForm):
             'moderation_needed_in_all_messages': CheckboxInput(attrs={'class': 'form-control'}),
         }
 
+    # Do not allow moderation to be turned off until the moderation queue is
+    # empty to avoid any problems with old messages never being moderated
+    def clean_moderation_needed_in_all_messages(self):
+        moderation_on = self.cleaned_data['moderation_needed_in_all_messages']
+        writeitinstance = self.instance.writeitinstance
+        if not moderation_on and writeitinstance.messages_awaiting_moderation.count() > 0:
+            raise ValidationError("Cannot turn off moderation while there are un-moderated messages")
+
+        return moderation_on
+
 
 class WriteItInstanceApiAutoconfirmForm(ModelForm):
     class Meta:
