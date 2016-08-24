@@ -12,7 +12,7 @@
 
     <div class="page-header">
         <h2>{% trans 'Moderation settings' %}</h2>
-        <a href="#"><i class="glyphicon glyphicon-arrow-left"></i> {% trans "back to moderation" %}</a>
+        <a href="{% url 'writeitinstance_moderation_queue' subdomain=writeitinstance.slug %}"><i class="glyphicon glyphicon-arrow-left"></i> {% trans "back to moderation" %}</a>
     </div>
 
 
