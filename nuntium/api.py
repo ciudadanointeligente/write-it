@@ -93,7 +93,8 @@ class WriteItInstanceResource(ModelResource):
     def add_persons_to_bundle(self, bundle):
         bundle.data['persons'] = []
         for person in bundle.obj.persons.all():
-            bundle.data['persons'].append(person.popit_url)
+            # FIXME: this is returning the old identifier
+            bundle.data['persons'].append(person.old_popit_url)
         return bundle
 
     def hydrate(self, bundle):
