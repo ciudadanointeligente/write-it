@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from tastypie.resources import ModelResource, ALL_WITH_RELATIONS, Resource
-from instance.models import WriteItInstance
+from instance.models import PopoloPerson, WriteItInstance
 from .models import Message, Answer, \
     OutboundMessageIdentifier, OutboundMessage, Confirmation
 from tastypie.authentication import ApiKeyAuthentication
@@ -10,7 +10,6 @@ from django.conf.urls import url
 from tastypie import fields
 from tastypie.exceptions import ImmediateHttpResponse
 from tastypie import http
-from popolo.models import Person
 from contactos.models import Contact
 from tastypie.paginator import Paginator
 from django.http import Http404, HttpResponseBadRequest
@@ -34,7 +33,7 @@ class PagePaginator(Paginator):
 
 class PersonResource(ModelResource):
     class Meta:
-        queryset = Person.objects.all()
+        queryset = PopoloPerson.objects.all()
         resource_name = 'person'
         authentication = ApiKeyAuthentication()
 
@@ -185,7 +184,7 @@ class MessageResource(ModelResource):
 
     def build_filters(self, filters=None, ignore_bad_filters=False):
         result = super(MessageResource, self).build_filters(filters, ignore_bad_filters)
-        queryset = Person.objects.all()
+        queryset = PopoloPerson.objects.all()
         if 'writeitinstance__exact' in result:
             queryset = result['writeitinstance__exact'].persons.all()
         person = None
@@ -193,12 +192,12 @@ class MessageResource(ModelResource):
             try:
                 person = queryset.get(id=filters['person'])
             except:
-                raise Http404("Person does not exist")
+                raise Http404("PopoloPerson does not exist")
         if 'person__popit_id' in filters:
             try:
                 person = queryset.get(popit_id=filters['person__popit_id'])
             except ObjectDoesNotExist:
-                raise Http404("Person does not exist")
+                raise Http404("PopoloPerson does not exist")
         if person:
             result['person'] = person
         return result
@@ -224,7 +223,7 @@ class MessageResource(ModelResource):
         else:
             for popit_url in bundle.data['persons']:
                 try:
-                    person = Person.objects.get(popit_url=popit_url)
+                    person = PopoloPerson.objects.get(popit_url=popit_url)
                     persons.append(person)
                 except ObjectDoesNotExist:
                     pass
