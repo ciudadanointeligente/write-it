@@ -545,8 +545,9 @@ class OutboundMessageIdentifier(models.Model):
         identifier = cls.objects.get(key=identifier_key)
         message = identifier.outbound_message.message
         person = identifier.outbound_message.contact.person
+        popolo_person = PopoloPerson.create_from_base_instance(person)
         the_created_answer = Answer.objects.create(message=message,
-            person=person,
+            person=popolo_person,
             content=content,
             content_html=content_html)
         return the_created_answer
