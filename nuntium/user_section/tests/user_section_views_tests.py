@@ -538,6 +538,8 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         response = c.get(url)
         self.assertRedirectToLogin(response)
 
+    # FIXME: this should mock
+    # http://everypolitician.github.io/everypolitician-writeinpublic/countries.json
     def test_get_url(self):
         '''Get the url for creating a new instance (it doesn't redrect anywhere)'''
         url = reverse('create_writeit_instance')

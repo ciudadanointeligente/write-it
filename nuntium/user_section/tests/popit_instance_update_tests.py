@@ -1,13 +1,13 @@
 from global_test_case import popit_load_data
 from subdomains.utils import reverse
 from instance.models import (
-    InstanceMembership, WriteItInstance, WriteitInstancePopitInstanceRecord)
+    InstanceMembership, WriteItInstance, WriteitInstancePopitInstanceRecord,
+    PopoloPerson)
 from popolo_sources.models import PopoloSource
 from django.contrib.auth.models import User
 from django.forms import Form, URLField
 from django.conf import settings
 from django.core.management import call_command
-from popolo.models import Person
 from django.utils.unittest import skip
 from user_section_views_tests import UserSectionTestCase
 from django.utils.translation import ugettext as _
@@ -45,7 +45,7 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
         '''
         w = WriteItInstance.objects.first()
         popolo_source = w.persons.first().popolo_sources.first()
-        another_person = Person.objects.create(
+        another_person = PopoloPerson.objects.create(
             name="Another Person but with the same Popolo source",
             )
         another_person.popolo_sources.add(popolo_source)

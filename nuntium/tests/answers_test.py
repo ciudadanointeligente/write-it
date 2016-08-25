@@ -1,6 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
 from ..models import Message, Answer
-from popolo.models import Person
+from instance.models import PopoloPerson
 from django.utils.translation import ugettext as _
 
 
@@ -8,9 +8,9 @@ class AnswerTestCase(TestCase):
     def setUp(self):
         super(AnswerTestCase, self).setUp()
         self.message = Message.objects.get(id=1)
-        self.person = Person.objects.get(id=1)
+        self.person = PopoloPerson.objects.get(id=1)
         #There is no membership for this guy to any writeitInstance
-        self.person_not_in_the_instance = Person.objects.get(id=2)
+        self.person_not_in_the_instance = PopoloPerson.objects.get(id=2)
 
     def test_create_an_answer(self):
         answer = Answer.objects.create(message=self.message,

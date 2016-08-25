@@ -5,7 +5,6 @@ from subdomains.utils import reverse
 from instance.models import InstanceMembership, PopoloPerson, WriteItInstance
 from popolo_sources.models import PopoloSource
 from nuntium.models import Message, Confirmation
-from popolo.models import Person
 from django.utils.unittest import skip
 from django.contrib.auth.models import User
 from django.utils.translation import activate
@@ -21,7 +20,7 @@ class InstanceTestCase(TestCase):
         super(InstanceTestCase, self).setUp()
         self.popolo_source1 = PopoloSource.objects.get(id=1)
         self.popolo_source2 = PopoloSource.objects.get(id=2)
-        self.person1 = Person.objects.get(id=1)
+        self.person1 = PopoloPerson.objects.get(id=1)
 
         self.owner = User.objects.get(id=1)
 
@@ -120,8 +119,8 @@ class InstanceTestCase(TestCase):
 
         self.assertEquals(writeitinstance.persons.all().count(), 2)
 
-        raton = Person.objects.get(name='Ratón Inteligente')
-        fiera = Person.objects.get(name="Fiera Feroz")
+        raton = PopoloPerson.objects.get(name='Ratón Inteligente')
+        fiera = PopoloPerson.objects.get(name="Fiera Feroz")
 
         self.assertIn(raton, [r for r in writeitinstance.persons.all()])
         self.assertIn(fiera, [r for r in writeitinstance.persons.all()])
@@ -167,7 +166,7 @@ class InstanceTestCase(TestCase):
         writeitinstance.load_persons_from_popolo_json(settings.TEST_POPIT_API_URL)
 
         email_type = ContactType.objects.get(id=1)
-        person = Person.objects.get(id=1)
+        person = PopoloPerson.objects.get(id=1)
         Contact.objects.create(
             person=person,
             contact_type=email_type,
@@ -190,8 +189,8 @@ class PersonsWithContactsTestCase(TestCase):
             name='instance 1',
             slug='instance-1',
             owner=self.owner)
-        self.person1 = Person.objects.get(id=1)
-        self.person2 = Person.objects.get(id=2)
+        self.person1 = PopoloPerson.objects.get(id=1)
+        self.person2 = PopoloPerson.objects.get(id=2)
 
     def test_instance_add_person(self):
         self.writeitinstance.add_person(self.person1)
@@ -230,7 +229,7 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
         super(WriteItInstanceLoadingPeopleFromAPopitApiTestCase, self).setUp()
         self.popolo_source1 = PopoloSource.objects.get(id=1)
         self.popolo_source2 = PopoloSource.objects.get(id=2)
-        self.person1 = Person.objects.get(id=1)
+        self.person1 = PopoloPerson.objects.get(id=1)
 
         self.owner = User.objects.get(id=1)
 
@@ -243,8 +242,8 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
 
         self.assertEquals(writeitinstance.persons.all().count(), 2)
 
-        raton = Person.objects.get(name='Ratón Inteligente')
-        fiera = Person.objects.get(name="Fiera Feroz")
+        raton = PopoloPerson.objects.get(name='Ratón Inteligente')
+        fiera = PopoloPerson.objects.get(name="Fiera Feroz")
 
         self.assertIn(raton, [r for r in writeitinstance.persons.all()])
         self.assertIn(fiera, [r for r in writeitinstance.persons.all()])
@@ -275,7 +274,7 @@ class InstanceDetailView(TestCase):
         super(InstanceDetailView, self).setUp()
         self.popolo_source1 = PopoloSource.objects.get(id=1)
         self.popolo_source2 = PopoloSource.objects.get(id=2)
-        self.person1 = Person.objects.get(id=1)
+        self.person1 = PopoloPerson.objects.get(id=1)
         self.writeitinstance1 = WriteItInstance.objects.get(id=1)
         self.url = self.writeitinstance1.get_absolute_url()
 

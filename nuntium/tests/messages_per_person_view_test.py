@@ -1,17 +1,16 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
 from subdomains.utils import reverse
-from instance.models import WriteItInstance
+from instance.models import PopoloPerson, WriteItInstance
 from ..models import Message
-from popolo.models import Person
 
 
 class MessagesPerPersonViewTestCase(TestCase):
     def setUp(self):
         super(MessagesPerPersonViewTestCase, self).setUp()
         self.writeitinstance = WriteItInstance.objects.get(id=1)
-        self.pedro = Person.objects.get(name="Pedro")
-        self.marcel = Person.objects.get(name="Marcel")
+        self.pedro = PopoloPerson.objects.get(name="Pedro")
+        self.marcel = PopoloPerson.objects.get(name="Marcel")
 
     def test_has_an_url(self):
         url = reverse(
@@ -126,7 +125,7 @@ class MessagesPerPersonViewTestCase(TestCase):
         self.assertEquals(response.status_code, 404)
 
     def test_the_person_does_exist_but_not_the_instance(self):
-        marcel = Person.objects.get(id=2)
+        marcel = PopoloPerson.objects.get(id=2)
         url = reverse(
             'thread_to',
             subdomain='non-existing-slug',

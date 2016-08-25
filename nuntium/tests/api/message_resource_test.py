@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.core.management import call_command
-from instance.models import WriteItInstance
+from instance.models import PopoloPerson, WriteItInstance
 from ...models import Message, Confirmation
 from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
-from popolo.models import Person
 from django.utils.encoding import force_text
 
 
@@ -37,7 +36,7 @@ class MessageResourceTestCase(ResourceTestCase):
     def test_only_listing_my_messages(self):
         not_me = User.objects.create_user(username='not_me', password='not_my_password')
         writeitinstance = WriteItInstance.objects.create(name=u"a test", slug=u"a-test", owner=not_me)
-        person1 = Person.objects.get(id=1)
+        person1 = PopoloPerson.objects.get(id=1)
         writeitinstance.add_person(person1)
         i_should_not_see_this_message = Message.objects.create(
             content='Content 1 Public message',
@@ -77,7 +76,7 @@ class MessageResourceTestCase(ResourceTestCase):
         """ The list of messages shown in the API is ordered by created date"""
         # Preparing the test
         Message.objects.all().delete()
-        person1 = Person.objects.get(id=1)
+        person1 = PopoloPerson.objects.get(id=1)
         # cleaning up the database before
         message1 = Message.objects.create(
             content=u'Content 1',
@@ -137,7 +136,7 @@ class MessageResourceTestCase(ResourceTestCase):
             self.assertIn('popit_url', person)
 
             self.assertIn(
-                Person.objects.get(id=person['id']),
+                PopoloPerson.objects.get(id=person['id']),
                 message.people.all(),
                 )
         self.assertEquals(len(message_from_the_api['people']), message.people.count())
@@ -173,7 +172,7 @@ class MessageResourceTestCase(ResourceTestCase):
     def test_create_a_new_message_in_not_my_instance(self):
         not_me = User.objects.create_user(username='not_me', password='not_my_password')
         writeitinstance = WriteItInstance.objects.create(name=u"a test", slug=u"a-test", owner=not_me)
-        person1 = Person.objects.get(id=1)
+        person1 = PopoloPerson.objects.get(id=1)
         writeitinstance.add_person(person1)
         message_data = {
             'author_name': 'Felipipoo',

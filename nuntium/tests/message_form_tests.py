@@ -1,8 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from popolo.models import Person
 from contactos.models import Contact
-from instance.models import InstanceMembership, WriteItInstance
+from instance.models import InstanceMembership, PopoloPerson, WriteItInstance
 from ..models import Message, Confirmation, OutboundMessage
 from ..forms import MessageCreateForm, PersonMultipleChoiceField
 
@@ -14,41 +13,41 @@ from django.utils.translation import ugettext as _
 class PersonMultipleChoiceFieldTestCase(TestCase):
     def setUp(self):
         super(PersonMultipleChoiceFieldTestCase, self).setUp()
-        self.person1 = Person.objects.get(id=1)
+        self.person1 = PopoloPerson.objects.get(id=1)
 
     def test_get_widget(self):
-        field = PersonMultipleChoiceField(queryset=Person.objects.none())
+        field = PersonMultipleChoiceField(queryset=PopoloPerson.objects.none())
         widget = field.widget
 
         self.assertTrue(isinstance(widget, SelectMultiple))
 
     def test_get_label_from_instance(self):
-        field = PersonMultipleChoiceField(queryset=Person.objects.all())
+        field = PersonMultipleChoiceField(queryset=PopoloPerson.objects.all())
         label = field.label_from_instance(self.person1)
 
         self.assertEquals(label, self.person1.name)
 
     def test_persons_without_a_contact(self):
-        felipe = Person.objects.get(name="Felipe")
+        felipe = PopoloPerson.objects.get(name="Felipe")
         felipe.contact_set.all().delete()
         # This guy does not have any contacts
-        field = PersonMultipleChoiceField(queryset=Person.objects.all())
+        field = PersonMultipleChoiceField(queryset=PopoloPerson.objects.all())
         rendered_field = field.widget.render(name='oli', value=None)
         self.assertIn(">Felipe *</option>", rendered_field)
 
     def test_persons_with_bounced_contact(self):
-        felipe = Person.objects.get(name="Felipe")
+        felipe = PopoloPerson.objects.get(name="Felipe")
         for contact in felipe.contact_set.all():
             contact.is_bounced = True
             contact.save()
 
         # This guy does not have any good contacts
-        field = PersonMultipleChoiceField(queryset=Person.objects.all())
+        field = PersonMultipleChoiceField(queryset=PopoloPerson.objects.all())
         rendered_field = field.widget.render(name='oli', value=None)
         self.assertIn(">Felipe *</option>", rendered_field)
 
     def test_persons_with_bounced_contact_unicode(self):
-        felipe = Person.objects.get(name="Felipe")
+        felipe = PopoloPerson.objects.get(name="Felipe")
         felipe.name = u"Felipe Álvarez"
         felipe.save()
 
@@ -57,12 +56,12 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
             contact.save()
 
         # This guy does not have any good contacts
-        field = PersonMultipleChoiceField(queryset=Person.objects.all())
+        field = PersonMultipleChoiceField(queryset=PopoloPerson.objects.all())
         rendered_field = field.widget.render(name='oli', value=None)
         self.assertIn(u">Felipe Álvarez *</option>", rendered_field)
 
     def test_previously_selected_persons(self):
-        field = PersonMultipleChoiceField(queryset=Person.objects.all())
+        field = PersonMultipleChoiceField(queryset=PopoloPerson.objects.all())
         rendered_field = field.widget.render(name='oli', value=[3])
         self.assertIn('<option value="3" selected="selected">Felipe</option>', rendered_field)
 
@@ -71,7 +70,7 @@ class MessageFormTestCase(TestCase):
     def setUp(self):
         super(MessageFormTestCase, self).setUp()
         self.writeitinstance1 = WriteItInstance.objects.get(id=1)
-        self.person1 = Person.objects.get(id=1)
+        self.person1 = PopoloPerson.objects.get(id=1)
         self.contact1 = Contact.objects.get(id=1)
 
     def test_form_fields(self):
@@ -185,7 +184,7 @@ class MessageFormTestCase(TestCase):
         '''When creating a message that includes more than maximum_recipients'''
         self.writeitinstance1.config.maximum_recipients = 1
         self.writeitinstance1.config.save()
-        person2 = Person.objects.get(id=2)
+        person2 = PopoloPerson.objects.get(id=2)
         InstanceMembership.objects.create(writeitinstance=self.writeitinstance1, person=person2)
         data = {
             'subject': u'Amor a la fiera',
@@ -208,8 +207,8 @@ class RateLimitingInForm(TestCase):
         self.writeitinstance1 = WriteItInstance.objects.get(id=1)
         self.writeitinstance1.config.rate_limiter = 1
         self.writeitinstance1.config.save()
-        self.person1 = Person.objects.get(id=1)
-        self.person2 = Person.objects.get(id=2)
+        self.person1 = PopoloPerson.objects.get(id=1)
+        self.person2 = PopoloPerson.objects.get(id=2)
         self.message = Message.objects.get(id=1)
         Message.objects.create(
             content='Content 1',
