@@ -133,7 +133,7 @@ class MessageResourceTestCase(ResourceTestCase):
         message_from_the_api = messages[0]
         message = Message.objects.get(id=messages[0]['id'])
         for person in message_from_the_api['people']:
-            self.assertIn('old_popit_url', person)
+            self.assertIn('popit_url', person)
 
             self.assertIn(
                 PopoloPerson.objects.get(id=person['id']),

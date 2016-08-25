@@ -60,7 +60,7 @@ class InstanceResourceTestCase(ResourceTestCase):
         instance = self.deserialize(response)
         self.assertIn('persons', instance)
         pedro = PopoloPerson.objects.get(id=1)
-        self.assertIn(pedro.popit_url, instance['persons'])
+        self.assertIn(pedro.uri_for_api(), instance['persons'])
 
     def test_create_a_new_instance(self):
         instance_data = {
@@ -210,7 +210,7 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
             'writeitinstance_id': self.writeitinstance.id,
         }
         data = self.data
-        data['person__popit_id'] = self.pedro.popit_id
+        data['person__popit_id'] = self.pedro.old_popit_id
         response = self.api_client.get(url, data=data)
         self.assertValidJSONResponse(response)
         messages = self.deserialize(response)['objects']
@@ -223,17 +223,19 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
             id=3,
             url="https://popit.org/api/v1"
         )
-        p = PopoloPerson.objects.create(
-            name="Otro",
-            popit_url="https://popit.org/api/v1/persons/1",
-            popit_id="52bc7asdasd34567"
-        )
+        p = PopoloPerson.objects.create(name="Otro")
+        p.identifiers.create(
+            scheme='popit_url',
+            identifier="https://popit.org/api/v1/persons/1")
+        p.identifiers.create(
+            scheme='popit_id',
+            identifier='52bc7asdasd34567')
         popolo_source.persons.add(p)
         url = '/api/v1/instance/%(writeitinstance_id)i/messages/' % {
             'writeitinstance_id': self.writeitinstance.id,
         }
         data = self.data
-        data['person__popit_id'] = p.popit_id
+        data['person__popit_id'] = p.old_popit_id
         response = self.api_client.get(url, data=data)
         self.assertValidJSONResponse(response)
 

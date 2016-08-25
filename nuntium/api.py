@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+import json
+
 from tastypie.resources import ModelResource, ALL_WITH_RELATIONS, Resource
 from instance.models import PopoloPerson, WriteItInstance
 from .models import Message, Answer, \
@@ -38,7 +41,9 @@ class PersonResource(ModelResource):
         authentication = ApiKeyAuthentication()
 
     def dehydrate(self, bundle):
-        bundle.data['resource_uri'] = bundle.obj.old_popit_url
+        bundle.data['resource_uri'] = bundle.obj.uri_for_api()
+        bundle.data['popit_id'] = bundle.obj.old_popit_id
+        bundle.data['popit_url'] = bundle.obj.uri_for_api()
         return bundle
 
 
@@ -92,7 +97,7 @@ class WriteItInstanceResource(ModelResource):
     def add_persons_to_bundle(self, bundle):
         bundle.data['persons'] = []
         for person in bundle.obj.persons.all():
-            bundle.data['persons'].append(person.popit_url)
+            bundle.data['persons'].append(person.uri_for_api())
         return bundle
 
     def hydrate(self, bundle):
@@ -195,7 +200,10 @@ class MessageResource(ModelResource):
                 raise Http404("PopoloPerson does not exist")
         if 'person__popit_id' in filters:
             try:
-                person = queryset.get(popit_id=filters['person__popit_id'])
+                person = queryset.get(
+                    identifiers__scheme='popit_id',
+                    identifiers__identifier=filters['person__popit_id'],
+                )
             except ObjectDoesNotExist:
                 raise Http404("PopoloPerson does not exist")
         if person:
@@ -221,9 +229,9 @@ class MessageResource(ModelResource):
             for person in instance.persons.all():
                 persons.append(person)
         else:
-            for popit_url in bundle.data['persons']:
+            for person_api_url in bundle.data['persons']:
                 try:
-                    person = PopoloPerson.objects.get(popit_url=popit_url)
+                    person = PopoloPerson.objects.get_from_api_uri(person_api_url)
                     persons.append(person)
                 except ObjectDoesNotExist:
                     pass
@@ -236,8 +244,7 @@ class MessageResource(ModelResource):
         if 'author_email' in bundle.data:
             bundle.data.pop('author_email', None)
         for person in bundle.obj.people:
-            # FIXME:
-            bundle.data['persons'].append(person.old_popit_url)
+            bundle.data['persons'].append(person.uri_for_api())
         return bundle
 
     def obj_create(self, bundle, **kwargs):
