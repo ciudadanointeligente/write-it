@@ -65,73 +65,6 @@ class ModerationMessagesTestCase(TestCase):
         outbound_message_to_pedro = OutboundMessage.objects.get(message=self.private_message)
         self.assertEquals(outbound_message_to_pedro.status, 'needmodera')
 
-    def test_message_send_moderation_message(self):
-        # Let's have some longer message content so we can keep an eye on the text wrapping.
-        self.private_message.content = u'''A gaf fi dynnu sylw'r Prif Weinidog at y sefyllfa yn Ysbyty Penrhos Stanley yng Nghaergybi, lle mae un o'r ddwy ward wedi bod ar gau ers dros bythefnos erbyn hyn, oherwydd absenoldeb staff a diffyg staff wrth gefn, ac ni fydd y ward yn agor am bythefnos arall, tan 13 Ebrill—bron i dair wythnos a dweud y gwir?
-A gaf i dynnu sylw'r Prif Weinidog hefyd at y sefyllfa yn Ysbyty Gwynedd yn ddiweddar, lle cadwyd etholwr i mi mewn ystafell storio dros nos wrth wella ar ôl llawdriniaeth, â’i declyn drip yn hongian oddi ar beg ar y wal, ac y rhoddwyd cloch bres Fictoraidd iddo i dynnu sylw’r nyrs. Mae'r nyrs yn gwneud gwaith gwych dan amgylchiadau anodd. A yw hynny'n swnio i'r Prif Weinidog fel GIG sydd ag adnoddau da ac yn cael ei reoli'n dda? Er bod gwleidyddiaeth cyni cyllidol yn gyfrifol am lawer o'r diffyg adnoddau, nid yw'n esgusodi camreolaeth y GIG gan Lywodraeth Cymru.'''
-        self.private_message.save()
-
-        moderation, created = Moderation.objects.get_or_create(message=self.private_message)
-        self.private_message.send_moderation_mail()
-
-        self.assertEquals(len(mail.outbox), 2)
-        moderation_mail = mail.outbox[1]
-        self.assertModerationMailSent(self.private_message, moderation_mail)
-        expected_from_email = self.private_message.writeitinstance.slug + "@" + settings.DEFAULT_FROM_DOMAIN
-        self.assertEquals(moderation_mail.from_email, expected_from_email)
-
-    def test_send_moderation_message_from_custom_connection(self):
-        '''If given a custom smtp config for its instance then
-        it sends the moderation mail with this custom config '''
-        config = self.private_message.writeitinstance.config
-        config.custom_from_domain = "custom.domain.cl"
-        config.email_host = 'cuttlefish.au.org'
-        config.email_host_password = 'f13r4'
-        config.email_host_user = 'fiera'
-        config.email_port = 25
-        config.email_use_tls = True
-        config.save()
-
-        moderation, created = Moderation.objects.get_or_create(message=self.private_message)
-        self.private_message.send_moderation_mail()
-        self.assertEquals(len(mail.outbox), 2)
-        moderation_mail = mail.outbox[1]
-
-        self.assertModerationMailSent(self.private_message, moderation_mail)
-        expected_from_email = self.private_message.writeitinstance.slug + "@" + config.custom_from_domain
-
-        self.assertEquals(moderation_mail.from_email, expected_from_email)
-        connection = moderation_mail.connection
-        self.assertEquals(connection.host, config.email_host)
-        self.assertEquals(connection.password, config.email_host_password)
-        self.assertEquals(connection.username, config.email_host_user)
-        self.assertEquals(connection.port, config.email_port)
-        self.assertEquals(connection.use_tls, config.email_use_tls)
-
-    def test_not_using_any_custom_config(self):
-        '''If not using any custom config the moderation
-        mail does not use that connection'''
-        moderation, created = Moderation.objects.get_or_create(message=self.private_message)
-        self.private_message.send_moderation_mail()
-
-        self.assertEquals(len(mail.outbox), 2)
-        moderation_mail = mail.outbox[1]
-        connection = moderation_mail.connection
-        self.assertFalse(hasattr(connection, 'host'))
-        self.assertFalse(hasattr(connection, 'password'))
-        self.assertFalse(hasattr(connection, 'username'))
-        self.assertFalse(hasattr(connection, 'port'))
-        self.assertFalse(hasattr(connection, 'use_tls'))
-
-    @override_settings(SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL=True)
-    def test_moderation_sent_from_default_from_email(self):
-        '''Moderation is sent from default from email if specified'''
-        moderation, created = Moderation.objects.get_or_create(message=self.private_message)
-        self.private_message.send_moderation_mail()
-        moderation_mail = mail.outbox[1]
-        expected_from_email = settings.DEFAULT_FROM_EMAIL
-        self.assertEquals(moderation_mail.from_email, expected_from_email)
-
     def test_create_a_moderation(self):
         #I make sure that uuid.uuid1 is called and I get a sort of random key
         with patch('uuid.uuid1') as string:
@@ -152,27 +85,24 @@ A gaf i dynnu sylw'r Prif Weinidog hefyd at y sefyllfa yn Ysbyty Gwynedd yn ddiw
 
     # issue 114 found at https://github.com/ciudadanointeligente/write-it/issues/114
 
-    @skip("we don't send moderation emails anymore")
-    def test_send_mails_only_once(self):
-        with patch('nuntium.models.Message.send_moderation_mail') as send_moderation_mail:
-            self.writeitinstance1.config.moderation_needed_in_all_messages = True
-            self.writeitinstance1.config.save()
+    # we don't send moderation emails anymore
+    def test_only_send_a_confirmation_email(self):
+        self.writeitinstance1.config.moderation_needed_in_all_messages = True
+        self.writeitinstance1.config.save()
 
-            send_moderation_mail.return_value = None
-            message = Message.objects.create(
-                content='Content 1',
-                author_name='Felipe',
-                author_email="falvarez@votainteligente.cl",
-                subject='Fiera es una perra feroz',
-                public=False,
-                writeitinstance=self.writeitinstance1,
-                persons=[self.person1],
-                )
+        message = Message.objects.create(
+            content='Content 1',
+            author_name='Felipe',
+            author_email="falvarez@votainteligente.cl",
+            subject='Fiera es una perra feroz',
+            public=False,
+            writeitinstance=self.writeitinstance1,
+            persons=[self.person1],
+            )
 
-            message.recently_confirmated()
-
-            # number_of_moderations = Moderation.objects.filter(message=message).count()
-            send_moderation_mail.assert_called_once_with()
+        self.assertEquals(len(mail.outbox), 1)
+        message.recently_confirmated()
+        self.assertEquals(len(mail.outbox), 1)
 
     def test_message_has_a_method_for_moderate(self):
         self.confirmation.confirmated_at = datetime.datetime.now()
