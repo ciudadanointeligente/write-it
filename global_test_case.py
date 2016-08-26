@@ -141,16 +141,6 @@ class WriteItTestCaseMixin(object):
         self.assertEquals(response.status_code, status_code)
         self.assertEquals(response.url, expected_url)
 
-    def assertModerationMailSent(self, message, moderation_mail):
-        self.assertEquals(moderation_mail.to[0], message.writeitinstance.owner.email)
-        self.assertTrue(whitespace_ignoring_in(message.content, moderation_mail.body))
-        self.assertTrue(message.subject in moderation_mail.body)
-        self.assertTrue(message.author_name in moderation_mail.body)
-        self.assertTrue(message.author_email in moderation_mail.body)
-
-        for person in message.people:
-            self.assertTrue(person.name in moderation_mail.body)
-
 
 class GlobalTestCase(WriteItTestCaseMixin, TestCase):
     pass

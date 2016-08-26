@@ -99,10 +99,6 @@ class NonModeratedMessagesManager(MessagesManager):
             .exclude(moderated=True)
 
 
-moderation_subject = read_template_as_string('templates/nuntium/mails/moderation_subject.txt').strip()
-moderation_content_txt = read_template_as_string('templates/nuntium/mails/moderation_mail.txt')
-
-
 class Message(models.Model):
     """Message: Class that contain the info for a model, \
     despite of the input and the output channels. Subject \
@@ -258,48 +254,6 @@ class Message(models.Model):
         for outbound_message in self.outbound_messages:
             outbound_message.status = 'ready'
             outbound_message.save()
-
-    def send_moderation_mail(self):
-        url_reject = reverse('moderation_rejected',
-            subdomain=self.writeitinstance.slug,
-            kwargs={
-                'slug': self.moderation.key
-            })
-
-        url_accept = reverse('moderation_accept',
-            subdomain=self.writeitinstance.slug,
-            kwargs={
-                'slug': self.moderation.key
-            })
-
-        context = {
-            'owner_name': self.writeitinstance.owner.username,
-            'author_name': self.author_name_for_display,
-            'author_email': self.author_email,
-            'recipients': u', '.join([x.name for x in self.people]),
-            'subject': self.subject,
-            'content': self.content,
-            'site_name': self.writeitinstance.name,
-            'url_reject': url_reject,
-            'url_accept': url_accept,
-            }
-
-        if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
-            from_email = settings.DEFAULT_FROM_EMAIL
-        else:
-            from_domain = self.writeitinstance.config.custom_from_domain\
-                or settings.DEFAULT_FROM_DOMAIN
-            from_email = self.writeitinstance.slug + "@" + from_domain
-
-        connection = self.writeitinstance.config.get_mail_connection()
-        msg = EmailMultiAlternatives(
-            moderation_subject.format(**context),
-            template_with_wrap(moderation_content_txt, context),
-            from_email,
-            [self.writeitinstance.owner.email],
-            connection=connection,
-            )
-        msg.send()
 
     def moderate(self):
         if not self.confirmated:
