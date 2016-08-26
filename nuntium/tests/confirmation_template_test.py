@@ -1,6 +1,6 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from instance.models import WriteItInstance
+from instance.models import PopoloPerson, WriteItInstance
 from ..models import Confirmation, send_confirmation_email
 from ..models import Message, ConfirmationTemplate
 from django.core import mail
@@ -11,7 +11,6 @@ from django.template import Context, Template
 from django.test.utils import override_settings
 
 from contactos.models import Contact, ContactType
-from popolo.models import Person
 
 import codecs
 import os
@@ -131,7 +130,7 @@ class ConfirmationTemplateTestCase(TestCase):
             name="Test WriteIt Instance",
             owner=owner,
             )
-        recipient = Person.objects.create(
+        recipient = PopoloPerson.objects.create(
             name='Test Person',
             api_instance_id=1,
             )
@@ -248,7 +247,7 @@ class SendConfirmationEmailTestCase(TestCase):
             name="Test WriteIt Instance",
             owner=owner,
             )
-        recipient = Person.objects.create(
+        recipient = PopoloPerson.objects.create(
             name='Test Person',
             api_instance_id=1,
             )

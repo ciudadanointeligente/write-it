@@ -77,17 +77,17 @@ def update_person(
     # For the moment, just set the fields that the old popit-django
     # Person.extract_settable method would have; that's just 'name',
     # 'summary' and 'image':
-    person_object['name'] = popolo_person_data.get('name', '')
-    person_object['summary'] = popolo_person_data.get('summary', '')
-    person_object['image'] = popolo_person_data.get('image', '')
+    person_object.name = popolo_person_data.get('name', '')
+    person_object.summary = popolo_person_data.get('summary', '')
+    person_object.image = popolo_person_data.get('image', '')
     # However, also make sure that we update 'email', since that's
     # used for creating contacts:
-    person_object['email'] = popolo_person_data.get('email', '')
+    person_object.email = popolo_person_data.get('email', '')
     person_object.save()
     # Create the memberships too:
-    person_object.membership.all.delete()
+    person_object.memberships.all().delete()
     for m in popolo_person_data['memberships']:
-        m_org = popolo_orgs(m['organization_id'])
+        m_org = popolo_orgs[m['organization_id']]
         org_object = popolo_source_org_id_to_existing_org.get(m_org['id'])
         if org_object is None:
             org_object = PopoloOrganization.objects.create(
@@ -110,7 +110,7 @@ def update_person(
     # Also, make sure the contacts are up-to-date:
     person_object.contact_set.all().delete()
     for contact_data in popolo_person_data['contact_details']:
-        person_object.contact_set.create(
+        person_object.contact_details.create(
             contact_type=contact_data['type'],
             value=contact_data['value'],
         )
@@ -138,11 +138,11 @@ def create_contactos(person_object, writeitinstance):
     enable_contacts = determine_if_person_is_current(person_object)
     for contact_detail in person_object.contact_details.all():
         if contact_detail.contact_type == 'email':
-            contact, created = Contact.objects.get_or_create(popit_identifier=contact_detail['id'],
+            contact, created = Contact.objects.get_or_create(
                 contact_type=contact_type,
                 writeitinstance=writeitinstance,
                 person=person_object)
-            contact.value = contact_detail['value']
+            contact.value = contact_detail.value
             contact.enabled = enable_contacts
             contact.save()
             created_emails.add(contact.value)
@@ -213,7 +213,7 @@ class PopoloSource(models.Model):
             for popolo_person in popolo_people.values():
                 person_object = popolo_source_id_to_existing_person.get(
                     popolo_person['id'])
-                if person_object is not None:
+                if person_object is None:
                     # Create a minimal person and set the right identifier on
                     # them:
                     person_object = PopoloPerson.objects.create(
@@ -230,7 +230,7 @@ class PopoloSource(models.Model):
                     popolo_orgs,
                     popolo_source_org_id_to_existing_org
                 )
-                writeitinstance.persons.add(person_object)
+                writeitinstance.add_person(person_object)
                 # Finally make sure that the Contact objects from the
                 # contactos apps are up-to-date:
                 create_contactos(person_object, writeitinstance)

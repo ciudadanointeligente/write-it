@@ -1,8 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from instance.models import InstanceMembership, PopoloSource, WriteItInstance, WriteItInstanceConfig
+from instance.models import InstanceMembership, PopoloPerson, PopoloSource, WriteItInstance, WriteItInstanceConfig
 from nuntium.models import Message
-from popolo.models import Person
 from django.contrib.auth.models import User
 from mailit import MailChannel
 from contactos.models import Contact
@@ -14,7 +13,7 @@ class WriteItInstanceConfigTestCase(TestCase):
         super(WriteItInstanceConfigTestCase, self).setUp()
         self.popolo_source1 = PopoloSource.objects.get(id=1)
         self.popolo_source2 = PopoloSource.objects.get(id=2)
-        self.person1 = Person.objects.get(id=1)
+        self.person1 = PopoloPerson.objects.get(id=1)
 
         self.owner = User.objects.get(id=1)
 
@@ -75,7 +74,7 @@ class WriteItInstanceConfigTestCase(TestCase):
 class TestingModeTestCase(TestCase):
     def setUp(self):
         super(TestingModeTestCase, self).setUp()
-        self.person1 = Person.objects.get(id=1)
+        self.person1 = PopoloPerson.objects.get(id=1)
 
         self.owner = User.objects.get(id=1)
         self.owner.email = "owner@ciudadanoi.org"

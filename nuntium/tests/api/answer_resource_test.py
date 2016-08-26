@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.core.management import call_command
-from instance.models import WriteItInstance
+from instance.models import PopoloPerson, WriteItInstance
 from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
-from popolo.models import Person
 from ...api import AnswerResource
 from django.http import HttpRequest
 from ...models import Answer, Message
@@ -93,7 +92,7 @@ class AnswersResourceTestCase(ResourceTestCase):
 
     def test_answer_ordering(self):
         """The answers are displayed from new to old"""
-        person = Person.objects.get(id=1)
+        person = PopoloPerson.objects.get(id=1)
         message = Message.objects.get(id=1)
 
         Answer.objects.all().delete()

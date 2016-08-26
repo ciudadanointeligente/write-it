@@ -5,56 +5,21 @@
             "request": {
                 "body": null,
                 "headers": {
-                    "content-type": [
-                        "application/json"
+                    "Connection": [
+                        "keep-alive"
                     ],
                     "Accept-Encoding": [
                         "gzip, deflate"
                     ],
-                    "accept": [
-                        "application/json"
+                    "Accept": [
+                        "*/*"
                     ],
                     "User-Agent": [
-                        "python-requests/2.3.0 CPython/2.7.6 Linux/3.13.0-49-generic"
+                        "python-requests/2.10.0"
                     ]
                 },
                 "method": "GET",
-                "uri": "http://popit-django-test.127.0.0.1.xip.io:3000/api"
-            },
-            "response": {
-                "status": {
-                    "message": "OK",
-                    "code": 200
-                },
-                "headers": {
-                    "content-type": [
-                        "application/json; charset=utf-8"
-                    ]
-                },
-                "body": {
-                    "string": "{\n \"note\": \"This is the API entry point - use a '*_api_url' link in 'meta' to search a collection.\",\n \"info\": {\n \"databaseName\": \"popit_django_test\",\n \"version\": \"0.0.14\" },\n \"meta\": {\n \"persons_api_url\": \"http://popit-django-test.127.0.0.1.xip.io:3000/api/persons\",\n \"organizations_api_url\": \"http://popit-django-test.127.0.0.1.xip.io:3000/api/organizations\",\n \"memberships_api_url\": \"http://popit-django-test.127.0.0.1.xip.io:3000/api/memberships\",\n \"posts_api_url\": \"http://popit-django-test.127.0.0.1.xip.io:3000/api/posts\"\n }\n }"
-                }
-            }
-        },
-        {
-            "request": {
-                "body": null,
-                "headers": {
-                    "content-type": [
-                        "application/json"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "accept": [
-                        "application/json"
-                    ],
-                    "User-Agent": [
-                        "python-requests/2.3.0 CPython/2.7.6 Linux/3.13.0-49-generic"
-                    ]
-                },
-                "method": "GET",
-                "uri": "http://popit-django-test.127.0.0.1.xip.io:3000/api/persons/?per_page=50&page=1"
+                "uri": "http://whatever.127.0.0.1.xip.io:3000/api/v0.1/export.json"
             },
             "response": {
                 "status": {
@@ -63,7 +28,7 @@
                 },
                 "headers": {
                     "content-length": [
-                        "2897"
+                        "3153"
                     ],
                     "x-powered-by": [
                         "Express"
@@ -72,17 +37,20 @@
                         "keep-alive"
                     ],
                     "etag": [
-                        "\"799235944\""
+                        "W/\"CZfM3c0Tcl07j8n43iW97Q==\""
                     ],
                     "date": [
-                        "Tue, 28 Apr 2015 19:56:13 GMT"
+                        "Thu, 25 Aug 2016 13:30:32 GMT"
+                    ],
+                    "access-control-allow-origin": [
+                        "*"
                     ],
                     "content-type": [
                         "application/json; charset=utf-8"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"total\": 3,\n  \"page\": 1,\n  \"per_page\": 50,\n  \"has_more\": false,\n  \"result\": [\n    {\n      \"id\": \"raton-inteligente\",\n      \"name\": \"Rat\u00f3n Inteligente\",\n      \"email\": \"raton@ciudadanoi.org\",\n      \"memberships\": [\n        {\n          \"id\": \"ratonNotBoss\",\n          \"html_url\": \"https://ratonNotBoss\",\n          \"url\": \"https://ratonNotBoss\",\n          \"organization_id\": \"dogsfci\",\n          \"role\": \"NotTheBoss\",\n          \"start_date\": \"1987-03-21\",\n          \"end_date\": \"2045-03-20\",\n          \"person_id\": \"raton-inteligente\",\n          \"links\": [],\n          \"contact_details\": []\n        }\n      ],\n      \"links\": [],\n      \"contact_details\": [],\n      \"identifiers\": [],\n      \"other_names\": []\n    },\n    {\n      \"id\": \"fiera-feroz\",\n      \"name\": \"Fiera Feroz\",\n      \"summary\": \"Fiera es una perra muy buena onda\",\n      \"email\": \"fiera@ciudadanointeligente.org\",\n      \"image\": \"http://www.ciudadanointeligente.org/wp-content/uploads/2012/05/fiera.jpg\",\n      \"memberships\": [\n        {\n          \"id\": \"fieraBoss\",\n          \"html_url\": \"https://dogsfci\",\n          \"url\": \"https://dogsfci\",\n          \"organization_id\": \"dogsfci\",\n          \"role\": \"Boss\",\n          \"start_date\": \"2011-03-21\",\n          \"person_id\": \"fiera-feroz\",\n          \"links\": [],\n          \"contact_details\": []\n        },\n        {\n          \"id\": \"fieraNotBoss\",\n          \"html_url\": \"https://dogsfci\",\n          \"url\": \"https://dogsfci\",\n          \"organization_id\": \"dogsfci\",\n          \"role\": \"NotTheBoss\",\n          \"start_date\": \"2005-03-21\",\n          \"end_date\": \"2009-03-21\",\n          \"person_id\": \"fiera-feroz\",\n          \"links\": [],\n          \"contact_details\": []\n        }\n      ],\n      \"links\": [],\n      \"contact_details\": [\n        {\n          \"id\": \"53b47e011fa1acd34505d9b3\",\n          \"label\": \"email\",\n          \"type\": \"email\",\n          \"value\": \"fiera@ciudadanointeligente.org\",\n          \"note\": \"\"\n        }\n      ],\n      \"identifiers\": [],\n      \"other_names\": []\n    },\n    {\n      \"id\": \"benito\",\n      \"name\": \"Benito\",\n      \"summary\": \"Benito es el perro de la Cata\",\n      \"image\": \"http://i.imgur.com/Vehnajb.jpg\",\n      \"email\": \"benito@ciudadanointeligente.org\",\n      \"memberships\": [\n        {\n          \"id\": \"benitoBoss\",\n          \"html_url\": \"https://dogsfci\",\n          \"url\": \"https://dogsfci\",\n          \"organization_id\": \"dogsfci\",\n          \"role\": \"Boss\",\n          \"start_date\": \"1987-03-21\",\n          \"end_date\": \"2007-03-20\",\n          \"person_id\": \"benito\",\n          \"links\": [],\n          \"contact_details\": []\n        }\n      ],\n      \"links\": [],\n      \"contact_details\": [\n        {\n          \"id\": \"53b47e011fa1acd34505d9b3\",\n          \"label\": \"email\",\n          \"type\": \"email\",\n          \"value\": \"benito@ciudadanointeligente.org\",\n          \"note\": \"\"\n        }\n      ],\n      \"identifiers\": [],\n      \"other_names\": []\n    }\n  ]\n}"
+                    "string": "{\n  \"persons\": [\n    {\n      \"name\": \"Rat\u00f3n Inteligente\",\n      \"email\": \"raton@ciudadanoi.org\",\n      \"images\": [],\n      \"links\": [],\n      \"contact_details\": [],\n      \"identifiers\": [],\n      \"other_names\": [],\n      \"id\": \"raton-inteligente\"\n    },\n    {\n      \"name\": \"Fiera Feroz\",\n      \"summary\": \"Fiera es una perra muy buena onda\",\n      \"email\": \"fiera@ciudadanointeligente.org\",\n      \"image\": \"http://www.ciudadanointeligente.org/wp-content/uploads/2012/05/fiera.jpg\",\n      \"images\": [],\n      \"links\": [],\n      \"contact_details\": [\n        {\n          \"id\": \"53b47e011fa1acd34505d9b3\",\n          \"label\": \"email\",\n          \"type\": \"email\",\n          \"value\": \"fiera@ciudadanointeligente.org\",\n          \"note\": \"\"\n        }\n      ],\n      \"identifiers\": [],\n      \"other_names\": [],\n      \"id\": \"fiera-feroz\"\n    },\n    {\n      \"name\": \"Benito\",\n      \"summary\": \"Benito es el perro de la Cata\",\n      \"image\": \"http://i.imgur.com/Vehnajb.jpg\",\n      \"email\": \"benito@ciudadanointeligente.org\",\n      \"images\": [],\n      \"links\": [],\n      \"contact_details\": [\n        {\n          \"id\": \"53b47e011fa1acd34505d9b3\",\n          \"label\": \"email\",\n          \"type\": \"email\",\n          \"value\": \"benito@ciudadanointeligente.org\",\n          \"note\": \"\"\n        }\n      ],\n      \"identifiers\": [],\n      \"other_names\": [],\n      \"id\": \"benito\"\n    }\n  ],\n  \"organizations\": [\n    {\n      \"html_url\": \"https://\",\n      \"url\": \"https://\",\n      \"classification\": \"party\",\n      \"id\": \"57bef28f7b68c342193dd2ea\",\n      \"name\": \"Dogs fci\",\n      \"images\": [],\n      \"posts\": [],\n      \"links\": [],\n      \"contact_details\": [],\n      \"identifiers\": [],\n      \"other_names\": [\n        {\n          \"name\": \"Dogs\",\n          \"id\": \"54e314e82ec9128d32084466\"\n        }\n      ]\n    }\n  ],\n  \"memberships\": [\n    {\n      \"html_url\": \"https://dogsfci\",\n      \"url\": \"https://dogsfci\",\n      \"organization_id\": \"dogsfci\",\n      \"role\": \"Boss\",\n      \"start_date\": \"2011-03-21\",\n      \"person_id\": \"fiera-feroz\",\n      \"images\": [],\n      \"links\": [],\n      \"contact_details\": [],\n      \"id\": \"fieraBoss\"\n    },\n    {\n      \"html_url\": \"https://dogsfci\",\n      \"url\": \"https://dogsfci\",\n      \"organization_id\": \"dogsfci\",\n      \"role\": \"NotTheBoss\",\n      \"start_date\": \"2005-03-21\",\n      \"end_date\": \"2009-03-21\",\n      \"person_id\": \"fiera-feroz\",\n      \"images\": [],\n      \"links\": [],\n      \"contact_details\": [],\n      \"id\": \"fieraNotBoss\"\n    },\n    {\n      \"html_url\": \"https://dogsfci\",\n      \"url\": \"https://dogsfci\",\n      \"organization_id\": \"dogsfci\",\n      \"role\": \"Boss\",\n      \"start_date\": \"1987-03-21\",\n      \"end_date\": \"2007-03-20\",\n      \"person_id\": \"benito\",\n      \"images\": [],\n      \"links\": [],\n      \"contact_details\": [],\n      \"id\": \"benitoBoss\"\n    },\n    {\n      \"html_url\": \"https://ratonNotBoss\",\n      \"url\": \"https://ratonNotBoss\",\n      \"organization_id\": \"dogsfci\",\n      \"role\": \"NotTheBoss\",\n      \"start_date\": \"1987-03-21\",\n      \"end_date\": \"2045-03-20\",\n      \"person_id\": \"raton-inteligente\",\n      \"images\": [],\n      \"links\": [],\n      \"contact_details\": [],\n      \"id\": \"ratonNotBoss\"\n    }\n  ],\n  \"posts\": []\n}"
                 }
             }
         }

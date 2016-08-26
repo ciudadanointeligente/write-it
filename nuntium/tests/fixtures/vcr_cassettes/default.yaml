@@ -5,68 +5,21 @@
             "request": {
                 "body": null,
                 "headers": {
-                    "content-type": [
-                        "application/json"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "accept": [
-                        "application/json"
-                    ],
-                    "User-Agent": [
-                        "python-requests/2.3.0 CPython/2.7.6 Linux/3.13.0-49-generic"
-                    ]
-                },
-                "method": "GET",
-                "uri": "http://popit-django-test.127.0.0.1.xip.io:3000/api/about/"
-            },
-            "response": {
-                "status": {
-                    "message": "Not Found",
-                    "code": 404
-                },
-                "headers": {
-                    "date": [
-                        "Tue, 28 Apr 2015 19:40:19 GMT"
-                    ],
-                    "content-length": [
-                        "56"
-                    ],
-                    "content-type": [
-                        "application/json; charset=utf-8"
-                    ],
-                    "connection": [
+                    "Connection": [
                         "keep-alive"
                     ],
-                    "x-powered-by": [
-                        "Express"
-                    ]
-                },
-                "body": {
-                    "string": "{\n  \"errors\": [\n    \"collection 'about' not found\"\n  ]\n}"
-                }
-            }
-        },
-        {
-            "request": {
-                "body": null,
-                "headers": {
-                    "content-type": [
-                        "application/json"
-                    ],
                     "Accept-Encoding": [
                         "gzip, deflate"
                     ],
-                    "accept": [
-                        "application/json"
+                    "Accept": [
+                        "*/*"
                     ],
                     "User-Agent": [
-                        "python-requests/2.3.0 CPython/2.7.6 Linux/3.13.0-49-generic"
+                        "python-requests/2.10.0"
                     ]
                 },
                 "method": "GET",
-                "uri": "http://popit-django-test.127.0.0.1.xip.io:3000/api"
+                "uri": "http://whatever.127.0.0.1.xip.io:3000/api/v0.1/export.json"
             },
             "response": {
                 "status": {
@@ -74,59 +27,30 @@
                     "code": 200
                 },
                 "headers": {
-                    "content-type": [
-                        "application/json; charset=utf-8"
-                    ]
-                },
-                "body": {
-                    "string": "{\n \"note\": \"This is the API entry point - use a '*_api_url' link in 'meta' to search a collection.\",\n \"info\": {\n \"databaseName\": \"popit_django_test\",\n \"version\": \"0.0.14\" },\n \"meta\": {\n \"persons_api_url\": \"http://popit-django-test.127.0.0.1.xip.io:3000/api/persons\",\n \"organizations_api_url\": \"http://popit-django-test.127.0.0.1.xip.io:3000/api/organizations\",\n \"memberships_api_url\": \"http://popit-django-test.127.0.0.1.xip.io:3000/api/memberships\",\n \"posts_api_url\": \"http://popit-django-test.127.0.0.1.xip.io:3000/api/posts\"\n }\n }"
-                }
-            }
-        },
-        {
-            "request": {
-                "body": null,
-                "headers": {
-                    "content-type": [
-                        "application/json"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "accept": [
-                        "application/json"
-                    ],
-                    "User-Agent": [
-                        "python-requests/2.3.0 CPython/2.7.6 Linux/3.13.0-49-generic"
-                    ]
-                },
-                "method": "GET",
-                "uri": "http://popit-django-test.127.0.0.1.xip.io:3000/api/persons/?per_page=50&page=1"
-            },
-            "response": {
-                "status": {
-                    "message": "OK",
-                    "code": 200
-                },
-                "headers": {
-                    "date": [
-                        "Tue, 28 Apr 2015 19:40:19 GMT"
-                    ],
                     "content-length": [
-                        "622"
+                        "606"
                     ],
-                    "content-type": [
-                        "application/json; charset=utf-8"
+                    "x-powered-by": [
+                        "Express"
                     ],
                     "connection": [
                         "keep-alive"
                     ],
-                    "x-powered-by": [
-                        "Express"
+                    "etag": [
+                        "W/\"25e-1736e4de\""
+                    ],
+                    "date": [
+                        "Thu, 25 Aug 2016 13:19:29 GMT"
+                    ],
+                    "access-control-allow-origin": [
+                        "*"
+                    ],
+                    "content-type": [
+                        "application/json; charset=utf-8"
                     ]
                 },
                 "body": {
-                    "string": "{\n  \"total\": 2,\n  \"page\": 1,\n  \"per_page\": 50,\n  \"has_more\": false,\n  \"result\": [\n    {\n      \"id\": \"raton-inteligente\",\n      \"name\": \"Rat\u00f3n Inteligente\",\n      \"memberships\": [],\n      \"links\": [],\n      \"contact_details\": [],\n      \"identifiers\": [],\n      \"other_names\": []\n    },\n    {\n      \"id\": \"fiera-feroz\",\n      \"name\": \"Fiera Feroz\",\n      \"summary\": \"Fiera es una perra buena onda\",\n      \"image\": \"http://www.ciudadanointeligente.org/wp-content/uploads/2012/05/fiera.jpg\",\n      \"memberships\": [],\n      \"links\": [],\n      \"contact_details\": [],\n      \"identifiers\": [],\n      \"other_names\": []\n    }\n  ]\n}"
+                    "string": "{\n  \"persons\": [\n    {\n      \"name\": \"Rat\u00f3n Inteligente\",\n      \"images\": [],\n      \"links\": [],\n      \"contact_details\": [],\n      \"identifiers\": [],\n      \"other_names\": [],\n      \"id\": \"raton-inteligente\"\n    },\n    {\n      \"name\": \"Fiera Feroz\",\n      \"summary\": \"Fiera es una perra buena onda\",\n      \"image\": \"http://www.ciudadanointeligente.org/wp-content/uploads/2012/05/fiera.jpg\",\n      \"images\": [],\n      \"links\": [],\n      \"contact_details\": [],\n      \"identifiers\": [],\n      \"other_names\": [],\n      \"id\": \"fiera-feroz\"\n    }\n  ],\n  \"organizations\": [],\n  \"memberships\": [],\n  \"posts\": []\n}"
                 }
             }
         }

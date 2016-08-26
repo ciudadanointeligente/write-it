@@ -5,7 +5,6 @@ from django.db.models.signals import post_save, pre_save
 from django.db import models
 from django.utils.translation import override, ugettext_lazy as _
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from popolo.models import Person as PopoloPerson
 from contactos.models import Contact
 from .plugins import OutputPlugin
 from django.contrib.contenttypes.models import ContentType
@@ -29,7 +28,7 @@ from itertools import chain
 import os
 import codecs
 
-from instance.models import WriteItInstance
+from instance.models import PopoloPerson, WriteItInstance
 from writeit_utils import escape_dictionary_values
 
 
