@@ -79,7 +79,7 @@ def forwards(apps, schema_editor):
             content_type_id=person_content_type.id,
         )
         Identifier.objects.create(
-            scheme='popolo_source_id',
+            scheme='id_in_popolo_source',
             identifier=popit_person.popit_id,
             object_id=new_person.id,
             content_type_id=person_content_type.id,

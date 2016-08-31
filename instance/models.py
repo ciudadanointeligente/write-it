@@ -45,9 +45,9 @@ class PopoloPerson(Person):
         return result
 
     @property
-    def popolo_source_id(self):
+    def id_in_popolo_source(self):
         for i in self.identifiers.all():
-            if i.scheme == 'popolo_source_id':
+            if i.scheme == 'id_in_popolo_source':
                 return i.identifier
 
     @property
@@ -196,11 +196,11 @@ class PopoloSource(models.Model):
             # Remove all old people associated with the
             # writeitinstance:
             writeitinstance.persons.clear()
-            popolo_source_id_to_existing_person = {
+            id_in_popolo_source_to_existing_person = {
                 i.identifier: p
                 for p in self.persons.all()
                 for i in p.identifiers.all()
-                if i.source == 'popolo_source_id'
+                if i.scheme == 'id_in_popolo_source'
             }
             popolo_source_org_id_to_existing_org = {
                 i.identifier: o
@@ -211,7 +211,7 @@ class PopoloSource(models.Model):
             # Get the Popolo person data with inline memberships:
             popolo_people, popolo_orgs = self.get_popolo_data()
             for popolo_person in popolo_people.values():
-                person_object = popolo_source_id_to_existing_person.get(
+                person_object = id_in_popolo_source_to_existing_person.get(
                     popolo_person['id'])
                 if person_object is None:
                     # Create a minimal person and set the right identifier on
@@ -220,7 +220,7 @@ class PopoloSource(models.Model):
                         name=popolo_person['name']
                     )
                     person_object.identifiers.create(
-                        scheme='popolo_source_id',
+                        scheme='id_in_popolo_source',
                         identifier=popolo_person['id'])
                 # Now update the django-popolo Person and
                 # ContactDetail objects:

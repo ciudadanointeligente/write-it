@@ -54,7 +54,7 @@ class MessagesPerPersonViewTestCase(TestCase):
             'messages_per_person_id',
             subdomain=self.writeitinstance.slug,
             kwargs={
-                'person_id': self.pedro.popolo_source_id,
+                'person_id': self.pedro.id_in_popolo_source,
                 }
             )
         response = self.client.get(url)

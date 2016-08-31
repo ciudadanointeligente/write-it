@@ -392,7 +392,7 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
             'person': answer.person.name,
         }
         # Add identifiers for the person that may or may not be present:
-        for i_scheme in ('popit_url', 'popolo_source_id'):
+        for i_scheme in ('popit_url', 'id_in_popolo_source'):
             identifier_obj = answer.person.identifiers.filter(
                 scheme=i_scheme).first()
             if identifier_obj:

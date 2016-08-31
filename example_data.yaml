@@ -124,7 +124,7 @@
     content_type: [popolo, person]
     identifier: 52bc7asdasd34567
     object_id: 1
-    scheme: popolo_source_id
+    scheme: id_in_popolo_source
   model: popolo.identifier
   pk: 3
 - fields:
@@ -145,7 +145,7 @@
     content_type: [popolo, person]
     identifier: 52bc7asdasd34568
     object_id: 2
-    scheme: popolo_source_id
+    scheme: id_in_popolo_source
   model: popolo.identifier
   pk: 6
 - fields:
@@ -166,6 +166,6 @@
     content_type: [popolo, person]
     identifier: 52bc7asdasd34569
     object_id: 3
-    scheme: popolo_source_id
+    scheme: id_in_popolo_source
   model: popolo.identifier
   pk: 9

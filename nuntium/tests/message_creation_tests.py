@@ -23,7 +23,7 @@ class MessageCreationTestCase(TestCase):
             subdomain=self.writeitinstance.slug,
             kwargs={'step': 'draft'})
 
-        person_id = self.person1.identifiers.get(scheme='popolo_source_id').identifier
+        person_id = self.person1.identifiers.get(scheme='id_in_popolo_source').identifier
 
         response = self.client.get(url, {'person_id': person_id})
         self.assertRedirects(response, url2)
