@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import mail
 from django.db import models
+from django.db.models import Q
 from django.db.models.signals import post_save
 from django.db import transaction
 from django.utils.translation import ugettext_lazy as _
@@ -12,6 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 from annoying.fields import AutoOneToOneField
 from autoslug import AutoSlugField
 from popolo.models import (
+    Identifier as PopoloIdentifier,
     Membership as PopoloMembership,
     Organization as PopoloOrganization,
     Person,
@@ -23,6 +25,15 @@ from subdomains.utils import reverse
 from contactos.models import Contact
 from mailit import MailChannel
 
+
+class PopoloPersonQuerySet(models.QuerySet):
+
+#    def get_from_api_uri(self, uri_from_api):
+#        self.get(
+#            models.Q(
+#
+#        )
+    pass
 
 class PopoloPerson(Person):
     class Meta:
@@ -57,6 +68,26 @@ class PopoloPerson(Person):
         for i in self.identifiers.all():
             if i.scheme == 'popit_url':
                 return i.identifier
+
+    def uri_for_api(self):
+        """Return the URL the tastypie API uses to refer to this person"""
+
+        old_url = None
+        new_url = None
+        for i in self.identifiers.all():
+            if i.scheme == 'popit_url':
+                assert old_url is None
+                old_url = i.identifier
+            elif i.scheme == 'popolo_uri':
+                assert new_url is None
+                new_url = i.identifier
+        if old_url:
+            return old_url
+        if new_url:
+            return new_url
+        msg = "Could find no global identifier for PopoloPerson with ID {0}"
+        raise PopoloIdentifier.DoesNotExist(msg.format(self.pk))
+
 
 # Big FIXME: all this syncing code is a crappier version of the popit
 # import code in django-popolo - so we should just use that

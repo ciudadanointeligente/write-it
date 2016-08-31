@@ -90,6 +90,12 @@ def forwards(apps, schema_editor):
             object_id=new_person.id,
             content_type_id=person_content_type.id,
         )
+        Identifier.objects.create(
+            scheme='popolo_uri',
+            identifier=(ps.url + '#person-' + popit_person.popit_id),
+            object_id=new_person.id,
+            content_type_id=person_content_type.id,
+        )
         # Set the right PopoloSource for the person:
         ps = ai_to_ps[popit_person.api_instance]
         new_person.popolosource_set.add(ps)
