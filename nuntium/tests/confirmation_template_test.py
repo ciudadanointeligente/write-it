@@ -1,6 +1,6 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from instance.models import PopoloPerson, WriteItInstance
+from instance.models import PopoloPerson, PopoloSource, WriteItInstance
 from ..models import Confirmation, send_confirmation_email
 from ..models import Message, ConfirmationTemplate
 from django.core import mail
@@ -130,10 +130,9 @@ class ConfirmationTemplateTestCase(TestCase):
             name="Test WriteIt Instance",
             owner=owner,
             )
-        recipient = PopoloPerson.objects.create(
-            name='Test Person',
-            api_instance_id=1,
-            )
+        popolo_source = PopoloSource.objects.get(pk=1)
+        recipient = PopoloPerson.objects.create(name='Test Person')
+        popolo_source.persons.add(recipient)
         contact_type = ContactType.objects.create(
             name='Contact Type Name',
             label_name='Contact Type Label',
@@ -247,10 +246,9 @@ class SendConfirmationEmailTestCase(TestCase):
             name="Test WriteIt Instance",
             owner=owner,
             )
-        recipient = PopoloPerson.objects.create(
-            name='Test Person',
-            api_instance_id=1,
-            )
+        popolo_source = PopoloSource.objects.get(pk=1)
+        recipient = PopoloPerson.objects.create(name='Test Person')
+        popolo_source.persons.add(recipient)
         contact_type = ContactType.objects.create(
             name='Contact Type Name',
             label_name='Contact Type Label',

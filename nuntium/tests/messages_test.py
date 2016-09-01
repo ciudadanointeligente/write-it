@@ -5,9 +5,8 @@ from global_test_case import UsingDbMixin
 from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 from contactos.models import Contact
-from instance.models import PopoloSource, WriteItInstance
+from instance.models import PopoloPerson, PopoloSource, WriteItInstance
 from ..models import Message, OutboundMessage, NoContactOM
-from popolo.models import Person
 from subdomains.utils import reverse
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
@@ -19,8 +18,8 @@ class TestMessages(TestCase):
     def setUp(self):
         super(TestMessages, self).setUp()
         self.writeitinstance1 = WriteItInstance.objects.get(id=1)
-        self.person1 = Person.objects.get(id=1)
-        self.person2 = Person.objects.get(id=2)
+        self.person1 = PopoloPerson.objects.get(id=1)
+        self.person2 = PopoloPerson.objects.get(id=2)
 
     def test_create_message(self):
         message = Message.objects.create(
@@ -477,7 +476,7 @@ class MysqlTesting(UsingDbMixin, OriginalTestCase):
             slug='instance-1',
             owner=user,
             )
-        self.person1 = Person.objects.create(name='Pedro')
+        self.person1 = PopoloPerson.objects.create(name='Pedro')
         popolo_source.persons.add(self.person1)
 
     # This test was a bug against mysql
@@ -541,7 +540,7 @@ class PostgresTesting(UsingDbMixin, OriginalTestCase):
             name='instance 1',
             slug='instance-1',
             owner=user)
-        self.person1 = Person.objects.create(name='Pedro')
+        self.person1 = PopoloPerson.objects.create(name='Pedro')
         popolo_source.persons.add(self.person1)
 
     # This test was a bug against mysql
