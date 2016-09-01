@@ -49,7 +49,7 @@ class AnswersResourceTestCase(ResourceTestCase):
     def test_get_only_answers_of_the_instance(self):
         """Show answers from the writeitinstance only"""
         the_other_instance = WriteItInstance.objects.get(id=2)
-        person = Person.objects.get(id=1)
+        person = PopoloPerson.objects.get(id=1)
         message = the_other_instance.message_set.all()[0]
         answer = Answer.objects.create(
             message=message,
@@ -85,9 +85,9 @@ class AnswersResourceTestCase(ResourceTestCase):
         self.assertEquals(person["id"], db_answer.person.id)
         self.assertEquals(person["image"], db_answer.person.image)
         self.assertEquals(person["name"], db_answer.person.name)
-        self.assertEquals(person["popit_id"], db_answer.person.popit_id)
-        self.assertEquals(person["popit_url"], db_answer.person.popit_url)
-        self.assertEquals(person["resource_uri"], db_answer.person.popit_url)
+        self.assertEquals(person["popit_id"], db_answer.person.old_popit_id)
+        self.assertEquals(person["popit_url"], db_answer.person.uri_for_api())
+        self.assertEquals(person["resource_uri"], db_answer.person.uri_for_api())
         self.assertEquals(person["summary"], db_answer.person.summary)
 
     def test_answer_ordering(self):

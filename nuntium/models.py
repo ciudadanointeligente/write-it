@@ -550,8 +550,12 @@ class OutboundMessageIdentifier(models.Model):
         identifier = cls.objects.get(key=identifier_key)
         message = identifier.outbound_message.message
         person = identifier.outbound_message.contact.person
+        # FIXME: is there a better way of getting the proxy model from
+        # the base model? (i.e. one that doesn't involve a database
+        # query.)
+        popolo_person = PopoloPerson.objects.get(pk=person.pk)
         the_created_answer = Answer.objects.create(message=message,
-            person=person,
+            person=popolo_person,
             content=content,
             content_html=content_html)
         return the_created_answer

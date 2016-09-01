@@ -75,6 +75,14 @@ class PopoloPerson(Person):
             if i.scheme == 'popit_url':
                 return i.identifier
 
+    @property
+    def old_popit_id(self):
+        # We shouldn't be relying on this any more either, but it's
+        # used in tests and checks that old behaviour still works.
+        for i in self.identifiers.all():
+            if i.scheme == 'popit_id':
+                return i.identifier
+
     def uri_for_api(self):
         """Return the URL the tastypie API uses to refer to this person"""
 
@@ -233,6 +241,7 @@ class PopoloSource(models.Model):
             # Remove all old people associated with the
             # writeitinstance:
             writeitinstance.persons.clear()
+            # FIXME: detecting existing people should really be done on a full URI
             id_in_popolo_source_to_existing_person = {
                 i.identifier: p
                 for p in self.persons.all()
@@ -259,6 +268,9 @@ class PopoloSource(models.Model):
                     person_object.identifiers.create(
                         scheme='id_in_popolo_source',
                         identifier=popolo_person['id'])
+                    person_object.identifiers.create(
+                        scheme='popolo_uri',
+                        identifier=(self.url + '#person=' + popolo_person['id']))
                 # Now update the django-popolo Person and
                 # ContactDetail objects:
                 update_person(
