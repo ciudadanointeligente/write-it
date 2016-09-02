@@ -4,7 +4,7 @@ exports.organizations = {
     html_url: "https://",
     url: "https://",
     classification: "party",
-    id: "dogsfci",
+    _id: "dogsfci",
     name: "Dogs fci",
     memberships: [
         {
