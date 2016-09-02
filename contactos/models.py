@@ -26,7 +26,6 @@ class Contact(models.Model):
     is_bounced = models.BooleanField(default=False)
     owner = models.ForeignKey(User, related_name="contacts", null=True)
     writeitinstance = models.ForeignKey('instance.WriteItInstance', related_name="contacts", null=True)
-    popit_identifier = models.CharField(max_length=512, null=True)
     enabled = models.BooleanField(default=True)
 
     def __unicode__(self):

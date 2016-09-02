@@ -74,14 +74,12 @@ class ContactTestCase(TestCase):
             value='contact point',
             person=self.person,
             writeitinstance=writeitinstance,
-            popit_identifier='12345'
             )
         self.assertTrue(contact1)
         self.assertFalse(contact1.is_bounced)
         self.assertEquals(contact1.contact_type, contact_type)
         self.assertEquals(contact1.value, 'contact point')
         self.assertEquals(contact1.person, self.person)
-        self.assertEquals(contact1.popit_identifier, '12345')
         self.assertTrue(contact1.enabled)
 
     def test_contact_with_writeitinstance(self):
@@ -96,7 +94,6 @@ class ContactTestCase(TestCase):
             value='contact point',
             person=self.person,
             writeitinstance=writeitinstance,
-            popit_identifier='12345'
             )
         self.assertTrue(contact1)
         self.assertFalse(contact1.is_bounced)
@@ -104,26 +101,6 @@ class ContactTestCase(TestCase):
         self.assertEquals(contact1.value, 'contact point')
         self.assertEquals(contact1.person, self.person)
         self.assertEquals(contact1.writeitinstance, writeitinstance)
-        self.assertEquals(contact1.popit_identifier, '12345')
-
-    def test_create_contact_without_popit_identifier(self):
-        '''Create a contact without any reference to popit'''
-        contact_type = ContactType.objects.create(
-            name='mental message',
-            label_name='mental address id',
-            )
-        writeitinstance = WriteItInstance.objects.get(id=1)
-        contact1 = Contact.objects.create(
-            contact_type=contact_type,
-            value='contact point',
-            person=self.person,
-            writeitinstance=writeitinstance,
-            )
-        self.assertTrue(contact1)
-        self.assertFalse(contact1.is_bounced)
-        self.assertEquals(contact1.contact_type, contact_type)
-        self.assertEquals(contact1.value, 'contact point')
-        self.assertEquals(contact1.person, self.person)
 
     def test_contacts_reverse_name(self):
         # Yeah I did another test just to say that I have one more
