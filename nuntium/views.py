@@ -8,9 +8,8 @@ from django.shortcuts import get_object_or_404, redirect
 
 from haystack.views import SearchView
 from itertools import chain
-from popolo.models import Person
 from django.db.models import Q
-from instance.models import WriteItInstance
+from instance.models import PopoloPerson, WriteItInstance
 from .models import Confirmation, Message, Moderation
 from .forms import MessageSearchForm, PerInstanceSearchForm
 
@@ -92,8 +91,10 @@ class WriteMessageView(NamedUrlSessionWizardView):
         if kwargs.get('step') == 'who' and 'person_id' in self.request.GET:
             person_id = self.request.GET['person_id']
             try:
-                the_person = self.writeitinstance.persons.get(popit_id=person_id)
-            except Person.DoesNotExist:
+                the_person = self.writeitinstance.persons.get(
+                    identifiers__scheme='popit_id',
+                    identifiers__identifier=person_id)
+            except PopoloPerson.DoesNotExist:
                 pass
 
         # If we've come to /who but there is only one person possible to
@@ -231,8 +232,10 @@ class MessagesPerPersonView(ListView):
         if 'pk' in self.kwargs:
             params = {'pk': self.kwargs['pk']}
         elif 'person_id' in self.kwargs:
-            params = {'popit_id': self.kwargs['person_id']}
-        self.person = get_object_or_404(Person, **params)
+            params = {
+                'identifiers__scheme': 'popit_id',
+                'identifiers__identifier': self.kwargs['person_id']}
+        self.person = get_object_or_404(PopoloPerson, **params)
         self.writeitinstance = get_object_or_404(WriteItInstance, slug=request.subdomain)
         return super(MessagesPerPersonView, self).dispatch(request, *args, **kwargs)
 
