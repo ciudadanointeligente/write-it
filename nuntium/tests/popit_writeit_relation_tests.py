@@ -79,8 +79,11 @@ class PopitWriteitRelationRecord(TestCase):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         # there should be an amount of memberships
         writeitinstance.relate_with_persons_from_popolo_json(popolo_source)
-        amount_of_memberships = InstanceMembership.objects.filter(writeitinstance=writeitinstance).count()
-        previous_memberships = list(InstanceMembership.objects.filter(writeitinstance=writeitinstance))
+        previous_memberships_qs = InstanceMembership.objects.filter(
+            writeitinstance=writeitinstance).order_by(
+                'person_id', 'writeitinstance_id')
+        amount_of_memberships = previous_memberships_qs.count()
+        previous_memberships = list(previous_memberships_qs)
 
         person = writeitinstance.persons.all()[0]
 
@@ -93,10 +96,20 @@ class PopitWriteitRelationRecord(TestCase):
             self.fail("There are more than one InstanceMembership " + e)
 
         # It deletes the bad membership
-        new_amount_of_memberships = InstanceMembership.objects.filter(writeitinstance=writeitinstance).count()
-        later_memberships = list(InstanceMembership.objects.filter(writeitinstance=writeitinstance))
+        later_memberships_qs = InstanceMembership.objects.filter(
+            writeitinstance=writeitinstance).order_by(
+                'person_id', 'writeitinstance_id')
+        new_amount_of_memberships = later_memberships_qs.count()
+        later_memberships = list(later_memberships_qs)
+
         self.assertEquals(amount_of_memberships, new_amount_of_memberships)
-        self.assertEquals(previous_memberships, later_memberships)
+        for im_index in range(amount_of_memberships):
+            self.assertEquals(
+                previous_memberships[im_index].person.name,
+                later_memberships[im_index].person.name)
+            self.assertEquals(
+                previous_memberships[im_index].writeitinstance.id,
+                later_memberships[im_index].writeitinstance.id)
 
     @popit_load_data()
     def test_it_is_created_automatically_when_fetching_a_popit_instance(self):
