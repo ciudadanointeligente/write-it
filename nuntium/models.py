@@ -390,15 +390,10 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
             'message_id': '/api/v1/message/{0}/'.format(answer.message.id),
             'content': answer.content,
             'person': answer.person.name,
+            'person_id': answer.person.uri_for_api(),
+            'person_id_in_popolo_source': answer.person.id_in_popolo_source,
+            'person_popolo_source_url': answer.person.popolo_source_url,
         }
-        # Add identifiers for the person that may or may not be present:
-        for i_scheme in ('popit_url', 'id_in_popolo_source'):
-            identifier_obj = answer.person.identifiers.filter(
-                scheme=i_scheme).first()
-            if identifier_obj:
-                payload[i_scheme] = identifier_obj.identifier
-            else:
-                payload[i_scheme] = None
 
         for webhook in writeitinstance.answer_webhooks.all():
             requests.post(webhook.url, data=payload)
