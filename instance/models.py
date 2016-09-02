@@ -161,9 +161,9 @@ def update_person(
         )
 
 def today_in_date_range(start_date, end_date):
-    today = datetime.today()
-    is_valid = ((not start_date) or start_date <= today) and \
-        ((not end_date) or end_date >= today)
+    today = str(datetime.today())
+    is_valid = ((not start_date) or str(start_date) <= today) and \
+        ((not end_date) or str(end_date) >= today)
     return is_valid
 
 def determine_if_person_is_current(person_object):
