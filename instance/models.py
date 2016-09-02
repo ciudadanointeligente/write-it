@@ -271,6 +271,7 @@ class PopoloSource(models.Model):
                     person_object.identifiers.create(
                         scheme='popolo_uri',
                         identifier=(self.url + '#person=' + popolo_person['id']))
+                    self.persons.add(person_object)
                 # Now update the django-popolo Person and
                 # ContactDetail objects:
                 update_person(
