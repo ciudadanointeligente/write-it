@@ -113,9 +113,6 @@ class EmailCreationWhenPullingFromPopit(TestCase):
         fiera = self.instance.persons.filter(name="Fiera Feroz")
         contacts = Contact.objects.filter(person=fiera)
         self.assertEquals(contacts.count(), 1)
-        # I'm prefering the one with popit_id and stuff
-        the_contact = contacts[0]
-        self.assertTrue(the_contact.popit_identifier)
 
     @popit_load_data(fixture_name='persons_with_memberships')
     def test_if_memberships_are_no_longer_active(self):
