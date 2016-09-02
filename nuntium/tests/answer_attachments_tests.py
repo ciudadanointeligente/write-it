@@ -1,6 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
+from instance.models import PopoloPerson
 from nuntium.models import Message, Answer, AnswerAttachment
-from popolo.models import Person
 from django.core.files import File
 from subdomains.utils import reverse
 
@@ -9,7 +9,7 @@ class AnswerAttachmentsTest(TestCase):
     def setUp(self):
         super(AnswerAttachmentsTest, self).setUp()
         self.message = Message.objects.all()[0]
-        self.person = Person.objects.all()[0]
+        self.person = PopoloPerson.objects.all()[0]
         self.answer = Answer.objects.create(
             message=self.message,
             person=self.person,
