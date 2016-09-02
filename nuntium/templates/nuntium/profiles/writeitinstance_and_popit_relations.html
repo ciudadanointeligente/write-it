@@ -60,7 +60,7 @@ $(".chosen-person-select").chosen();
                       <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
                     </div>
                     <div class="save-bar">
-                       <button class="btn btn-default resync" href="{% url 'resync-from-popit' subdomain=record.writeitinstance.slug popit_api_pk=record.popitapiinstance.pk %}"><i class="glyphicon glyphicon-refresh"></i> {% trans 'Fetch new data now' %}</button>
+                       <button class="btn btn-default resync" href="{% url 'resync-from-popit' subdomain=record.writeitinstance.slug popolo_source_pk=record.popolo_source.pk %}"><i class="glyphicon glyphicon-refresh"></i> {% trans 'Fetch new data now' %}</button>
                     </div>
                   </form>
 

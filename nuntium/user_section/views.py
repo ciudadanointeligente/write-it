@@ -524,7 +524,9 @@ class ReSyncFromPopit(View):
         popolo_sources_previously_related = PopoloSource.objects.filter(
             writeitinstancepopitinstancerecord__writeitinstance=writeitinstance)
 
-        popolo_source = get_object_or_404(popolo_sources_previously_related, pk=kwargs['popit_api_pk'])
+        popolo_source = get_object_or_404(
+            popolo_sources_previously_related,
+            pk=kwargs['popolo_source_pk'])
         pull_from_popolo_json.delay(writeitinstance, popolo_source)
         return HttpResponse()
 

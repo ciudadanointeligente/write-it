@@ -259,11 +259,11 @@ class UpdateStatusOfPopitWriteItRelation(WriteItPopitTestCase):
         # This is just a symbolism but it is to show how this popit api is empty
         self.assertFalse(self.popolo_source.persons.all())
         url = reverse('resync-from-popit', subdomain=self.writeitinstance.slug, kwargs={
-            'popit_api_pk': self.popolo_source.pk})
+            'popolo_source_pk': self.popolo_source.pk})
         request = self.request_factory.post(url)
         request.subdomain = self.writeitinstance.slug
         request.user = self.owner
-        response = ReSyncFromPopit.as_view()(request, popit_api_pk=self.popolo_source.pk)
+        response = ReSyncFromPopit.as_view()(request, popolo_source_pk=self.popolo_source.pk)
 
         self.assertEquals(response.status_code, 200)
         # It should have been updated
@@ -280,22 +280,22 @@ class UpdateStatusOfPopitWriteItRelation(WriteItPopitTestCase):
             self.writeitinstance.writeitinstancepopitinstancerecord_set.all())
 
         url = reverse('resync-from-popit', subdomain=self.writeitinstance.slug, kwargs={
-            'popit_api_pk': another_popolo_source.pk})
+            'popolo_source_pk': another_popolo_source.pk})
         request = self.request_factory.post(url)
         request.subdomain = self.writeitinstance.slug
         request.user = self.owner
         with self.assertRaises(Http404):
-            ReSyncFromPopit.as_view()(request, popit_api_pk=another_popolo_source.pk)
+            ReSyncFromPopit.as_view()(request, popolo_source_pk=another_popolo_source.pk)
 
     def test_post_has_to_be_the_owner_of_the_instance(self):
         '''Only the owner of an instance can resync'''
         url = reverse('resync-from-popit', subdomain=self.writeitinstance.slug, kwargs={
-            'popit_api_pk': self.popolo_source.pk})
+            'popolo_source_pk': self.popolo_source.pk})
         request = self.request_factory.post(url)
         request.subdomain = self.writeitinstance.slug
         request.user = AnonymousUser()
         with self.assertRaises(Http404):
-            ReSyncFromPopit.as_view()(request, popit_api_pk=self.popolo_source.pk)
+            ReSyncFromPopit.as_view()(request, popolo_source_pk=self.popolo_source.pk)
 
         other_user = User.objects.create_user(username="other_user", password="s3cr3t0")
 
@@ -303,7 +303,7 @@ class UpdateStatusOfPopitWriteItRelation(WriteItPopitTestCase):
         request.subdomain = self.writeitinstance.slug
         request.user = other_user
         with self.assertRaises(Http404):
-            ReSyncFromPopit.as_view()(request, popit_api_pk=self.popolo_source.pk)
+            ReSyncFromPopit.as_view()(request, popolo_source_pk=self.popolo_source.pk)
 
 from nuntium.user_section.views import WriteItPopitUpdateView
 
