@@ -1,7 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from instance.models import (
-    Membership, WriteItInstance, WriteitInstancePopitInstanceRecord)
+    InstanceMembership, WriteItInstance, WriteitInstancePopitInstanceRecord)
 from popit.models import ApiInstance
 from django.utils.unittest import skip
 from django.contrib.auth.models import User
@@ -67,7 +67,7 @@ class PopitWriteitRelationRecord(TestCase):
         writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
         writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
 
-        amount_of_memberships = Membership.objects.filter(writeitinstance=writeitinstance).count()
+        amount_of_memberships = InstanceMembership.objects.filter(writeitinstance=writeitinstance).count()
 
         # There are only 2
         self.assertEquals(amount_of_memberships, 2)
@@ -80,22 +80,22 @@ class PopitWriteitRelationRecord(TestCase):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         # there should be an amount of memberships
         writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
-        amount_of_memberships = Membership.objects.filter(writeitinstance=writeitinstance).count()
-        previous_memberships = list(Membership.objects.filter(writeitinstance=writeitinstance))
+        amount_of_memberships = InstanceMembership.objects.filter(writeitinstance=writeitinstance).count()
+        previous_memberships = list(InstanceMembership.objects.filter(writeitinstance=writeitinstance))
 
         person = writeitinstance.persons.all()[0]
 
         # Creating a new one
-        Membership.objects.create(writeitinstance=writeitinstance, person=person)
+        InstanceMembership.objects.create(writeitinstance=writeitinstance, person=person)
         try:
             with popit_load_data():
                 writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
-        except Membership.MultipleObjectsReturned, e:
-            self.fail("There are more than one Membership " + e)
+        except InstanceMembership.MultipleObjectsReturned, e:
+            self.fail("There are more than one InstanceMembership " + e)
 
         # It deletes the bad membership
-        new_amount_of_memberships = Membership.objects.filter(writeitinstance=writeitinstance).count()
-        later_memberships = list(Membership.objects.filter(writeitinstance=writeitinstance))
+        new_amount_of_memberships = InstanceMembership.objects.filter(writeitinstance=writeitinstance).count()
+        later_memberships = list(InstanceMembership.objects.filter(writeitinstance=writeitinstance))
         self.assertEquals(amount_of_memberships, new_amount_of_memberships)
         self.assertEquals(previous_memberships, later_memberships)
 

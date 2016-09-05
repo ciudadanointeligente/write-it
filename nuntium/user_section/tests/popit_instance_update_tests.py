@@ -1,7 +1,7 @@
 from global_test_case import popit_load_data
 from subdomains.utils import reverse
 from instance.models import (
-    Membership, WriteItInstance, WriteitInstancePopitInstanceRecord)
+    InstanceMembership, WriteItInstance, WriteitInstancePopitInstanceRecord)
 from django.contrib.auth.models import User
 from django.forms import Form, URLField
 from django.conf import settings
@@ -48,7 +48,7 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
             api_instance=w.persons.first().api_instance,
             name="Another Person but with the same api Instance",
             )
-        Membership.objects.create(writeitinstance=w, person=another_person)
+        InstanceMembership.objects.create(writeitinstance=w, person=another_person)
         WPBackfillRecords.back_fill_popit_records(writeitinstance=w)
         records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
         self.assertEquals(records.count(), 1)
