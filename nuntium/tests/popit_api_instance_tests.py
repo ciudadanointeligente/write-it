@@ -3,7 +3,7 @@ from datetime import datetime
 from mock import patch
 
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
-from instance.models import WriteItInstance
+from instance.models import WriteItInstance, today_in_date_range
 from contactos.models import Contact, ContactType
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -124,9 +124,8 @@ class EmailCreationWhenPullingFromPopit(TestCase):
         contacts should be disabled.
         Related to #419.
         '''
-        with patch('nuntium.popit_api_instance.datetime') as mock_datetime:
-            mock_datetime.today.return_value = datetime(2015, 1, 1)
-            mock_datetime.strptime = lambda *args, **kw: datetime.strptime(*args, **kw)
+        with patch('instance.models.datetime') as mock_datetime:
+            mock_datetime.date.today.return_value = datetime(2015, 1, 1)
 
             self.instance.load_persons_from_popolo_json(
                 settings.TEST_POPIT_API_URL
@@ -152,24 +151,23 @@ class EmailCreationWhenPullingFromPopit(TestCase):
 
 class IsActiveTestCase(TestCase):
     def test_validating_if_a_membership_is_active(self):
-        with patch('nuntium.popit_api_instance.datetime') as mock_datetime:
-            mock_datetime.today.return_value = datetime(2000, 1, 1)
-            mock_datetime.strptime = lambda *args, **kw: datetime.strptime(*args, **kw)
+        with patch('instance.models.datetime') as mock_datetime:
+            mock_datetime.date.today.return_value = datetime(2000, 1, 1)
 
-            far_past = "1900-01-01"
-            past = "1999-01-01"
-            future = "2020-01-01"
-            far_future = "2525-01-01"
+            far_past = datetime(1900, 1, 1)
+            past = datetime(1999, 1, 1)
+            future = datetime(2020, 1, 1)
+            far_future = datetime(2525, 1, 1)
 
-            self.assertFalse(is_current_membership({'start_date': far_past, 'end_date': past}))
-            self.assertFalse(is_current_membership({'end_date': past}))
-            self.assertTrue(is_current_membership({'start_date': past}))
-            self.assertTrue(is_current_membership({'start_date': past, 'end_date': future}))
-            self.assertTrue(is_current_membership({'end_date': future}))
-            self.assertFalse(is_current_membership({'start_date': future, 'end_date': far_future}))
+            self.assertFalse(today_in_date_range(far_past, past))
+            self.assertFalse(today_in_date_range(None, past))
+            self.assertTrue(today_in_date_range(past, None))
+            self.assertTrue(today_in_date_range(past, future))
+            self.assertTrue(today_in_date_range(None, future))
+            self.assertFalse(today_in_date_range(future, far_future))
 
             # Handles empty strings as dates
-            self.assertTrue(is_current_membership({'start_date': past, 'end_date': ""}))
+            self.assertTrue(today_in_date_range(past, None))
 
             # If there's neither a start date or an end date, that's current.
-            self.assertTrue(is_current_membership({}))
+            self.assertTrue(today_in_date_range(None, None))
