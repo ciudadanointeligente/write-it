@@ -2,7 +2,7 @@
 from global_test_case import GlobalTestCase as TestCase
 from popit.models import Person
 from contactos.models import Contact
-from instance.models import Membership, WriteItInstance
+from instance.models import InstanceMembership, WriteItInstance
 from ..models import Message, Confirmation, OutboundMessage
 from ..forms import MessageCreateForm, PersonMultipleChoiceField
 
@@ -186,7 +186,7 @@ class MessageFormTestCase(TestCase):
         self.writeitinstance1.config.maximum_recipients = 1
         self.writeitinstance1.config.save()
         person2 = Person.objects.get(id=2)
-        Membership.objects.create(writeitinstance=self.writeitinstance1, person=person2)
+        InstanceMembership.objects.create(writeitinstance=self.writeitinstance1, person=person2)
         data = {
             'subject': u'Amor a la fiera',
             'content': u'Todos sabemos que quieres mucho a la Fiera pero... es verdad?',

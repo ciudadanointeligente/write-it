@@ -29,7 +29,8 @@ class WriteItInstance(models.Model):
     owner = models.ForeignKey(User, related_name="writeitinstances")
 
     def add_person(self, person):
-        Membership.objects.get_or_create(writeitinstance=self, person=person)
+        InstanceMembership.objects.get_or_create(
+            writeitinstance=self, person=person)
 
     @property
     def persons_with_contacts(self):
@@ -48,9 +49,9 @@ class WriteItInstance(models.Model):
         persons = Person.objects.filter(api_instance=popit_api_instance)
         for person in persons:
             # There could be several memberships created.
-            memberships = Membership.objects.filter(writeitinstance=self, person=person)
+            memberships = InstanceMembership.objects.filter(writeitinstance=self, person=person)
             if memberships.count() == 0:
-                Membership.objects.create(writeitinstance=self, person=person)
+                InstanceMembership.objects.create(writeitinstance=self, person=person)
             if memberships.count() > 1:
                 membership = memberships[0]
                 memberships.exclude(id=membership.id).delete()
