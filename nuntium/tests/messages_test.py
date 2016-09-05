@@ -7,7 +7,6 @@ from django.utils.translation import ugettext as _
 from contactos.models import Contact
 from instance.models import WriteItInstance
 from ..models import Message, OutboundMessage, NoContactOM
-from popit.models import ApiInstance
 from popolo.models import Person
 from subdomains.utils import reverse
 from django.contrib.auth.models import User

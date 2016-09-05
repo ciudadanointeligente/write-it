@@ -4,7 +4,7 @@ from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from subdomains.utils import reverse
 from instance.models import InstanceMembership, WriteItInstance
 from nuntium.models import Message, Confirmation
-from popit.models import ApiInstance, Person
+from popolo.models import Person
 from django.utils.unittest import skip
 from django.contrib.auth.models import User
 from django.utils.translation import activate
