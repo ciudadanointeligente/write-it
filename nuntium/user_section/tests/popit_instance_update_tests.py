@@ -2,6 +2,7 @@ from global_test_case import popit_load_data
 from subdomains.utils import reverse
 from instance.models import (
     InstanceMembership, WriteItInstance, WriteitInstancePopitInstanceRecord)
+from popolo_sources.models import PopoloSource
 from django.contrib.auth.models import User
 from django.forms import Form, URLField
 from django.conf import settings
@@ -28,10 +29,10 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
     def test_creates_records_only_once(self):
         '''It creates the records only once'''
         w = WriteItInstance.objects.first()
-        a = ApiInstance.objects.first()
+        p = PopoloSource.objects.first()
         WriteitInstancePopitInstanceRecord.objects.create(
             writeitinstance=w,
-            popitapiinstance=a,
+            popolo_source=p,
             )
         WPBackfillRecords.back_fill_popit_records(writeitinstance=w)
         records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
@@ -43,10 +44,11 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
         no matter if there are two persons related
         '''
         w = WriteItInstance.objects.first()
+        popolo_source = w.persons.first().popolo_sources.first()
         another_person = Person.objects.create(
-            api_instance=w.persons.first().api_instance,
-            name="Another Person but with the same api Instance",
+            name="Another Person but with the same Popolo source",
             )
+        another_person.popolo_sources.add(popolo_source)
         InstanceMembership.objects.create(writeitinstance=w, person=another_person)
         WPBackfillRecords.back_fill_popit_records(writeitinstance=w)
         records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
@@ -139,9 +141,9 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
     def test_the_form_is_not_valid_if_there_is_another_popit(self):
         '''The form is not valid if there is already another popit api instance related'''
 
-        popit_api_instance = PopitApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
+        popolo_source = PopoloSource.objects.create(url=settings.TEST_POPIT_API_URL)
         WriteitInstancePopitInstanceRecord.objects.create(writeitinstance=self.writeitinstance,
-            popitapiinstance=popit_api_instance)
+            popolo_source=popolo_source)
 
         data = {"popit_url": settings.TEST_POPIT_API_URL}
         form = RelatePopitInstanceWithWriteItInstance(data=data, writeitinstance=self.writeitinstance)

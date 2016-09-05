@@ -1,6 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from instance.models import WriteItInstance, WriteitInstancePopitInstanceRecord
+from popolo_sources.models import PopoloSource
 from nuntium.models import OutboundMessage
 from ..tasks import send_mails_task
 from mock import patch
@@ -71,7 +72,7 @@ class TasksTestCase(TestCase):
 class PullFromPopitTask(TestCase):
     def setUp(self):
         super(PullFromPopitTask, self).setUp()
-        self.api_instance1 = PopitApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
+        self.popolo_source = PopoloSource.objects.create(url=settings.TEST_POPIT_API_URL)
         self.person1 = Person.objects.get(id=1)
 
         self.owner = User.objects.get(id=1)
@@ -87,9 +88,9 @@ class PullFromPopitTask(TestCase):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         WriteitInstancePopitInstanceRecord.objects.create(
             writeitinstance=writeitinstance,
-            popitapiinstance=self.api_instance1
+            popolo_source=self.popolo_source
             )
-        pull_from_popit.delay(writeitinstance, self.api_instance1)  # Returns result
+        pull_from_popit.delay(writeitinstance, self.popolo_source)  # Returns result
         self.assertTrue(writeitinstance.persons.all())
 
 
@@ -97,17 +98,17 @@ class PeriodicallyPullFromPopitClass(TestCase):
     def setUp(self):
         super(PeriodicallyPullFromPopitClass, self).setUp()
         self.owner = User.objects.get(id=1)
-        #this is the popit_api_instance created based on the previous load
+        #this is the popolo_source created based on the previous load
         self.writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
 
-        self.popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+        self.popolo_source, created = PopoloSource.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         WriteitInstancePopitInstanceRecord.objects.create(
             writeitinstance=self.writeitinstance,
-            popitapiinstance=self.popit_api_instance
+            popolo_source=self.popolo_source
             )
         #loading data from popit in a sync way
         with popit_load_data():
-            self.writeitinstance._load_persons_from_a_popit_api(self.popit_api_instance)
+            self.writeitinstance._load_persons_from_a_popit_api(self.popolo_source)
         self.previously_created_persons = list(self.writeitinstance.persons.all())
 
     @popit_load_data("other_persons")
@@ -126,7 +127,7 @@ class PeriodicallyPullFromPopitClass(TestCase):
         '''If the instance has autosync disabled then it does not sync'''
         writeitinstance_popit_record = WriteitInstancePopitInstanceRecord.objects.get(
             writeitinstance=self.writeitinstance,
-            popitapiinstance=self.popit_api_instance
+            popolo_source=self.popolo_source
         )
         # Periodicity = 0  means that it is never going to send anything
         writeitinstance_popit_record.periodicity = 0
@@ -144,7 +145,7 @@ class PeriodicallyPullFromPopitClass(TestCase):
         '''It can receive a parameter refering to the periodicity'''
         writeitinstance_popit_record = WriteitInstancePopitInstanceRecord.objects.get(
             writeitinstance=self.writeitinstance,
-            popitapiinstance=self.popit_api_instance
+            popolo_source=self.popolo_source
         )
         writeitinstance_popit_record.periodicity = '1D'  # Daily
         writeitinstance_popit_record.save()

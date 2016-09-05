@@ -5,7 +5,8 @@ from global_test_case import UsingDbMixin
 from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 from contactos.models import Contact
-from instance.models import WriteItInstance
+from instance.models import PopoloPerson, WriteItInstance
+from popolo_sources.models import PopoloSource
 from ..models import Message, OutboundMessage, NoContactOM
 from popolo.models import Person
 from subdomains.utils import reverse
@@ -468,7 +469,7 @@ class MysqlTesting(UsingDbMixin, OriginalTestCase):
     def setUp(self):
         super(MysqlTesting, self).setUp()
         user = User.objects.create_user(username='admin', password='a')
-        popit_instance = ApiInstance.objects.create(
+        popolo_source = PopoloSource.objects.create(
             url='http://popit.ciudadanointeligente.org',
             )
 
@@ -477,7 +478,8 @@ class MysqlTesting(UsingDbMixin, OriginalTestCase):
             slug='instance-1',
             owner=user,
             )
-        self.person1 = Person.objects.create(name='Pedro', api_instance=popit_instance)
+        self.person1 = Person.objects.create(name='Pedro')
+        popolo_source.persons.add(self.person1)
 
     # This test was a bug against mysql
     def test_a_message_with_a_changed_slug(self):
@@ -532,7 +534,7 @@ class PostgresTesting(UsingDbMixin, OriginalTestCase):
     def setUp(self):
         super(PostgresTesting, self).setUp()
         user = User.objects.create_user(username='admin', password='a')
-        popit_instance = ApiInstance.objects.create(
+        popolo_source = PopoloSource.objects.create(
             url='http://popit.ciudadanointeligente.org',
             )
 
@@ -540,7 +542,8 @@ class PostgresTesting(UsingDbMixin, OriginalTestCase):
             name='instance 1',
             slug='instance-1',
             owner=user)
-        self.person1 = Person.objects.create(name='Pedro', api_instance=popit_instance)
+        self.person1 = Person.objects.create(name='Pedro')
+        popolo_source.persons.add(self.person1)
 
     # This test was a bug against mysql
     def test_a_message_with_a_changed_slug(self):

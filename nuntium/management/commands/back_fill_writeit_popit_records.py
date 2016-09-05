@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
-from popit.models import ApiInstance
 from instance.models import WriteitInstancePopitInstanceRecord
+from popolo_sources.models import PopoloSource
 from django.contrib.auth.models import User
 import logging
 
@@ -11,11 +11,11 @@ class WPBackfillRecords(object):
     @classmethod
     def back_fill_popit_records(cls, writeitinstance):
         persons_in_instance = writeitinstance.persons.all()
-        api_instances = ApiInstance.objects.filter(person__in=persons_in_instance).distinct()
-        for a in api_instances:
+        popolo_sources = PopoloSource.objects.filter(persons__in=persons_in_instance).distinct()
+        for popolo_source in popolo_sources:
             record, created = WriteitInstancePopitInstanceRecord.objects.get_or_create(
                 writeitinstance=writeitinstance,
-                popitapiinstance=a)
+                popolo_source=popolo_source)
             logger.info(
                 u"Creating -> {record}\n".format(record=record.__unicode__()))
 
