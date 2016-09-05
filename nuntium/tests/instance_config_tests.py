@@ -1,6 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from instance.models import InstanceMembership, WriteItInstance, WriteItInstanceConfig
+from instance.models import InstanceMembership, PopoloPerson, WriteItInstance, WriteItInstanceConfig
+from popolo_sources.models import PopoloSource
 from nuntium.models import Message
 from popit.models import ApiInstance
 from popolo.models import Person
@@ -13,8 +14,8 @@ from django.core import mail
 class WriteItInstanceConfigTestCase(TestCase):
     def setUp(self):
         super(WriteItInstanceConfigTestCase, self).setUp()
-        self.api_instance1 = ApiInstance.objects.get(id=1)
-        self.api_instance2 = ApiInstance.objects.get(id=2)
+        self.popolo_source1 = PopoloSource.objects.get(id=1)
+        self.popolo_source2 = PopoloSource.objects.get(id=2)
         self.person1 = Person.objects.get(id=1)
 
         self.owner = User.objects.get(id=1)

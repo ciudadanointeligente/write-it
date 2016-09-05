@@ -11,6 +11,7 @@ from django.views.generic.edit import UpdateView, DeleteView, FormView
 from mailit.forms import MailitTemplateForm
 
 from instance.models import WriteItInstance, WriteItInstanceConfig, WriteitInstancePopitInstanceRecord
+from popolo_sources.models import PopoloSource
 from ..models import Message,\
     NewAnswerNotificationTemplate, ConfirmationTemplate, \
     Answer, Moderation, \

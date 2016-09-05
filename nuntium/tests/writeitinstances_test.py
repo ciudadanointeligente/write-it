@@ -2,7 +2,8 @@
 from urlparse import urlsplit, urlunsplit
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from subdomains.utils import reverse
-from instance.models import InstanceMembership, WriteItInstance
+from instance.models import InstanceMembership, PopoloPerson, WriteItInstance
+from popolo_sources.models import PopoloSource
 from nuntium.models import Message, Confirmation
 from popolo.models import Person
 from django.utils.unittest import skip
@@ -18,8 +19,8 @@ from contactos.models import Contact, ContactType
 class InstanceTestCase(TestCase):
     def setUp(self):
         super(InstanceTestCase, self).setUp()
-        self.api_instance1 = ApiInstance.objects.get(id=1)
-        self.api_instance2 = ApiInstance.objects.get(id=2)
+        self.popolo_source1 = PopoloSource.objects.get(id=1)
+        self.popolo_source2 = PopoloSource.objects.get(id=2)
         self.person1 = Person.objects.get(id=1)
 
         self.owner = User.objects.get(id=1)
@@ -128,7 +129,7 @@ class InstanceTestCase(TestCase):
     def test_it_uses_the_async_task_to_pull_people_from_popit(self):
         '''It uses the async task to pull people from popit'''
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
-        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+        popit_api_instance, created = PopoloSource.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
 
         '''
         I'm going to patch the method to know that it was run, I could do some other properties but I'm thinking that
@@ -155,7 +156,7 @@ class InstanceTestCase(TestCase):
                 'error': 0
             })
 
-        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+        popit_api_instance, created = PopoloSource.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
 
     @popit_load_data()
     def test_can_create_messages(self):
@@ -227,8 +228,8 @@ class PersonsWithContactsTestCase(TestCase):
 class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
     def setUp(self):
         super(WriteItInstanceLoadingPeopleFromAPopitApiTestCase, self).setUp()
-        self.api_instance1 = ApiInstance.objects.get(id=1)
-        self.api_instance2 = ApiInstance.objects.get(id=2)
+        self.popolo_source1 = PopoloSource.objects.get(id=1)
+        self.popolo_source2 = PopoloSource.objects.get(id=2)
         self.person1 = Person.objects.get(id=1)
 
         self.owner = User.objects.get(id=1)
@@ -236,7 +237,7 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
     @popit_load_data()
     def test_load_persons_from_a_popit_api(self):
         '''Loading persons from a popit api'''
-        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+        popit_api_instance, created = PopoloSource.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
 
@@ -251,7 +252,7 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
     @popit_load_data()
     def test_it_returns_a_tuple(self):
         '''Returns a tuple'''
-        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+        popit_api_instance, created = PopoloSource.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         result = writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
         self.assertIsInstance(result, tuple)
@@ -261,7 +262,7 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
     def test_it_returns_false_when_theres_a_problem(self):
         '''When there's a problem it returns false and the problem in the tuple'''
         non_existing_url = "http://nonexisting.url"
-        popit_api_instance = PopitApiInstance.objects.create(url=non_existing_url)
+        popit_api_instance = PopoloSource.objects.create(url=non_existing_url)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         result = writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
         self.assertIsInstance(result, tuple)
@@ -272,8 +273,8 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
 class InstanceDetailView(TestCase):
     def setUp(self):
         super(InstanceDetailView, self).setUp()
-        self.api_instance1 = ApiInstance.objects.get(id=1)
-        self.api_instance2 = ApiInstance.objects.get(id=2)
+        self.popolo_source1 = PopoloSource.objects.get(id=1)
+        self.popolo_source2 = PopoloSource.objects.get(id=2)
         self.person1 = Person.objects.get(id=1)
         self.writeitinstance1 = WriteItInstance.objects.get(id=1)
         self.url = self.writeitinstance1.get_absolute_url()

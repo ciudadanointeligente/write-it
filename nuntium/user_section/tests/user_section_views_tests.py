@@ -7,6 +7,7 @@ from mailit.forms import MailitTemplateForm
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 
 from instance.models import WriteItInstance, WriteitInstancePopitInstanceRecord
+from popolo_sources.models import PopoloSource
 from nuntium.user_section.views import WriteItInstanceUpdateView, WriteItInstanceApiDocsView
 from nuntium.user_section.forms import WriteItInstanceBasicForm, \
     WriteItInstanceCreateForm, \
@@ -246,10 +247,10 @@ class WriteItInstancePullingDetailViewTestCase(UserSectionTestCase):
         super(WriteItInstancePullingDetailViewTestCase, self).setUp()
         self.writeitinstance = WriteItInstance.objects.get(id=1)
         self.owner = self.writeitinstance.owner
-        self.popit_api_instance = PopitApiInstance.objects.get(id=1)
+        self.popolo_source = PopoloSource.objects.get(id=1)
         self.record = WriteitInstancePopitInstanceRecord.objects.get_or_create(
             writeitinstance=self.writeitinstance,
-            popitapiinstance=self.popit_api_instance)
+            popolo_source=self.popolo_source)
 
     def test_theres_a_url_to_check_whats_happening(self):
         '''There is a url to let the user know what's happening with her/his instance'''
