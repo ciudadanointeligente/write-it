@@ -11,7 +11,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from annoying.fields import AutoOneToOneField
 from autoslug import AutoSlugField
-from nuntium.popit_api_instance import PopitApiInstance
 from popolo_sources.models import PopoloSource
 from popolo.models import Person
 from requests.exceptions import ConnectionError

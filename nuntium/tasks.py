@@ -1,7 +1,6 @@
 from celery import task
 from .management.commands.send_mails import send_mails
 from instance.models import WriteitInstancePopitInstanceRecord
-from nuntium.popit_api_instance import PopitApiInstance
 import logging
 
 

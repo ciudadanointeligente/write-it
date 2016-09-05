@@ -29,7 +29,6 @@ from .forms import WriteItInstanceBasicForm, \
 from django.contrib import messages as view_messages
 from django.utils.translation import ugettext as _
 import json
-from nuntium.popit_api_instance import PopitApiInstance
 from nuntium.tasks import pull_from_popit
 from nuntium.user_section.forms import WriteItPopitUpdateForm
 from django.contrib.sites.models import Site

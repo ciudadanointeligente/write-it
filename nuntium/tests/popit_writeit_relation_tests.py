@@ -5,7 +5,6 @@ from instance.models import (
 from django.utils.unittest import skip
 from django.contrib.auth.models import User
 from django.conf import settings
-from nuntium.popit_api_instance import PopitApiInstance
 from datetime import timedelta
 from django.utils import timezone
 from mock import patch, call

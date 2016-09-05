@@ -12,7 +12,6 @@ from user_section_views_tests import UserSectionTestCase
 from django.utils.translation import ugettext as _
 from nuntium.user_section.forms import RelatePopitInstanceWithWriteItInstance
 from nuntium.management.commands.back_fill_writeit_popit_records import WPBackfillRecords
-from nuntium.popit_api_instance import PopitApiInstance
 
 
 class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
