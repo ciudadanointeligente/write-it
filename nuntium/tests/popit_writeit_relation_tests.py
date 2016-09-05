@@ -2,7 +2,6 @@
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from instance.models import (
     InstanceMembership, WriteItInstance, WriteitInstancePopitInstanceRecord)
-from popit.models import ApiInstance
 from django.utils.unittest import skip
 from django.contrib.auth.models import User
 from django.conf import settings
