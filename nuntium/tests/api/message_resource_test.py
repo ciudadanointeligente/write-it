@@ -4,7 +4,7 @@ from instance.models import WriteItInstance
 from ...models import Message, Confirmation
 from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
-from popit.models import Person
+from popolo.models import Person
 from django.utils.encoding import force_text
 
 

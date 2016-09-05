@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from annoying.fields import AutoOneToOneField
 from autoslug import AutoSlugField
 from nuntium.popit_api_instance import PopitApiInstance
-from popit.models import Person, ApiInstance
+from popit.models import ApiInstance
 from popolo.models import Person as PopoloPerson
 from popolo_sources.models import PopoloSource
 from requests.exceptions import ConnectionError

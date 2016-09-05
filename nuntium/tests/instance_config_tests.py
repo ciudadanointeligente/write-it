@@ -2,7 +2,8 @@
 from global_test_case import GlobalTestCase as TestCase
 from instance.models import InstanceMembership, WriteItInstance, WriteItInstanceConfig
 from nuntium.models import Message
-from popit.models import ApiInstance, Person
+from popit.models import ApiInstance
+from popolo.models import Person
 from django.contrib.auth.models import User
 from mailit import MailChannel
 from contactos.models import Contact

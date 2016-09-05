@@ -6,9 +6,9 @@ from instance.models import WriteItInstance
 from .models import Message, Confirmation
 
 from contactos.models import Contact
+from popolo.models import Person
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _, ungettext
-from popit.models import Person
 from haystack.forms import SearchForm
 from django.utils.html import format_html
 from django.utils.encoding import force_text

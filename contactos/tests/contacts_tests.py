@@ -1,7 +1,7 @@
 from global_test_case import GlobalTestCase as TestCase
 from nuntium.user_section.tests.user_section_views_tests import UserSectionTestCase
 from contactos.models import ContactType, Contact
-from popit.models import Person
+from popolo.models import Person
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 from django.core import mail

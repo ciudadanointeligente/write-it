@@ -17,7 +17,7 @@ from nuntium.models import Message, OutboundMessage
 from nuntium.plugins import OutputPlugin
 from nuntium.user_section.tests.user_section_views_tests import UserSectionTestCase
 
-from popit.models import Person
+from popolo.models import Person
 
 from global_test_case import GlobalTestCase as TestCase
 

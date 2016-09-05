@@ -3,7 +3,7 @@ from global_test_case import GlobalTestCase as TestCase
 from subdomains.utils import reverse
 from instance.models import WriteItInstance
 from ..models import Message
-from popit.models import Person
+from popolo.models import Person
 
 
 class MessagesPerPersonViewTestCase(TestCase):

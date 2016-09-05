@@ -1,6 +1,6 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from popit.models import Person
+from popolo.models import Person
 from contactos.models import Contact
 from instance.models import InstanceMembership, WriteItInstance
 from ..models import Message, Confirmation, OutboundMessage

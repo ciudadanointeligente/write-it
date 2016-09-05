@@ -5,7 +5,6 @@ from django.db.models.signals import post_save, pre_save
 from django.db import models
 from django.utils.translation import override, ugettext_lazy as _
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from popit.models import Person
 from popolo.models import Person as PopoloPerson
 from contactos.models import Contact
 from .plugins import OutputPlugin
@@ -169,7 +168,7 @@ class Message(models.Model):
 
     @property
     def people(self):
-        people = Person.objects.filter(
+        people = PopoloPerson.objects.filter(
             Q(contact__outboundmessage__message=self) |
             Q(nocontactom__message=self)
             ).distinct()

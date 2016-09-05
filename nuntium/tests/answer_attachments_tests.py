@@ -1,6 +1,6 @@
 from global_test_case import GlobalTestCase as TestCase
 from nuntium.models import Message, Answer, AnswerAttachment
-from popit.models import Person
+from popolo.models import Person
 from django.core.files import File
 from subdomains.utils import reverse
 
