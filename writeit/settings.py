@@ -317,7 +317,7 @@ TEST_POPIT_API_HOST_IP = '127.0.0.1'
 TEST_POPIT_API_PORT = '3000'
 TEST_POPIT_API_SUBDOMAIN = 'popit-django-test'
 
-TEST_POPIT_API_URL = "http://%s.%s.xip.io:%s/api" % (
+TEST_POPIT_API_URL = "http://%s.%s.xip.io:%s/api/v0.1/export.json" % (
     TEST_POPIT_API_SUBDOMAIN,
     TEST_POPIT_API_HOST_IP,
     TEST_POPIT_API_PORT,
