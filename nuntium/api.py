@@ -38,7 +38,7 @@ class PersonResource(ModelResource):
         authentication = ApiKeyAuthentication()
 
     def dehydrate(self, bundle):
-        bundle.data['resource_uri'] = bundle.obj.popit_url
+        bundle.data['resource_uri'] = bundle.obj.old_popit_url
         return bundle
 
 
@@ -236,7 +236,8 @@ class MessageResource(ModelResource):
         if 'author_email' in bundle.data:
             bundle.data.pop('author_email', None)
         for person in bundle.obj.people:
-            bundle.data['persons'].append(person.popit_url)
+            # FIXME:
+            bundle.data['persons'].append(person.old_popit_url)
         return bundle
 
     def obj_create(self, bundle, **kwargs):

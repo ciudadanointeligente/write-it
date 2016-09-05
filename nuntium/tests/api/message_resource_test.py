@@ -133,7 +133,7 @@ class MessageResourceTestCase(ResourceTestCase):
         message_from_the_api = messages[0]
         message = Message.objects.get(id=messages[0]['id'])
         for person in message_from_the_api['people']:
-            self.assertIn('popit_url', person)
+            self.assertIn('old_popit_url', person)
 
             self.assertIn(
                 PopoloPerson.objects.get(id=person['id']),
@@ -148,7 +148,7 @@ class MessageResourceTestCase(ResourceTestCase):
             'subject': 'new message',
             'content': 'the content thing',
             'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
-            'persons': [writeitinstance.persons.all()[0].popit_url],
+            'persons': [writeitinstance.persons.all()[0].old_popit_url],
         }
 
         url = '/api/v1/message/'
@@ -179,7 +179,7 @@ class MessageResourceTestCase(ResourceTestCase):
             'subject': 'new message',
             'content': 'the content thing',
             'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
-            'persons': [person1.popit_url],
+            'persons': [person1.old_popit_url],
         }
 
         url = '/api/v1/message/'
@@ -194,7 +194,7 @@ class MessageResourceTestCase(ResourceTestCase):
             'content': 'the content thing',
             'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
             'persons': [
-                writeitinstance.persons.all()[0].popit_url,
+                writeitinstance.persons.all()[0].old_popit_url,
                 'http://this.person.does.not.exist',
                 ],
         }
@@ -213,7 +213,7 @@ class MessageResourceTestCase(ResourceTestCase):
             'subject': 'new message',
             'content': 'the content thing',
             'writeitinstance': '/api/v1/instance/{0}/'.format(writeitinstance.id),
-            'persons': [writeitinstance.persons.all()[0].popit_url],
+            'persons': [writeitinstance.persons.all()[0].old_popit_url],
         }
         url = '/api/v1/message/'
         self.api_client.post(url, data=message_data, format='json', authentication=self.get_credentials())
