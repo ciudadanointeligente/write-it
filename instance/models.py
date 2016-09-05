@@ -238,7 +238,7 @@ class WriteitInstancePopitInstanceRecord(models.Model):
 
     def __unicode__(self):
         return "The people from {url} were loaded into {instance}".format(
-            url=self.popitapiinstance.url,
+            url=self.popolo_source.url,
             instance=self.writeitinstance.__unicode__(),
             )
 
