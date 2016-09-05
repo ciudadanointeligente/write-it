@@ -2,7 +2,7 @@ from global_test_case import GlobalTestCase as TestCase
 from instance.models import WriteItInstance
 from ..models import Subscriber, Message, \
     Confirmation, Answer, NewAnswerNotificationTemplate
-from popit.models import Person
+from popolo.models import Person
 from django.contrib.auth.models import User
 from django.core import mail
 from django.conf import settings

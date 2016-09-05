@@ -20,7 +20,7 @@ from django.forms import (
 
 from django.utils.translation import ugettext as _
 
-from popit.models import Person
+from popolo.models import Person
 
 from instance.models import (
     WriteItInstance,

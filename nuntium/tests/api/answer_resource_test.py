@@ -3,7 +3,7 @@ from django.core.management import call_command
 from instance.models import WriteItInstance
 from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
-from popit.models import Person
+from popolo.models import Person
 from ...api import AnswerResource
 from django.http import HttpRequest
 from ...models import Answer, Message

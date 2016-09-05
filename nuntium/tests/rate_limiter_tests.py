@@ -5,7 +5,7 @@ from instance.models import WriteItInstance
 from ..models import RateLimiter, Message
 from datetime import date
 from django.core.exceptions import ValidationError
-from popit.models import Person
+from popolo.models import Person
 from django.utils.translation import ugettext as _
 
 

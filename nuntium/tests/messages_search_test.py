@@ -12,7 +12,7 @@ from subdomains.utils import reverse
 from instance.models import WriteItInstance
 from ..views import MessageSearchView, PerInstanceSearchView
 from haystack.views import SearchView
-from popit.models import Person
+from popolo.models import Person
 import urllib
 import urlparse
 
