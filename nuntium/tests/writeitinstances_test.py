@@ -11,7 +11,6 @@ from django.utils.translation import activate
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from mock import patch
-from nuntium.popit_api_instance import PopitApiInstance
 from requests.exceptions import ConnectionError
 from contactos.models import Contact, ContactType
 

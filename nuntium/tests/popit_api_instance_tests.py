@@ -7,7 +7,6 @@ from instance.models import WriteItInstance
 from contactos.models import Contact, ContactType
 from django.conf import settings
 from django.contrib.auth.models import User
-from nuntium.popit_api_instance import is_current_membership
 
 
 class EmailCreationWhenPullingFromPopit(TestCase):
