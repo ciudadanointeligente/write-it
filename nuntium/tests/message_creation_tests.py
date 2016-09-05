@@ -24,7 +24,9 @@ class MessageCreationTestCase(TestCase):
             subdomain=self.writeitinstance.slug,
             kwargs={'step': 'draft'})
 
-        response = self.client.get(url, {'person_id': self.person1.popit_id})
+        person_id = self.person1.identifiers.get(scheme='popolo:person').identifier
+
+        response = self.client.get(url, {'person_id': person_id})
         self.assertRedirects(response, url2)
         response = self.client.get(url2)
         self.assertEquals(response.context['message']['persons'][0].id, self.person1.id)
