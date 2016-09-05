@@ -2,6 +2,8 @@ import datetime
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.core import mail
 from django.db import models
 from django.db.models.signals import post_save
@@ -10,11 +12,82 @@ from django.utils.translation import ugettext_lazy as _
 from annoying.fields import AutoOneToOneField
 from autoslug import AutoSlugField
 from nuntium.popit_api_instance import PopitApiInstance
-from popit.models import ApiInstance
-from popolo.models import Person as PopoloPerson
 from popolo_sources.models import PopoloSource
+from popolo.models import Person
 from requests.exceptions import ConnectionError
 from subdomains.utils import reverse
+
+
+class PopoloPerson(Person):
+    class Meta:
+        proxy = True
+
+    objects = PopoloPersonQuerySet.as_manager()
+
+    links_to_popolo_sources = GenericRelation(
+        LinkToPopoloSource,
+        related_query_name='people')
+
+    @property
+    def popolo_source(self):
+        ct = ContentType.objects.get_for_model(Person)
+        link = LinkToPopoloSource.objects.get(
+            content_type=ct, object_id=self.id)
+        return link.popolo_source
+
+    @property
+    def popolo_source_url(self):
+        return self.popolo_source.url
+
+    # Note that these methods use the slightly odd implementation
+    # of iterating over the relation rather than using .filter or .get
+    # because if they're preloaded with prefetch_related those methods
+    # will incur an extra query - .all will not.
+
+    @property
+    def id_in_popolo_source(self):
+        for i in self.identifiers.all():
+            if i.scheme == 'popolo:person':
+                return i.identifier
+
+    @property
+    def old_popit_url(self):
+        # We shouldn't be relying on this any more, but are still
+        # passing it in webhook payloads, so this property gives it an easy
+        for i in self.identifiers.all():
+            if i.scheme == 'popit_url':
+                return i.identifier
+
+    @property
+    def old_popit_id(self):
+        # We shouldn't be relying on this any more either, but it's
+        # used in tests and checks that old behaviour still works.
+        for i in self.identifiers.all():
+            if i.scheme == 'popit_id':
+                return i.identifier
+
+    def uri_for_api(self):
+        """Return the URL the tastypie API uses to refer to this person"""
+
+        old_url = None
+        new_url = None
+        for i in self.identifiers.all():
+            # If the old identifier exists, use this so that the IDs
+            # used in the API don't change.
+            if i.scheme == 'popit_url':
+                assert old_url is None
+                old_url = i.identifier
+            # For more recently created Person objects, popolo_uri is
+            # the best single identifier to use in the API:
+            elif i.scheme == 'popolo_uri':
+                assert new_url is None
+                new_url = i.identifier
+        if old_url:
+            return old_url
+        if new_url:
+            return new_url
+        msg = "Could find no global identifier for PopoloPerson with ID {0}"
+        raise PopoloIdentifier.DoesNotExist(msg.format(self.pk))
 
 
 class WriteItInstance(models.Model):
