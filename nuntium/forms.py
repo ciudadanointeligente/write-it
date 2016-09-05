@@ -174,7 +174,7 @@ class WriteItInstanceCreateFormPopitUrl(ModelForm, PopitParsingFormMixin):
     def relate_with_people(self):
         if self.cleaned_data['popit_url']:
             popit_url = self.cleaned_data['popit_url']
-            self.instance.load_persons_from_a_popit_api(
+            self.instance.load_persons_from_popolo_json(
                 popit_url
                 )
 
