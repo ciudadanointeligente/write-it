@@ -18,7 +18,7 @@
               &nbsp;&nbsp;&nbsp;&nbsp;'writeitinstance': '/api/v1/instance/{{ writeitinstance.id }}/', <br>
               &nbsp;&nbsp;&nbsp;&nbsp;'persons': [<br>
               {% for person in writeitinstance.persons.all %}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'{{ person.popit_url }}'{% if not forloop.last %},{% endif %}</code> ## For {{ person }}<br><code>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'{{ person.uri_for_api }}'{% if not forloop.last %},{% endif %}</code> ## For {{ person }}<br><code>
               {% endfor %}
               &nbsp;&nbsp;&nbsp;&nbsp;], <br>
               &nbsp;&nbsp;&nbsp;&nbsp;'author_name': '{% trans "Name of sender" %}', <br>
