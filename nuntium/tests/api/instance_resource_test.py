@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.core.management import call_command
 from instance.models import WriteItInstance, PopoloPerson
+from popolo_sources.models import PopoloSource
 from ...models import Message, Confirmation
 from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
@@ -217,14 +218,17 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
         self.assertEquals(len(messages), 1)
         self.assertEquals(messages[0]['id'], self.message1.id)
 
-    def test_create_a_message_with_a_person_that_is_in_2_api_instances(self):
-        api = PopitApiInstance.objects.create(id=3,
-                                              url="https://popit.org/api/v1")
-        p = PopoloPerson.objects.create(api_instance=api,
-                                  name="Otro",
-                                  popit_url="https://popit.org/api/v1/persons/1",
-                                  popit_id="52bc7asdasd34567"
-                                  )
+    def test_create_a_message_with_a_person_that_is_in_2_popolo_sources(self):
+        popolo_source = PopoloSource.objects.create(
+            id=3,
+            url="https://popit.org/api/v1"
+        )
+        p = PopoloPerson.objects.create(
+            name="Otro",
+            popit_url="https://popit.org/api/v1/persons/1",
+            popit_id="52bc7asdasd34567"
+        )
+        popolo_source.persons.add(p)
         url = '/api/v1/instance/%(writeitinstance_id)i/messages/' % {
             'writeitinstance_id': self.writeitinstance.id,
         }
