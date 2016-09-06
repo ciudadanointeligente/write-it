@@ -249,6 +249,23 @@ h1, h2, h3, h4, h5 {
     padding: 0 0.5em;
 }
 
+.navbar .write-link:before {
+    content: "";
+    display: inline-block;
+    width: 32px;
+    height: 24px;
+    vertical-align: -0.4em;
+    margin-left: 1em;
+    background: transparent url(../images/afghanistan/logo.png) 0 0 no-repeat;
+    background-size: 32px 24px;
+}
+
+@media(-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
+    .navbar .write-link:before {
+        background-image: url(../images/afghanistan/logo@2x.png);
+    }
+}
+
 .navbar ul {
     float: left;
     margin: 0;
