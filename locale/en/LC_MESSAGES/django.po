@@ -1788,3 +1788,7 @@ msgstr ""
 #: writeit/templates/subdomains/afghanistan/write/draft.html:47
 msgid "Your email <small>Nobody will see this, ever.</small>"
 msgstr ""
+
+#: writeit/templates/subdomains/afghanistan/write/sign.html:34
+msgid "Go to home page"
+msgstr ""
