@@ -46,7 +46,11 @@
       <div class="navbar navbar-default navbar-static-top navbar-inverse" role="navigation">
         <div class="container">
           <div class="navbar-header">
-            <a class="navbar-brand" href="/">
+            {% if writeitinstance %}
+              <a class="navbar-brand" href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">
+            {% else %}
+              <a class="navbar-brand" href="{% url 'home' %}">
+            {% endif %}
             {% if writeitinstance.name %}
               {{ writeitinstance.name }}
             {% elif WEB_BASED %}

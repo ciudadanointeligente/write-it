@@ -1,6 +1,7 @@
 {% extends "base_instance.html" %}
 {% load i18n %}
 {% load static %}
+{% load subdomainurls %}
 
 {% block promo %}
 {% endblock %}
@@ -30,7 +31,7 @@
 
 
   <div class="button-centring-container">
-    <a class="button filled" href="/">Go to home page</a>
+    <a class="button filled" href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{% trans 'Go to home page' %}</a>
   </div>
 
   </main>
