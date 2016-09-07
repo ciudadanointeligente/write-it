@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-19 07:41-0500\n"
+"POT-Creation-Date: 2016-09-07 06:28-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,49 +31,49 @@ msgstr ""
 msgid "The contact contact point for Pedro has bounced"
 msgstr ""
 
-#: instance/models.py:41 instance/models.py:71
+#: instance/models.py:45 instance/models.py:75
 #: nuntium/tests/popit_writeit_relation_tests.py:223
 #: nuntium/user_section/tests/popit_instance_update_tests.py:192
 msgid "We could not connect with the URL"
 msgstr ""
 
-#: instance/models.py:142
+#: instance/models.py:146
 msgid "Not doing anything now"
 msgstr ""
 
-#: instance/models.py:143
+#: instance/models.py:147
 msgid "Error"
 msgstr ""
 
-#: instance/models.py:144
+#: instance/models.py:148
 msgid "Success"
 msgstr ""
 
-#: instance/models.py:145
+#: instance/models.py:149
 msgid "Waiting"
 msgstr ""
 
-#: instance/models.py:146
+#: instance/models.py:150
 msgid "In Progress"
 msgstr ""
 
-#: instance/models.py:180
+#: instance/models.py:184
 msgid "Every message is going to         have a moderation mail"
 msgstr ""
 
-#: instance/models.py:183
+#: instance/models.py:187
 msgid "Allow the creation of new messages         using the web"
 msgstr ""
 
-#: instance/models.py:187
+#: instance/models.py:191
 msgid "The owner of this instance         should be notified         when a new answer comes in"
 msgstr ""
 
-#: instance/models.py:191
+#: instance/models.py:195
 msgid "Messages pushed to the api should             be confirmed automatically"
 msgstr ""
 
-#: instance/models.py:194
+#: instance/models.py:198
 msgid "Messages can have empty Author             names"
 msgstr ""
 
@@ -97,11 +97,11 @@ msgstr[1] ""
 msgid "Author name is required"
 msgstr ""
 
-#: nuntium/forms.py:174 nuntium/user_section/forms.py:271
+#: nuntium/forms.py:174 nuntium/user_section/forms.py:281
 msgid "Popolo URL"
 msgstr ""
 
-#: nuntium/forms.py:175 nuntium/user_section/forms.py:272
+#: nuntium/forms.py:175 nuntium/user_section/forms.py:282
 msgid "Example: https://cdn.rawgit.com/everypolitician/everypolitician-data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"
 msgstr ""
 
@@ -110,7 +110,7 @@ msgstr ""
 msgid "The message \"%(subject)s\" at %(instance)s turned %(status)s at %(date)s"
 msgstr ""
 
-#: nuntium/models.py:146 nuntium/tests/message_form_tests.py:236
+#: nuntium/models.py:142 nuntium/tests/message_form_tests.py:236
 #: nuntium/tests/rate_limiter_tests.py:148
 msgid "You have reached your limit for today please try again tomorrow"
 msgstr ""
@@ -123,60 +123,67 @@ msgstr ""
 msgid "A message needs persons to be sent"
 msgstr ""
 
-#: nuntium/models.py:303 nuntium/tests/moderation_messages_test.py:208
+#: nuntium/models.py:261 nuntium/tests/moderation_messages_test.py:139
 msgid "The message needs to be confirmated first"
 msgstr ""
 
-#: nuntium/models.py:309 nuntium/tests/messages_test.py:317
+#: nuntium/models.py:265
+#: nuntium/user_section/tests/manually_create_answers_tests.py:422
+#: nuntium/user_section/tests/manually_create_answers_tests.py:449
+#: nuntium/user_section/views.py:433 nuntium/user_section/views.py:476
+msgid "Cannot moderate an already moderated message"
+msgstr ""
+
+#: nuntium/models.py:280 nuntium/tests/messages_test.py:317
 #, python-format
 msgid "%(subject)s at %(instance)s"
 msgstr ""
 
-#: nuntium/models.py:334
+#: nuntium/models.py:305
 msgid "This guy does not belong here"
 msgstr ""
 
-#: nuntium/models.py:338 nuntium/tests/answers_test.py:31
+#: nuntium/models.py:309 nuntium/tests/answers_test.py:31
 #, python-format
 msgid "%(person)s said \"%(content)s\" to the message %(message)s"
 msgstr ""
 
-#: nuntium/models.py:425 nuntium/tests/outbound_message_test.py:100
+#: nuntium/models.py:396 nuntium/tests/outbound_message_test.py:100
 msgid "Newly created"
 msgstr ""
 
-#: nuntium/models.py:426 nuntium/tests/outbound_message_test.py:101
+#: nuntium/models.py:397 nuntium/tests/outbound_message_test.py:101
 msgid "Ready to send"
 msgstr ""
 
-#: nuntium/models.py:427 nuntium/tests/outbound_message_test.py:102
+#: nuntium/models.py:398 nuntium/tests/outbound_message_test.py:102
 msgid "Sent"
 msgstr ""
 
-#: nuntium/models.py:428 nuntium/tests/outbound_message_test.py:103
+#: nuntium/models.py:399 nuntium/tests/outbound_message_test.py:103
 msgid "Error sending it"
 msgstr ""
 
-#: nuntium/models.py:429 nuntium/tests/outbound_message_test.py:104
+#: nuntium/models.py:400 nuntium/tests/outbound_message_test.py:104
 msgid "Needs moderation"
 msgstr ""
 
-#: nuntium/models.py:491 nuntium/tests/outbound_message_test.py:41
+#: nuntium/models.py:462 nuntium/tests/outbound_message_test.py:41
 #, python-format
 msgid "%(subject)s sent to %(person)s (%(contact)s) at %(instance)s"
 msgstr ""
 
-#: nuntium/models.py:594 nuntium/models.py:598 nuntium/models.py:603
+#: nuntium/models.py:565 nuntium/models.py:569 nuntium/models.py:574
 #, python-brace-format
 msgid "You can use {author_name}, {site_name}, {subject}, {content}, {recipients}, {confirmation_url}, and {message_url}"
 msgstr ""
 
-#: nuntium/models.py:754 nuntium/models.py:758 nuntium/models.py:763
+#: nuntium/models.py:725 nuntium/models.py:729 nuntium/models.py:734
 #, python-brace-format
 msgid "You can use {author_name}, {person}, {subject}, {content}, {message_url}, and {site_name}"
 msgstr ""
 
-#: nuntium/models.py:767
+#: nuntium/models.py:738
 #, python-format
 msgid "Notification template for %s"
 msgstr ""
@@ -244,7 +251,7 @@ msgstr ""
 
 #: nuntium/templates/base_instance.html:99 nuntium/templates/write/who.html:47
 #: writeit/templates/subdomains/afghanistan/base_instance.html:37
-#: writeit/templates/subdomains/afghanistan/write/who.html:57
+#: writeit/templates/subdomains/afghanistan/write/who.html:63
 msgid "You can’t currently create new messages using this site."
 msgstr ""
 
@@ -337,7 +344,7 @@ msgid "Write to the people who represent you.<br />In public.<br /><br />Get ans
 msgstr ""
 
 #: nuntium/templates/nuntium/instance_detail.html:28
-#: writeit/templates/subdomains/afghanistan/index.html:83
+#: writeit/templates/subdomains/afghanistan/index.html:82
 #: writeit/templates/subdomains/afghanistan/nuntium/instance_detail.html:11
 #: writeit/templates/subdomains/infoszab/nuntium/instance_detail.html:24
 msgid "Recent messages"
@@ -476,6 +483,7 @@ msgstr ""
 
 #: nuntium/templates/nuntium/profiles/contacts/contacts-per-writeitinstance.html:39
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:24
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:24
 #: nuntium/templates/nuntium/writeitinstance_api_docs.html:8
 msgid "Settings"
 msgstr ""
@@ -534,21 +542,25 @@ msgstr ""
 msgid "Messages"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/manager-navigation.html:22
-msgid "Data sources"
+#: nuntium/templates/nuntium/profiles/manager-navigation.html:21
+msgid "Moderation Queue"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:26
+msgid "Data sources"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/manager-navigation.html:30
 #: nuntium/templates/nuntium/profiles/templates.html:25
 msgid "Templates"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/manager-navigation.html:31
+#: nuntium/templates/nuntium/profiles/manager-navigation.html:35
 #: nuntium/templates/nuntium/writeitinstance_api_docs.html:7
 msgid "API"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/manager-navigation.html:36
+#: nuntium/templates/nuntium/profiles/manager-navigation.html:40
 msgid "Stats"
 msgstr ""
 
@@ -573,7 +585,7 @@ msgstr ""
 msgid "Moderated"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:36
+#: nuntium/templates/nuntium/profiles/message_detail.html:37
 msgid "This message has not yet been moderated — click here to accept it"
 msgstr ""
 
@@ -581,42 +593,51 @@ msgstr ""
 msgid "Accept"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:44
+#: nuntium/templates/nuntium/profiles/message_detail.html:39
+msgid "This message has not yet been moderated — click here to reject it"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/message_detail.html:39
+msgid "Reject"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/message_detail.html:46
 msgid "Link"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:45
+#: nuntium/templates/nuntium/profiles/message_detail.html:47
 msgid "Public page"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:47
+#: nuntium/templates/nuntium/profiles/message_detail.html:49
 msgid "Creation Date"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:49
-#: nuntium/templates/nuntium/profiles/message_detail.html:65
+#: nuntium/templates/nuntium/profiles/message_detail.html:51
+#: nuntium/templates/nuntium/profiles/message_detail.html:67
 msgid "Content"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:55
+#: nuntium/templates/nuntium/profiles/message_detail.html:57
 msgid "Create a reply"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:64
+#: nuntium/templates/nuntium/profiles/message_detail.html:66
 msgid "Person"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:66
+#: nuntium/templates/nuntium/profiles/message_detail.html:68
 #: nuntium/templates/thread/read.html:49
 #: writeit/templates/subdomains/afghanistan/thread/read.html:44
 msgid "Actions"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:72
+#: nuntium/templates/nuntium/profiles/message_detail.html:74
 msgid "Edit reply"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:27
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:27
 #, python-format
 msgid ""
 "\n"
@@ -630,18 +651,22 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:38
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:38
 msgid "Message"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:39
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:39
 msgid "Thread"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:40
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:40
 msgid "Replies"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:41
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:41
 msgid "Public?"
 msgstr ""
 
@@ -650,6 +675,7 @@ msgid "Confirmed?"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:44
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:42
 msgid "Moderated?"
 msgstr ""
 
@@ -658,10 +684,12 @@ msgid "Make private/public"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:53
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:49
 msgid "Link to message admin"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:56
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:52
 #, python-format
 msgid ""
 "\n"
@@ -670,20 +698,24 @@ msgid ""
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:65
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:61
 msgid "Link to public message"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:73
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:69
 #: nuntium/templates/nuntium/profiles/webhooks.html:68
 #: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:84
 msgid "Add"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:79
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:75
 msgid "This message can be seen by everyone"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:83
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:79
 msgid "This message can't be seen by anyone"
 msgstr ""
 
@@ -696,10 +728,12 @@ msgid "The author has not yet confirmed their email address"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:104
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:87
 msgid "This message has been accepted"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:108
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:91
 msgid "This message has not yet been moderated"
 msgstr ""
 
@@ -716,19 +750,31 @@ msgid "You have no messages"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:142
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:108
 msgid "Delete this message?"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:145
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:111
 msgid "Are you sure you want to delete this message? This can't be undone."
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:148
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:114
 msgid "No, keep it"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:149
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:115
 msgid "Yes, delete it"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:23
+msgid "Messages awaiting moderation"
+msgstr ""
+
+#: nuntium/templates/nuntium/profiles/moderation_queue.html:97
+msgid "No messages awaiting moderation"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/profile-navigation.html:7
@@ -771,7 +817,7 @@ msgstr ""
 #: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:33
 #: nuntium/templates/nuntium/writeitinstance_autoconfirm_form.html:36
 #: nuntium/templates/nuntium/writeitinstance_max_recipients_form.html:41
-#: nuntium/templates/nuntium/writeitinstance_moderation_form.html:33
+#: nuntium/templates/nuntium/writeitinstance_moderation_form.html:34
 #: nuntium/templates/nuntium/writeitinstance_ratelimiter_form.html:35
 #: nuntium/templates/nuntium/writeitinstance_update_form.html:41
 #: nuntium/templates/nuntium/writeitinstance_web_based_form.html:30
@@ -1316,7 +1362,7 @@ msgstr ""
 #: nuntium/templates/registration/login.html:23
 #: nuntium/templates/registration/signup.html:20
 #: nuntium/templates/write/who.html:46
-#: writeit/templates/subdomains/afghanistan/write/who.html:56
+#: writeit/templates/subdomains/afghanistan/write/who.html:62
 msgid "Sorry"
 msgstr ""
 
@@ -1573,7 +1619,7 @@ msgstr ""
 #: nuntium/templates/write/breadcrumb.html:7
 #: nuntium/templates/write/breadcrumb.html:16
 #: nuntium/templates/write/breadcrumb.html:24
-#: writeit/templates/subdomains/afghanistan/write/who.html:34
+#: writeit/templates/subdomains/afghanistan/write/who.html:35
 msgid "Select recipient"
 msgid_plural "Select recipients"
 msgstr[0] ""
@@ -1583,7 +1629,7 @@ msgstr[1] ""
 #: nuntium/templates/write/breadcrumb.html:35
 #: nuntium/templates/write/breadcrumb.html:37
 #: nuntium/templates/write/who.html:41
-#: writeit/templates/subdomains/afghanistan/write/who.html:50
+#: writeit/templates/subdomains/afghanistan/write/who.html:56
 msgid "Draft message"
 msgstr ""
 
@@ -1591,7 +1637,8 @@ msgstr ""
 #: nuntium/templates/write/breadcrumb.html:43
 #: nuntium/templates/write/breadcrumb.html:45
 #: nuntium/templates/write/draft.html:61
-#: writeit/templates/subdomains/afghanistan/write/draft.html:66
+#: writeit/templates/subdomains/afghanistan/write/draft.html:63
+#: writeit/templates/subdomains/afghanistan/write/preview.html:16
 #: writeit/templates/subdomains/infoszab/write/draft.html:61
 msgid "Preview message"
 msgstr ""
@@ -1606,46 +1653,40 @@ msgstr ""
 
 #: nuntium/templates/write/breadcrumb.html:53
 #: nuntium/templates/write/preview.html:22
-#: writeit/templates/subdomains/afghanistan/base_instance.html:68
-#: writeit/templates/subdomains/afghanistan/index.html:75
+#: writeit/templates/subdomains/afghanistan/base_instance.html:67
+#: writeit/templates/subdomains/afghanistan/index.html:74
 #: writeit/templates/subdomains/afghanistan/write/preview.html:28
 msgid "Send message"
 msgstr ""
 
 #: nuntium/templates/write/draft.html:23
-#: writeit/templates/subdomains/afghanistan/write/draft.html:28
 #: writeit/templates/subdomains/infoszab/write/draft.html:23
 msgid "Your message"
 msgstr ""
 
 #: nuntium/templates/write/draft.html:24 nuntium/templates/write/draft.html:35
-#: writeit/templates/subdomains/afghanistan/write/draft.html:29
-#: writeit/templates/subdomains/afghanistan/write/draft.html:40
 #: writeit/templates/subdomains/infoszab/write/draft.html:24
 #: writeit/templates/subdomains/infoszab/write/draft.html:35
 msgid "This will be published, on this site."
 msgstr ""
 
 #: nuntium/templates/write/draft.html:34
-#: writeit/templates/subdomains/afghanistan/write/draft.html:39
 #: writeit/templates/subdomains/infoszab/write/draft.html:34
 msgid "Your name"
 msgstr ""
 
 #: nuntium/templates/write/draft.html:44
-#: writeit/templates/subdomains/afghanistan/write/draft.html:49
 #: writeit/templates/subdomains/infoszab/write/draft.html:44
 msgid "Your email"
 msgstr ""
 
 #: nuntium/templates/write/draft.html:45
-#: writeit/templates/subdomains/afghanistan/write/draft.html:50
 #: writeit/templates/subdomains/infoszab/write/draft.html:45
 msgid "Nobody will see this, ever."
 msgstr ""
 
 #: nuntium/templates/write/draft.html:55
-#: writeit/templates/subdomains/afghanistan/write/draft.html:60
+#: writeit/templates/subdomains/afghanistan/write/draft.html:57
 #: writeit/templates/subdomains/infoszab/write/draft.html:55
 msgid ""
 "\n"
@@ -1674,18 +1715,18 @@ msgid "Edit message"
 msgstr ""
 
 #: nuntium/templates/write/sign.html:13
-#: writeit/templates/subdomains/afghanistan/write/sign.html:18
+#: writeit/templates/subdomains/afghanistan/write/sign.html:19
 msgid "Please confirm your email address"
 msgstr ""
 
 #: nuntium/templates/write/sign.html:16
-#: writeit/templates/subdomains/afghanistan/write/sign.html:21
+#: writeit/templates/subdomains/afghanistan/write/sign.html:22
 #, python-format
 msgid "We have sent a confirmation link to %(email)s"
 msgstr ""
 
 #: nuntium/templates/write/sign.html:21
-#: writeit/templates/subdomains/afghanistan/write/sign.html:26
+#: writeit/templates/subdomains/afghanistan/write/sign.html:27
 msgid "We have emailed you a confirmation link. Please click it."
 msgstr ""
 
@@ -1695,7 +1736,7 @@ msgid "No recipients match"
 msgstr ""
 
 #: nuntium/templates/write/who.html:29
-#: writeit/templates/subdomains/afghanistan/write/who.html:38
+#: writeit/templates/subdomains/afghanistan/write/who.html:44
 #, python-format
 msgid ""
 "\n"
@@ -1725,41 +1766,41 @@ msgstr ""
 msgid "Write to the people who represent you."
 msgstr ""
 
-#: nuntium/user_section/forms.py:178
+#: nuntium/user_section/forms.py:188
 msgid "WriteIt Instance not present"
 msgstr ""
 
-#: nuntium/user_section/forms.py:203
+#: nuntium/user_section/forms.py:213
 msgid "The subdomain your site will run at"
 msgstr ""
 
-#: nuntium/user_section/forms.py:204
+#: nuntium/user_section/forms.py:214
 msgid "Choose wisely; this can't be changed."
 msgstr ""
 
-#: nuntium/user_section/forms.py:230
+#: nuntium/user_section/forms.py:240
 msgid "This subdomain has already been taken."
 msgstr ""
 
-#: nuntium/user_section/forms.py:289
+#: nuntium/user_section/forms.py:299
 msgid "You have already added this source. But we will fetch the data from it again now."
 msgstr ""
 
-#: nuntium/user_section/views.py:411
+#: nuntium/user_section/views.py:412
 #, python-format
 msgid "The message \"%(message)s\" has been accepted"
 msgstr ""
 
-#: nuntium/user_section/views.py:434
+#: nuntium/user_section/views.py:437
 #, python-format
 msgid "The message \"%(message)s\" has been rejected"
 msgstr ""
 
-#: nuntium/user_section/views.py:600
+#: nuntium/user_section/views.py:619
 msgid "This message has been marked as public"
 msgstr ""
 
-#: nuntium/user_section/views.py:602
+#: nuntium/user_section/views.py:621
 msgid "This message has been marked as private"
 msgstr ""
 
@@ -1787,4 +1828,8 @@ msgstr ""
 
 #: writeit/templates/subdomains/afghanistan/write/draft.html:47
 msgid "Your email <small>Nobody will see this, ever.</small>"
+msgstr ""
+
+#: writeit/templates/subdomains/afghanistan/write/sign.html:34
+msgid "Go to home page"
 msgstr ""
