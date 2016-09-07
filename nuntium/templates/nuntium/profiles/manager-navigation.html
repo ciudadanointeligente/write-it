@@ -17,6 +17,10 @@
       {% trans "Messages" %}
       <span class="badge">{{ writeitinstance.message_set.count }}</span>
     </a></li>
+    <li class="{% if section == 'messages_moderation' %}active{% endif %}"><a href="{% url 'writeitinstance_moderation_queue' subdomain=writeitinstance.slug %}">
+      {% trans "Moderation Queue" %}
+      <span class="badge">{{ writeitinstance.messages_awaiting_moderation.count }}</span>
+    </a></li>
     <li class="{% if section == 'relate-writeit-popit' %}active{% endif %}"><a href="{% url 'relate-writeit-popit' subdomain=writeitinstance.slug %}">
       <i class="fa fa-database"></i> 
       {% trans "Data sources" %}

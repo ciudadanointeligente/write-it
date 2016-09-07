@@ -4,6 +4,7 @@ from instance.models import WriteItInstance
 from ..models import Message, Moderation
 from popit.models import Person
 from django.core import mail
+from django.utils.unittest import skip
 
 
 class AllMessagesWithModerationInAWriteItInstances(TestCase):
@@ -43,7 +44,4 @@ class AllMessagesWithModerationInAWriteItInstances(TestCase):
         self.message.recently_confirmated()
 
         self.assertFalse(self.message.moderation is None)
-        self.assertEquals(len(mail.outbox), 1)
-        # the second should be the confirmation thing
-        # just to make sure
-        self.assertModerationMailSent(self.message, mail.outbox[0])
+        self.assertEquals(len(mail.outbox), 0)

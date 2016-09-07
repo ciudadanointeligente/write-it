@@ -33,8 +33,10 @@
         {% if message.moderated %}
           <dd><i class="fa fa-check"></i></dd>
         {% else %}
-          <dd class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not yet been moderated — click here to accept it' %}">
-             <form action="{% url 'accept_message' pk=message.pk %}" method="post">{% csrf_token %} <button class="btn btn-default btn-sm moderate">{% trans "Accept"%}</button>
+          <dd>
+             <form  class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not yet been moderated — click here to accept it' %}" action="{% url 'accept_message' pk=message.pk %}" method="post">{% csrf_token %} <button class="btn btn-default btn-sm moderate">{% trans "Accept"%}</button>
+             </form>
+             <form  class="explanation"  data-toggle="tooltip" data-placement="right" title="{% trans 'This message has not yet been moderated — click here to reject it' %}" action="{% url 'reject_message' pk=message.pk %}" method="post">{% csrf_token %} <button class="btn btn-default btn-sm moderate">{% trans "Reject"%}</button>
              </form>
           </dd>
         {% endif %}

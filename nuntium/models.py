@@ -96,12 +96,8 @@ class PublicMessagesManager(MessagesManager):
 class NonModeratedMessagesManager(MessagesManager):
     def get_queryset(self):
         queryset = super(NonModeratedMessagesManager, self).get_queryset()
-        return queryset.filter(Q(public=True), Q(confirmated=True))\
-            .exclude(Q(moderated=True) | Q(moderated=None))
-
-
-moderation_subject = read_template_as_string('templates/nuntium/mails/moderation_subject.txt').strip()
-moderation_content_txt = read_template_as_string('templates/nuntium/mails/moderation_mail.txt')
+        return queryset.filter(Q(confirmated=True))\
+            .exclude(moderated=True)
 
 
 class Message(models.Model):
@@ -152,11 +148,15 @@ class Message(models.Model):
     #TODO: only new outbound_messages
     def recently_confirmated(self):
         status = 'ready'
-        if not self.public or \
+        # unless moderation is turned on mark messages as moderated to
+        # save us pain later on if someone turns on moderation.
+        if self.public and not \
                 self.writeitinstance.config.moderation_needed_in_all_messages:
+            self.moderated = True
+        else:
             moderation, created = Moderation.objects.get_or_create(message=self)
-            self.send_moderation_mail()
             status = 'needmodera'
+
         for outbound_message in self.outbound_messages:
             outbound_message.status = status
             outbound_message.save()
@@ -256,53 +256,13 @@ class Message(models.Model):
             outbound_message.status = 'ready'
             outbound_message.save()
 
-    def send_moderation_mail(self):
-        url_reject = reverse('moderation_rejected',
-            subdomain=self.writeitinstance.slug,
-            kwargs={
-                'slug': self.moderation.key
-            })
-
-        url_accept = reverse('moderation_accept',
-            subdomain=self.writeitinstance.slug,
-            kwargs={
-                'slug': self.moderation.key
-            })
-
-        context = {
-            'owner_name': self.writeitinstance.owner.username,
-            'author_name': self.author_name_for_display,
-            'author_email': self.author_email,
-            'recipients': u', '.join([x.name for x in self.people]),
-            'subject': self.subject,
-            'content': self.content,
-            'site_name': self.writeitinstance.name,
-            'url_reject': url_reject,
-            'url_accept': url_accept,
-            }
-
-        if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
-            from_email = settings.DEFAULT_FROM_EMAIL
-        else:
-            from_domain = self.writeitinstance.config.custom_from_domain\
-                or settings.DEFAULT_FROM_DOMAIN
-            from_email = self.writeitinstance.slug + "@" + from_domain
-
-        connection = self.writeitinstance.config.get_mail_connection()
-        msg = EmailMultiAlternatives(
-            moderation_subject.format(**context),
-            template_with_wrap(moderation_content_txt, context),
-            from_email,
-            [self.writeitinstance.owner.email],
-            connection=connection,
-            )
-        msg.send()
-
     def moderate(self):
         if not self.confirmated:
             raise ValidationError(_('The message needs '
                 + 'to be confirmated first'))
         self.set_to_ready()
+        if self.moderated:
+            raise ValidationError(_('Cannot moderate an already moderated message'))
         # if we turn on moderation after some messages have been created then
         # they will not have associated Moderation objects so we need to catch
         # that, create the moderation object and then try again.

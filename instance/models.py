@@ -30,6 +30,10 @@ class WriteItInstance(models.Model):
         Membership.objects.get_or_create(writeitinstance=self, person=person)
 
     @property
+    def messages_awaiting_moderation(self):
+        return self.message_set(manager='moderation_required_objects')
+
+    @property
     def persons_with_contacts(self):
         return self.persons.filter(contact__writeitinstance=self, contact__isnull=False).distinct()
 

@@ -78,6 +78,13 @@ label {
     }
 }
 
+form {
+    &.explanation {
+        display: inline-block;
+        margin-right: 0.5em;
+    }
+}
+
 .page-header {
     h2 {
         font-weight: bold;

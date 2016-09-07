@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, CreateView, DetailView, View, ListView, RedirectView
 from django.views.generic.edit import UpdateView, DeleteView, FormView
+from django.core.exceptions import ValidationError
 
 from mailit.forms import MailitTemplateForm
 
@@ -428,6 +429,8 @@ class RejectMessageView(RedirectView):
             writeitinstance__slug=self.request.subdomain,
             writeitinstance__owner=self.request.user
             )
+        if message.moderated:
+            raise ValidationError(_('Cannot moderate an already moderated message'))
         message.public = False
         message.moderated = True
         message.save()
@@ -469,6 +472,8 @@ class RejectModerationView(ModerationView):
 
     def get(self, *args, **kwargs):
         get = super(RejectModerationView, self).get(*args, **kwargs)
+        if self.object.message.moderated:
+            raise ValidationError(_('Cannot moderate an already moderated message'))
         self.object.message.public = False
         # It is turned True to avoid users to
         # mistakenly moderate this message
@@ -476,6 +481,20 @@ class RejectModerationView(ModerationView):
         self.object.message.moderated = True
         self.object.message.save()
         return get
+
+
+class ModerationQueue(LoginRequiredMixin, ListView):
+    model = Message
+    template_name = 'nuntium/profiles/moderation_queue.html'
+
+    def get_queryset(self):
+        self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.request.subdomain, owner=self.request.user)
+        return Message.moderation_required_objects.filter(writeitinstance=self.writeitinstance)
+
+    def get_context_data(self, **kwargs):
+        context = super(ModerationQueue, self).get_context_data(**kwargs)
+        context['writeitinstance'] = self.writeitinstance
+        return context
 
 
 class WriteitPopitRelatingView(FormView):
