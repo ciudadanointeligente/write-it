@@ -1829,3 +1829,7 @@ msgstr " .نام نویسنده؛ این نام در وبسایت منتشر خ�
 #: writeit/templates/subdomains/afghanistan/write/draft.html:47
 msgid "Your email <small>Nobody will see this, ever.</small>"
 msgstr " !ایمیل نویسنده؛ کسی این ایمیل را نخواهد دید. هرگز "
+
+#: writeit/templates/subdomains/afghanistan/write/sign.html:34
+msgid "Go to home page"
+msgstr ""
