@@ -158,10 +158,15 @@ class ModerationMessagesTestCase(TestCase):
 
         message.recently_confirmated()
 
-        with self.assertRaises(Moderation.DoesNotExist):
+        # Marking a message confirmed while moderation is off marks it
+        # as moderated; moderate() should never be called on a message
+        # that's marked as already moderated, but check that an
+        # exception is raised in the rare situations where it might.
+        with self.assertRaisesRegexp(
+                ValidationError,
+                'Cannot moderate an already moderated message'):
             message.moderate()
 
-        self.assertFalse(message.moderated)
         outbound_message_to_pedro = OutboundMessage.objects.get(message=message)
         self.assertEquals(outbound_message_to_pedro.status, 'ready')
 
