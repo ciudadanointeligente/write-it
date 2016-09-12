@@ -126,6 +126,19 @@
   }
 }
 
+.uncontactable-alert {
+  margin-bottom: 0;
+  margin-top: 1em;
+
+  p:last-child {
+    margin-top: 0.75em;
+  }
+
+  .or {
+    margin: 0 0.5em;
+  }
+}
+
 .writing-draft-recipients {
   background-color: #f3f3f3;
   color: #999;
