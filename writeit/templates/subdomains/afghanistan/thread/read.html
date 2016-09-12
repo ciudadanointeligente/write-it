@@ -30,15 +30,19 @@
   {% else %}
 
         <article class="view container">
-            <h1>{{ message.subject }}</h1>
+            {% if awaiting_moderation %}
+                {% trans "This message is awaiting moderation." %}
+            {% else %}
+                <h1>{{ message.subject }}</h1>
 
-            {% include "thread/message.html" with person_links=True message=message %}
+                {% include "thread/message.html" with person_links=True message=message %}
 
-            {% for answer in message.answers.all %}
-              {% include "thread/answer.html" with person_links=True answer=answer original=answer.message %}
-            {% empty %}
-              <p class="thread__messages__no-replies">{% trans "Future replies will be published here." %}</p>
-            {% endfor %}
+                {% for answer in message.answers.all %}
+                  {% include "thread/answer.html" with person_links=True answer=answer original=answer.message %}
+                {% empty %}
+                  <p class="thread__messages__no-replies">{% trans "Future replies will be published here." %}</p>
+                {% endfor %}
+            {% endif %}
 
         <div class="thread__actions">
           <h3 class="thead__actions__heading">{% trans "Actions" %}</h3>
