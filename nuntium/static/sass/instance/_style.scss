@@ -87,6 +87,14 @@ body, .site-footer {
       }
     }
   }
+
+  .chosen-choices {
+    .uncontactable {
+      color: $color-red-900;
+      background: $color-red-50;
+      border-color: mix($color-red-200, #ccc, 50%);
+    }
+  }
 }
 
 .thead__actions__heading,
