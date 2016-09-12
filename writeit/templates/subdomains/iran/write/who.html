@@ -3,18 +3,17 @@
 {% load static %}
 
 {% block extrascripts %}
+    <script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
     <script src="{% static 'js/chosen.jquery.min.js' %}"></script>
+    <script>
+    window.who = {
+        max_selected_options: {{ writeitinstance.config.maximum_recipients }},
+        no_results_text: '{% trans "No recipients match" %}',
+        rtl: true
+    }
+    </script>
+    <script src="{% static 'js/who.js' %}"></script>
 {% endblock extrascripts %}
-{% block extrajs %}
-    $(".chosen-person-select").addClass('chosen-rtl').chosen({
-      width: '100%',
-      max_selected_options: {{ writeitinstance.config.maximum_recipients }},
-      no_results_text: '{% trans "No recipients match" %}',
-      placeholder_text_multiple: ' ', // hide placeholder text
-      placeholder_text_single: ' ', // hide placeholder text
-      single_backstroke_delete: false
-    });
-{% endblock extrajs %}
 
 {% block promo %}
 {% endblock %}
