@@ -50,6 +50,30 @@ class ModerationMessagesTestCase(TestCase):
 
         self.assertEquals(response.status_code, 404)
 
+    def test_cannot_view_unmoderated_message(self):
+        self.writeitinstance1.config.moderation_needed_in_all_messages = True
+        self.writeitinstance1.config.save()
+
+        message = Message.objects.create(
+            content='Content 1',
+            author_name='Felipe',
+            author_email="falvarez@votainteligente.cl",
+            subject='Fiera es una perra feroz',
+            public=True,
+            writeitinstance=self.writeitinstance1,
+            persons=[self.person1],
+            )
+
+        message.recently_confirmated()
+        url = message.get_absolute_url()
+        response = self.client.get(url)
+
+        self.assertFalse(message.moderated)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.context['awaiting_moderation'], True)
+        self.assertContains(response, 'This message is awaiting moderation')
+
     def test_outbound_messages_of_a_confirmed_message_are_waiting_for_moderation(self):
         # I need to do a get to the confirmation url
         moderation, created = Moderation.objects.get_or_create(message=self.private_message)

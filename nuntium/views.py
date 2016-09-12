@@ -331,6 +331,10 @@ class MessageThreadView(MessageDetailView):
             del self.request.session['user_came_via_confirmation_link']
 
         context['writeitinstance'] = self.object.writeitinstance
+        context['awaiting_moderation'] = False
+        if self.object.writeitinstance.config.moderation_needed_in_all_messages and \
+                self.object.moderated != True:
+            context['awaiting_moderation'] = True
         return context
 
 
