@@ -29,6 +29,9 @@
 
     <div class="thread">
         <div class="thread__messages">
+        {% if awaiting_moderation %}
+          {% trans "This message is awaiting moderation." %}
+        {% else %}
             <h1>{{ message.subject }}</h1>
             <p>
               {% if message.author_name == '' %}
@@ -44,6 +47,7 @@
           {% empty %}
             <p class="thread__messages__no-replies">{% trans "Future replies will be published here." %}</p>
           {% endfor %}
+        {% endif %}
         </div>
         <div class="thread__actions">
           <h3 class="thead__actions__heading">{% trans "Actions" %}</h3>
