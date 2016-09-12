@@ -68,9 +68,25 @@ body, .site-footer {
   @include button-variant(#666, #eee, #e6e6e6);
 }
 
-.chosen-container .chosen-results li em {
-  font-weight: bold;
-  background: none;
+.chosen-container {
+  .chosen-results {
+    li em {
+      font-weight: bold;
+      background: none;
+    }
+
+    .uncontactable {
+      color: $color-red-900;
+      background-color: $color-red-50;
+
+      &:after {
+        content: "(no contact details)"; // This will be overridden by the HTML template
+        display: inline;
+        opacity: 0.7;
+        margin: 0 0.5em;
+      }
+    }
+  }
 }
 
 .thead__actions__heading,

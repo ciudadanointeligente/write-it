@@ -2,6 +2,14 @@
 {% load i18n %}
 {% load static %}
 
+{% block extracss %}
+    <style type="text/css">
+    .chosen-container .chosen-results .uncontactable:after {
+        content: '{% trans "(No contact details)" %}';
+    }
+    </style>
+{% endblock extracss %}
+
 {% block extrascripts %}
     <script src="{% static 'js/chosen.jquery.min.js' %}"></script>
     <script>
