@@ -11,6 +11,8 @@ $color-bluegrey-300: #90A4AE;
 $color-bluegrey-700: #455A64;
 
 $color-red-50: #FFEBEE;
+$color-red-100: #FFCDD2;
+$color-red-200: #EF9A9A;
 $color-red-900: #B71C1C;
 
 $font-size-base: 16px; // up from default 14px
@@ -27,6 +29,10 @@ $pagination-hover-border:              $color-bluegrey-100;
 $pagination-active-color:              $color-bluegrey-700;
 $pagination-active-bg:                 #fff;
 $pagination-active-border:             $color-bluegrey-100;
+
+$state-danger-text:              $color-red-900;
+$state-danger-bg:                $color-red-50;
+$state-danger-border:            mix($color-red-200, #ccc, 50%);
 
 $chosen-sprite-path: '/static/img/chosen-sprite.png';
 $chosen-sprite-retina-path: '/static/img/chosen-sprite@2x.png';
