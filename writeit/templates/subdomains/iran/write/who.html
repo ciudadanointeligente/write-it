@@ -1,6 +1,15 @@
 {% extends "base_instance.html" %}
 {% load i18n %}
 {% load static %}
+{% load subdomainurls %}
+
+{% block extracss %}
+    <style type="text/css">
+    .chosen-container .chosen-results .uncontactable:after {
+        content: '{% trans "(No contact details)" %}';
+    }
+    </style>
+{% endblock extracss %}
 
 {% block extrascripts %}
     <script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
