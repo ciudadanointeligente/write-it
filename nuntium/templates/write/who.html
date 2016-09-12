@@ -4,17 +4,14 @@
 
 {% block extrascripts %}
     <script src="{% static 'js/chosen.jquery.min.js' %}"></script>
+    <script>
+    window.who = {
+        max_selected_options: {{ writeitinstance.config.maximum_recipients }},
+        no_results_text: '{% trans "No recipients match" %}'
+    }
+    </script>
+    <script src="{% static 'js/who.js' %}"></script>
 {% endblock extrascripts %}
-{% block extrajs %}
-    $(".chosen-person-select").chosen({
-      width: '100%',
-      max_selected_options: {{ writeitinstance.config.maximum_recipients }},
-      no_results_text: '{% trans "No recipients match" %}',
-      placeholder_text_multiple: ' ', // hide placeholder text
-      placeholder_text_single: ' ', // hide placeholder text
-      single_backstroke_delete: false
-    });
-{% endblock extrajs %}
 
 {% block content_inner %}
 
@@ -43,7 +40,7 @@
     </form>
 
   {% else %}
-  <h1>{% trans "Sorry" %}</h1> 
+  <h1>{% trans "Sorry" %}</h1>
   <p>{% trans "You can’t currently create new messages using this site." %}</p>
   {% endif %}
 
