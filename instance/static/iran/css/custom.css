@@ -244,24 +244,16 @@ h1, h2, h3, h4, h5 {
 .navbar .write-link {
     float: right;
     display: block;
-    height: 3em;
-    line-height: 3em;
-    padding: 0 0.5em;
-}
-
-.navbar .write-link:before {
-    content: "";
-    display: inline-block;
-    width: 32px;
-    height: 24px;
-    vertical-align: -0.4em;
-    margin-left: 1em;
-    background: transparent url(../images/iran/logo.png) 0 0 no-repeat;
-    background-size: 32px 24px;
+    height: 0;
+    width: 110px;
+    padding: 3em 0 0 0;
+    overflow: hidden;
+    background: transparent url(../images/iran/logo.png) 100% 50% no-repeat;
+    background-size: 110px 24px;
 }
 
 @media(-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
-    .navbar .write-link:before {
+    .navbar .write-link {
         background-image: url(../images/iran/logo@2x.png);
     }
 }
@@ -270,6 +262,7 @@ h1, h2, h3, h4, h5 {
     float: left;
     margin: 0;
     height: 3em;
+    margin: 0 -0.5em;
 }
 .navbar li,
 .navbar li a {
