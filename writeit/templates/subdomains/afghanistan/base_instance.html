@@ -25,7 +25,7 @@
     </ul>
 
     {% if writeitinstance.can_create_messages %}
-    <a class="write-link" href="{% url 'write_message' subdomain=writeitinstance.slug %}">{% trans "Write to Majlis" %}</a>
+    <a class="write-link" href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{% trans "Write to Majlis" %}</a>
     {% endif %}
   </nav>
 </header>
