@@ -5,21 +5,21 @@
     font-family: "Iran Sans";
     font-style: normal;
     font-weight: normal;
-    src: url('../fonts/afghanistan/iran-sans-fa-numerals.eot');
-    src: url('../fonts/afghanistan/iran-sans-fa-numerals.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/afghanistan/iran-sans-fa-numerals.woff2') format('woff2'),
-         url('../fonts/afghanistan/iran-sans-fa-numerals.woff') format('woff'),
-         url('../fonts/afghanistan/iran-sans-fa-numerals.ttf') format('truetype');
+    src: url('../fonts/iran/iran-sans-fa-numerals.eot');
+    src: url('../fonts/iran/iran-sans-fa-numerals.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/iran/iran-sans-fa-numerals.woff2') format('woff2'),
+         url('../fonts/iran/iran-sans-fa-numerals.woff') format('woff'),
+         url('../fonts/iran/iran-sans-fa-numerals.ttf') format('truetype');
 }
 @font-face {
     font-family: "Iran Sans";
     font-style: normal;
     font-weight: bold;
-    src: url('../fonts/afghanistan/iran-sans-fa-numerals-bold.eot');
-    src: url('../fonts/afghanistan/iran-sans-fa-numerals-bold.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/afghanistan/iran-sans-fa-numerals-bold.woff2') format('woff2'),
-         url('../fonts/afghanistan/iran-sans-fa-numerals-bold.woff') format('woff'),
-         url('../fonts/afghanistan/iran-sans-fa-numerals-bold.ttf') format('truetype');
+    src: url('../fonts/iran/iran-sans-fa-numerals-bold.eot');
+    src: url('../fonts/iran/iran-sans-fa-numerals-bold.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/iran/iran-sans-fa-numerals-bold.woff2') format('woff2'),
+         url('../fonts/iran/iran-sans-fa-numerals-bold.woff') format('woff'),
+         url('../fonts/iran/iran-sans-fa-numerals-bold.ttf') format('truetype');
 }
 
 .interface {
@@ -162,8 +162,8 @@ h1, h2, h3, h4, h5 {
 }
 .button.filled.forward {
     float: left;
-    background-image: url(../images/afghanistan/arrow-white-left.png);
-    background-image: url(../images/afghanistan/arrow-white-left.svg), linear-gradient(transparent, transparent);
+    background-image: url(../images/iran/arrow-white-left.png);
+    background-image: url(../images/iran/arrow-white-left.svg), linear-gradient(transparent, transparent);
     padding-left: 2em;
     background-position: 0.5em 50%;
     background-size: auto 50%;
@@ -175,8 +175,8 @@ h1, h2, h3, h4, h5 {
 }
 .button.greyed.back {
     float: right;
-    background-image: url(../images/afghanistan/arrow-white-right.png);
-    background-image: url(../images/afghanistan/arrow-white-right.svg), linear-gradient(transparent, transparent);
+    background-image: url(../images/iran/arrow-white-right.png);
+    background-image: url(../images/iran/arrow-white-right.svg), linear-gradient(transparent, transparent);
     padding-right: 2em;
     background-position: 95%;
     background-position: calc(100% - 0.5em) 50%;
@@ -256,13 +256,13 @@ h1, h2, h3, h4, h5 {
     height: 24px;
     vertical-align: -0.4em;
     margin-left: 1em;
-    background: transparent url(../images/afghanistan/logo.png) 0 0 no-repeat;
+    background: transparent url(../images/iran/logo.png) 0 0 no-repeat;
     background-size: 32px 24px;
 }
 
 @media(-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
     .navbar .write-link:before {
-        background-image: url(../images/afghanistan/logo@2x.png);
+        background-image: url(../images/iran/logo@2x.png);
     }
 }
 
@@ -316,7 +316,7 @@ h1, h2, h3, h4, h5 {
 .promo-wrapper {
     position: relative;
     background-color: rgb(25,7,104);
-    background-image: url(../images/afghanistan/cover-cropped.png), none;
+    background-image: url(../images/iran/cover-cropped.png), none;
     background-origin: padding-box;
     background-repeat: no-repeat;
     background-size: auto 80%;
@@ -622,7 +622,7 @@ h1, h2, h3, h4, h5 {
 }
 .write-form .chosen-choices .search-choice-close {
     background-image: none !important;
-    background-image: url(../images/afghanistan/close.svg) !important;
+    background-image: url(../images/iran/close.svg) !important;
     background-size: 50% auto !important;
     background-position: 50% 50% !important;
     height: 100% !important;

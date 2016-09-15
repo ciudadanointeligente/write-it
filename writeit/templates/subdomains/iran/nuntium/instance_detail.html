@@ -13,7 +13,7 @@
           {% for message in recent_messages %}
           <li class="letter-list-item container">
           <a href="{% url 'thread_read' slug=message.slug %}">
-            <h2>{{ message.author_name }} <img src="{% static 'afghanistan/images/afghanistan/arrow-grey-left.svg' %}" onerror="this.src='{% static 'afghanistan/images/afghanistan/arrow-grey-left.png' %}'; this.onerror=null;" alt="to"> {% for person in message.people %}{{ person.name }}{% endfor %}</h2>
+            <h2>{{ message.author_name }} <img src="{% static 'iran/images/iran/arrow-grey-left.svg' %}" onerror="this.src='{% static 'iran/images/iran/arrow-grey-left.png' %}'; this.onerror=null;" alt="to"> {% for person in message.people %}{{ person.name }}{% endfor %}</h2>
           </a>
           <div class="content container">
             {% trans 'Dear' %} {% for person in message.people %}{{ person.name }}{% if not forloop.first and forloop.last %} {% trans "and" %} {% elif not forloop.first %}, {% endif %}{% endfor %}<br /><br />
