@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 msgid ""
 msgstr ""
@@ -66,14 +66,11 @@ msgid "Allow the creation of new messages         using the web"
 msgstr ""
 
 #: instance/models.py:191
-msgid ""
-"The owner of this instance         should be notified         when a new "
-"answer comes in"
+msgid "The owner of this instance         should be notified         when a new answer comes in"
 msgstr ""
 
 #: instance/models.py:195
-msgid ""
-"Messages pushed to the api should             be confirmed automatically"
+msgid "Messages pushed to the api should             be confirmed automatically"
 msgstr ""
 
 #: instance/models.py:198
@@ -86,9 +83,7 @@ msgstr ""
 
 #: mailit/models.py:18 mailit/models.py:21 mailit/models.py:26
 #, python-brace-format
-msgid ""
-"You can use {subject}, {content}, {person}, {author}, {site_url}, "
-"{site_name}, and {owner_email}"
+msgid "You can use {subject}, {content}, {person}, {author}, {site_url}, {site_name}, and {owner_email}"
 msgstr ""
 
 #: nuntium/forms.py:83
@@ -108,9 +103,7 @@ msgid "Popolo URL"
 msgstr ""
 
 #: nuntium/forms.py:175 nuntium/user_section/forms.py:282
-msgid ""
-"Example: https://cdn.rawgit.com/everypolitician/everypolitician-"
-"data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"
+msgid "Example: https://cdn.rawgit.com/everypolitician/everypolitician-data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"
 msgstr ""
 
 #: nuntium/models.py:60 nuntium/tests/record_system_test.py:31
@@ -183,16 +176,12 @@ msgstr ""
 
 #: nuntium/models.py:565 nuntium/models.py:569 nuntium/models.py:574
 #, python-brace-format
-msgid ""
-"You can use {author_name}, {site_name}, {subject}, {content}, {recipients}, "
-"{confirmation_url}, and {message_url}"
+msgid "You can use {author_name}, {site_name}, {subject}, {content}, {recipients}, {confirmation_url}, and {message_url}"
 msgstr ""
 
 #: nuntium/models.py:725 nuntium/models.py:729 nuntium/models.py:734
 #, python-brace-format
-msgid ""
-"You can use {author_name}, {person}, {subject}, {content}, {message_url}, "
-"and {site_name}"
+msgid "You can use {author_name}, {person}, {subject}, {content}, {message_url}, and {site_name}"
 msgstr ""
 
 #: nuntium/models.py:738
@@ -294,15 +283,11 @@ msgstr ""
 
 #: nuntium/templates/base_instance.html:119
 #: writeit/templates/subdomains/afghanistan/base_instance.html:57
-msgid ""
-"Any messages you write will be sent to the site administrator rather than "
-"real representatives."
+msgid "Any messages you write will be sent to the site administrator rather than real representatives."
 msgstr ""
 
 #: nuntium/templates/footer.html:13
-msgid ""
-"Built by <a href=\"http://www.ciudadanointeligente.org\">Fundación Ciudadano"
-" Inteligente</a>"
+msgid "Built by <a href=\"http://www.ciudadanointeligente.org\">Fundación Ciudadano Inteligente</a>"
 msgstr ""
 
 #: nuntium/templates/footer.html:18
@@ -310,9 +295,7 @@ msgid "Find the code at Github"
 msgstr ""
 
 #: nuntium/templates/home.html:12
-msgid ""
-"Make sites that empower citizens to send emails to representatives and "
-"politicians."
+msgid "Make sites that empower citizens to send emails to representatives and politicians."
 msgstr ""
 
 #: nuntium/templates/home.html:13
@@ -358,9 +341,7 @@ msgid ""
 msgstr ""
 
 #: nuntium/templates/nuntium/instance_detail.html:16
-msgid ""
-"Write to the people who represent you.<br />In public.<br /><br />Get "
-"answers.<br />In public."
+msgid "Write to the people who represent you.<br />In public.<br /><br />Get answers.<br />In public."
 msgstr ""
 
 #: nuntium/templates/nuntium/instance_detail.html:28
@@ -831,8 +812,7 @@ msgid "Mail Template"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/templates.html:31
-msgid ""
-"This is the mail template that the person gets when a new message exists"
+msgid "This is the mail template that the person gets when a new message exists"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/templates.html:35
@@ -853,9 +833,7 @@ msgid "Confirmation Template"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/templates.html:42
-msgid ""
-"This is the mail template that the person who creates a message gets in "
-"order to confirm their email"
+msgid "This is the mail template that the person who creates a message gets in order to confirm their email"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/templates.html:54
@@ -863,9 +841,7 @@ msgid "New answer notification template"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/templates.html:55
-msgid ""
-"When a new answer comes in it will notify all the subscribers with this "
-"template"
+msgid "When a new answer comes in it will notify all the subscribers with this template"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/update_answer.html:8
@@ -1173,11 +1149,7 @@ msgstr ""
 
 #: nuntium/templates/nuntium/profiles/your-instances.html:72
 #, python-format
-msgid ""
-"Sites are set to Testing Mode by default. Use the 'Edit' link and make sure "
-"that your site is set up in the way that you want it. When you are ready, <a"
-" href=\"%(contact_page)s\">contact us</a> to let us know and we’ll put your "
-"site live."
+msgid "Sites are set to Testing Mode by default. Use the 'Edit' link and make sure that your site is set up in the way that you want it. When you are ready, <a href=\"%(contact_page)s\">contact us</a> to let us know and we’ll put your site live."
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/your-instances.html:74
@@ -1404,9 +1376,7 @@ msgstr ""
 
 #: nuntium/templates/registration/login.html:23
 #: nuntium/templates/registration/signup.html:20
-msgid ""
-", the username and password you entered did not match our records. Please "
-"double-check and try again."
+msgid ", the username and password you entered did not match our records. Please double-check and try again."
 msgstr ""
 
 #: nuntium/templates/registration/login.html:33
@@ -1436,9 +1406,7 @@ msgid "Your password was changed."
 msgstr ""
 
 #: nuntium/templates/registration/password_change_form.html:24
-msgid ""
-"Please enter your old password, for security's sake, and then enter your new"
-" password twice so we can verify you typed it in correctly."
+msgid "Please enter your old password, for security's sake, and then enter your new password twice so we can verify you typed it in correctly."
 msgstr ""
 
 #: nuntium/templates/registration/password_change_form.html:30
@@ -1490,9 +1458,7 @@ msgid "Enter new password"
 msgstr ""
 
 #: nuntium/templates/registration/password_reset_confirm.html:21
-msgid ""
-"Please enter your new password twice so we can verify you typed it in "
-"correctly."
+msgid "Please enter your new password twice so we can verify you typed it in correctly."
 msgstr ""
 
 #: nuntium/templates/registration/password_reset_confirm.html:26
@@ -1508,9 +1474,7 @@ msgid "Password reset unsuccessful"
 msgstr ""
 
 #: nuntium/templates/registration/password_reset_confirm.html:51
-msgid ""
-"The password reset link was invalid, possibly because it has already been "
-"used.  Please request a new password reset."
+msgid "The password reset link was invalid, possibly because it has already been used.  Please request a new password reset."
 msgstr ""
 
 #: nuntium/templates/registration/password_reset_done.html:12
@@ -1519,15 +1483,11 @@ msgid "Password reset successful"
 msgstr ""
 
 #: nuntium/templates/registration/password_reset_done.html:17
-msgid ""
-"We've emailed you instructions for setting your password to the email "
-"address you submitted. You should be receiving it shortly."
+msgid "We've emailed you instructions for setting your password to the email address you submitted. You should be receiving it shortly."
 msgstr ""
 
 #: nuntium/templates/registration/password_reset_form.html:17
-msgid ""
-"Forgotten your password? Enter your email address below, and we'll email "
-"instructions for setting a new one."
+msgid "Forgotten your password? Enter your email address below, and we'll email instructions for setting a new one."
 msgstr ""
 
 #: nuntium/templates/registration/password_reset_form.html:22
@@ -1631,9 +1591,7 @@ msgstr ""
 #: nuntium/templates/thread/read.html:17
 #: writeit/templates/subdomains/afghanistan/thread/read.html:19
 #: writeit/templates/subdomains/infoszab/thread/read.html:17
-msgid ""
-"We’ve published it too: your letter and any replies will be visible to "
-"everyone, on this page."
+msgid "We’ve published it too: your letter and any replies will be visible to everyone, on this page."
 msgstr ""
 
 #: nuntium/templates/thread/read.html:21 nuntium/templates/thread/read.html:45
@@ -1758,10 +1716,7 @@ msgstr ""
 
 #: nuntium/templates/write/preview.html:15
 #: writeit/templates/subdomains/afghanistan/write/preview.html:21
-msgid ""
-"Once you send this message, it will be available on the Internet for anyone "
-"to read. Your name will be included alongside the message. Your email "
-"address will not be public."
+msgid "Once you send this message, it will be available on the Internet for anyone to read. Your name will be included alongside the message. Your email address will not be public."
 msgstr ""
 
 #: nuntium/templates/write/preview.html:21
@@ -1811,15 +1766,11 @@ msgid "Invalid subdomain for custom CSS"
 msgstr ""
 
 #: nuntium/tests/writeitinstances_test.py:398
-msgid ""
-"Thanks for submitting your message, please check your email and click on the"
-" confirmation link"
+msgid "Thanks for submitting your message, please check your email and click on the confirmation link"
 msgstr ""
 
 #: nuntium/tests/writeitinstances_test.py:437
-msgid ""
-"Thanks for submitting your message, please check your email and click on the"
-" confirmation link, after that your message will be waiting form moderation"
+msgid "Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation"
 msgstr ""
 
 #: nuntium/user_section/forms.py:72
@@ -1843,9 +1794,7 @@ msgid "This subdomain has already been taken."
 msgstr ""
 
 #: nuntium/user_section/forms.py:299
-msgid ""
-"You have already added this source. But we will fetch the data from it again"
-" now."
+msgid "You have already added this source. But we will fetch the data from it again now."
 msgstr ""
 
 #: nuntium/user_section/views.py:412
