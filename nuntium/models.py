@@ -88,8 +88,9 @@ class MessagesManager(models.Manager):
 class PublicMessagesManager(MessagesManager):
     def get_queryset(self):
         queryset = super(PublicMessagesManager, self).get_queryset()
-        return queryset.filter(Q(public=True), Q(confirmated=True),
-            Q(moderated=True) | Q(moderated=None))
+        return queryset.filter(
+            Q(moderated=True) | Q(moderated=None),
+            public=True, confirmated=True)
 
 
 class NonModeratedMessagesManager(MessagesManager):
