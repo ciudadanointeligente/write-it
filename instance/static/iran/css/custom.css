@@ -448,6 +448,17 @@ h1, h2, h3, h4, h5 {
   margin-top: 2em;
 }
 
+/* Put a bit of space around the person's name on the to.html pages */
+.person-profile {
+  margin-bottom: 1em;
+}
+
+.messages-to-leader {
+  font-size: 1.5em;
+}
+
+
+
 /* ==============
    === FOOTER ===
    ============== */
