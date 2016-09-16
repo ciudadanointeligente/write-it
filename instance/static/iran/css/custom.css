@@ -696,6 +696,9 @@ h1, h2, h3, h4, h5 {
     margin: 2em 0 4em 0;
 }
 
+.writing-step h1 {
+    padding-right: 0.5em;
+}
 
 
 /* TODO: This right-to-left support should be refactored into core. */
