@@ -1810,9 +1810,13 @@ msgstr ""
 msgid "This message has been marked as private"
 msgstr ""
 
-#: writeit/templates/subdomains/afghanistan/base_instance.html:28
-#: writeit/templates/subdomains/afghanistan/index.html:67
-#: writeit/templates/subdomains/afghanistan/view.html:67
+#: writeit/extra_translations.py:13
+msgid "This field is required."
+msgstr "Ennek a mezőnek a megadása kötelező."
+
+#: writeit/templates/subdomains/iran/base_instance.html:28
+#: writeit/templates/subdomains/iran/index.html:67
+#: writeit/templates/subdomains/iran/view.html:67
 msgid "Write to Majlis"
 msgstr ""
 
