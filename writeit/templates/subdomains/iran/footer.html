@@ -1,16 +1,22 @@
 {% load staticfiles %}
 {% load i18n %}
 {% load subdomainurls %}
-<footer class="footer full-width-wrapper">
+    <footer class="footer full-width-wrapper">
         <nav class="navbar">
             <ul>
-    <li>
-        <a href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{% trans "Home" %}</a>
-    </li>
-    <li>
-        <a href="{% url 'about' subdomain=writeitinstance.slug %}">{% trans "About" %}</a>
-    </li>
-</ul>
-
+                <li>
+                  {% if writeitinstance %}
+                    <a class="navbar-brand" href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">
+                  {% else %}
+                    <a class="navbar-brand" href="{% url 'home' %}">
+                  {% endif %}
+                    <a href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{% trans "Home" %}</a>
+                </li>
+                {% if writeitinstance %}
+                <li>
+                    <a href="{% url 'about' subdomain=writeitinstance.slug %}">{% trans "About" %}</a>
+                </li>
+                {% endif %}
+            </ul>
         </nav>
     </footer>
