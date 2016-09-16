@@ -1,0 +1,58 @@
+{% extends "base_instance.html" %}
+{% load i18n %}
+{% load subdomainurls %}
+{% load pagination_tags %}
+
+{% block body_class %}page-contains-messages{% endblock %}
+
+{% block promo %}
+{% endblock %}
+
+{% block content_inner %}
+
+    <div class="full-width-wrapper">
+    <div class="centred">
+
+    {% autopaginate message_list %}
+    <div class="results">
+        <div class="results__messages">
+
+          {% for message in message_list %}
+            {% include "thread/message_mini.html" with message=message %}
+          {% empty %}
+            <p>{% trans 'There are currently no public messages on this site.' %}</p>
+          {% endfor %}
+
+          {% paginate %}
+
+        </div>
+        <div class="results__actions">
+            {% comment "This is commented out as of #711 but it should probably come back to life once we finish #789" %}
+            <h3 class="results__actions__heading">{% trans "Show messages" %}</h3>
+            <ul>
+                <li class="radio">
+                    <label>
+                        <input type="radio" name="example-radios" checked>
+                        {% trans "All messages" %}
+                    </label>
+                </li>
+                <li class="radio">
+                    <label>
+                        <input type="radio" name="example-radios">
+                        {% trans "Awaiting reply" %}
+                    </label>
+                </li>
+            </ul>
+
+            <h3 class="results__actions__heading">{% trans "Search messages" %}</h3>
+            <p>
+              <input type="search" class="form-control" placeholder="Search…">
+            </p>
+            {% endcomment %}
+        </div>
+    </div>
+
+    </div>
+    </div>
+
+{% endblock content_inner %}
