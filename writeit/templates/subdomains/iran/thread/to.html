@@ -1,0 +1,45 @@
+{% extends "base_instance.html" %}
+{% load nuntium_tags %}
+{% load subdomainurls %}
+{% load i18n %}
+
+{% block promo %}
+{% endblock %}
+
+{% block content_inner %}
+
+    <div class="full-width-wrapper">
+    <div class="centred">
+
+        <h3 class="messages-to-leader">{% trans "Messages to" %}</h3>
+
+        <div class="person-profile">
+          {% if person.image %}
+            <img class="person-profile__photo" src="{{ person.image }}">
+          {% endif %}
+            <h2 class="person-profile__name">{{ person.name }}</h2>
+        </div>
+
+        {% if person.summary %}
+        <p class="results__actions__info">{{ person.summary }}</p>
+        {% endif %}
+
+        {% if writeitinstance.can_create_messages %}
+          <form action="{% url 'write_message_step' step='who' %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="write_message_view-current_step" value="who">
+              <input type="hidden" name="who_{{ writeitinstance.slug }}-persons" value="{{ person.pk }}">
+              <button type="submit" class="btn btn-primary write-to-this-person">{% trans "Write to this person" %}</button>
+          </form>
+        {% endif %}
+
+        <article class="view container">
+          {% for message in message_list %}
+            {% include "thread/message_mini.html" with message=message %}
+          {% endfor %}
+        </article>
+
+    </div>
+    </div>
+
+{% endblock content_inner %}
