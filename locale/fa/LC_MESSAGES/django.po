@@ -1820,15 +1820,15 @@ msgstr ""
 
 #: writeit/templates/subdomains/afghanistan/write/draft.html:28
 msgid "Your message <small>This will be published, on this site.</small>"
-msgstr " <small> این متن در وبسایت منتشر خواهد شد </small> متن نامه؛ "
+msgstr " متن نامه؛ <small> این متن در وبسایت منتشر خواهد شد </small>"
 
 #: writeit/templates/subdomains/afghanistan/write/draft.html:38
 msgid "Your name <small>This will be published, on this site.</small>"
-msgstr " <small>  نام شما در وبسایت منتشر خواهد شد </small>  نام؛"
+msgstr " نام؛ <small>  نام شما در وبسایت منتشر خواهد شد </small>"
 
 #: writeit/templates/subdomains/afghanistan/write/draft.html:47
 msgid "Your email <small>Nobody will see this, ever.</small>"
-msgstr " <small> هرگز کسی ایمیل شما را نخواهد دید </small>  ایمیل؛"
+msgstr " ایمیل؛ <small> هرگز کسی ایمیل شما را نخواهد دید </small>"
 
 #: writeit/templates/subdomains/afghanistan/write/sign.html:34
 msgid "Go to home page"
