@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-15 04:13-0500\n"
+"POT-Creation-Date: 2016-09-16 06:34-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1804,9 +1804,13 @@ msgstr ""
 msgid "This message has been marked as private"
 msgstr ""
 
-#: writeit/templates/subdomains/afghanistan/base_instance.html:28
-#: writeit/templates/subdomains/afghanistan/index.html:67
-#: writeit/templates/subdomains/afghanistan/view.html:67
+#: writeit/extra_translations.py:13
+msgid "This field is required."
+msgstr ""
+
+#: writeit/templates/subdomains/iran/base_instance.html:28
+#: writeit/templates/subdomains/iran/index.html:67
+#: writeit/templates/subdomains/iran/view.html:67
 msgid "Write to Majlis"
 msgstr ""
 
