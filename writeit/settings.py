@@ -213,6 +213,7 @@ INSTALLED_APPS = (
     'pagination',
     'popit',
     'popolo',
+    'popolo_sources',
     'contactos',
     'mailit',
     'tastypie',
