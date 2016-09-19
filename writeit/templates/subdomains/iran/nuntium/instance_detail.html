@@ -3,6 +3,8 @@
 {% load i18n %}
 {% load staticfiles %}
 
+{% get_current_language as LANGUAGE_CODE %}
+
 {% block content_inner %}
 
     <div class="full-width-wrapper recent-letters-wrapper">
@@ -16,7 +18,23 @@
             <h2>{{ message.author_name }} <img src="{% static 'iran/images/iran/arrow-grey-left.svg' %}" onerror="this.src='{% static 'iran/images/iran/arrow-grey-left.png' %}'; this.onerror=null;" alt="to"> {% for person in message.people %}{{ person.name }}{% endfor %}</h2>
           </a>
           <div class="content container">
-            {% trans 'Dear' %} {% for person in message.people %}{{ person.name }}{% if not forloop.first and forloop.last %} {% trans "and" %} {% elif not forloop.first %}, {% endif %}{% endfor %}<br /><br />
+            {% comment %}
+              Making a list by separating with commas and
+              putting an 'and' before the last element does not
+              localize easily.  For Farsi the ordering of 'Dear'
+              and the recipient names is opposite from English
+              (before considering RTL), so make the whole phrase
+              translatable and just insert comma-separated
+              names.
+            {% endcomment %}
+            {% if LANGUAGE_CODE == 'fa' %}
+              {% blocktrans trimmed with recipient_names=message.recipient_names_comma_joined %}
+                Dear {{ recipient_names }},
+              {% endblocktrans %}
+            {% else %}
+              {% trans 'Dear' %} {% for person in message.people %}{{ person.name }}{% if not forloop.first and forloop.last %} {% trans "and" %} {% elif not forloop.first %}, {% endif %}{% endfor %}
+            {% endif %}
+            <br /><br />
             {{ message.content }}
             <br /><br />
             {% blocktrans trimmed with author_name=message.author_name %}
