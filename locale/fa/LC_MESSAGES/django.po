@@ -1818,9 +1818,10 @@ msgstr "مجلس‌نامه"
 msgid "Dear"
 msgstr ""
 
-#: writeit/templates/subdomains/afghanistan/nuntium/instance_detail.html:22
-msgid "Yours sincerely"
-msgstr ""
+#: writeit/templates/subdomains/iran/nuntium/instance_detail.html:22
+#, python-format
+msgid "Yours sincerely, <br> %(author_name)s"
+msgstr " ارادتمند شما، <br> %(author_name)s "
 
 #: writeit/templates/subdomains/afghanistan/write/draft.html:28
 msgid "Your message <small>This will be published, on this site.</small>"
