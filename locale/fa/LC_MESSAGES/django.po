@@ -1821,9 +1821,10 @@ msgstr "انتخاب گیرنده‌ی نامه ضروری است."
 msgid "Write to Majlis"
 msgstr "مجلس‌نامه"
 
-#: writeit/templates/subdomains/iran/nuntium/instance_detail.html:19
-msgid "Dear"
-msgstr ""
+#: writeit/templates/subdomains/iran/nuntium/instance_detail.html:32
+#, python-format
+msgid "Dear %(recipient_names)s,"
+msgstr "%(recipient_names)s گرامی"
 
 #: writeit/templates/subdomains/iran/nuntium/instance_detail.html:22
 #, python-format
