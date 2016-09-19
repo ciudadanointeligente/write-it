@@ -1865,7 +1865,12 @@ msgstr "هذا الحقل مطلوب."
 msgid "Write to Majlis"
 msgstr ""
 
-#: writeit/templates/subdomains/iran/nuntium/instance_detail.html:19
+#: writeit/templates/subdomains/iran/nuntium/instance_detail.html:32
+#, python-format
+msgid "Dear %(recipient_names)s,"
+msgstr ""
+
+#: writeit/templates/subdomains/iran/nuntium/instance_detail.html:36
 msgid "Dear"
 msgstr ""
 
