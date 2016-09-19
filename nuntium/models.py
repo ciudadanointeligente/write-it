@@ -657,10 +657,7 @@ def send_confirmation_email(sender, instance, created, **kwargs):
         if html_content:
             msg.attach_alternative(html_content, "text/html")
 
-        try:
-            msg.send()
-        except:
-            pass
+        msg.send()
 
 
 post_save.connect(send_confirmation_email, sender=Confirmation)
