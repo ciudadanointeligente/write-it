@@ -63,4 +63,6 @@ class PagePaginationTestCase(ResourceTestCase):
         # in order to be in the api
 
         messages = self.deserialize(response)['objects']
-        self.assertEquals(messages[0]['id'], Message.public_objects.all()[1].id)
+        self.assertEquals(
+            messages[0]['id'],
+            Message.public_objects.order_by('-created')[1].id)
