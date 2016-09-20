@@ -43,6 +43,30 @@ class ListContactsTemplateTag(TestCase):
         rendered = t.render(c)
         self.assertEquals(u'Pedro, Marcel and Felipe', rendered)
 
+    def test_join_with_commas_another_language(self):
+        '''
+        Join a list with commas in a non-English language
+        '''
+        t = Template('{% load nuntium_tags %}{{ people|join_with_commas:"fa" }}')
+        people = Person.objects.all().order_by('id')
+        c = Context({
+            "people": people
+            })
+        rendered = t.render(c)
+        self.assertEquals(u'Pedro, Marcel, Felipe', rendered)
+
+    def test_join_with_commas_english(self):
+        '''
+        Join a list with commas in a non-English language
+        '''
+        t = Template('{% load nuntium_tags %}{{ people|join_with_commas:"en" }}')
+        people = Person.objects.all().order_by('id')
+        c = Context({
+            "people": people
+            })
+        rendered = t.render(c)
+        self.assertEquals(u'Pedro, Marcel and Felipe', rendered)
+
     def test_get_url_using_subdomain(self):
         '''
         There is a problem with the subdomain urls wich doesn't allow me to do the following

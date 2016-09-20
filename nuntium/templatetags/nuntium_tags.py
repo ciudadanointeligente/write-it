@@ -22,7 +22,7 @@ register.inclusion_tag('nuntium/profiles/contacts/show_contacts_in.html')(show_c
 
 
 @register.filter
-def join_with_commas(obj_list):
+def join_with_commas(obj_list, language_code=None):
     """Takes a list of objects and returns their unicode representations,
     seperated by commas and with 'and' between the penultimate and final items
     For example, for a list of fruit objects:
@@ -35,7 +35,10 @@ def join_with_commas(obj_list):
     elif list_len == 1:
         return u"%s" % obj_list[0]
     else:
-        return u", ".join(unicode(obj) for obj in obj_list[:list_len - 1]) + u" and " + unicode(obj_list[list_len - 1])
+        if (language_code is None) or language_code.startswith('en'):
+            return u", ".join(unicode(obj) for obj in obj_list[:list_len - 1]) + u" and " + unicode(obj_list[list_len - 1])
+        else:
+            return u", ".join(unicode(obj) for obj in obj_list)
 
 
 @register.assignment_tag(takes_context=True)
