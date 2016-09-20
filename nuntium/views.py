@@ -268,9 +268,13 @@ class MessagesFromPersonView(ListView):
 
     def get_queryset(self):
         qs = super(MessagesFromPersonView, self).get_queryset()
-        qs = qs.filter(writeitinstance=self.writeitinstance).\
-            filter(public=True).filter(confirmated=True).\
-            filter(author_email=self.message.author_email)
+        qs = qs.filter(
+            Q(moderated=True) | Q(moderated__isnull=True),
+            writeitinstance=self.writeitinstance,
+            public=True,
+            confirmated=True,
+            author_email=self.message.author_email
+        )
         if self.message.author_name == '':
             qs = qs.filter(author_name='')
         else:
