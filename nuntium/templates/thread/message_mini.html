@@ -1,10 +1,13 @@
 {% load i18n %}
+{% load nuntium_tags %}
+
+{% get_current_language as LANGUAGE_CODE %}
 
 <div class="mini-thread">
     <a href="{% url 'thread_read' slug=message.slug %}" class="mini-thread__message mini-thread__message--selected">
         <h3 class="mini-thread__message__summary">{{ message.subject }}</h3>
         <p class="mini-thread__message__person">{% trans "To:" %}
-        {% for person in message.people %}{% if not forloop.first and forloop.last %} {% trans "and" %} {% elif not forloop.first %}, {% endif %}{{ person.name }}{% endfor %}
+          {{ message.people|join_with_commas:LANGUAGE_CODE }}
         </p>
         {% if message.created %}
         <p class="mini-thread__message__date">{{ message.created }}</p>
