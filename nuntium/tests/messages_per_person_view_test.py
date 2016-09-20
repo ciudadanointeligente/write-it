@@ -135,3 +135,54 @@ class MessagesPerPersonViewTestCase(TestCase):
             )
         response = self.client.get(url)
         self.assertEquals(response.status_code, 404)
+
+    def test_unmoderated_messages_not_included(self):
+        recipient = PopoloPerson.objects.first()
+        Message.objects.create(
+            writeitinstance=self.writeitinstance,
+            public=True,
+            confirmated=True,
+            moderated=True,
+            subject='m: yes, p: yes, c: yes',
+            slug='m:yes, p:yes, c:yes',
+            content='example content',
+            author_name='joe bloggs',
+            author_email='joe@example.com',
+            persons=[recipient],
+        )
+        Message.objects.create(
+            writeitinstance=self.writeitinstance,
+            public=True,
+            confirmated=True,
+            moderated=None,
+            subject='m: null, p: yes, c: yes',
+            slug='m:null, p:yes, c:yes',
+            content='example content',
+            author_name='joe bloggs',
+            author_email='joe@example.com',
+            persons=[recipient],
+        )
+        Message.objects.create(
+            writeitinstance=self.writeitinstance,
+            public=True,
+            confirmated=True,
+            moderated=False,
+            subject='m: no, p: yes, c: yes',
+            slug='m:no, p:yes, c:yes',
+            content='example content',
+            author_name='joe bloggs',
+            author_email='joe@example.com',
+            persons=[recipient],
+        )
+        url = reverse(
+            'thread_to',
+            subdomain=self.writeitinstance.slug,
+            kwargs={
+                'pk': recipient.id,
+                },
+            )
+        response = self.client.get(url)
+        self.assertEquals(response.status_code, 200)
+        self.assertIn('m: yes, p: yes, c: yes', response.content)
+        self.assertIn('m: null, p: yes, c: yes', response.content)
+        self.assertNotIn('m: no, p: yes, c: yes', response.content)
