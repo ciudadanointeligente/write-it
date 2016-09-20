@@ -28,7 +28,7 @@
               names.
             {% endcomment %}
             {% if LANGUAGE_CODE == 'fa' %}
-              {% blocktrans trimmed with recipient_names=message.recipient_names_comma_joined %}
+              {% blocktrans trimmed with recipient_names=message.people|join_with_commas:LANGUAGE_CODE %}
                 Dear {{ recipient_names }},
               {% endblocktrans %}
             {% else %}
