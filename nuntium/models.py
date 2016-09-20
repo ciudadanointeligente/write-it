@@ -182,9 +182,6 @@ class Message(models.Model):
             name = _('Anonymous')
         return name
 
-    def recipient_names_comma_joined(self):
-        return ', '.join(p.name for p in self.people)
-
     @property
     def outbound_messages(self):
         no_contact_oms = NoContactOM.objects.filter(message=self)

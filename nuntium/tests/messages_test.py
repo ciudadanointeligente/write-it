@@ -282,18 +282,6 @@ class TestMessages(TestCase):
         self.assertIn(self.person2, message.people.all())
         self.assertEquals(message.people.count(), 2)
 
-    def test_comma_joining_of_recipient_names(self):
-        message = Message.objects.create(
-            content='Content 1',
-            author_name='Felipe',
-            author_email="falvarez@votainteligente.cl",
-            subject='Same subject hey',
-            writeitinstance=self.writeitinstance1,
-            persons=[self.person1, self.person2],
-            )
-
-        self.assertEquals(message.recipient_names_comma_joined(), "Pedro, Marcel")
-
     def test_a_person_has_a_messages_property(self):
         Message.objects.all().delete()
         message = Message.objects.create(
