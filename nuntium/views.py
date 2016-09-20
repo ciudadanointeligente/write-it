@@ -329,7 +329,7 @@ class MessageThreadView(MessageDetailView):
         context['writeitinstance'] = self.object.writeitinstance
         context['awaiting_moderation'] = False
         if self.object.writeitinstance.config.moderation_needed_in_all_messages and \
-                self.object.moderated != True:
+                self.object.moderated != True and self.object.moderated is not None:
             context['awaiting_moderation'] = True
         return context
 
