@@ -267,12 +267,8 @@ class MessagesFromPersonView(ListView):
         return super(MessagesFromPersonView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        qs = super(MessagesFromPersonView, self).get_queryset()
-        qs = qs.filter(
-            Q(moderated=True) | Q(moderated__isnull=True),
+        qs = Message.public_objects.filter(
             writeitinstance=self.writeitinstance,
-            public=True,
-            confirmated=True,
             author_email=self.message.author_email
         )
         if self.message.author_name == '':
@@ -293,12 +289,8 @@ class MessageThreadsView(ListView):
     template_name = 'thread/all.html'
 
     def get_queryset(self):
-        queryset = super(MessageThreadsView, self).get_queryset()
-        return queryset.filter(
-            Q(moderated=True) | Q(moderated__isnull=True),
+        return Message.public_objects.filter(
             writeitinstance__slug=self.request.subdomain,
-            public=True,
-            confirmated=True,
         )
 
     def get_context_data(self, **kwargs):
