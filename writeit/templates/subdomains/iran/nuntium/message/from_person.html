@@ -1,0 +1,25 @@
+{% extends "base_instance.html" %}
+{% load i18n %}
+
+
+{% block content_inner %}
+
+    <div class="full-width-wrapper">
+    <div class="centred">
+
+    <h1>{% blocktrans with author_name=author_name%}Messages sent by {{author_name}} {% endblocktrans %}</h1>
+
+    <div class="results">
+        <div class="results__messages">
+          {% for message in message_list %}
+            {% include "thread/message_mini.html" with message=message %}
+          {% empty %}
+              <p>{% trans 'There are currently no public messages on this site.' %}</p>
+          {% endfor %}
+        </div>
+    </div>
+
+    </div>
+    </div>
+
+{% endblock content_inner %}
