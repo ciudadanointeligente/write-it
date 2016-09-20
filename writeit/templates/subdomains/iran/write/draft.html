@@ -2,6 +2,8 @@
 {% load i18n %}
 {% load nuntium_tags %}
 
+{% get_current_language as LANGUAGE_CODE %}
+
 {% block promo %}
 {% endblock %}
 
@@ -16,7 +18,7 @@
         {{ form.non_field_errors }}
         <p class="form-group">
             <label>{% trans "To" %}</label>
-            <span class="form-control writing-draft-recipients">{{ message.persons|join_with_commas }}</span>
+            <span class="form-control writing-draft-recipients">{{ message.persons|join_with_commas:LANGUAGE_CODE }}</span>
         </p>
         <p class="form-group">
             <label for="id_draft-subject">{% trans "Subject" %}</label>
