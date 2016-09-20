@@ -7,9 +7,9 @@
         <dd>
           {% for person in message.people %}
             {% if person_links %}
-              <a href="{% url 'thread_to' pk=person.pk %}" title="{% blocktrans with name=person.name %}Show all messages to {{ name }}{% endblocktrans %}">{{ person.name }}</a>{% if not forloop.last %},{% endif %}
+              <a href="{% url 'thread_to' pk=person.pk %}" title="{% blocktrans with name=person.name %}Show all messages to {{ name }}{% endblocktrans %}">{{ person.name }}</a>{% if not forloop.last %}, {% endif %}
             {% else %}
-              {{ person.name }}{% if not forloop.last %},{% endif %}
+              {{ person.name }}{% if not forloop.last %}, {% endif %}
             {% endif %}
           {% empty %}
             &nbsp;
