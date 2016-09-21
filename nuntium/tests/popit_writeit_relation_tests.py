@@ -1,7 +1,8 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from instance.models import (
-    InstanceMembership, WriteItInstance, WriteitInstancePopitInstanceRecord)
+    InstanceMembership, WriteItInstance, WriteitInstancePopitInstanceRecord,
+    PopoloPerson)
 from popolo_sources.models import PopoloSource
 from django.utils.unittest import skip
 from django.contrib.auth.models import User
@@ -233,7 +234,7 @@ class WriteItPopitTestCase(TestCase):
         self.owner.save()
         self.popolo_source = PopoloSource.objects.first()
         # Empty the popit_api_instance
-        self.popolo_source.persons.all().delete()
+        PopoloPerson.objects.origin(self.popolo_source).delete()
         self.popolo_source.url = settings.TEST_POPIT_API_URL
         self.popolo_source.save()
         self.popit_writeit_record = WriteitInstancePopitInstanceRecord.objects.create(
@@ -257,7 +258,7 @@ class UpdateStatusOfPopitWriteItRelation(WriteItPopitTestCase):
     def test_post_to_the_url_for_manual_resync(self):
         '''Resyncing can be done by posting to a url'''
         # This is just a symbolism but it is to show how this popit api is empty
-        self.assertFalse(self.popolo_source.persons.all())
+        self.assertFalse(PopoloPerson.objects.origin(self.popolo_source))
         url = reverse('resync-from-popit', subdomain=self.writeitinstance.slug, kwargs={
             'popolo_source_pk': self.popolo_source.pk})
         request = self.request_factory.post(url)
@@ -267,7 +268,7 @@ class UpdateStatusOfPopitWriteItRelation(WriteItPopitTestCase):
 
         self.assertEquals(response.status_code, 200)
         # It should have been updated
-        self.assertTrue(self.popolo_source.persons.all())
+        self.assertTrue(PopoloPerson.objects.origin(self.popolo_source))
 
     @popit_load_data()
     def test_doesnt_add_another_relation_w_p(self):

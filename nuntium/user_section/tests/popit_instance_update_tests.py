@@ -44,11 +44,11 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
         no matter if there are two persons related
         '''
         w = WriteItInstance.objects.first()
-        popolo_source = w.persons.first().popolo_sources.first()
+        popolo_source = w.persons.first().popolo_source
         another_person = PopoloPerson.objects.create(
             name="Another Person but with the same Popolo source",
             )
-        another_person.popolo_sources.add(popolo_source)
+        another_person.add_link_to_popolo_source(popolo_source)
         InstanceMembership.objects.create(writeitinstance=w, person=another_person)
         WPBackfillRecords.back_fill_popit_records(writeitinstance=w)
         records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
