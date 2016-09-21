@@ -1570,12 +1570,7 @@ msgstr "Adresáti neuvidí Vaší emailovou adresu"
 msgid "To:"
 msgstr ""
 
-#: nuntium/templates/thread/message_mini.html:7
-#: writeit/templates/subdomains/iran/nuntium/instance_detail.html:19
-msgid "and"
-msgstr ""
-
-#: nuntium/templates/thread/message_mini.html:17
+#: nuntium/templates/thread/message_mini.html:20
 #, python-format
 msgid ""
 "\n"
@@ -1617,7 +1612,12 @@ msgstr "Odpovědi budou zveřejněny zde."
 msgid "Back to all messages"
 msgstr "Zpět na všechny zprávy"
 
-#: nuntium/templates/thread/read.html:53
+#: nuntium/templates/thread/read.html:33
+#: writeit/templates/subdomains/iran/thread/read.html:34
+msgid "This message is awaiting moderation."
+msgstr ""
+
+#: nuntium/templates/thread/read.html:57
 #: writeit/templates/subdomains/infoszab/thread/read.html:49
 #: writeit/templates/subdomains/iran/thread/read.html:48
 msgid "Report for abuse"
@@ -1843,7 +1843,11 @@ msgstr ""
 msgid "Dear"
 msgstr ""
 
-#: writeit/templates/subdomains/iran/nuntium/instance_detail.html:22
+#: writeit/templates/subdomains/iran/nuntium/instance_detail.html:36
+msgid "and"
+msgstr ""
+
+#: writeit/templates/subdomains/iran/nuntium/instance_detail.html:41
 #, python-format
 msgid "Yours sincerely, <br> %(author_name)s"
 msgstr ""
