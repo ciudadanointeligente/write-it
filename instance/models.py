@@ -1,3 +1,4 @@
+from copy import copy
 import datetime
 
 from django.conf import settings
@@ -26,6 +27,19 @@ class PopoloPerson(Person):
     links_to_popolo_sources = GenericRelation(
         LinkToPopoloSource,
         related_query_name='people')
+
+    @classmethod
+    def create_from_base_instance(cls, person):
+        # Sometimes we have an instance of the base Person model, but
+        # want the proxy model instance instead for its helper methods
+        # or to add to a PopoloPerson relation. This seems like a
+        # pretty horrible way to do it, but I don't know a neater way
+        # to do this without something like
+        # PopoloPerson.objects.get(pk=person.id) which would incur a
+        # database query. http://stackoverflow.com/q/18473850/223092
+        person = copy(person)
+        person.__class__ = cls
+        return person
 
     @property
     def popolo_source(self):
@@ -101,6 +115,10 @@ class WriteItInstance(models.Model):
     owner = models.ForeignKey(User, related_name="writeitinstances")
 
     def add_person(self, person):
+        # If we get given the base class rather than the proxy
+        # class, we have to convert it before assigning it.
+        if person._meta.model.__name__ == 'Person':
+            person = PopoloPerson.create_from_base_instance(person)
         InstanceMembership.objects.get_or_create(
             writeitinstance=self, person=person)
 
