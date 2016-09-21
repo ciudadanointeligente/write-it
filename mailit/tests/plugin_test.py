@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.forms import ValidationError
 from django.test.utils import override_settings
-from django.utils.translation import activate
+from django.utils.translation import activate, override
 
 from contactos.models import Contact, ContactType
 from instance.models import WriteItInstance
@@ -136,6 +136,28 @@ class MailSendingTestCase(TestCase):
 
         self.assertEquals(len(message.to), 1)
         self.assertIn("pdaire@ciudadanointeligente.org", message.to)
+
+    def test_sending_email_links_for_default_language(self):
+        # Change the default language of the instance, and check that the
+        instance_config = self.outbound_message1.message.writeitinstance.config
+        instance_config.default_language = 'fa'
+        instance_config.save()
+
+        result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
+
+        self.assertTrue(result_of_sending)
+        self.assertTrue(fatal_error is None)
+        self.assertEquals(len(mail.outbox), 1)  # it is sent to one person pointed in the contact
+        message = mail.outbox[0]
+
+        # Note that the '/fa/' part of these links is what we're
+        # really looking for:
+        self.assertIn(
+            'via instance 1 (http://instance1.127.0.0.1.xip.io:8000/fa/)',
+            message.body)
+        self.assertIn(
+            'will be published at http://instance1.127.0.0.1.xip.io:8000/fa/thread/subject-1/',
+            message.body)
 
     @override_settings(EMAIL_SUBJECT_PREFIX='[WriteIT]')
     def test_content_justification(self):
@@ -296,7 +318,9 @@ class MailSendingTestCase(TestCase):
 
         self.assertTrue(message.author_name in mail.outbox[0].body)
         self.assertTrue(message.author_email not in mail.outbox[0].body)
-        self.assertIn(self.writeitinstance2.get_absolute_url(), mail.outbox[0].body)
+        with override(self.writeitinstance2.config.default_language):
+            expected_site_url = self.writeitinstance2.get_absolute_url()
+        self.assertIn(expected_site_url, mail.outbox[0].body)
 
     def test_it_sends_an_email_from_a_custom_domain(self):
         '''
