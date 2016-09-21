@@ -7,6 +7,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core import mail
 from django.db import models, transaction
+from django.db.models import Prefetch
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext_lazy as _
 
@@ -37,6 +38,13 @@ class PopoloPersonQuerySet(models.QuerySet):
                 identifiers__scheme='popolo_uri',
                 identifiers__identifier=uri_from_api)
 
+    def origin(self, popolo_source):
+        return self \
+            .prefetch_related(Prefetch(
+                'links_to_popolo_sources',
+                LinkToPopoloSource.objects.select_related('popolo_source'))) \
+            .filter(
+                links_to_popolo_sources__popolo_source=popolo_source)
 
 class PopoloPerson(Person):
     class Meta:
@@ -121,6 +129,16 @@ class PopoloPerson(Person):
             return new_url
         msg = "Could find no global identifier for PopoloPerson with ID {0}"
         raise PopoloIdentifier.DoesNotExist(msg.format(self.pk))
+
+    # This is actually only used in tests; associations with a
+    # PopoloSource should all be handled by the update code in
+    # multiple-django-popolo-sources.
+    def add_link_to_popolo_source(self, popolo_source):
+        ct = ContentType.objects.get_for_model(Person)
+        LinkToPopoloSource.objects.get_or_create(
+            popolo_source=popolo_source,
+            content_type=ct,
+            object_id=self.id)
 
 
 def today_in_date_range(start_date, end_date):

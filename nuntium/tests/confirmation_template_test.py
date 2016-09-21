@@ -133,7 +133,7 @@ class ConfirmationTemplateTestCase(TestCase):
             )
         popolo_source = PopoloSource.objects.get(pk=1)
         recipient = PopoloPerson.objects.create(name='Test Person')
-        popolo_source.persons.add(recipient)
+        recipient.add_link_to_popolo_source(popolo_source)
         contact_type = ContactType.objects.create(
             name='Contact Type Name',
             label_name='Contact Type Label',
@@ -249,7 +249,7 @@ class SendConfirmationEmailTestCase(TestCase):
             )
         popolo_source = PopoloSource.objects.get(pk=1)
         recipient = PopoloPerson.objects.create(name='Test Person')
-        popolo_source.persons.add(recipient)
+        recipient.add_link_to_popolo_source(popolo_source)
         contact_type = ContactType.objects.create(
             name='Contact Type Name',
             label_name='Contact Type Label',

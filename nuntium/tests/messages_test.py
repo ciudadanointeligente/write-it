@@ -478,7 +478,7 @@ class MysqlTesting(UsingDbMixin, OriginalTestCase):
             owner=user,
             )
         self.person1 = PopoloPerson.objects.create(name='Pedro')
-        popolo_source.persons.add(self.person1)
+        self.person1.add_link_to_popolo_source(popolo_source)
 
     # This test was a bug against mysql
     def test_a_message_with_a_changed_slug(self):
@@ -542,7 +542,7 @@ class PostgresTesting(UsingDbMixin, OriginalTestCase):
             slug='instance-1',
             owner=user)
         self.person1 = PopoloPerson.objects.create(name='Pedro')
-        popolo_source.persons.add(self.person1)
+        self.person1.add_link_to_popolo_source(popolo_source)
 
     # This test was a bug against mysql
     def test_a_message_with_a_changed_slug(self):

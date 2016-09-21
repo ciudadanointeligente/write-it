@@ -230,7 +230,7 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
         p.identifiers.create(
             scheme='popit_id',
             identifier='52bc7asdasd34567')
-        popolo_source.persons.add(p)
+        p.add_link_to_popolo_source(popolo_source)
         url = '/api/v1/instance/%(writeitinstance_id)i/messages/' % {
             'writeitinstance_id': self.writeitinstance.id,
         }
