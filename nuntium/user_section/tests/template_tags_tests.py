@@ -53,7 +53,7 @@ class ListContactsTemplateTag(TestCase):
             "people": people
             })
         rendered = t.render(c)
-        self.assertEquals(u'Pedro , Marcel , Felipe', rendered)
+        self.assertEquals(u'Pedro, Marcel, Felipe', rendered)
 
     def test_join_with_commas_english(self):
         '''

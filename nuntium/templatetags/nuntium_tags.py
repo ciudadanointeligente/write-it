@@ -38,7 +38,7 @@ def join_with_commas(obj_list, language_code=None):
         if (language_code is None) or language_code.startswith('en'):
             return u", ".join(unicode(obj) for obj in obj_list[:list_len - 1]) + u" and " + unicode(obj_list[list_len - 1])
         else:
-            return u" , ".join(unicode(obj) for obj in obj_list)
+            return u", ".join(unicode(obj) for obj in obj_list)
 
 
 @register.assignment_tag(takes_context=True)
