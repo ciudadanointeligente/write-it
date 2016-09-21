@@ -15,7 +15,7 @@
           {% for message in recent_messages %}
           <li class="letter-list-item container">
           <a href="{% url 'thread_read' slug=message.slug %}">
-            <h2>{{ message.author_name }} <img src="{% static 'iran/images/iran/arrow-grey-left.svg' %}" onerror="this.src='{% static 'iran/images/iran/arrow-grey-left.png' %}'; this.onerror=null;" alt="to"> {% for person in message.people %}{{ person.name }}{% endfor %}</h2>
+            <h2>{{ message.author_name }} <img src="{% static 'iran/images/iran/arrow-grey-left.svg' %}" onerror="this.src='{% static 'iran/images/iran/arrow-grey-left.png' %}'; this.onerror=null;" alt="to"> {{ message.people|join_with_commas:LANGUAGE_CODE }}</h2>
           </a>
           <div class="content container">
             {% comment %}
