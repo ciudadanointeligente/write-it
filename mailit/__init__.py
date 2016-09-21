@@ -5,6 +5,7 @@ import textwrap
 from django.conf import settings
 from django.core.mail import mail_admins
 from django.core.mail.message import EmailMultiAlternatives
+from django.utils.translation import override
 
 from smtplib import SMTPServerDisconnected, SMTPResponseException
 
@@ -45,32 +46,32 @@ class MailChannel(OutputPlugin):
         except:
             return False, False
 
-        author_name = outbound_message.message.author_name
-        context = {
-            'subject': outbound_message.message.subject,
-            'content': outbound_message.message.content,
-            'content_indented': process_content(outbound_message.message.content),
-            'person': outbound_message.contact.person.name,
-            'author': author_name,
-            'site_url': writeitinstance.get_absolute_url(),
-            'message_url': outbound_message.message.get_absolute_url(),
-            'site_name': writeitinstance.name,
-            'owner_email': writeitinstance.owner.email,
-            }
-        try:
-            text_content = template.get_content_template().format(**context)
-            html_content = template.content_html_template.format(**escape_dictionary_values(context))
-            subject = template.subject_template.format(**context)
-        except KeyError, error:
-            log = "Error with templates for instance %(instance)s and the error was '%(error)s'"
-            log = log % {
-                'instance': writeitinstance.name,
-                'error': error.__unicode__()
+        with override(writeitinstance.config.default_language):
+            author_name = outbound_message.message.author_name
+            context = {
+                'subject': outbound_message.message.subject,
+                'content': outbound_message.message.content,
+                'content_indented': process_content(outbound_message.message.content),
+                'person': outbound_message.contact.person.name,
+                'author': author_name,
+                'site_url': writeitinstance.get_absolute_url(),
+                'message_url': outbound_message.message.get_absolute_url(),
+                'site_name': writeitinstance.name,
+                'owner_email': writeitinstance.owner.email,
                 }
-            mail_admins("Problem sending an email", log)
-            logging.info(log)
-            return False, True
-
+            try:
+                text_content = template.get_content_template().format(**context)
+                html_content = template.content_html_template.format(**escape_dictionary_values(context))
+                subject = template.subject_template.format(**context)
+            except KeyError, error:
+                log = "Error with templates for instance %(instance)s and the error was '%(error)s'"
+                log = log % {
+                    'instance': writeitinstance.name,
+                    'error': error.__unicode__()
+                    }
+                mail_admins("Problem sending an email", log)
+                logging.info(log)
+                return False, True
 
         if settings.SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL:
             from_email = author_name + " <" + settings.DEFAULT_FROM_EMAIL + ">"
