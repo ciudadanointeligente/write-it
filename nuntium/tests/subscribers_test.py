@@ -169,6 +169,23 @@ class NewAnswerNotificationToSubscribers(TestCase):
             self.instance.slug + "@" + settings.DEFAULT_FROM_DOMAIN,
             )
 
+    def test_new_answer_notification_email_uses_sensible_language(self):
+        self.instance.config.default_language = 'fa'
+        self.instance.config.save()
+
+        self.create_a_new_answer()
+
+        self.assertEquals(len(mail.outbox), 1)
+        self.assertEquals(len(mail.outbox[0].to), 1)
+        self.assertFalse(mail.outbox[0].alternatives)
+        self.assertEquals(mail.outbox[0].to[0], self.subscriber.email)
+
+        message_body = mail.outbox[0].body
+
+        self.assertIn(
+            'http://instance1.127.0.0.1.xip.io:8000/fa/thread/subject-1/',
+            message_body)
+
     def test_answer_notification_with_html(self):
         # Put some html in the new answer notification template
         new_answer_notification_template = self.message.writeitinstance.new_answer_notification_template
