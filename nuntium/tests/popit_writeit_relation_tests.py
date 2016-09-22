@@ -75,7 +75,7 @@ class PopitWriteitRelationRecord(TestCase):
 
     @popit_load_data()
     def test_clean_memberships(self):
-        '''As part of bug #429 there can be several Membership between one writeitinstance and a person'''
+        '''As a result of #429 there might be several Membership between one writeitinstance and a person'''
         popolo_source, created = PopoloSource.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         # there should be an amount of memberships
