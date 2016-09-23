@@ -1,5 +1,7 @@
 {% load i18n %}
 
+{% get_current_language as LANGUAGE_CODE %}
+
             <div class="letter-view">
                 <div class="address">
 
@@ -30,7 +32,7 @@
                     <p><span>{% trans "Subject" %}: </span>{{ message.subject }}</p>
 
         {% if message.created %}
-                    <p><span>{% trans "Date" %}: </span>{{ message.created }}</p>
+                    <p><span>{% trans "Date" %}: </span>{{ message.created|localize_datetime:LANGUAGE_CODE }}</p>
         {% endif %}
 
               </div>

@@ -1,4 +1,7 @@
 {% load i18n %}
+{% load nuntium_tags %}
+
+{% get_current_language as LANGUAGE_CODE %}
 
 <div class="message {% if recently_sent %}message--sent{% endif %}">
     <dl class="message__meta">
@@ -38,7 +41,7 @@
 
         {% if message.created %}
             <dt>{% trans "Date" %}</dt>
-            <dd>{{ message.created }}</dd>
+            <dd>{{ message.created|localize_datetime:LANGUAGE_CODE }}</dd>
         {% endif %}
 
     </dl>

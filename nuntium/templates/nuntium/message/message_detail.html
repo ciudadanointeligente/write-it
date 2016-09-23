@@ -3,6 +3,10 @@
 {% load subdomainurls %}
 {% block content %}
 {% load markdown_deux_tags %}
+{% load nuntium_tags %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
 <div class="panel panel-default container-fluid">
   <div class="panel-heading row">
     <h1 class="panel-title">{{ message.subject }}</h1>
@@ -23,7 +27,7 @@
     <a href="{{other_messages_by}}">{{ name }}</a>.{% endblocktrans %}</small></span>
     <div class='col-md-4 col-md-offset-4'>
       {% if message.created %}
-      {{ message.created }}
+      {{ message.created|localize_datetime:LANGUAGE_CODE }}
       {% endif %}</div>
 
   </div>
