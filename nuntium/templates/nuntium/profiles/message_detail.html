@@ -4,6 +4,8 @@
 {% load staticfiles %}
 {% load nuntium_tags %}
 
+{% get_current_language as LANGUAGE_CODE %}
+
 {% block extrajs %}
 {% endblock extrajs %}
 
@@ -47,7 +49,7 @@
 	  <dd><a href="{% url 'thread_read' slug=message.slug subdomain=message.writeitinstance.slug %}"><i class="fa fa-link"></i> {% trans "Public page" %}</a></dd>
 	  {% endif %}
 	  <dt>{% trans "Creation Date" %}</dt>
-	  <dd>{{ message.created }}</dd>
+	  <dd>{{ message.created|localize_datetime:LANGUAGE_CODE }}</dd>
       <dt>{% trans "Content" %}</dt>
       <dd>{{ message.content|linebreaksbr }}</dd>
 	</dl>

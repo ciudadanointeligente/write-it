@@ -10,7 +10,7 @@
           {{ message.people|join_with_commas:LANGUAGE_CODE }}
         </p>
         {% if message.created %}
-        <p class="mini-thread__message__date">{{ message.created }}</p>
+        <p class="mini-thread__message__date">{{ message.created|localize_datetime:LANGUAGE_CODE }}</p>
         {% endif %}
     </a>
 
@@ -22,7 +22,7 @@
             {% endblocktrans %}
         </p>
         {% if answer.created %}
-        <p class="mini-thread__message__date">{{ answer.created }}</p>
+        <p class="mini-thread__message__date">{{ answer.created|localize_datetime:LANGUAGE_CODE }}</p>
         {% endif %}
     </a>
     {% endfor %}
