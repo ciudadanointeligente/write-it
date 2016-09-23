@@ -1,5 +1,6 @@
 import os
 import re
+from khayyam import JalaliDatetime
 from django import template
 from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
@@ -39,6 +40,15 @@ def join_with_commas(obj_list, language_code=None):
             return u", ".join(unicode(obj) for obj in obj_list[:list_len - 1]) + u" and " + unicode(obj_list[list_len - 1])
         else:
             return u", ".join(unicode(obj) for obj in obj_list)
+
+
+@register.filter
+def localize_datetime(dt, language_code=None):
+    if language_code == 'fa':
+        jdt = JalaliDatetime(dt)
+        return jdt.strftime('%C')
+    else:
+        return dt
 
 
 @register.assignment_tag(takes_context=True)

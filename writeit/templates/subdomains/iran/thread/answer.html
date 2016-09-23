@@ -1,5 +1,7 @@
 {% load i18n %}
 
+{% get_current_language as LANGUAGE_CODE %}
+
             <div class="letter-view container">
 
                 <div class="address">
@@ -14,7 +16,7 @@
           {% endwith %}
                     </p>
 
-                    <p><span>{% trans "Date" %}: </span>{{ answer.created }}</p>
+                    <p><span>{% trans "Date" %}: </span>{{ answer.created|localize_datetime:LANGUAGE_CODE }}</p>
                 </div>
 
                 <div class="content">{{ answer.content|linebreaksbr }}</div>

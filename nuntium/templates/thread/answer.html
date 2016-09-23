@@ -2,6 +2,8 @@
 
 {# :TODO: Might want to merge this into /thread/message.html? #}
 
+{% get_current_language as LANGUAGE_CODE %}
+
 <div class="message message--reply">
     <dl class="message__meta">
 
@@ -18,7 +20,7 @@
 
         {% if answer.created %}
             <dt>{% trans "Date" %}</dt>
-            <dd>{{ answer.created }}</dd>
+            <dd>{{ answer.created|localize_datetime:LANGUAGE_CODE }}</dd>
         {% endif %}
 
     </dl>
