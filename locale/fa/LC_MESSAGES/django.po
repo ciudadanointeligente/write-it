@@ -1561,7 +1561,7 @@ msgid ""
 "\n"
 "                Reply from %(name)s\n"
 "            "
-msgstr ""
+msgstr "\nپاسخ نامه از طرف %(name)s"
 
 #: nuntium/templates/thread/read.html:15
 #: writeit/templates/subdomains/infoszab/thread/read.html:15
@@ -1825,6 +1825,10 @@ msgstr "مجلس‌نامه"
 #, python-format
 msgid "Dear %(recipient_names)s,"
 msgstr "%(recipient_names)s گرامی"
+
+#: writeit/templates/subdomains/iran/nuntium/instance_detail.html:36
+msgid "Dear"
+msgstr "گرامی"
 
 #: writeit/templates/subdomains/iran/nuntium/instance_detail.html:36
 msgid "and"
