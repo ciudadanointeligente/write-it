@@ -100,10 +100,15 @@ managepatterns = patterns('',
 
 )
 
+js_info_dict = {
+    'packages': ('nuntium',),
+}
+
 write_message_wizard = WriteMessageView.as_view(url_name='write_message_step')
 
 urlpatterns = i18n_patterns('',
     url(r'^$', WriteItInstanceDetailView.as_view(), name='instance_detail'),
+    url(r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
     url(r'^write/sign/(?P<slug>[-\w]+)/$', ConfirmView.as_view(), name='confirm'),
     url(r'^write/sign/$', WriteSignView.as_view(), name='write_message_sign'),
     url(r'^write/(?P<step>.+)/$', write_message_wizard, name='write_message_step'),
