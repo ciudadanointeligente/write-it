@@ -19,6 +19,7 @@ from nuntium.views import (
     WriteMessageView,
     WriteSignView,
     WriteItInstanceDetailView,
+    MissingContactsView,
     )
 from nuntium.user_section.views import (
     AcceptMessageView,
@@ -115,6 +116,7 @@ urlpatterns = i18n_patterns('',
     url(r'^write/$', write_message_wizard, name='write_message'),
     # url(r'^write/draft/$', TemplateView.as_view(template_name='write/draft.html'), name='write_draft'),
     # url(r'^write/preview/$', TemplateView.as_view(template_name='write/preview.html'), name='write_preview'),
+    url(r'^missing/$', MissingContactsView.as_view(), name='missing_contacts'),
     url(r'^threads/$', MessageThreadsView.as_view(), name='message_threads'),
     url(r'^thread/(?P<slug>[-\w]+)/$', MessageThreadView.as_view(), name='thread_read'),
     url(r'^per_person/(?P<pk>[-\d]+)/$', MessagesPerPersonView.as_view(), name='messages_per_person'),

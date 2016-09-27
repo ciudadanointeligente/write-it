@@ -1,0 +1,32 @@
+{% extends "base_instance.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block promo %}
+{% endblock %}
+
+
+{% block content_inner %}
+
+  <h1>{% trans "Help to find missing contact details" context "Title of page appealing for help finding more contact details" %}</h1>
+
+  <p>
+    {% blocktrans trimmed %}
+      We don’t have an email address for any of the people
+      listed below. If you know or can find the email addresses
+      for any of them, please contact us using the following form:
+    {% endblocktrans %}
+  </p>
+
+  <p>
+    [TODO: implement a form that sends an email to the instance owner;
+    that email address should not be revealed on the site.]
+  </p>
+
+  <ul>
+    {% for person in missing_people %}
+      <li>{{ person.name }}</li>
+    {% endfor %}
+  </ul>
+
+{% endblock content_inner %}

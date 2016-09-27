@@ -1,0 +1,33 @@
+{% extends "base_instance.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block promo %}
+{% endblock %}
+
+
+{% block content_inner %}
+
+    <div class="full-width-wrapper write-wrapper">
+      <main class="centred write">
+
+        <h1>{% trans "Help to find missing contact details" context "Title of page appealing for help finding more contact details" %}</h1>
+
+        <p>
+          {% blocktrans trimmed with email='support@namehbeanha.com' %}
+            We don’t have an email address for any of the people
+            listed below. If you know or can find the email addresses
+            for any of them, please contact us at: {{email}}
+          {% endblocktrans %}
+        </p>
+
+        <ul>
+          {% for person in missing_people %}
+            <li>{{ person.name }}</li>
+          {% endfor %}
+        </ul>
+
+      </main>
+    </div>
+
+{% endblock content_inner %}
