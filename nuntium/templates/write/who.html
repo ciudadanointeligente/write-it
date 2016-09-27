@@ -11,6 +11,7 @@
 {% endblock extracss %}
 
 {% block extrascripts %}
+    <script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
     <script src="{% static 'js/chosen.jquery.min.js' %}"></script>
     <script>
     window.who = {
