@@ -122,7 +122,11 @@ class WriteMessageView(NamedUrlSessionWizardView):
 
     def get_form_kwargs(self, step):
         if step == 'who':
-            return {'persons_queryset': self.writeitinstance.persons_with_contacts.order_by('name')}
+            return {
+                'persons_queryset':
+                self.writeitinstance.persons \
+                    .prefetch_related('contact_set').order_by('name')
+            }
         elif step == 'draft':
             return {'allow_anonymous_messages': self.writeitinstance.config.allow_anonymous_messages}
         else:

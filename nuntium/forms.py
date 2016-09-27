@@ -5,7 +5,6 @@ from django.forms import ModelForm, ModelMultipleChoiceField, SelectMultiple, UR
 from instance.models import WriteItInstance
 from .models import Message, Confirmation
 
-from contactos.models import Contact
 from popolo.models import Person
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _, ungettext
@@ -16,11 +15,21 @@ from django.utils.safestring import mark_safe
 
 
 class PersonSelectMultipleWidget(SelectMultiple):
+
+    def __init__(self, *args, **kwargs):
+        person_queryset = kwargs.pop('person_queryset')
+        super(PersonSelectMultipleWidget, self).__init__(*args, **kwargs)
+        self.person_id_to_person = {
+            person.id: person
+            for person in person_queryset
+        }
+
     def render_option(self, selected_choices, option_value, option_label):
-        person = Person.objects.get(id=option_value)
-        contacts_exist = Contact.are_there_contacts_for(person)
-        if not contacts_exist:
-            option_label += u" *"
+        person = self.person_id_to_person[option_value]
+        css_class = 'uncontactable'
+        for contact in person.contact_set.all():
+            if not contact.is_bounced:
+                css_class = ''
         option_value = force_text(option_value)
         if option_value in selected_choices:
             selected_html = mark_safe(u' selected="selected"')
@@ -32,14 +41,22 @@ class PersonSelectMultipleWidget(SelectMultiple):
             #     selected_choices.remove(option_value)
         else:
             selected_html = ''
-        return format_html(u'<option value="{0}"{1}>{2}</option>',
+        return format_html(u'<option class="{0}" value="{1}"{2}>{3}</option>',
+                           css_class,
                            option_value,
                            selected_html,
                            force_text(option_label))
 
 
 class PersonMultipleChoiceField(ModelMultipleChoiceField):
-    widget = PersonSelectMultipleWidget(attrs={'class': 'chosen-person-select'})
+
+    def __init__(self, queryset, *args, **kwargs):
+        kwargs['widget'] = PersonSelectMultipleWidget(
+            person_queryset=queryset,
+            attrs={'class': 'chosen-person-select'}
+        )
+        super(PersonMultipleChoiceField, self).__init__(
+            queryset, *args, **kwargs)
 
     def label_from_instance(self, obj):
         return obj.name
@@ -94,11 +111,11 @@ class MessageCreateForm(ModelForm):
 
 
 class WhoForm(Form):
-    persons = PersonMultipleChoiceField(queryset=Person.objects.none())
 
     def __init__(self, persons_queryset, *args, **kwargs):
         super(WhoForm, self).__init__(*args, **kwargs)
-        self.fields['persons'].queryset = persons_queryset
+        self.fields['persons'] = \
+            PersonMultipleChoiceField(queryset=persons_queryset)
 
 
 class DraftForm(ModelForm):

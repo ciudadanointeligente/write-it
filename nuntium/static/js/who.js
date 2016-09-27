@@ -1,14 +1,5 @@
 $(function(){
 
-  // Temporarily add the "uncontactable" class to a people whose
-  // names end with a vowel (just an example!!).
-  // TODO: This should be done in forms.py > PersonMultipleChoiceField
-  $('.chosen-person-select option').each(function(i){
-    if( /[aeiou]$/.test( $(this).text() ) ){
-      $(this).addClass('uncontactable');
-    }
-  });
-
   // Copy the "uncontactable" class from the original dropdown `<option>`s,
   // onto the chosen.js dropdown `<li>`s.
   $('.chosen-person-select').on('chosen:showing_dropdown', function(e, params){
