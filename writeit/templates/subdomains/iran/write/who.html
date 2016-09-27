@@ -12,6 +12,19 @@
 {% endblock extracss %}
 
 {% block extrascripts %}
+    {% comment %}
+        Unfortunately we can't use the 'as variable_name' form of
+        the subdomain 'url' tag, as you can with the standard Django url tag:
+          https://github.com/tkaemming/django-subdomains/issues/25
+        Ideally we would like to do that first, and then make
+        sure the escapejs filter is applied to the URL before being used
+        in a quoted Javascript string.  It shouldn't be possible to create
+        a XSS attack even without this, but it would be good to have the
+        extra assurance.
+    {% endcomment %}
+    <script>
+      var missingContactsURL = '{% url 'missing_contacts' subdomain=writeitinstance.slug %}';
+    </script>
     <script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
     <script src="{% static 'js/chosen.jquery.min.js' %}"></script>
     <script>
@@ -72,4 +85,3 @@
   {% endif %}
 
 {% endblock content_inner %}
-

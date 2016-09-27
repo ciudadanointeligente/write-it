@@ -20,7 +20,8 @@ $(function(){
     var choicesSentence = interpolate(
       gettext("%(open_danger_tag)sRemove this recipient%(close_tag)s or %(open_default_tag)sContribute new contact details%(close_tag)s"),
       {open_danger_tag: '<a class="btn btn-danger btn-sm js-deselect">',
-       open_default_tag: '<a class="btn btn-default btn-sm" href="http://example.com" target="_blank">',
+       open_default_tag: '<a class="btn btn-default btn-sm" href="' +
+       missingContactsURL + '" target="_blank">',
        close_tag: '</a>'},
       true);
     $warning.attr('role', 'alert');
