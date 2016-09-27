@@ -14,15 +14,18 @@ $(function(){
 
   var showUncontactableWarning = function showUncontactableWarning($selectedOption, $originalSelect, $chosenSelect){
     var $warning = $('<div>').addClass('alert alert-danger uncontactable-alert');
+    var warningSentence = interpolate(
+      gettext("We do not have contact details for %s."),
+      [$selectedOption.text()]);
+    var choicesSentence = interpolate(
+      gettext("%(open_danger_tag)sRemove this recipient%(close_tag)s or %(open_default_tag)sContribute new contact details%(close_tag)s"),
+      {open_danger_tag: '<a class="btn btn-danger btn-sm js-deselect">',
+       open_default_tag: '<a class="btn btn-default btn-sm" href="http://example.com" target="_blank">',
+       close_tag: '</a>'},
+      true);
     $warning.attr('role', 'alert');
-    // TODO: i18n!!
     $warning.html(
-      '<p>We do not have contact details for ' + $selectedOption.text() + '.</p>' +
-      '<p>' +
-      '<a class="btn btn-danger btn-sm js-deselect">Remove this recipient</a> ' +
-      '<span class="or">or</span> ' +
-      '<a class="btn btn-default btn-sm" href="http://example.com" target="_blank">Contribute new contact details</a>' +
-      '</p>'
+      '<p>' + warningSentence + '</p><p>' + choicesSentence + '</p>'
     );
     $warning.insertAfter($chosenSelect);
     $warning.on('click', '.js-deselect', function(){
