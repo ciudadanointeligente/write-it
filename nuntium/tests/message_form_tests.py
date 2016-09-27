@@ -1,7 +1,7 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from popit.models import Person
-from contactos.models import Contact
+from popit.models import ApiInstance, Person
+from contactos.models import Contact, ContactType
 from instance.models import Membership, WriteItInstance
 from ..models import Message, Confirmation, OutboundMessage
 from ..forms import MessageCreateForm, PersonMultipleChoiceField
@@ -23,7 +23,8 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
         self.assertTrue(isinstance(widget, SelectMultiple))
 
     def test_get_label_from_instance(self):
-        field = PersonMultipleChoiceField(queryset=Person.objects.all())
+        field = PersonMultipleChoiceField(
+            queryset=Person.objects.prefetch_related('contact_set'))
         label = field.label_from_instance(self.person1)
 
         self.assertEquals(label, self.person1.name)
@@ -32,9 +33,11 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
         felipe = Person.objects.get(name="Felipe")
         felipe.contact_set.all().delete()
         # This guy does not have any contacts
-        field = PersonMultipleChoiceField(queryset=Person.objects.all())
+        field = PersonMultipleChoiceField(
+            queryset=Person.objects.prefetch_related('contact_set'))
         rendered_field = field.widget.render(name='oli', value=None)
-        self.assertIn(">Felipe *</option>", rendered_field)
+        self.assertIn('class="uncontactable"', rendered_field)
+        self.assertIn(">Felipe</option>", rendered_field)
 
     def test_persons_with_bounced_contact(self):
         felipe = Person.objects.get(name="Felipe")
@@ -43,9 +46,11 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
             contact.save()
 
         # This guy does not have any good contacts
-        field = PersonMultipleChoiceField(queryset=Person.objects.all())
+        field = PersonMultipleChoiceField(
+            queryset=Person.objects.prefetch_related('contact_set'))
         rendered_field = field.widget.render(name='oli', value=None)
-        self.assertIn(">Felipe *</option>", rendered_field)
+        self.assertIn('class="uncontactable"', rendered_field)
+        self.assertIn(">Felipe</option>", rendered_field)
 
     def test_persons_with_bounced_contact_unicode(self):
         felipe = Person.objects.get(name="Felipe")
@@ -57,15 +62,49 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
             contact.save()
 
         # This guy does not have any good contacts
-        field = PersonMultipleChoiceField(queryset=Person.objects.all())
+        field = PersonMultipleChoiceField(
+            queryset=Person.objects.prefetch_related('contact_set'))
         rendered_field = field.widget.render(name='oli', value=None)
-        self.assertIn(u">Felipe Álvarez *</option>", rendered_field)
+        self.assertIn('class="uncontactable"', rendered_field)
+        self.assertIn(u">Felipe Álvarez</option>", rendered_field)
 
     def test_previously_selected_persons(self):
-        field = PersonMultipleChoiceField(queryset=Person.objects.all())
+        field = PersonMultipleChoiceField(
+            queryset=Person.objects.prefetch_related('contact_set'))
         rendered_field = field.widget.render(name='oli', value=[3])
-        self.assertIn('<option value="3" selected="selected">Felipe</option>', rendered_field)
+        self.assertIn('<option class="" value="3" selected="selected">Felipe</option>', rendered_field)
 
+    def test_not_too_many_queries(self):
+        wii = WriteItInstance.objects.get(id=1)
+        email_type = ContactType.objects.get(id=1)
+        api_instance = ApiInstance.objects.get(id=1)
+        for name, email in [
+                ('Alice', 'alice@example.com'),
+                ('Bob', 'bob@example.com'),
+                ('Charles', 'charles@example.com'),
+                ('Mallory', 'mallory@example.com'),
+        ]:
+            p = Person.objects.create(
+                name=name,
+                api_instance=api_instance,
+            )
+            Contact.objects.create(
+                person=p,
+                contact_type=email_type,
+                writeitinstance=wii,
+                value=email)
+        # Ideally, this should just be two queries - one for the query
+        # on Person and one of the prefetch on Contact; however, the
+        # querset actually gets evaluated twice at the moment: once in
+        # the initializer of PersonSelectMultipleWidget and once when
+        # render_options evaluates 'choices'.  So this isn't ideal,
+        # but this assertion at least should catch anyone changing the
+        # code back so that there's the N+1 queries problem.
+        with self.assertNumQueries(4):
+            field = PersonMultipleChoiceField(
+                queryset=Person.objects.prefetch_related('contact_set'))
+            rendered_field = field.widget.render(name='oli', value=None)
+            self.assertNotIn('uncontactable', rendered_field)
 
 class MessageFormTestCase(TestCase):
     def setUp(self):
