@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-19 11:49-0500\n"
+"POT-Creation-Date: 2016-09-27 08:27-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -93,7 +93,12 @@ msgid_plural "You can send messages to at most %(count)d people"
 msgstr[0] ""
 msgstr[1] ""
 
-#: nuntium/forms.py:121
+#: nuntium/forms.py:128
+#, python-brace-format
+msgid "We have no contact details for the following people: {list_of_names}"
+msgstr ""
+
+#: nuntium/forms.py:152
 msgid "Author name is required"
 msgstr ""
 
@@ -1706,6 +1711,16 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
+#: nuntium/templates/write/missing_contacts.html:11
+#: writeit/templates/subdomains/iran/write/missing_contacts.html:14
+msgctxt "Title of page appealing for help finding more contact details"
+msgid "Help to find missing contact details"
+msgstr ""
+
+#: nuntium/templates/write/missing_contacts.html:14
+msgid "We don’t have an email address for any of the people listed below. If you know or can find the email addresses for any of them, please contact us using the following form:"
+msgstr ""
+
 #: nuntium/templates/write/preview.html:14
 #: writeit/templates/subdomains/iran/write/preview.html:20
 msgid "Are you happy for this message to be made public?"
@@ -1737,8 +1752,13 @@ msgstr ""
 msgid "We have emailed you a confirmation link. Please click it."
 msgstr ""
 
-#: nuntium/templates/write/who.html:12
-#: writeit/templates/subdomains/iran/write/who.html:12
+#: nuntium/templates/write/who.html:9
+#: writeit/templates/subdomains/iran/write/who.html:9
+msgid "(No contact details)"
+msgstr ""
+
+#: nuntium/templates/write/who.html:34
+#: writeit/templates/subdomains/iran/write/who.html:34
 msgid "No recipients match"
 msgstr ""
 
@@ -1849,6 +1869,11 @@ msgstr ""
 
 #: writeit/templates/subdomains/iran/write/draft.html:47
 msgid "Your email <small>Nobody will see this, ever.</small>"
+msgstr ""
+
+#: writeit/templates/subdomains/iran/write/missing_contacts.html:17
+#, python-format
+msgid "We don’t have an email address for any of the people listed below. If you know or can find the email addresses for any of them, please contact us at: %(email)s"
 msgstr ""
 
 #: writeit/templates/subdomains/iran/write/sign.html:34
