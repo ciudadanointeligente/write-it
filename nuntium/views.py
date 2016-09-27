@@ -347,6 +347,21 @@ class WriteSignView(TemplateView):
         return context
 
 
+class MissingContactsView(TemplateView):
+    template_name = 'write/missing_contacts.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(MissingContactsView, self).get_context_data(**kwargs)
+        wii = get_object_or_404(WriteItInstance, slug=self.request.subdomain)
+        context['writeitinstance'] = wii
+        # We exclude any person with an email address which is not
+        # bouncing. (It'd be good to find new email addresses to
+        # replace those that are bouncing.)
+        context['missing_people'] = wii.persons.exclude(
+            contact__is_bounced=False).order_by('name')
+        return context
+
+
 class AboutView(WriteItInstanceDetailView):
     template_name = 'about.html'
 
