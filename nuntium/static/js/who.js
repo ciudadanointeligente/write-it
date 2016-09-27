@@ -78,4 +78,9 @@ $(function(){
     single_backstroke_delete: false
   });
 
+  // Hide the errror list - this only shows validation errors from
+  // people who are selected but for whom there are no contact
+  // details, and the Javascript already displays an error for them:
+  $('ul.errorlist').hide();
+
 });

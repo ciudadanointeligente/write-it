@@ -2,6 +2,7 @@
 import urlparse
 
 from django.forms import ModelForm, ModelMultipleChoiceField, SelectMultiple, URLField, Form, Textarea, TextInput, EmailInput
+from contactos.models import Contact
 from instance.models import WriteItInstance
 from .models import Message, Confirmation
 
@@ -116,6 +117,19 @@ class WhoForm(Form):
         super(WhoForm, self).__init__(*args, **kwargs)
         self.fields['persons'] = \
             PersonMultipleChoiceField(queryset=persons_queryset)
+
+    def clean_persons(self):
+        data = self.cleaned_data['persons']
+        non_contactable_persons = [
+            p.name for p in data
+            if not p.contact_set.filter(is_bounced=False).exists()
+        ]
+        if non_contactable_persons:
+            msg = _("We have no contact details for the following "
+                    "people: {list_of_names}")
+            raise ValidationError(msg.format(
+                list_of_names=", ".join(non_contactable_persons)))
+        return data
 
 
 class DraftForm(ModelForm):
