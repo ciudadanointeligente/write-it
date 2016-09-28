@@ -10,6 +10,7 @@ from haystack.views import SearchView
 from itertools import chain
 from popit.models import Person
 from django.db.models import Q
+from instance.forms import ContactInstanceOwnerForm
 from instance.models import WriteItInstance
 from .models import Confirmation, Message, Moderation
 from .forms import MessageSearchForm, PerInstanceSearchForm
@@ -356,6 +357,7 @@ class MissingContactsView(TemplateView):
         # replace those that are bouncing.)
         context['missing_people'] = wii.persons.exclude(
             contact__is_bounced=False).order_by('name')
+        context['contact_form'] = ContactInstanceOwnerForm()
         return context
 
 

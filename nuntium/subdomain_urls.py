@@ -5,6 +5,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django_downloadview import ObjectDownloadView
 
 from contactos.views import ToggleContactEnabledView
+from instance.views import ContactInstanceOwnerView
 from mailit.views import MailitTemplateUpdateView
 from nuntium.models import AnswerAttachment
 from nuntium.views import (
@@ -117,6 +118,7 @@ urlpatterns = i18n_patterns('',
     # url(r'^write/draft/$', TemplateView.as_view(template_name='write/draft.html'), name='write_draft'),
     # url(r'^write/preview/$', TemplateView.as_view(template_name='write/preview.html'), name='write_preview'),
     url(r'^missing/$', MissingContactsView.as_view(), name='missing_contacts'),
+    url(r'^contact/$', ContactInstanceOwnerView.as_view(), name='contact_instance_owner'),
     url(r'^threads/$', MessageThreadsView.as_view(), name='message_threads'),
     url(r'^thread/(?P<slug>[-\w]+)/$', MessageThreadView.as_view(), name='thread_read'),
     url(r'^per_person/(?P<pk>[-\d]+)/$', MessagesPerPersonView.as_view(), name='messages_per_person'),

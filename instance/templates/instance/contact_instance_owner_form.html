@@ -1,0 +1,9 @@
+{% load subdomainurls %}
+
+<p>subdomain is: {{ writeitinstance.slug }}</p>
+
+<form method="post" action="{% url 'contact_instance_owner' subdomain=writeitinstance.slug %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Send">
+</form>
