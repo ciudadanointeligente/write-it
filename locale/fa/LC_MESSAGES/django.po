@@ -93,7 +93,12 @@ msgid "You can send messages to at most %(count)d person"
 msgid_plural "You can send messages to at most %(count)d people"
 msgstr[0] "این نامه می‌تواند حداکثر به %(count)d نفر فرستاده شود"
 
-#: nuntium/forms.py:121
+#: nuntium/forms.py:128
+#, python-brace-format
+msgid "We have no contact details for the following people: {list_of_names}"
+msgstr "ما اطلاعات تماس این افراد را در اختیار نداریم: {list_of_names}"
+
+#: nuntium/forms.py:152
 msgid "Author name is required"
 msgstr "ذکر نام نویسنده ضروری است. "
 
@@ -1561,7 +1566,9 @@ msgid ""
 "\n"
 "                Reply from %(name)s\n"
 "            "
-msgstr "\nپاسخ نامه از طرف %(name)s"
+msgstr ""
+"\n"
+"پاسخ نامه از طرف %(name)s"
 
 #: nuntium/templates/thread/read.html:15
 #: writeit/templates/subdomains/infoszab/thread/read.html:15
@@ -1701,6 +1708,16 @@ msgstr[0] ""
 "\n"
 "می‌خواهم گیرندگان نامه را تغییر دهم"
 
+#: nuntium/templates/write/missing_contacts.html:11
+#: writeit/templates/subdomains/iran/write/missing_contacts.html:14
+msgctxt "Title of page appealing for help finding more contact details"
+msgid "Help to find missing contact details"
+msgstr "برای اطلاعات تماس برخی از نمایندگان می‌توانید به ما یاری برسانید. "
+
+#: nuntium/templates/write/missing_contacts.html:14
+msgid "We don’t have an email address for any of the people listed below. If you know or can find the email addresses for any of them, please contact us using the following form:"
+msgstr "ما نشانی اینترنتی (ایمیل) افراد فهرست زیر را در اختیار نداریم. اگر ایمیل هر کدام از آنها را می‌دانید، لطفا از طریق فرم مقابل با ما تماس بگیرید:"
+
 #: nuntium/templates/write/preview.html:14
 #: writeit/templates/subdomains/iran/write/preview.html:20
 msgid "Are you happy for this message to be made public?"
@@ -1734,8 +1751,13 @@ msgstr "ما یک ایمیل تایید فرستادیم به %(email)s"
 msgid "We have emailed you a confirmation link. Please click it."
 msgstr "یک لینک تایید برای شما ایمیل کردیم. لطفا روی آن کلیک کنید."
 
-#: nuntium/templates/write/who.html:12
-#: writeit/templates/subdomains/iran/write/who.html:12
+#: nuntium/templates/write/who.html:9
+#: writeit/templates/subdomains/iran/write/who.html:9
+msgid "(No contact details)"
+msgstr "(اطلاعات تماس را در اختیار نداریم.)"
+
+#: nuntium/templates/write/who.html:34
+#: writeit/templates/subdomains/iran/write/who.html:34
 msgid "No recipients match"
 msgstr "نام گیرنده موجود نیست. "
 
@@ -1850,6 +1872,11 @@ msgstr " نام؛ <small>  نام شما در وبسایت منتشر خواهد
 #: writeit/templates/subdomains/iran/write/draft.html:47
 msgid "Your email <small>Nobody will see this, ever.</small>"
 msgstr " ایمیل؛ <small> هرگز کسی ایمیل شما را نخواهد دید </small>"
+
+#: writeit/templates/subdomains/iran/write/missing_contacts.html:17
+#, python-format
+msgid "We don’t have an email address for any of the people listed below. If you know or can find the email addresses for any of them, please contact us at: %(email)s"
+msgstr "ما نشانی اینترنتی (ایمیل) افراد فهرست زیر را در اختیار نداریم. اگر ایمیل هر کدام از آنها را می‌دانید، لطفا از طریق ایمیل مقابل با ما تماس بگیرید :%(email)s"
 
 #: writeit/templates/subdomains/iran/write/sign.html:34
 msgid "Go to home page"

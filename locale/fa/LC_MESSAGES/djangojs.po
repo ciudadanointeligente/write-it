@@ -21,8 +21,8 @@ msgstr ""
 #: nuntium/static/js/who.js:18
 #, c-format
 msgid "We do not have contact details for %s."
-msgstr ""
+msgstr "ما اطلاعات تماس با %s را فعلاً در اختیار نداریم. "
 
 #: nuntium/static/js/who.js:21
 msgid "%(open_danger_tag)sRemove this recipient%(close_tag)s or %(open_default_tag)sContribute new contact details%(close_tag)s"
-msgstr ""
+msgstr "%(open_danger_tag)s این فرد را حذف کرده %(close_tag)s یا %(open_default_tag)s اطلاعات تماس نماینده را در صورتی که می‌توانید، در اختیار ما قرار دهید. %(close_tag)s"
