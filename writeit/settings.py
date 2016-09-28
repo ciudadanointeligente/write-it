@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import absolute_import
+
 # Django settings for writeit project.
 import sys
 import os
@@ -206,6 +209,7 @@ INSTALLED_APPS = (
     'social.apps.django_app.default',
     'annoying',
     'celery_haystack',
+    'djcelery',
 
     'instance',
     'nuntium',
@@ -225,7 +229,6 @@ INSTALLED_APPS = (
     'django_extensions',
     # Searching.
     'haystack',
-    'djcelery',
     'pipeline',
     # Uncomment the next line to enable the admin:
     'django_admin_bootstrapped',
@@ -335,9 +338,13 @@ SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL = False
 
 
 # CELERY CONFIGURATION
-import djcelery
+
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost//'
+CELERY_ACCEPT_CONTENT = ['pickle']
+CELERY_TASK_SERIALIZER = 'pickle'
+CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
+
 from celery.schedules import crontab
-djcelery.setup_loader()
 
 CELERYBEAT_SCHEDULE = {
     # Sends emails every 2 minutes
@@ -410,10 +417,10 @@ WEB_BASED = True
 API_BASED = False
 
 if TESTING:
-    from testing_settings import *  # noqa
+    from .testing_settings import *  # noqa
 
 try:
-    from local_settings import *  # noqa
+    from .local_settings import *  # noqa
     INSTALLED_APPS += EXTRA_APPS
 except ImportError:
     pass

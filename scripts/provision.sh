@@ -61,10 +61,10 @@ Add some seed data to your instance with:
   ./manage.py loaddata example_data.yaml
 
 Run a celery worker with:
-  ./manage.py celery worker
+  celery -A writeit worker
 
 Run celery beat with:
-  ./manage.py celery beat
+  celery -A writeit beat
 
 Run the tests with:
   ./manage.py test nuntium contactos mailit
