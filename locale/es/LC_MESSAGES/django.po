@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: writeinpublic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-19 11:49-0500\n"
+"POT-Creation-Date: 2016-09-28 03:12-0500\n"
 "PO-Revision-Date: 2016-09-07 11:42+0000\n"
 "Last-Translator: mySociety <transifex@mysociety.org>\n"
 "Language-Team: Spanish (http://www.transifex.com/mysociety/writeinpublic/language/es/)\n"
@@ -77,7 +77,7 @@ msgstr ""
 msgid "Messages can have empty Author             names"
 msgstr ""
 
-#: mailit/forms.py:13 nuntium/forms.py:55
+#: mailit/forms.py:13 nuntium/forms.py:73
 msgid "Instance not present"
 msgstr ""
 
@@ -86,7 +86,7 @@ msgstr ""
 msgid "You can use {subject}, {content}, {person}, {author}, {site_url}, {site_name}, and {owner_email}"
 msgstr ""
 
-#: nuntium/forms.py:83
+#: nuntium/forms.py:101
 #, python-format
 msgid "You can send messages to at most %(count)d person"
 msgid_plural "You can send messages to at most %(count)d people"
@@ -102,11 +102,11 @@ msgstr ""
 msgid "Author name is required"
 msgstr ""
 
-#: nuntium/forms.py:174 nuntium/user_section/forms.py:281
+#: nuntium/forms.py:205 nuntium/user_section/forms.py:281
 msgid "Popolo URL"
 msgstr ""
 
-#: nuntium/forms.py:175 nuntium/user_section/forms.py:282
+#: nuntium/forms.py:206 nuntium/user_section/forms.py:282
 msgid "Example: https://cdn.rawgit.com/everypolitician/everypolitician-data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"
 msgstr ""
 
@@ -115,12 +115,12 @@ msgstr ""
 msgid "The message \"%(subject)s\" at %(instance)s turned %(status)s at %(date)s"
 msgstr ""
 
-#: nuntium/models.py:143 nuntium/tests/message_form_tests.py:236
+#: nuntium/models.py:143 nuntium/tests/message_form_tests.py:275
 #: nuntium/tests/rate_limiter_tests.py:148
 msgid "You have reached your limit for today please try again tomorrow"
 msgstr ""
 
-#: nuntium/models.py:183 nuntium/templates/thread/message.html:28
+#: nuntium/models.py:183 nuntium/templates/thread/message.html:31
 msgid "Anonymous"
 msgstr ""
 
@@ -128,7 +128,7 @@ msgstr ""
 msgid "A message needs persons to be sent"
 msgstr ""
 
-#: nuntium/models.py:262 nuntium/tests/moderation_messages_test.py:139
+#: nuntium/models.py:262 nuntium/tests/moderation_messages_test.py:208
 msgid "The message needs to be confirmated first"
 msgstr ""
 
@@ -254,9 +254,9 @@ msgstr "Salir"
 msgid "This site is read-only."
 msgstr ""
 
-#: nuntium/templates/base_instance.html:99 nuntium/templates/write/who.html:47
+#: nuntium/templates/base_instance.html:99 nuntium/templates/write/who.html:68
 #: writeit/templates/subdomains/iran/base_instance.html:37
-#: writeit/templates/subdomains/iran/write/who.html:63
+#: writeit/templates/subdomains/iran/write/who.html:85
 msgid "You can’t currently create new messages using this site."
 msgstr ""
 
@@ -351,7 +351,7 @@ msgstr ""
 #: nuntium/templates/nuntium/instance_detail.html:28
 #: writeit/templates/subdomains/infoszab/nuntium/instance_detail.html:24
 #: writeit/templates/subdomains/iran/index.html:82
-#: writeit/templates/subdomains/iran/nuntium/instance_detail.html:11
+#: writeit/templates/subdomains/iran/nuntium/instance_detail.html:13
 msgid "Recent messages"
 msgstr ""
 
@@ -385,47 +385,49 @@ msgid "No results found."
 msgstr ""
 
 #: nuntium/templates/nuntium/message/from_person.html:6
+#: writeit/templates/subdomains/iran/nuntium/message/from_person.html:10
 #, python-format
 msgid "Messages sent by %(author_name)s "
 msgstr ""
 
 #: nuntium/templates/nuntium/message/from_person.html:13
 #: nuntium/templates/thread/all.html:17
+#: writeit/templates/subdomains/iran/nuntium/message/from_person.html:17
 #: writeit/templates/subdomains/iran/thread/all.html:23
 msgid "There are currently no public messages on this site."
 msgstr ""
 
-#: nuntium/templates/nuntium/message/message_detail.html:13
+#: nuntium/templates/nuntium/message/message_detail.html:17
 msgid "This message was sent to"
 msgstr ""
 
-#: nuntium/templates/nuntium/message/message_detail.html:16
-#: nuntium/templates/nuntium/message/message_in_list.html:28
-#: nuntium/templates/nuntium/profiles/message_detail.html:26
+#: nuntium/templates/nuntium/message/message_detail.html:20
+#: nuntium/templates/nuntium/message/message_in_list.html:31
+#: nuntium/templates/nuntium/profiles/message_detail.html:28
 #, python-format
 msgid "See all messages sent to %(person_name)s"
 msgstr ""
 
-#: nuntium/templates/nuntium/message/message_detail.html:22
+#: nuntium/templates/nuntium/message/message_detail.html:26
 #, python-format
 msgid ""
 "Asked by \n"
 "    <a href=\"%(other_messages_by)s\">%(name)s</a>."
 msgstr ""
 
-#: nuntium/templates/nuntium/message/message_detail.html:40
+#: nuntium/templates/nuntium/message/message_detail.html:44
 msgid "Answers"
 msgstr ""
 
-#: nuntium/templates/nuntium/message/message_detail.html:47
+#: nuntium/templates/nuntium/message/message_detail.html:51
 msgid " Get back to the messages."
 msgstr ""
 
-#: nuntium/templates/nuntium/message/message_in_list.html:13
+#: nuntium/templates/nuntium/message/message_in_list.html:16
 msgid "There are no answers yet"
 msgstr ""
 
-#: nuntium/templates/nuntium/message/message_in_list.html:15
+#: nuntium/templates/nuntium/message/message_in_list.html:18
 #, python-format
 msgid ""
 "\n"
@@ -438,7 +440,7 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: nuntium/templates/nuntium/message/message_in_list.html:34
+#: nuntium/templates/nuntium/message/message_in_list.html:37
 #, python-format
 msgid ""
 "Asked by \n"
@@ -481,14 +483,14 @@ msgstr ""
 
 #: nuntium/templates/nuntium/profiles/contacts/contacts-per-writeitinstance.html:36
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:11
-#: nuntium/templates/nuntium/profiles/message_detail.html:24
+#: nuntium/templates/nuntium/profiles/message_detail.html:26
 #: nuntium/templates/nuntium/profiles/your-instances.html:22
 #: nuntium/templates/nuntium/profiles/your-instances.html:85
 msgid "Recipients"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/contacts/contacts-per-writeitinstance.html:39
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:24
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:25
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:24
 #: nuntium/templates/nuntium/writeitinstance_api_docs.html:8
 msgid "Settings"
@@ -542,7 +544,7 @@ msgid "About your site"
 msgstr ""
 
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:17
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:23
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:24
 #: nuntium/templates/nuntium/profiles/your-instances.html:23
 #: nuntium/templates/nuntium/profiles/your-instances.html:86
 msgid "Messages"
@@ -570,79 +572,79 @@ msgstr ""
 msgid "Stats"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:20
-#: nuntium/templates/thread/message.html:36
-#: nuntium/templates/write/draft.html:17
-#: writeit/templates/subdomains/infoszab/write/draft.html:17
-#: writeit/templates/subdomains/iran/thread/message.html:30
-#: writeit/templates/subdomains/iran/write/draft.html:22
+#: nuntium/templates/nuntium/profiles/message_detail.html:22
+#: nuntium/templates/thread/message.html:39
+#: nuntium/templates/write/draft.html:19
+#: writeit/templates/subdomains/infoszab/write/draft.html:20
+#: writeit/templates/subdomains/iran/thread/message.html:32
+#: writeit/templates/subdomains/iran/write/draft.html:24
 msgid "Subject"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:22
+#: nuntium/templates/nuntium/profiles/message_detail.html:24
 msgid "Author"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:28
+#: nuntium/templates/nuntium/profiles/message_detail.html:30
 msgid "Confirmed"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:32
+#: nuntium/templates/nuntium/profiles/message_detail.html:34
 msgid "Moderated"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:37
+#: nuntium/templates/nuntium/profiles/message_detail.html:39
 msgid "This message has not yet been moderated — click here to accept it"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:37
+#: nuntium/templates/nuntium/profiles/message_detail.html:39
 msgid "Accept"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:39
+#: nuntium/templates/nuntium/profiles/message_detail.html:41
 msgid "This message has not yet been moderated — click here to reject it"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:39
+#: nuntium/templates/nuntium/profiles/message_detail.html:41
 msgid "Reject"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:46
+#: nuntium/templates/nuntium/profiles/message_detail.html:48
 msgid "Link"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:47
+#: nuntium/templates/nuntium/profiles/message_detail.html:49
 msgid "Public page"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:49
+#: nuntium/templates/nuntium/profiles/message_detail.html:51
 msgid "Creation Date"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:51
-#: nuntium/templates/nuntium/profiles/message_detail.html:67
+#: nuntium/templates/nuntium/profiles/message_detail.html:53
+#: nuntium/templates/nuntium/profiles/message_detail.html:69
 msgid "Content"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:57
+#: nuntium/templates/nuntium/profiles/message_detail.html:59
 msgid "Create a reply"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:66
+#: nuntium/templates/nuntium/profiles/message_detail.html:68
 msgid "Person"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:68
-#: nuntium/templates/thread/read.html:49
-#: writeit/templates/subdomains/iran/thread/read.html:44
+#: nuntium/templates/nuntium/profiles/message_detail.html:70
+#: nuntium/templates/thread/read.html:53
+#: writeit/templates/subdomains/iran/thread/read.html:48
 msgid "Actions"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/message_detail.html:74
+#: nuntium/templates/nuntium/profiles/message_detail.html:76
 msgid "Edit reply"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:27
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:28
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:27
 #, python-format
 msgid ""
@@ -656,45 +658,45 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:38
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:39
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:38
 msgid "Message"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:39
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:40
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:39
 msgid "Thread"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:40
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:41
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:40
 msgid "Replies"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:41
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:42
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:41
 msgid "Public?"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:42
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:43
 msgid "Confirmed?"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:44
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:45
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:42
 msgid "Moderated?"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:46
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:47
 msgid "Make private/public"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:53
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:54
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:49
 msgid "Link to message admin"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:56
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:57
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:52
 #, python-format
 msgid ""
@@ -703,74 +705,74 @@ msgid ""
 "                "
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:65
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:66
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:61
 msgid "Link to public message"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:73
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:74
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:69
 #: nuntium/templates/nuntium/profiles/webhooks.html:68
 #: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:83
 msgid "Add"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:79
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:80
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:75
 msgid "This message can be seen by everyone"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:83
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:84
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:79
 msgid "This message can't be seen by anyone"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:91
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:92
 msgid "The author has confirmed that this was sent from their email"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:95
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:96
 msgid "The author has not yet confirmed their email address"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:104
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:105
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:87
 msgid "This message has been accepted"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:108
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:109
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:91
 msgid "This message has not yet been moderated"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:115
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:116
 msgid "This message is public, you can make it private by clicking here"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:121
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:122
 msgid "This message is private, you can make it public by clicking here"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:131
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:132
 msgid "You have no messages"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:142
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:143
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:108
 msgid "Delete this message?"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:145
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:146
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:111
 msgid "Are you sure you want to delete this message? This can't be undone."
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:148
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:149
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:114
 msgid "No, keep it"
 msgstr ""
 
-#: nuntium/templates/nuntium/profiles/messages_per_instance.html:149
+#: nuntium/templates/nuntium/profiles/messages_per_instance.html:150
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:115
 msgid "Yes, delete it"
 msgstr ""
@@ -1367,8 +1369,8 @@ msgstr ""
 
 #: nuntium/templates/registration/login.html:23
 #: nuntium/templates/registration/signup.html:20
-#: nuntium/templates/write/who.html:46
-#: writeit/templates/subdomains/iran/write/who.html:62
+#: nuntium/templates/write/who.html:67
+#: writeit/templates/subdomains/iran/write/who.html:84
 msgid "Sorry"
 msgstr ""
 
@@ -1520,48 +1522,48 @@ msgstr ""
 msgid "Search messages"
 msgstr ""
 
-#: nuntium/templates/thread/answer.html:8
-#: nuntium/templates/thread/message.html:19
-#: writeit/templates/subdomains/iran/thread/answer.html:7
-#: writeit/templates/subdomains/iran/thread/message.html:18
+#: nuntium/templates/thread/answer.html:10
+#: nuntium/templates/thread/message.html:22
+#: writeit/templates/subdomains/iran/thread/answer.html:9
+#: writeit/templates/subdomains/iran/thread/message.html:20
 msgid "From"
 msgstr ""
 
-#: nuntium/templates/thread/answer.html:12
-#: nuntium/templates/thread/message.html:10
-#: writeit/templates/subdomains/iran/thread/answer.html:10
-#: writeit/templates/subdomains/iran/thread/message.html:9
+#: nuntium/templates/thread/answer.html:14
+#: nuntium/templates/thread/message.html:13
+#: writeit/templates/subdomains/iran/thread/answer.html:12
+#: writeit/templates/subdomains/iran/thread/message.html:11
 #, python-format
 msgid "Show all messages to %(name)s"
 msgstr ""
 
-#: nuntium/templates/thread/answer.html:20
-#: nuntium/templates/thread/message.html:40
-#: writeit/templates/subdomains/iran/thread/answer.html:17
-#: writeit/templates/subdomains/iran/thread/message.html:33
+#: nuntium/templates/thread/answer.html:22
+#: nuntium/templates/thread/message.html:43
+#: writeit/templates/subdomains/iran/thread/answer.html:19
+#: writeit/templates/subdomains/iran/thread/message.html:35
 msgid "Date"
 msgstr ""
 
-#: nuntium/templates/thread/message.html:6
-#: nuntium/templates/write/draft.html:13
-#: writeit/templates/subdomains/infoszab/write/draft.html:13
-#: writeit/templates/subdomains/iran/thread/message.html:6
-#: writeit/templates/subdomains/iran/write/draft.html:18
+#: nuntium/templates/thread/message.html:9
+#: nuntium/templates/write/draft.html:15
+#: writeit/templates/subdomains/infoszab/write/draft.html:16
+#: writeit/templates/subdomains/iran/thread/message.html:8
+#: writeit/templates/subdomains/iran/write/draft.html:20
 msgid "To"
 msgstr ""
 
-#: nuntium/templates/thread/message.html:23
-#: writeit/templates/subdomains/iran/thread/message.html:20
+#: nuntium/templates/thread/message.html:26
+#: writeit/templates/subdomains/iran/thread/message.html:22
 #, python-format
 msgid "Show all messages from %(name)s"
 msgstr ""
 
-#: nuntium/templates/thread/message.html:32
-#: writeit/templates/subdomains/iran/thread/message.html:26
+#: nuntium/templates/thread/message.html:35
+#: writeit/templates/subdomains/iran/thread/message.html:28
 msgid "Recipients will not see your email address"
 msgstr ""
 
-#: nuntium/templates/thread/message_mini.html:6
+#: nuntium/templates/thread/message_mini.html:9
 msgid "To:"
 msgstr ""
 
@@ -1591,19 +1593,19 @@ msgstr ""
 msgid "We’ve published it too: your letter and any replies will be visible to everyone, on this page."
 msgstr ""
 
-#: nuntium/templates/thread/read.html:21 nuntium/templates/thread/read.html:45
+#: nuntium/templates/thread/read.html:21 nuntium/templates/thread/read.html:48
 #: writeit/templates/subdomains/infoszab/thread/read.html:21
 #: writeit/templates/subdomains/infoszab/thread/read.html:41
 #: writeit/templates/subdomains/iran/thread/read.html:23
-#: writeit/templates/subdomains/iran/thread/read.html:40
+#: writeit/templates/subdomains/iran/thread/read.html:43
 msgid "Future replies will be published here."
 msgstr ""
 
-#: nuntium/templates/thread/read.html:24 nuntium/templates/thread/read.html:51
+#: nuntium/templates/thread/read.html:24 nuntium/templates/thread/read.html:55
 #: writeit/templates/subdomains/infoszab/thread/read.html:24
 #: writeit/templates/subdomains/infoszab/thread/read.html:47
 #: writeit/templates/subdomains/iran/thread/read.html:26
-#: writeit/templates/subdomains/iran/thread/read.html:46
+#: writeit/templates/subdomains/iran/thread/read.html:50
 msgid "Back to all messages"
 msgstr ""
 
@@ -1614,7 +1616,7 @@ msgstr ""
 
 #: nuntium/templates/thread/read.html:57
 #: writeit/templates/subdomains/infoszab/thread/read.html:49
-#: writeit/templates/subdomains/iran/thread/read.html:48
+#: writeit/templates/subdomains/iran/thread/read.html:52
 msgid "Report for abuse"
 msgstr ""
 
@@ -1631,7 +1633,7 @@ msgstr ""
 #: nuntium/templates/write/breadcrumb.html:7
 #: nuntium/templates/write/breadcrumb.html:16
 #: nuntium/templates/write/breadcrumb.html:24
-#: writeit/templates/subdomains/iran/write/who.html:35
+#: writeit/templates/subdomains/iran/write/who.html:57
 msgid "Select recipient"
 msgid_plural "Select recipients"
 msgstr[0] ""
@@ -1640,17 +1642,17 @@ msgstr[1] ""
 #: nuntium/templates/write/breadcrumb.html:33
 #: nuntium/templates/write/breadcrumb.html:35
 #: nuntium/templates/write/breadcrumb.html:37
-#: nuntium/templates/write/who.html:41
-#: writeit/templates/subdomains/iran/write/who.html:56
+#: nuntium/templates/write/who.html:62
+#: writeit/templates/subdomains/iran/write/who.html:78
 msgid "Draft message"
 msgstr ""
 
 #: nuntium/templates/write/breadcrumb.html:41
 #: nuntium/templates/write/breadcrumb.html:43
 #: nuntium/templates/write/breadcrumb.html:45
-#: nuntium/templates/write/draft.html:61
-#: writeit/templates/subdomains/infoszab/write/draft.html:61
-#: writeit/templates/subdomains/iran/write/draft.html:63
+#: nuntium/templates/write/draft.html:63
+#: writeit/templates/subdomains/infoszab/write/draft.html:64
+#: writeit/templates/subdomains/iran/write/draft.html:65
 #: writeit/templates/subdomains/iran/write/preview.html:16
 msgid "Preview message"
 msgstr ""
@@ -1671,35 +1673,35 @@ msgstr ""
 msgid "Send message"
 msgstr ""
 
-#: nuntium/templates/write/draft.html:23
-#: writeit/templates/subdomains/infoszab/write/draft.html:23
+#: nuntium/templates/write/draft.html:25
+#: writeit/templates/subdomains/infoszab/write/draft.html:26
 msgid "Your message"
 msgstr ""
 
-#: nuntium/templates/write/draft.html:24 nuntium/templates/write/draft.html:35
-#: writeit/templates/subdomains/infoszab/write/draft.html:24
-#: writeit/templates/subdomains/infoszab/write/draft.html:35
+#: nuntium/templates/write/draft.html:26 nuntium/templates/write/draft.html:37
+#: writeit/templates/subdomains/infoszab/write/draft.html:27
+#: writeit/templates/subdomains/infoszab/write/draft.html:38
 msgid "This will be published, on this site."
 msgstr ""
 
-#: nuntium/templates/write/draft.html:34
-#: writeit/templates/subdomains/infoszab/write/draft.html:34
+#: nuntium/templates/write/draft.html:36
+#: writeit/templates/subdomains/infoszab/write/draft.html:37
 msgid "Your name"
 msgstr ""
 
-#: nuntium/templates/write/draft.html:44
-#: writeit/templates/subdomains/infoszab/write/draft.html:44
+#: nuntium/templates/write/draft.html:46
+#: writeit/templates/subdomains/infoszab/write/draft.html:47
 msgid "Your email"
 msgstr ""
 
-#: nuntium/templates/write/draft.html:45
-#: writeit/templates/subdomains/infoszab/write/draft.html:45
+#: nuntium/templates/write/draft.html:47
+#: writeit/templates/subdomains/infoszab/write/draft.html:48
 msgid "Nobody will see this, ever."
 msgstr ""
 
-#: nuntium/templates/write/draft.html:55
-#: writeit/templates/subdomains/infoszab/write/draft.html:55
-#: writeit/templates/subdomains/iran/write/draft.html:57
+#: nuntium/templates/write/draft.html:57
+#: writeit/templates/subdomains/infoszab/write/draft.html:58
+#: writeit/templates/subdomains/iran/write/draft.html:59
 msgid ""
 "\n"
 "                    Change recipient\n"
@@ -1762,8 +1764,8 @@ msgstr ""
 msgid "No recipients match"
 msgstr ""
 
-#: nuntium/templates/write/who.html:29
-#: writeit/templates/subdomains/iran/write/who.html:44
+#: nuntium/templates/write/who.html:50
+#: writeit/templates/subdomains/iran/write/who.html:66
 #, python-format
 msgid ""
 "\n"
@@ -1777,7 +1779,7 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: nuntium/templatetags/nuntium_tags.py:58
+#: nuntium/templatetags/nuntium_tags.py:71
 msgid "Invalid subdomain for custom CSS"
 msgstr ""
 
@@ -1859,15 +1861,15 @@ msgstr ""
 msgid "Yours sincerely, <br> %(author_name)s"
 msgstr ""
 
-#: writeit/templates/subdomains/iran/write/draft.html:28
+#: writeit/templates/subdomains/iran/write/draft.html:30
 msgid "Your message <small>This will be published, on this site.</small>"
 msgstr ""
 
-#: writeit/templates/subdomains/iran/write/draft.html:38
+#: writeit/templates/subdomains/iran/write/draft.html:40
 msgid "Your name <small>This will be published, on this site.</small>"
 msgstr ""
 
-#: writeit/templates/subdomains/iran/write/draft.html:47
+#: writeit/templates/subdomains/iran/write/draft.html:49
 msgid "Your email <small>Nobody will see this, ever.</small>"
 msgstr ""
 
