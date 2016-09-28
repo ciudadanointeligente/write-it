@@ -62,7 +62,6 @@ requests-oauthlib==0.7.0
 simplejson==3.8.2
 six==1.10.0
 slumber==0.7.1
-South==1.0.2
 static==0.4
 static3==0.7.0
 transifex-client==0.12.1
