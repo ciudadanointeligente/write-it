@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from contactos.models import Contact
 from .plugins import OutputPlugin
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 import datetime
 from djangoplugins.models import Plugin
 from django.core.mail import EmailMultiAlternatives
@@ -52,7 +52,7 @@ class MessageRecord(models.Model):
     datetime = models.DateField(default=now)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     def __unicode__(self):
         outbound_message = self.content_object
