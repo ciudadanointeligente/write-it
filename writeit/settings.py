@@ -235,7 +235,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 
     # Multi-page form wizard
-    'django.contrib.formtools',
+    'formtools',
     'subdomains',
 )
 

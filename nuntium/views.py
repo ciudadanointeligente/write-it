@@ -3,7 +3,7 @@ from datetime import date, datetime
 from django.views.generic import TemplateView, DetailView, RedirectView, ListView
 from subdomains.utils import reverse
 from django.http import Http404, HttpResponseRedirect
-from django.contrib.formtools.wizard.views import NamedUrlSessionWizardView
+from formtools.wizard.views import NamedUrlSessionWizardView
 from django.shortcuts import get_object_or_404, redirect
 
 from haystack.views import SearchView
