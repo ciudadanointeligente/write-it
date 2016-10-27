@@ -29,14 +29,9 @@ from mailit import MailChannel
 class PopoloPersonQuerySet(models.QuerySet):
 
     def get_from_api_uri(self, uri_from_api):
-        try:
-            return PopoloPerson.objects.get(
-                identifiers__scheme='popit_url',
-                identifiers__identifier=uri_from_api)
-        except PopoloPerson.DoesNotExist:
-            return PopoloPerson.objects.get(
-                identifiers__scheme='popolo_uri',
-                identifiers__identifier=uri_from_api)
+        return self.get(
+            identifiers__identifier=uri_from_api,
+            identifiers__scheme__in=['popit_url', 'popolo_uri'])
 
     def origin(self, popolo_source):
         return self \
