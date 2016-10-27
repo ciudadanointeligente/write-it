@@ -19,7 +19,7 @@ from nuntium import forms
 class HomeTemplateView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(HomeTemplateView, self).get_context_data(**kwargs)
-        all_instances = WriteItInstance.objects.all()
+        all_instances = WriteItInstance.objects.order_by('slug')
 
         context['writeitinstances'] = all_instances
         return context
