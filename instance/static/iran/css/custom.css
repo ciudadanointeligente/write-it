@@ -326,6 +326,13 @@ h1, h2, h3, h4, h5 {
 }
 .promo .button {
     margin-top: 2em;
+    font-family: inherit !important;
+    font-size: 1.5em;
+    border-radius: 0.2em;
+    line-height: 1em;
+    box-shadow: 0.2em 0.2em 0 rgba(0,0,0,0.2);
+    padding-bottom: 0.8em; /* compensate for weird iran-sans font metrics */
+    height: auto;
 }
 
 @media (max-width: 399px) {
