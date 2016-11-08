@@ -214,31 +214,9 @@ h1, h2, h3, h4, h5 {
     line-height: 4em;
     background-color: #001635;
 }
+
 .navbar * {
     color: #fff;
-}
-.navbar .logo-link {
-    height: 100%;
-    float: right;
-    line-height: 3em;
-}
-/* This is here to work around an (apparent) problem with the way Android 4.1 (maybe later?) WebKit sizes SVG images */
-.navbar .logo-link .logo-sizing-container {
-    height: 3em;
-    width: 3em;
-    float: right;
-}
-.navbar .logo-link .logo {
-    height: 100%;
-    width: 100%;
-    float: right;
-}
-.navbar .logo-link span {
-    float: right;
-    margin-right: 1em;
-    font-size: 1.25em;
-    height: 3rem;
-    line-height: 3em;
 }
 
 .navbar .write-link {
@@ -256,6 +234,10 @@ h1, h2, h3, h4, h5 {
     .navbar .write-link {
         background-image: url(../images/iran/logo@2x.png);
     }
+}
+
+.navbar .write-link {
+    background-image: url(../images/iran/logo.svg), none;
 }
 
 .navbar ul {
