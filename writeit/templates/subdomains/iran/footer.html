@@ -3,20 +3,20 @@
 {% load subdomainurls %}
     <footer class="footer full-width-wrapper">
         <nav class="navbar">
+          {% if writeitinstance %}
             <ul>
                 <li>
-                  {% if writeitinstance %}
-                    <a class="navbar-brand" href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">
-                  {% else %}
-                    <a class="navbar-brand" href="{% url 'home' %}">
-                  {% endif %}
                     <a href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{% trans "Home" %}</a>
                 </li>
-                {% if writeitinstance %}
                 <li>
                     <a href="{% url 'about' subdomain=writeitinstance.slug %}">{% trans "About" %}</a>
                 </li>
-                {% endif %}
+            </ul>
+          {% endif %}
+
+            <ul class="footer-logos">
+                <li class="footer-logo footer-logo--asl19"><a href="https://asl19.org">ASL19</a></li>
+                <li class="footer-logo footer-logo--mysociety"><a href="https://www.mysociety.org">mySociety</a></li>
             </ul>
         </nav>
     </footer>

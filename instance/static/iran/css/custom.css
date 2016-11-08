@@ -444,6 +444,89 @@ h1, h2, h3, h4, h5 {
     color: #212121;
 }
 
+.footer-logos {
+    float: right !important;
+}
+
+.footer-logo {
+    float: right !important;
+}
+
+.footer-logo a {
+    display: block;
+    overflow: hidden;
+    height: 0 !important;
+    padding: 24px 0 0 0 !important;
+    line-height: 24px !important;
+    margin: 0.5em 0.5em 0 1.5em !important;
+}
+
+.footer-logo--asl19 a {
+    width: 74px;
+    background: transparent url(../images/iran/asl19-logo.png) 50% 50% no-repeat;
+    background-size: 74px 24px;
+}
+
+@media(-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
+    .footer-logo--asl19 a {
+        background-image: url(../images/iran/asl19-logo@2x.png);
+    }
+}
+
+.footer-logo--asl19 a {
+    background-image: url(../images/iran/asl19-logo.svg), none;
+}
+
+.footer-logo--asl19 a:hover,
+.footer-logo--asl19 a:focus {
+    background-image: url(../images/iran/asl19-logo-hover.png);
+}
+
+@media(-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
+    .footer-logo--asl19 a:hover,
+    .footer-logo--asl19 a:focus {
+        background-image: url(../images/iran/asl19-logo-hover@2x.png);
+    }
+}
+
+.footer-logo--asl19 a:hover,
+.footer-logo--asl19 a:focus {
+    background-image: url(../images/iran/asl19-logo-hover.svg);
+}
+
+.footer-logo--mysociety a {
+    width: 88px;
+    background: transparent url(../images/iran/mysociety-logo.png) 50% 50% no-repeat;
+    background-size: 88px 24px;
+}
+
+@media(-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
+    .footer-logo--mysociety a {
+        background-image: url(../images/iran/mysociety-logo@2x.png);
+    }
+}
+
+.footer-logo--mysociety a {
+    background-image: url(../images/iran/mysociety-logo.svg), none;
+}
+
+.footer-logo--mysociety a:hover,
+.footer-logo--mysociety a:focus {
+    background-image: url(../images/iran/mysociety-logo-hover.png);
+}
+
+@media(-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
+    .footer-logo--mysociety a:hover,
+    .footer-logo--mysociety a:focus {
+        background-image: url(../images/iran/mysociety-logo-hover@2x.png);
+    }
+}
+
+.footer-logo--mysociety a:hover,
+.footer-logo--mysociety a:focus {
+    background-image: url(../images/iran/mysociety-logo-hover.svg);
+}
+
 /* ==================
    === WRITE FORM ===
    ================== */
