@@ -7,7 +7,7 @@ from instance.models import WriteItInstance
 from .models import Message, Confirmation
 
 from django.forms import ValidationError
-from django.utils.translation import ugettext as _, ungettext
+from django.utils.translation import ugettext as _, ungettext, pgettext_lazy
 from popit.models import Person
 from haystack.forms import SearchForm
 from django.utils.html import format_html
@@ -137,10 +137,29 @@ class DraftForm(ModelForm):
         model = Message
         fields = ['content', 'subject', 'author_name', 'author_email']
         widgets = {
-            'content': Textarea(attrs={'class': 'form-control', 'required': 'True'}),
-            'subject': TextInput(attrs={'class': 'form-control', 'required': 'True'}),
-            'author_name': TextInput(attrs={'class': 'form-control'}),
-            'author_email': EmailInput(attrs={'class': 'form-control', 'required': 'True'}),
+            'content': Textarea(attrs={
+                'class': 'form-control',
+                'required': 'True'
+            }),
+            'subject': TextInput(attrs={
+                'class': 'form-control',
+                'required': 'True'
+            }),
+            'author_name': TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': pgettext_lazy(
+                    "An example author name when drafting a message",
+                    "Alice Smith"
+                )
+            }),
+            'author_email': EmailInput(attrs={
+                'class': 'form-control',
+                'required': 'True',
+                'placeholder': pgettext_lazy(
+                    "An example email address when drafting a message",
+                    "alice@example.com"
+                )
+            }),
         }
 
     def __init__(self, allow_anonymous_messages, *args, **kwargs):
