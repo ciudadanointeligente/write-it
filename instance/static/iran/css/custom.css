@@ -129,11 +129,15 @@ h1, h2, h3, h4, h5 {
     text-indent: -9999px;
     overflow: hidden;
 }
-/* Hides an element while keeping it visible to screen readers (good for semantic headers) */
-.invisible {
-    position: absolute !important;
-    clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
-    clip: rect(1px, 1px, 1px, 1px);
+.invisible, .visuallyhidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
 }
 .view-frame {
     margin: 0;

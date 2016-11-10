@@ -31,6 +31,7 @@
     window.who = {
         max_selected_options: {{ writeitinstance.config.maximum_recipients }},
         no_results_text: '{% trans "No recipients match" %}',
+        placeholder_text: 'جستجوی نام نمایندگان/ حداکثر ۵ نفر',
         rtl: true
     }
     </script>
@@ -61,7 +62,7 @@
         </h1>
         {{ wizard.management_form }}
         <p class="form-group">
-            <label for="id_who-persons">
+            <label for="id_who-persons" class="visuallyhidden">
                 {% blocktrans count counter=writeitinstance.config.maximum_recipients %}
                     Search for the recipient by name, or select from the drop-down.
                 {% plural %}

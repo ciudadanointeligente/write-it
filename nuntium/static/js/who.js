@@ -74,14 +74,9 @@ $(function(){
     width: '100%',
     max_selected_options: window.who.max_selected_options,
     no_results_text: window.who.no_results_text,
-    placeholder_text_multiple: ' ', // hide placeholder text
-    placeholder_text_single: ' ', // hide placeholder text
+    placeholder_text_multiple: window.who.placeholder_text || ' ',
+    placeholder_text_single: window.who.placeholder_text || ' ',
     single_backstroke_delete: false
   });
-
-  // Hide the errror list - this only shows validation errors from
-  // people who are selected but for whom there are no contact
-  // details, and the Javascript already displays an error for them:
-  $('ul.errorlist').hide();
 
 });
