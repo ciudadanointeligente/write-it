@@ -6,10 +6,10 @@
           {% if writeitinstance %}
             <ul>
                 <li>
-                    <a href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{% trans "Home" %}</a>
+                    <a href="{% url 'about' subdomain=writeitinstance.slug %}">{% trans "About" %}</a>
                 </li>
                 <li>
-                    <a href="{% url 'about' subdomain=writeitinstance.slug %}">{% trans "About" %}</a>
+                    <a href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{% trans "Home" %}</a>
                 </li>
             </ul>
           {% endif %}
