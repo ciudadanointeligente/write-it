@@ -106,3 +106,10 @@ body, .site-footer {
 .results__actions li {
   border-top-color: $color-bluegrey-100;
 }
+
+.label-required:after {
+    display: inline;
+    content: "*";
+    margin: 0 0.1em;
+    color: $color-red-900;
+}
