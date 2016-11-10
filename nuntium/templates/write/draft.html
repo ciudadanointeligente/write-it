@@ -16,12 +16,12 @@
             <span class="form-control writing-draft-recipients">{{ message.persons|join_with_commas:LANGUAGE_CODE }}</span>
         </p>
         <p class="form-group">
-            <label for="id_draft-subject">{% trans "Subject" %}</label>
+            <label for="id_draft-subject label-required">{% trans "Subject" %}</label>
             {{ form.subject.errors }}
             {{ form.subject }}
         </p>
         <p class="form-group">
-            <label for="id_draft-content" class="label-with-hint">
+            <label for="id_draft-content" class="label-with-hint label-required">
               {% trans "Your message" %}
               <small>{% trans "This will be published, on this site." %}</small>
             </label>
@@ -42,7 +42,7 @@
             </div>
             <div class="col-sm-6">
                 <p class="form-group">
-                    <label for="id_draft-author_email" class="label-with-hint">
+                    <label for="id_draft-author_email" class="label-with-hint label-required">
                         {% trans "Your email" %}
                         <small>{% trans "Nobody will see this, ever." %}</small>
                     </label>
