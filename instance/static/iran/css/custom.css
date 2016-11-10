@@ -700,7 +700,7 @@ h1, h2, h3, h4, h5 {
     float: right;
     display: block;
 }
-.write-form .chosen-choices .search-choice-close {
+.write-form .chosen-choices .search-choice .search-choice-close {
     background-image: none !important;
     background-image: url(../images/iran/close.svg) !important;
     background-size: 50% auto !important;
@@ -713,6 +713,7 @@ h1, h2, h3, h4, h5 {
     width: 2em !important;
     background-origin: content-box !important;
 }
+
 @media (max-width: 449px) {
     .write-form .container.half-width {
         width: 100%;
