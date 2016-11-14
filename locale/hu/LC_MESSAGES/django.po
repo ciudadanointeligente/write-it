@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: writeinpublic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-28 03:12-0500\n"
+"POT-Creation-Date: 2016-11-14 07:50-0600\n"
 "PO-Revision-Date: 2016-09-07 11:42+0000\n"
 "Last-Translator: mySociety <transifex@mysociety.org>\n"
 "Language-Team: Hungarian (http://www.transifex.com/mysociety/writeinpublic/language/hu/)\n"
@@ -112,11 +112,11 @@ msgstr ""
 msgid "Author name is required"
 msgstr ""
 
-#: nuntium/forms.py:205 nuntium/user_section/forms.py:281
+#: nuntium/forms.py:224 nuntium/user_section/forms.py:281
 msgid "Popolo URL"
 msgstr ""
 
-#: nuntium/forms.py:206 nuntium/user_section/forms.py:282
+#: nuntium/forms.py:225 nuntium/user_section/forms.py:282
 msgid "Example: https://cdn.rawgit.com/everypolitician/everypolitician-data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"
 msgstr ""
 
@@ -218,14 +218,14 @@ msgstr ""
 #: nuntium/templates/registration/password_reset_confirm.html:7
 #: nuntium/templates/registration/password_reset_done.html:7
 #: nuntium/templates/registration/password_reset_form.html:7
-#: writeit/templates/subdomains/iran/base_instance.html:20
-#: writeit/templates/subdomains/iran/footer.html:13
+#: writeit/templates/subdomains/iran/base_instance.html:22
+#: writeit/templates/subdomains/iran/footer.html:12
 msgid "Home"
 msgstr "Kezdőlap"
 
 #: nuntium/templates/base_instance.html:36
-#: writeit/templates/subdomains/iran/base_instance.html:23
-#: writeit/templates/subdomains/iran/footer.html:17
+#: writeit/templates/subdomains/iran/base_instance.html:19
+#: writeit/templates/subdomains/iran/footer.html:9
 msgid "About"
 msgstr "Mi ez"
 
@@ -260,43 +260,43 @@ msgid "Sign out"
 msgstr "Kilépés"
 
 #: nuntium/templates/base_instance.html:98
-#: writeit/templates/subdomains/iran/base_instance.html:36
+#: writeit/templates/subdomains/iran/base_instance.html:35
 msgid "This site is read-only."
 msgstr "Ezen az oldalon nem lehet változtatásokat eszközölni."
 
 #: nuntium/templates/base_instance.html:99 nuntium/templates/write/who.html:68
-#: writeit/templates/subdomains/iran/base_instance.html:37
-#: writeit/templates/subdomains/iran/write/who.html:85
+#: writeit/templates/subdomains/iran/base_instance.html:36
+#: writeit/templates/subdomains/iran/write/who.html:90
 msgid "You can’t currently create new messages using this site."
 msgstr "Jelenleg nem lehet új üzeneteket küldeni az oldal segítségével."
 
 #: nuntium/templates/base_instance.html:101
-#: writeit/templates/subdomains/iran/base_instance.html:39
+#: writeit/templates/subdomains/iran/base_instance.html:38
 msgid "Change this in Settings"
 msgstr "Ezt a Beállítások részen megváltoztathatja"
 
 #: nuntium/templates/base_instance.html:108
-#: writeit/templates/subdomains/iran/base_instance.html:46
+#: writeit/templates/subdomains/iran/base_instance.html:45
 msgid "This site has no recipients."
 msgstr "Az oldal üzeneteihez nem tartozik fogadó."
 
 #: nuntium/templates/base_instance.html:109
-#: writeit/templates/subdomains/iran/base_instance.html:47
+#: writeit/templates/subdomains/iran/base_instance.html:46
 msgid "There is no-one to write to yet. Please check back soon."
 msgstr "Még nem lehet üzenetet küldeni, nézzen vissza később."
 
 #: nuntium/templates/base_instance.html:111
-#: writeit/templates/subdomains/iran/base_instance.html:49
+#: writeit/templates/subdomains/iran/base_instance.html:48
 msgid "Import people from PopIt"
 msgstr "Emberek importálása PopIt segítségével"
 
 #: nuntium/templates/base_instance.html:118
-#: writeit/templates/subdomains/iran/base_instance.html:56
+#: writeit/templates/subdomains/iran/base_instance.html:55
 msgid "This site is in Test Mode."
 msgstr "Ezt egy teszt oldal"
 
 #: nuntium/templates/base_instance.html:119
-#: writeit/templates/subdomains/iran/base_instance.html:57
+#: writeit/templates/subdomains/iran/base_instance.html:56
 msgid "Any messages you write will be sent to the site administrator rather than real representatives."
 msgstr "Az üzeneteket az oldal adminisztrátorai kapják meg, és nem valódi címzettek."
 
@@ -586,7 +586,7 @@ msgstr "Statisztika"
 #: nuntium/templates/thread/message.html:39
 #: nuntium/templates/write/draft.html:19
 #: writeit/templates/subdomains/infoszab/write/draft.html:20
-#: writeit/templates/subdomains/iran/thread/message.html:32
+#: writeit/templates/subdomains/iran/thread/message.html:33
 #: writeit/templates/subdomains/iran/write/draft.html:24
 msgid "Subject"
 msgstr "Tárgy"
@@ -1382,7 +1382,7 @@ msgstr ""
 #: nuntium/templates/registration/login.html:23
 #: nuntium/templates/registration/signup.html:20
 #: nuntium/templates/write/who.html:67
-#: writeit/templates/subdomains/iran/write/who.html:84
+#: writeit/templates/subdomains/iran/write/who.html:89
 msgid "Sorry"
 msgstr ""
 
@@ -1534,44 +1534,44 @@ msgstr ""
 msgid "Search messages"
 msgstr ""
 
-#: nuntium/templates/thread/answer.html:10
+#: nuntium/templates/thread/answer.html:11
 #: nuntium/templates/thread/message.html:22
-#: writeit/templates/subdomains/iran/thread/answer.html:9
-#: writeit/templates/subdomains/iran/thread/message.html:20
+#: writeit/templates/subdomains/iran/thread/answer.html:10
+#: writeit/templates/subdomains/iran/thread/message.html:21
 msgid "From"
 msgstr ""
 
-#: nuntium/templates/thread/answer.html:14
+#: nuntium/templates/thread/answer.html:15
 #: nuntium/templates/thread/message.html:13
-#: writeit/templates/subdomains/iran/thread/answer.html:12
-#: writeit/templates/subdomains/iran/thread/message.html:11
+#: writeit/templates/subdomains/iran/thread/answer.html:13
+#: writeit/templates/subdomains/iran/thread/message.html:12
 #, python-format
 msgid "Show all messages to %(name)s"
 msgstr "Mutassa a %(name)s részére küldött üzeneteket"
 
-#: nuntium/templates/thread/answer.html:22
+#: nuntium/templates/thread/answer.html:23
 #: nuntium/templates/thread/message.html:43
-#: writeit/templates/subdomains/iran/thread/answer.html:19
-#: writeit/templates/subdomains/iran/thread/message.html:35
+#: writeit/templates/subdomains/iran/thread/answer.html:20
+#: writeit/templates/subdomains/iran/thread/message.html:36
 msgid "Date"
 msgstr "Dátum"
 
 #: nuntium/templates/thread/message.html:9
 #: nuntium/templates/write/draft.html:15
 #: writeit/templates/subdomains/infoszab/write/draft.html:16
-#: writeit/templates/subdomains/iran/thread/message.html:8
+#: writeit/templates/subdomains/iran/thread/message.html:9
 #: writeit/templates/subdomains/iran/write/draft.html:20
 msgid "To"
 msgstr "Címzett"
 
 #: nuntium/templates/thread/message.html:26
-#: writeit/templates/subdomains/iran/thread/message.html:22
+#: writeit/templates/subdomains/iran/thread/message.html:23
 #, python-format
 msgid "Show all messages from %(name)s"
 msgstr "Mutassa %(name)s összes válaszát"
 
 #: nuntium/templates/thread/message.html:35
-#: writeit/templates/subdomains/iran/thread/message.html:28
+#: writeit/templates/subdomains/iran/thread/message.html:29
 msgid "Recipients will not see your email address"
 msgstr "A címzett nem fogja látni az Ön e-mail címét"
 
@@ -1645,7 +1645,7 @@ msgstr "Írjon neki!"
 #: nuntium/templates/write/breadcrumb.html:7
 #: nuntium/templates/write/breadcrumb.html:16
 #: nuntium/templates/write/breadcrumb.html:24
-#: writeit/templates/subdomains/iran/write/who.html:57
+#: writeit/templates/subdomains/iran/write/who.html:62
 msgid "Select recipient"
 msgid_plural "Select recipients"
 msgstr[0] "Címzett kiválasztása"
@@ -1655,7 +1655,7 @@ msgstr[1] "Címzett kiválasztása"
 #: nuntium/templates/write/breadcrumb.html:35
 #: nuntium/templates/write/breadcrumb.html:37
 #: nuntium/templates/write/who.html:62
-#: writeit/templates/subdomains/iran/write/who.html:78
+#: writeit/templates/subdomains/iran/write/who.html:83
 msgid "Draft message"
 msgstr "Üzenet írása"
 
@@ -1679,7 +1679,7 @@ msgstr "Elküldtük"
 
 #: nuntium/templates/write/breadcrumb.html:53
 #: nuntium/templates/write/preview.html:22
-#: writeit/templates/subdomains/iran/base_instance.html:67
+#: writeit/templates/subdomains/iran/base_instance.html:66
 #: writeit/templates/subdomains/iran/index.html:74
 #: writeit/templates/subdomains/iran/write/preview.html:28
 msgid "Send message"
@@ -1781,7 +1781,7 @@ msgid "No recipients match"
 msgstr "Nincs ilyen címzett"
 
 #: nuntium/templates/write/who.html:50
-#: writeit/templates/subdomains/iran/write/who.html:66
+#: writeit/templates/subdomains/iran/write/who.html:71
 #, python-format
 msgid ""
 "\n"
@@ -1853,7 +1853,7 @@ msgstr ""
 msgid "This field is required."
 msgstr "Ennek a mezőnek a megadása kötelező."
 
-#: writeit/templates/subdomains/iran/base_instance.html:28
+#: writeit/templates/subdomains/iran/base_instance.html:27
 #: writeit/templates/subdomains/iran/index.html:67
 #: writeit/templates/subdomains/iran/view.html:67
 msgid "Write to Majlis"
