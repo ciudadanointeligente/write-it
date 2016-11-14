@@ -35,7 +35,7 @@
               {% trans 'Dear' %} {% for person in message.people %}{{ person.name }}{% if not forloop.first and forloop.last %} {% trans "and" %} {% elif not forloop.first %}, {% endif %}{% endfor %}
             {% endif %}
             <br /><br />
-            {{ message.content }}
+            {{ message.content|linebreaks }}
             <br /><br />
             {% blocktrans trimmed with author_name=message.author_name %}
                Yours sincerely, <br> {{ author_name }}
