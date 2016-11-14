@@ -31,7 +31,11 @@
     window.who = {
         max_selected_options: {{ writeitinstance.config.maximum_recipients }},
         no_results_text: '{% trans "No recipients match" %}',
-        placeholder_text: 'جستجوی نام نمایندگان/ حداکثر ۵ نفر',
+        placeholder_text: '{% blocktrans trimmed count max_recipients=writeitinstance.config.maximum_recipients %}
+Enter a recipient
+    {% plural %}
+Enter recipients (a maxiumum of {{ max_recipients }})
+    {% endblocktrans %}',
         rtl: true
     }
     </script>
