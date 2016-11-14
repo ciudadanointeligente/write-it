@@ -101,12 +101,12 @@ msgstr "ما اطلاعات تماس این افراد را در اختیار ن
 #: nuntium/forms.py:152
 msgctxt "An example author name when drafting a message"
 msgid "Alice Smith"
-msgstr ""
+msgstr "سارا"
 
 #: nuntium/forms.py:160
 msgctxt "An example email address when drafting a message"
 msgid "alice@example.com"
-msgstr ""
+msgstr "sara@majlisnameh.com"
 
 #: nuntium/forms.py:171
 msgid "Author name is required"
