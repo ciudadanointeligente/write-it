@@ -99,6 +99,16 @@ msgid "We have no contact details for the following people: {list_of_names}"
 msgstr "ما اطلاعات تماس این افراد را در اختیار نداریم: {list_of_names}"
 
 #: nuntium/forms.py:152
+msgctxt "An example author name when drafting a message"
+msgid "Alice Smith"
+msgstr ""
+
+#: nuntium/forms.py:160
+msgctxt "An example email address when drafting a message"
+msgid "alice@example.com"
+msgstr ""
+
+#: nuntium/forms.py:171
 msgid "Author name is required"
 msgstr "ذکر نام نویسنده ضروری است. "
 
@@ -1883,3 +1893,9 @@ msgstr "ما نشانی اینترنتی (ایمیل) افراد فهرست زی
 #: writeit/templates/subdomains/iran/write/sign.html:34
 msgid "Go to home page"
 msgstr "به خانه برگردید"
+
+#: writeit/templates/subdomains/iran/write/who.html:35
+#, python-format
+msgid "Enter a recipient"
+msgid_plural "Enter recipients (a maxiumum of %(max_recipients)s)"
+msgstr[0] "جستجوی نام نمایندگان/ حداکثر ۵ نفر"
