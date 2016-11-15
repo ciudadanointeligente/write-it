@@ -168,3 +168,74 @@ class SeeAllMessagesFromAPersonTestCase(TestCase):
         self.assertIn('m: yes, p: yes, c: yes', response.content)
         self.assertIn('m: null, p: yes, c: yes', response.content)
         self.assertNotIn('m: no, p: yes, c: yes', response.content)
+
+    def test_stricter_anonymisation_no_link_just_on_email(self):
+        recipient = Person.objects.first()
+        Message.objects.create(
+            writeitinstance=self.writeitinstance,
+            public=True,
+            confirmated=True,
+            moderated=True,
+            subject='joe as name, joe as email',
+            content='Random content',
+            author_name='Joe',
+            author_email='joe@example.com',
+            persons=[recipient],
+        )
+        Message.objects.create(
+            writeitinstance=self.writeitinstance,
+            public=True,
+            confirmated=True,
+            moderated=True,
+            subject='anon as name, joe as email',
+            content='More random content',
+            author_name='Anon',
+            author_email='joe@example.com',
+            persons=[recipient],
+        )
+        Message.objects.create(
+            writeitinstance=self.writeitinstance,
+            public=True,
+            confirmated=True,
+            moderated=True,
+            subject='joe as name, joseph as email',
+            content='A bit more content',
+            author_name='Joe',
+            author_email='joseph@example.com',
+            persons=[recipient],
+        )
+        config = self.writeitinstance.config
+        config.email_and_name_must_match = True
+        config.save()
+
+        def get_url(message_slug):
+            return reverse(
+                'all-messages-from-the-same-author-as',
+                subdomain=self.writeitinstance.slug,
+                kwargs={
+                    'message_slug': message_slug
+                })
+
+        url = get_url('joe-as-name-joseph-as-email')
+        response = self.client.get(url)
+        messages_for_page = response.context['object_list']
+        self.assertEquals(1, len(messages_for_page))
+        self.assertEquals(
+            messages_for_page[0].subject,
+            'joe as name, joseph as email')
+
+        url = get_url('anon-as-name-joe-as-email')
+        response = self.client.get(url)
+        messages_for_page = response.context['object_list']
+        self.assertEquals(1, len(messages_for_page))
+        self.assertEquals(
+            messages_for_page[0].subject,
+            'anon as name, joe as email')
+
+        url = get_url('joe-as-name-joe-as-email')
+        response = self.client.get(url)
+        messages_for_page = response.context['object_list']
+        self.assertEquals(1, len(messages_for_page))
+        self.assertEquals(
+            messages_for_page[0].subject,
+            'joe as name, joe as email')
