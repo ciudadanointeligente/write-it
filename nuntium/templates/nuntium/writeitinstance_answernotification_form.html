@@ -19,6 +19,19 @@
 
     <form role="form" action="" method="post">
       <div class="settings-group">
+      <h3>{% trans 'Site name for emails' %}</h3>
+        <p class="help-block">{% blocktrans %}
+          If you want there to be a real name in addition to
+          email address in the "From:" line of confirmation
+          emails, etc. that the site sends, then you can set
+          that real name here.
+    {% endblocktrans %}</p>
+        <div class="form-group">
+          {{form.real_name_for_site_emails.label_tag}}
+          {{form.real_name_for_site_emails}}
+        </div>
+      </div>
+      <div class="settings-group">
       <h3>{% trans 'Answer notification' %}</h3>
         <p class="help-block">{% blocktrans %}
     If you turn on “Answer Notification”, you will receive copies of all

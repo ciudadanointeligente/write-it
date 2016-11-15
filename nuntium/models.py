@@ -347,6 +347,11 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
                 from_domain,
                 )
 
+        real_name = writeitinstance.config.real_name_for_site_emails
+        if real_name:
+            from_email = u'{real_name} <{email}>'.format(
+                real_name=real_name, email=from_email)
+
         subscribers = answer.message.subscribers.all()
 
         if writeitinstance.config.notify_owner_when_new_answer:
@@ -644,6 +649,12 @@ def send_confirmation_email(sender, instance, created, **kwargs):
                 confirmation.message.writeitinstance.slug,
                 from_domain,
                 )
+        real_name = \
+            confirmation.message.writeitinstance.config.real_name_for_site_emails
+        if real_name:
+            from_email = u'{real_name} <{email}>'.format(
+                real_name=real_name, email=from_email)
+
         connection = confirmation.message.writeitinstance.config.get_mail_connection()
 
         msg = EmailMultiAlternatives(

@@ -440,6 +440,12 @@ class WriteItInstanceConfig(models.Model):
     allow_messages_using_form = models.BooleanField(
         help_text=_("Allow the creation of new messages \
         using the web"), default=True)
+    real_name_for_site_emails = models.TextField(
+        help_text=_(
+            "The name that should appear in the From: line "
+            "of emails sent from this site"),
+        default='',
+        blank=True)
     rate_limiter = models.IntegerField(default=0)
     notify_owner_when_new_answer = models.BooleanField(
         help_text=_("The owner of this instance \
