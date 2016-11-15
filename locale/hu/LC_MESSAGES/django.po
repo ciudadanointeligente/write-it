@@ -66,6 +66,10 @@ msgid "Allow the creation of new messages         using the web"
 msgstr ""
 
 #: instance/models.py:191
+msgid "The name that should appear in the From: line of emails sent from this site"
+msgstr ""
+
+#: instance/models.py:197
 msgid "The owner of this instance         should be notified         when a new answer comes in"
 msgstr ""
 
@@ -75,6 +79,10 @@ msgstr ""
 
 #: instance/models.py:198
 msgid "Messages can have empty Author             names"
+msgstr ""
+
+#: instance/models.py:208
+msgid "When showing other messages by the same author, the public name must match as well as the hidden email"
 msgstr ""
 
 #: mailit/forms.py:13 nuntium/forms.py:73
@@ -1226,7 +1234,21 @@ msgstr "Üzenet beállításai"
 msgid "back to messages"
 msgstr "vissza az üzenetekhez"
 
-#: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:22
+#: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:23
+msgid "Site name for emails"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:24
+msgid ""
+"\n"
+"          If you want there to be a real name in addition to\n"
+"          email address in the \"From:\" line of confirmation\n"
+"          emails, etc. that the site sends, then you can set\n"
+"          that real name here.\n"
+"    "
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:37
 msgid "Answer notification"
 msgstr "Értesítés a válaszról"
 
