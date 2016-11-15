@@ -275,10 +275,17 @@ class MessagesFromPersonView(ListView):
             writeitinstance=self.writeitinstance,
             author_email=self.message.author_email
         )
-        if self.message.author_name == '':
-            qs = qs.filter(author_name='')
+        # There's a config option for stricter anonymity, which means
+        # that both author_name and author_email must match:
+        if self.writeitinstance.config.email_and_name_must_match:
+            qs = qs.filter(author_name=self.message.author_name)
         else:
-            qs = qs.exclude(author_name='')
+            # By default, don't mix up anonymous (author_name is blank)
+            # messages with non-anonymous (author_name is present) messages.
+            if self.message.author_name == '':
+                qs = qs.filter(author_name='')
+            else:
+                qs = qs.exclude(author_name='')
         return qs
 
     def get_context_data(self, **kwargs):

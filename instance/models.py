@@ -451,6 +451,11 @@ class WriteItInstanceConfig(models.Model):
     allow_anonymous_messages = models.BooleanField(
         help_text=_("Messages can have empty Author \
             names"), default=False)
+    email_and_name_must_match = models.BooleanField(
+        help_text=_(
+            "When showing other messages by the same author, the "
+            "public name must match as well as the hidden email"),
+            default=False)
 
     custom_from_domain = models.CharField(max_length=512, null=True, blank=True)
     email_host = models.CharField(max_length=512, null=True, blank=True)
