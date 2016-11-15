@@ -77,9 +77,10 @@ class WriteItInstanceBasicForm(ModelForm):
 class WriteItInstanceAnswerNotificationForm(ModelForm):
     class Meta:
         model = WriteItInstanceConfig
-        fields = ['notify_owner_when_new_answer']
+        fields = ['notify_owner_when_new_answer', 'real_name_for_site_emails']
         widgets = {
             'notify_owner_when_new_answer': CheckboxInput(attrs={'class': 'form-control'}),
+            'real_name_for_site_emails': TextInput(attrs={'class': 'form-control'}),
         }
 
 

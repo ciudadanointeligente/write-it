@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from global_test_case import GlobalTestCase as TestCase
 from instance.models import WriteItInstance
 from ..models import Confirmation, OutboundMessage
@@ -90,6 +92,24 @@ class ConfirmationTestCase(TestCase):
         self.assertTrue(self.message.author_email in mail.outbox[0].to)
         expected_from_email = self.message.writeitinstance.slug + "@" + settings.DEFAULT_FROM_DOMAIN
         self.assertEquals(mail.outbox[0].from_email, expected_from_email)
+
+    def test_it_sends_an_email_to_the_author_asking_for_confirmation_with_real_name(self):
+        config = self.message.writeitinstance.config
+        config.real_name_for_site_emails = u'☃ The Snowman ☃'
+        config.save()
+        Confirmation.objects.create(message=self.message)
+
+        self.assertEquals(len(mail.outbox), 1)  # it is sent to one person pointed in the contact
+        email_to_check = mail.outbox[0]
+        expected_email_address = self.message.writeitinstance.slug + "@" + settings.DEFAULT_FROM_DOMAIN
+        expected_real_name = u'☃ The Snowman ☃'
+        expected_from = u'{real_name} <{email}>'.format(
+            real_name=expected_real_name,
+            email=expected_email_address)
+        self.assertEquals(email_to_check.from_email, expected_from)
+        self.assertIn(
+            'From: =?utf-8?b?4piDIFRoZSBTbm93bWFuIOKYgw==?=',
+            str(email_to_check.message()))
 
     def test_sends_confirmation_from_a_custom_domain_if_specified(self):
         '''Sending confirmation from a custom domain if specified'''
