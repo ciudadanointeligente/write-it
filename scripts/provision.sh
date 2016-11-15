@@ -40,7 +40,8 @@ virtualenv_dir="/home/vagrant/writeit-virtualenv"
 # We specify a long timeout and use-mirrors to avoid
 # errors like "SSLError: The read operation timed out"
 cd /vagrant
-"$virtualenv_dir/bin/pip" install --timeout=120 --use-mirrors --requirement /vagrant/requirements.txt
+"$virtualenv_dir/bin/pip" install -U pip
+"$virtualenv_dir/bin/pip" install --timeout=120 --requirement /vagrant/requirements.txt
 
 # Set up the Django database
 "$virtualenv_dir/bin/python" /vagrant/manage.py syncdb --noinput
