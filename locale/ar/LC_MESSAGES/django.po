@@ -103,6 +103,16 @@ msgid "We have no contact details for the following people: {list_of_names}"
 msgstr ""
 
 #: nuntium/forms.py:152
+msgctxt "An example author name when drafting a message"
+msgid "Alice Smith"
+msgstr ""
+
+#: nuntium/forms.py:160
+msgctxt "An example email address when drafting a message"
+msgid "alice@example.com"
+msgstr ""
+
+#: nuntium/forms.py:171
 msgid "Author name is required"
 msgstr ""
 
