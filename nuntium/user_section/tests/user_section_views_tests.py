@@ -162,7 +162,10 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
 
     def test_turning_answer_notification_on(self):
         url = reverse('writeitinstance_answernotification_update', subdomain=self.writeitinstance.slug)
-        modified_data = {'notify_owner_when_new_answer': 'on'}
+        modified_data = {
+            'notify_owner_when_new_answer': 'on',
+            'real_name_for_site_emails': '',
+        }
         self.client.login(username=self.owner.username, password='admin')
         self.client.post(url, data=modified_data, follow=True)
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)
@@ -170,7 +173,9 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
 
     def test_turning_answer_notification_off(self):
         url = reverse('writeitinstance_answernotification_update', subdomain=self.writeitinstance.slug)
-        modified_data = {}
+        modified_data = {
+            'real_name_for_site_emails': '',
+        }
         self.client.login(username=self.owner.username, password='admin')
         self.client.post(url, data=modified_data, follow=True)
         writeitinstance = WriteItInstance.objects.get(id=self.writeitinstance.id)

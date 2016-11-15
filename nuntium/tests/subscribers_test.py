@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from global_test_case import GlobalTestCase as TestCase
 from instance.models import PopoloPerson, WriteItInstance
 from ..models import Subscriber, Message, \
@@ -168,6 +170,24 @@ class NewAnswerNotificationToSubscribers(TestCase):
             mail.outbox[0].from_email,
             self.instance.slug + "@" + settings.DEFAULT_FROM_DOMAIN,
             )
+
+    def test_when_an_answer_is_created_then_a_mail_is_sent_to_the_subscribers_with_real_name(self):
+        config = self.instance.config
+        config.real_name_for_site_emails = u'☃ The Snowman ☃'
+        config.save()
+        self.create_a_new_answer()
+
+        self.assertEquals(len(mail.outbox), 1)
+        email_to_check = mail.outbox[0]
+        expected_email_address = self.message.writeitinstance.slug + "@" + settings.DEFAULT_FROM_DOMAIN
+        expected_real_name = u'☃ The Snowman ☃'
+        expected_from = u'{real_name} <{email}>'.format(
+            real_name=expected_real_name,
+            email=expected_email_address)
+        self.assertEquals(email_to_check.from_email, expected_from)
+        self.assertIn(
+            'From: =?utf-8?b?4piDIFRoZSBTbm93bWFuIOKYgw==?=',
+            str(email_to_check.message()))
 
     def test_new_answer_notification_email_uses_sensible_language(self):
         self.instance.config.default_language = 'fa'
