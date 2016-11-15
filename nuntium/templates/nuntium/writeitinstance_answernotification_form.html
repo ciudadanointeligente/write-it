@@ -18,6 +18,7 @@
 
 
     <form role="form" action="" method="post">
+      {{ form.non_field_errors }}
       <div class="settings-group">
       <h3>{% trans 'Site name for emails' %}</h3>
         <p class="help-block">{% blocktrans %}
@@ -27,6 +28,7 @@
           that real name here.
     {% endblocktrans %}</p>
         <div class="form-group">
+          {{form.real_name_for_site_emails.errors}}
           {{form.real_name_for_site_emails.label_tag}}
           {{form.real_name_for_site_emails}}
         </div>
@@ -38,6 +40,7 @@
     responses to messages to your email address.
     {% endblocktrans %}</p>
         <div class="form-group">
+          {{form.notify_owner_when_new_answer.errors}}
           {{form.notify_owner_when_new_answer.label_tag}}
           {{form.notify_owner_when_new_answer}}
         </div>
