@@ -8,7 +8,7 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('nuntium', '0001_initial'),
+        ('nuntium', '0002_author_name_allow_blank'),
     ]
 
     operations = [
