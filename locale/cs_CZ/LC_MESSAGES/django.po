@@ -1766,7 +1766,6 @@ msgid "We don’t have an email address for any of the people listed below. If y
 msgstr ""
 
 #: nuntium/templates/write/preview.html:14
-#: writeit/templates/subdomains/iran/write/preview.html:20
 msgid "Are you happy for this message to be made public?"
 msgstr ""
 
@@ -1905,7 +1904,8 @@ msgid "Yours sincerely, <br> %(author_name)s"
 msgstr ""
 
 #: writeit/templates/subdomains/iran/write/draft.html:30
-msgid "Your message <small>This will be published, on this site.</small>"
+msgctxt "(iran only) This introduces the textarea for the draft message body"
+msgid "Text:"
 msgstr ""
 
 #: writeit/templates/subdomains/iran/write/draft.html:40
@@ -1919,6 +1919,11 @@ msgstr ""
 #: writeit/templates/subdomains/iran/write/missing_contacts.html:17
 #, python-format
 msgid "We don’t have an email address for any of the people listed below. If you know or can find the email addresses for any of them, please contact us at: %(email)s"
+msgstr ""
+
+#: writeit/templates/subdomains/iran/write/preview.html:20
+msgctxt "(iran only) On the message preview page, before the warning about name and message being public on the internet"
+msgid "Attention!"
 msgstr ""
 
 #: writeit/templates/subdomains/iran/write/sign.html:34
