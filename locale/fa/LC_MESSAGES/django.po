@@ -1902,11 +1902,11 @@ msgstr "متن نامه:"
 
 #: writeit/templates/subdomains/iran/write/draft.html:40
 msgid "Your name <small>This will be published, on this site.</small>"
-msgstr "ایمیل: <small> هرگز عمومی نمی‌شود.</small>"
+msgstr "نام: <small> در سایت منتشر می‌شود.</small>"
 
 #: writeit/templates/subdomains/iran/write/draft.html:49
 msgid "Your email <small>Nobody will see this, ever.</small>"
-msgstr "نام: <small> در سایت منتشر می‌شود.</small>"
+msgstr "ایمیل: <small> هرگز عمومی نمی‌شود.</small>"
 
 #: writeit/templates/subdomains/iran/write/missing_contacts.html:17
 #, python-format
