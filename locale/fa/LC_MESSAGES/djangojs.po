@@ -25,4 +25,4 @@ msgstr "ما اطلاعات تماس با %s را فعلاً در اختیار �
 
 #: nuntium/static/js/who.js:21
 msgid "%(open_danger_tag)sRemove this recipient%(close_tag)s or %(open_default_tag)sContribute new contact details%(close_tag)s"
-msgstr "%(open_danger_tag)s این فرد را حذف کرده %(close_tag)s یا %(open_default_tag)s اطلاعات تماس نماینده را در صورتی که می‌توانید، در اختیار ما قرار دهید. %(close_tag)s"
+msgstr "%(open_danger_tag)sحذف نماینده%(close_tag)s یا %(open_default_tag)sما را در تکمیل اطلاعات یاری کنید%(close_tag)s"
