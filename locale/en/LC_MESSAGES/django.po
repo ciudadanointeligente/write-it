@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-14 07:50-0600\n"
+"POT-Creation-Date: 2016-11-16 06:49-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,11 +73,11 @@ msgstr ""
 msgid "The owner of this instance         should be notified         when a new answer comes in"
 msgstr ""
 
-#: instance/models.py:195
+#: instance/models.py:201
 msgid "Messages pushed to the api should             be confirmed automatically"
 msgstr ""
 
-#: instance/models.py:198
+#: instance/models.py:204
 msgid "Messages can have empty Author             names"
 msgstr ""
 
@@ -120,11 +120,11 @@ msgstr ""
 msgid "Author name is required"
 msgstr ""
 
-#: nuntium/forms.py:224 nuntium/user_section/forms.py:281
+#: nuntium/forms.py:224 nuntium/user_section/forms.py:282
 msgid "Popolo URL"
 msgstr ""
 
-#: nuntium/forms.py:225 nuntium/user_section/forms.py:282
+#: nuntium/forms.py:225 nuntium/user_section/forms.py:283
 msgid "Example: https://cdn.rawgit.com/everypolitician/everypolitician-data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"
 msgstr ""
 
@@ -171,42 +171,42 @@ msgstr ""
 msgid "%(person)s said \"%(content)s\" to the message %(message)s"
 msgstr ""
 
-#: nuntium/models.py:397 nuntium/tests/outbound_message_test.py:100
+#: nuntium/models.py:402 nuntium/tests/outbound_message_test.py:100
 msgid "Newly created"
 msgstr ""
 
-#: nuntium/models.py:398 nuntium/tests/outbound_message_test.py:101
+#: nuntium/models.py:403 nuntium/tests/outbound_message_test.py:101
 msgid "Ready to send"
 msgstr ""
 
-#: nuntium/models.py:399 nuntium/tests/outbound_message_test.py:102
+#: nuntium/models.py:404 nuntium/tests/outbound_message_test.py:102
 msgid "Sent"
 msgstr ""
 
-#: nuntium/models.py:400 nuntium/tests/outbound_message_test.py:103
+#: nuntium/models.py:405 nuntium/tests/outbound_message_test.py:103
 msgid "Error sending it"
 msgstr ""
 
-#: nuntium/models.py:401 nuntium/tests/outbound_message_test.py:104
+#: nuntium/models.py:406 nuntium/tests/outbound_message_test.py:104
 msgid "Needs moderation"
 msgstr ""
 
-#: nuntium/models.py:463 nuntium/tests/outbound_message_test.py:41
+#: nuntium/models.py:468 nuntium/tests/outbound_message_test.py:41
 #, python-format
 msgid "%(subject)s sent to %(person)s (%(contact)s) at %(instance)s"
 msgstr ""
 
-#: nuntium/models.py:566 nuntium/models.py:570 nuntium/models.py:575
+#: nuntium/models.py:571 nuntium/models.py:575 nuntium/models.py:580
 #, python-brace-format
 msgid "You can use {author_name}, {site_name}, {subject}, {content}, {recipients}, {confirmation_url}, and {message_url}"
 msgstr ""
 
-#: nuntium/models.py:723 nuntium/models.py:727 nuntium/models.py:732
+#: nuntium/models.py:734 nuntium/models.py:738 nuntium/models.py:743
 #, python-brace-format
 msgid "You can use {author_name}, {person}, {subject}, {content}, {message_url}, and {site_name}"
 msgstr ""
 
-#: nuntium/models.py:736
+#: nuntium/models.py:747
 #, python-format
 msgid "Notification template for %s"
 msgstr ""
@@ -274,7 +274,7 @@ msgstr ""
 
 #: nuntium/templates/base_instance.html:99 nuntium/templates/write/who.html:68
 #: writeit/templates/subdomains/iran/base_instance.html:36
-#: writeit/templates/subdomains/iran/write/who.html:90
+#: writeit/templates/subdomains/iran/write/who.html:86
 msgid "You can’t currently create new messages using this site."
 msgstr ""
 
@@ -840,7 +840,7 @@ msgstr ""
 #: nuntium/templates/nuntium/profiles/templates.html:34
 #: nuntium/templates/nuntium/profiles/templates.html:47
 #: nuntium/templates/nuntium/profiles/templates.html:59
-#: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:33
+#: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:49
 #: nuntium/templates/nuntium/writeitinstance_autoconfirm_form.html:36
 #: nuntium/templates/nuntium/writeitinstance_max_recipients_form.html:41
 #: nuntium/templates/nuntium/writeitinstance_moderation_form.html:34
@@ -1252,7 +1252,7 @@ msgstr ""
 msgid "Answer notification"
 msgstr ""
 
-#: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:23
+#: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:38
 msgid ""
 "\n"
 "    If you turn on “Answer Notification”, you will receive copies of all\n"
@@ -1402,7 +1402,7 @@ msgstr ""
 #: nuntium/templates/registration/login.html:23
 #: nuntium/templates/registration/signup.html:20
 #: nuntium/templates/write/who.html:67
-#: writeit/templates/subdomains/iran/write/who.html:89
+#: writeit/templates/subdomains/iran/write/who.html:85
 msgid "Sorry"
 msgstr ""
 
@@ -1665,7 +1665,7 @@ msgstr ""
 #: nuntium/templates/write/breadcrumb.html:7
 #: nuntium/templates/write/breadcrumb.html:16
 #: nuntium/templates/write/breadcrumb.html:24
-#: writeit/templates/subdomains/iran/write/who.html:62
+#: writeit/templates/subdomains/iran/write/who.html:58
 msgid "Select recipient"
 msgid_plural "Select recipients"
 msgstr[0] ""
@@ -1675,7 +1675,7 @@ msgstr[1] ""
 #: nuntium/templates/write/breadcrumb.html:35
 #: nuntium/templates/write/breadcrumb.html:37
 #: nuntium/templates/write/who.html:62
-#: writeit/templates/subdomains/iran/write/who.html:83
+#: writeit/templates/subdomains/iran/write/who.html:79
 msgid "Draft message"
 msgstr ""
 
@@ -1796,7 +1796,7 @@ msgid "No recipients match"
 msgstr ""
 
 #: nuntium/templates/write/who.html:50
-#: writeit/templates/subdomains/iran/write/who.html:71
+#: writeit/templates/subdomains/iran/write/who.html:67
 #, python-format
 msgid ""
 "\n"
@@ -1826,23 +1826,23 @@ msgstr ""
 msgid "Write to the people who represent you."
 msgstr ""
 
-#: nuntium/user_section/forms.py:188
+#: nuntium/user_section/forms.py:189
 msgid "WriteIt Instance not present"
 msgstr ""
 
-#: nuntium/user_section/forms.py:213
+#: nuntium/user_section/forms.py:214
 msgid "The subdomain your site will run at"
 msgstr ""
 
-#: nuntium/user_section/forms.py:214
+#: nuntium/user_section/forms.py:215
 msgid "Choose wisely; this can't be changed."
 msgstr ""
 
-#: nuntium/user_section/forms.py:240
+#: nuntium/user_section/forms.py:241
 msgid "This subdomain has already been taken."
 msgstr ""
 
-#: nuntium/user_section/forms.py:299
+#: nuntium/user_section/forms.py:300
 msgid "You have already added this source. But we will fetch the data from it again now."
 msgstr ""
 
