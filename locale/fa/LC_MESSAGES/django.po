@@ -413,7 +413,7 @@ msgstr "نامه‌های فرستاده شده توسط %(author_name)s "
 #: writeit/templates/subdomains/iran/nuntium/message/from_person.html:17
 #: writeit/templates/subdomains/iran/thread/all.html:23
 msgid "There are currently no public messages on this site."
-msgstr "در حال حاضر هیچ پیام عمومی‌ای در این وبسایت نیست. "
+msgstr "هیچ پیامی منتشر نشده است."
 
 #: nuntium/templates/nuntium/message/message_detail.html:17
 msgid "This message was sent to"
@@ -654,7 +654,7 @@ msgstr ""
 #: nuntium/templates/thread/read.html:53
 #: writeit/templates/subdomains/iran/thread/read.html:48
 msgid "Actions"
-msgstr ""
+msgstr "قدم بعد"
 
 #: nuntium/templates/nuntium/profiles/message_detail.html:76
 msgid "Edit reply"
@@ -1641,7 +1641,7 @@ msgstr "بازگشت به همه نامه‌ها"
 #: nuntium/templates/thread/read.html:33
 #: writeit/templates/subdomains/iran/thread/read.html:34
 msgid "This message is awaiting moderation."
-msgstr "این نامه پیش از نمایش احتیاج به مدیریت دارد."
+msgstr "نامه شما به زودی منتشر می‌شود."
 
 #: nuntium/templates/thread/read.html:57
 #: writeit/templates/subdomains/infoszab/thread/read.html:49
@@ -1657,7 +1657,7 @@ msgstr "نامه‌ها به"
 #: nuntium/templates/thread/to.html:29
 #: writeit/templates/subdomains/iran/thread/to.html:32
 msgid "Write to this person"
-msgstr "به این شخص نامه بنویسید."
+msgstr "به این نماینده نامه بنویسید."
 
 #: nuntium/templates/write/breadcrumb.html:7
 #: nuntium/templates/write/breadcrumb.html:16
@@ -1665,7 +1665,7 @@ msgstr "به این شخص نامه بنویسید."
 #: writeit/templates/subdomains/iran/write/who.html:62
 msgid "Select recipient"
 msgid_plural "Select recipients"
-msgstr[0] "گیرندگان نامه‌ را انتخاب کنید"
+msgstr[0] "انتخاب نماینده"
 
 #: nuntium/templates/write/breadcrumb.html:33
 #: nuntium/templates/write/breadcrumb.html:35
@@ -1673,7 +1673,7 @@ msgstr[0] "گیرندگان نامه‌ را انتخاب کنید"
 #: nuntium/templates/write/who.html:62
 #: writeit/templates/subdomains/iran/write/who.html:83
 msgid "Draft message"
-msgstr "پیش‌نویس نامه"
+msgstr "پیش‌نویس"
 
 #: nuntium/templates/write/breadcrumb.html:41
 #: nuntium/templates/write/breadcrumb.html:43
@@ -1683,7 +1683,7 @@ msgstr "پیش‌نویس نامه"
 #: writeit/templates/subdomains/iran/write/draft.html:65
 #: writeit/templates/subdomains/iran/write/preview.html:16
 msgid "Preview message"
-msgstr "مرور نامه"
+msgstr "مرور"
 
 #: nuntium/templates/write/breadcrumb.html:49
 msgid "Confirm email address"
@@ -1740,7 +1740,8 @@ msgid_plural ""
 "                "
 msgstr[0] ""
 "\n"
-"می‌خواهم گیرندگان نامه را تغییر دهم"
+"تغییر گیرندگان نامه\n"
+" "
 
 #: nuntium/templates/write/missing_contacts.html:11
 #: writeit/templates/subdomains/iran/write/missing_contacts.html:14
@@ -1869,7 +1870,7 @@ msgstr ""
 
 #: writeit/extra_translations.py:13
 msgid "This field is required."
-msgstr "انتخاب گیرنده‌ی نامه ضروری است."
+msgstr "این قسمت باید پُر شود."
 
 #: writeit/templates/subdomains/iran/base_instance.html:27
 #: writeit/templates/subdomains/iran/index.html:67
@@ -1901,11 +1902,11 @@ msgstr " متن نامه؛ <small> این متن در وبسایت منتشر خ
 
 #: writeit/templates/subdomains/iran/write/draft.html:40
 msgid "Your name <small>This will be published, on this site.</small>"
-msgstr " نام؛ <small>  نام شما در وبسایت منتشر خواهد شد </small>"
+msgstr "ایمیل: <small> هرگز عمومی نمی‌شود.</small>"
 
 #: writeit/templates/subdomains/iran/write/draft.html:49
 msgid "Your email <small>Nobody will see this, ever.</small>"
-msgstr " ایمیل؛ <small> هرگز کسی ایمیل شما را نخواهد دید </small>"
+msgstr "نام: <small> در سایت منتشر می‌شود.</small>"
 
 #: writeit/templates/subdomains/iran/write/missing_contacts.html:17
 #, python-format
@@ -1914,4 +1915,4 @@ msgstr "ما نشانی اینترنتی (ایمیل) افراد فهرست زی
 
 #: writeit/templates/subdomains/iran/write/sign.html:34
 msgid "Go to home page"
-msgstr "به خانه برگردید"
+msgstr "بازگشت به خانه"
