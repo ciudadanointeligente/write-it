@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('popolo', '0002_update_models_from_upstream'),
-        ('instance', '0001_initial'),
+        ('instance', '0004_add_email_real_name_to_config'),
         ('popolo_sources', '0001_initial'),
     ]
 
