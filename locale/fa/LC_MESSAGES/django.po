@@ -1754,7 +1754,6 @@ msgid "We don’t have an email address for any of the people listed below. If y
 msgstr "ما نشانی اینترنتی (ایمیل) افراد فهرست زیر را در اختیار نداریم. اگر ایمیل هر کدام از آنها را می‌دانید، لطفا از طریق فرم مقابل با ما تماس بگیرید:"
 
 #: nuntium/templates/write/preview.html:14
-#: writeit/templates/subdomains/iran/write/preview.html:20
 msgid "Are you happy for this message to be made public?"
 msgstr "آیا مایلید این پیام به صورت عمومی منتشر شود؟"
 
@@ -1897,8 +1896,9 @@ msgid "Yours sincerely, <br> %(author_name)s"
 msgstr " ارادتمند شما، <br> %(author_name)s "
 
 #: writeit/templates/subdomains/iran/write/draft.html:30
-msgid "Your message <small>This will be published, on this site.</small>"
-msgstr " متن نامه؛ <small> این متن در وبسایت منتشر خواهد شد </small>"
+msgctxt "(iran only) This introduces the textarea for the draft message body"
+msgid "Text:"
+msgstr "متن نامه:"
 
 #: writeit/templates/subdomains/iran/write/draft.html:40
 msgid "Your name <small>This will be published, on this site.</small>"
@@ -1913,6 +1913,14 @@ msgstr "نام: <small> در سایت منتشر می‌شود.</small>"
 msgid "We don’t have an email address for any of the people listed below. If you know or can find the email addresses for any of them, please contact us at: %(email)s"
 msgstr "ما نشانی اینترنتی (ایمیل) افراد فهرست زیر را در اختیار نداریم. اگر ایمیل هر کدام از آنها را می‌دانید، لطفا از طریق ایمیل مقابل با ما تماس بگیرید :%(email)s"
 
+#: writeit/templates/subdomains/iran/write/preview.html:20
+msgctxt "(iran only) On the message preview page, before the warning about name and message being public on the internet"
+msgid "Attention!"
+msgstr "توجه!"
+
 #: writeit/templates/subdomains/iran/write/sign.html:34
 msgid "Go to home page"
 msgstr "بازگشت به خانه"
+
+#~ msgid "Your message <small>This will be published, on this site.</small>"
+#~ msgstr " متن نامه؛ <small> این متن در وبسایت منتشر خواهد شد </small>"
