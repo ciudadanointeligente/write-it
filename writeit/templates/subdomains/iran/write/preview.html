@@ -17,7 +17,7 @@
         <!-- :TODO: break this out into separate template, so we can re-use it on message/thread viewing pages -->
         {% include "thread/message.html" with message=message %}
         <div class="privacy-reminder">
-          <h2><i class="fa fa-question-circle"></i> {% trans "Attention!" context "(iran only) On the message preview page, before the warning about name and message being public on the internet" %}</h2>
+          <h2><i class="fa"></i> {% trans "Attention!" context "(iran only) On the message preview page, before the warning about name and message being public on the internet" %}</h2>
           <p>{% trans "Once you send this message, it will be available on the Internet for anyone to read. Your name will be included alongside the message. Your email address will not be public." %}</p>
         </div>
         <form action="" method="post">{% csrf_token %}
