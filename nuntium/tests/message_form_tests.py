@@ -5,6 +5,7 @@ from instance.models import InstanceMembership, PopoloPerson, WriteItInstance
 from popolo_sources.models import PopoloSource
 from ..models import Message, Confirmation, OutboundMessage
 from ..forms import MessageCreateForm, PersonMultipleChoiceField
+from ..views import _get_person_select_args
 
 from django.forms import ValidationError, SelectMultiple
 from django.contrib.auth.models import User
@@ -17,24 +18,35 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
         self.person1 = PopoloPerson.objects.get(id=1)
 
     def test_get_widget(self):
-        field = PersonMultipleChoiceField(queryset=PopoloPerson.objects.none())
+        field = PersonMultipleChoiceField(
+            queryset=PopoloPerson.objects.none(),
+            include_area_names=False)
         widget = field.widget
 
         self.assertTrue(isinstance(widget, SelectMultiple))
 
     def test_get_label_from_instance(self):
-        field = PersonMultipleChoiceField(
-            queryset=PopoloPerson.objects.prefetch_related('contact_set'))
+        wii = WriteItInstance.objects.select_related('config').get(id=1)
+        field = PersonMultipleChoiceField(*_get_person_select_args(wii))
         label = field.label_from_instance(self.person1)
 
         self.assertEquals(label, self.person1.name)
+
+    def test_render_widget_with_area_names(self):
+        wii = WriteItInstance.objects.select_related('config').get(id=1)
+        wii.config.include_area_names = True
+        wii.config.save()
+        field = PersonMultipleChoiceField(*_get_person_select_args(wii))
+        rendered_field = field.widget.render(name='person-select', value=None)
+        self.assertIn('<option class="" value="1">Pedro (Fake Area)</option>', rendered_field)
 
     def test_persons_without_a_contact(self):
         felipe = PopoloPerson.objects.get(name="Felipe")
         felipe.contact_set.all().delete()
         # This guy does not have any contacts
         field = PersonMultipleChoiceField(
-            queryset=PopoloPerson.objects.prefetch_related('contact_set'))
+            queryset=PopoloPerson.objects.prefetch_related('contact_set'),
+            include_area_names=False)
         rendered_field = field.widget.render(name='oli', value=None)
         self.assertIn('class="uncontactable"', rendered_field)
         self.assertIn(">Felipe</option>", rendered_field)
@@ -47,7 +59,8 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
 
         # This guy does not have any good contacts
         field = PersonMultipleChoiceField(
-            queryset=PopoloPerson.objects.prefetch_related('contact_set'))
+            queryset=PopoloPerson.objects.prefetch_related('contact_set'),
+            include_area_names=False)
         rendered_field = field.widget.render(name='oli', value=None)
         self.assertIn('class="uncontactable"', rendered_field)
         self.assertIn(">Felipe</option>", rendered_field)
@@ -63,19 +76,21 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
 
         # This guy does not have any good contacts
         field = PersonMultipleChoiceField(
-            queryset=PopoloPerson.objects.prefetch_related('contact_set'))
+            queryset=PopoloPerson.objects.prefetch_related('contact_set'),
+            include_area_names=False)
         rendered_field = field.widget.render(name='oli', value=None)
         self.assertIn('class="uncontactable"', rendered_field)
         self.assertIn(u">Felipe Álvarez</option>", rendered_field)
 
     def test_previously_selected_persons(self):
         field = PersonMultipleChoiceField(
-            queryset=PopoloPerson.objects.prefetch_related('contact_set'))
+            queryset=PopoloPerson.objects.prefetch_related('contact_set'),
+            include_area_names=False)
         rendered_field = field.widget.render(name='oli', value=[3])
         self.assertIn('<option class="" value="3" selected="selected">Felipe</option>', rendered_field)
 
     def test_not_too_many_queries(self):
-        wii = WriteItInstance.objects.get(id=1)
+        wii = WriteItInstance.objects.select_related('config').get(id=1)
         email_type = ContactType.objects.get(id=1)
         popolo_source = PopoloSource.objects.get(pk=1)
         for name, email in [
@@ -101,8 +116,35 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
         # Django 1.8, there appear to also be 4 queries that create
         # and release savepoints.
         with self.assertNumQueries(8):
-            field = PersonMultipleChoiceField(
-                queryset=Person.objects.prefetch_related('contact_set'))
+            field = PersonMultipleChoiceField(*_get_person_select_args(wii))
+            rendered_field = field.widget.render(name='oli', value=None)
+            self.assertNotIn('uncontactable', rendered_field)
+
+    def test_not_too_many_queries_with_area_names(self):
+        wii = WriteItInstance.objects.select_related('config').get(id=1)
+        wii.config.include_area_names = True
+        wii.config.save()
+        email_type = ContactType.objects.get(id=1)
+        popolo_source = PopoloSource.objects.get(pk=1)
+        for name, email in [
+                ('Alice', 'alice@example.com'),
+                ('Bob', 'bob@example.com'),
+                ('Charles', 'charles@example.com'),
+                ('Mallory', 'mallory@example.com'),
+        ]:
+            p = PopoloPerson.objects.create(name=name)
+            p.add_link_to_popolo_source(popolo_source)
+            Contact.objects.create(
+                person=p,
+                contact_type=email_type,
+                writeitinstance=wii,
+                value=email)
+        # This case is slightly different - when we include area names
+        # there's an extra prefetch on Membership, and the three total
+        # queries happen twice. As in the previous test, there are
+        # also 4 queries that create and release savepoints.
+        with self.assertNumQueries(10):
+            field = PersonMultipleChoiceField(*_get_person_select_args(wii))
             rendered_field = field.widget.render(name='oli', value=None)
             self.assertNotIn('uncontactable', rendered_field)
 

@@ -1,5 +1,6 @@
 from datetime import date, datetime
 
+from django.db.models import Prefetch
 from django.views.generic import TemplateView, DetailView, RedirectView, ListView
 from subdomains.utils import reverse
 from django.http import Http404, HttpResponseRedirect
@@ -10,6 +11,7 @@ from haystack.views import SearchView
 from itertools import chain
 from django.db.models import Q
 from instance.models import PopoloPerson, WriteItInstance
+from popolo.models import Membership
 from .models import Confirmation, Message, Moderation
 from .forms import MessageSearchForm, PerInstanceSearchForm
 
@@ -76,6 +78,38 @@ TEMPLATES = {"who": "write/who.html",
              "preview": "write/preview.html"}
 
 
+def _get_persons_prefetch(writeitinstance):
+    prefetch_args = ['contact_set']
+    if writeitinstance.config.include_area_names:
+        prefetch_args.append(
+            Prefetch(
+                'memberships',
+                queryset=Membership.objects.filter(
+                    organization__classification='legislature'
+                ).select_related('area')))
+    return prefetch_args
+
+
+def _get_person_select_kwargs(writeitinstance):
+    prefetch_args = _get_persons_prefetch(writeitinstance)
+    return {
+        'persons_queryset':
+        writeitinstance.persons \
+            .prefetch_related(*prefetch_args) \
+            .order_by('name'),
+        'include_area_names':
+        writeitinstance.config.include_area_names
+    }
+
+
+def _get_person_select_args(writeitinstance):
+    as_kwargs = _get_person_select_kwargs(writeitinstance)
+    return [
+        as_kwargs[k] for k in
+        ('persons_queryset', 'include_area_names')
+    ]
+
+
 class WriteMessageView(NamedUrlSessionWizardView):
     form_list = FORMS
 
@@ -122,11 +156,7 @@ class WriteMessageView(NamedUrlSessionWizardView):
 
     def get_form_kwargs(self, step):
         if step == 'who':
-            return {
-                'persons_queryset':
-                self.writeitinstance.persons \
-                    .prefetch_related('contact_set').order_by('name')
-            }
+            return _get_person_select_kwargs(self.writeitinstance)
         elif step == 'draft':
             return {'allow_anonymous_messages': self.writeitinstance.config.allow_anonymous_messages}
         else:
