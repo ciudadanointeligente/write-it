@@ -19,6 +19,7 @@ class PersonSelectMultipleWidget(SelectMultiple):
 
     def __init__(self, *args, **kwargs):
         person_queryset = kwargs.pop('person_queryset')
+        self.include_area_names = kwargs.pop('include_area_names')
         super(PersonSelectMultipleWidget, self).__init__(*args, **kwargs)
         self.person_id_to_person = {
             person.id: person
@@ -27,6 +28,17 @@ class PersonSelectMultipleWidget(SelectMultiple):
 
     def render_option(self, selected_choices, option_value, option_label):
         person = self.person_id_to_person[option_value]
+        if self.include_area_names:
+            # See if we can find an area to append to the name:
+            most_recent_membership = None
+            for m in person.memberships.all():
+                most_recent_membership = m
+            if most_recent_membership and most_recent_membership.area:
+                area_name = most_recent_membership.area.name
+                option_label = u'{name} ({area_name})'.format(
+                    name=option_label,
+                    area_name=area_name,
+                )
         css_class = 'uncontactable'
         for contact in person.contact_set.all():
             if not contact.is_bounced:
@@ -51,9 +63,10 @@ class PersonSelectMultipleWidget(SelectMultiple):
 
 class PersonMultipleChoiceField(ModelMultipleChoiceField):
 
-    def __init__(self, queryset, *args, **kwargs):
+    def __init__(self, queryset, include_area_names, *args, **kwargs):
         kwargs['widget'] = PersonSelectMultipleWidget(
             person_queryset=queryset,
+            include_area_names=include_area_names,
             attrs={'class': 'chosen-person-select'}
         )
         super(PersonMultipleChoiceField, self).__init__(
@@ -64,7 +77,8 @@ class PersonMultipleChoiceField(ModelMultipleChoiceField):
 
 
 class MessageCreateForm(ModelForm):
-    persons = PersonMultipleChoiceField(queryset=Person.objects.none())
+    persons = PersonMultipleChoiceField(
+        queryset=Person.objects.none(), include_area_names=False)
 
     def __init__(self, *args, **kwargs):
         try:
@@ -113,10 +127,11 @@ class MessageCreateForm(ModelForm):
 
 class WhoForm(Form):
 
-    def __init__(self, persons_queryset, *args, **kwargs):
+    def __init__(self, persons_queryset, include_area_names, *args, **kwargs):
         super(WhoForm, self).__init__(*args, **kwargs)
         self.fields['persons'] = \
-            PersonMultipleChoiceField(queryset=persons_queryset)
+            PersonMultipleChoiceField(
+                queryset=persons_queryset, include_area_names=include_area_names)
 
     def clean_persons(self):
         data = self.cleaned_data['persons']

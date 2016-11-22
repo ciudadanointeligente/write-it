@@ -101,6 +101,15 @@
 - fields: {name: Felipe}
   model: popolo.person
   pk: 3
+- fields: {name: 'Fake Parliament', classification: 'legislature'}
+  model: popolo.organization
+  pk: 1
+- fields: {name: 'Fake Area'}
+  model: popolo.area
+  pk: 1
+- fields: {person: 1, organization: 1, area: 1}
+  model: popolo.membership
+  pk: 1
 - fields: {person: 1, writeitinstance: 1}
   model: instance.instancemembership
   pk: 1
