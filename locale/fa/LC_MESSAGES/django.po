@@ -104,7 +104,7 @@ msgstr[0] "این نامه می‌تواند حداکثر به %(count)d نفر 
 #: nuntium/forms.py:128
 #, python-brace-format
 msgid "We have no contact details for the following people: {list_of_names}"
-msgstr "ما اطلاعات تماس این افراد را در اختیار نداریم: {list_of_names}"
+msgstr "ما اطلاعات تماس مورد نظر را در اختیار نداریم: {list_of_names}"
 
 #: nuntium/forms.py:152
 msgctxt "An example author name when drafting a message"
@@ -122,11 +122,11 @@ msgstr "ذکر نام نویسنده ضروری است. "
 
 #: nuntium/forms.py:224 nuntium/user_section/forms.py:282
 msgid "Popolo URL"
-msgstr ""
+msgstr "لینک فهرست گیرندگان نامه‌ی مورد نظر"
 
 #: nuntium/forms.py:225 nuntium/user_section/forms.py:283
 msgid "Example: https://cdn.rawgit.com/everypolitician/everypolitician-data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"
-msgstr ""
+msgstr "مثال: https://cdn.rawgit.com/everypolitician/everypolitician-data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"
 
 #: nuntium/models.py:60 nuntium/tests/record_system_test.py:31
 #, python-format
@@ -347,12 +347,12 @@ msgid ""
 "\n"
 "<p>You’re going to make a site that enables people to contact their\n"
 "politicians.</p>\n"
-msgstr ""
+msgstr "\n<p> شما به زودی سایتی خواهید ساخت که امکان تماس مستقیم مردم با سیاست‌مداران را ممکن می‌کند. </p>\n"
 
 #: nuntium/templates/nuntium/create_new_writeitinstance.html:39
 #: nuntium/templates/nuntium/profiles/create_answer.html:26
 msgid "Create"
-msgstr ""
+msgstr "سایت بساز"
 
 #: nuntium/templates/nuntium/instance_detail.html:11
 #, python-format
@@ -360,11 +360,11 @@ msgid ""
 "\n"
 "                        Welcome to %(sitename)s\n"
 "                    "
-msgstr ""
+msgstr "\nبه %(sitename)s خوش آمدید!\n "
 
 #: nuntium/templates/nuntium/instance_detail.html:16
 msgid "Write to the people who represent you.<br />In public.<br /><br />Get answers.<br />In public."
-msgstr ""
+msgstr "<br /> در فضای عمومی <br /> برای کسانی که شما را نمایندگی می‌کنند، نامه بنویسید. و در فضای عمومی <br /> جواب بگیرید.<br />"
 
 #: nuntium/templates/nuntium/instance_detail.html:28
 #: writeit/templates/subdomains/infoszab/nuntium/instance_detail.html:24
@@ -497,6 +497,10 @@ msgid ""
 "\n"
 "<p>Just email us at <tt>team@writeinpublic.com</tt></p>\n"
 msgstr ""
+"\n"
+"<p> آیا لازم دارید که وبسایت خود را از وضعیت آزمایشی خارج کنید؟ یا می‌خواهید مشکلی را در وبسایت درست کنید یا اینکه اصلا می‌خواهید از ما تشکر کنید؟! </p>"
+"<p> ما بسیار خوشحال می‌شویم که نظرات شما را بشنویم - از چه چیز وبسایت خوش‌تان آمده، یا از چه ناراحتید، یا اینکه دوست داشتید طور دیگری کار می‌کرد. </p>"
+"<p> به ما از طریق این نشانی ایمیل بفرستید: <tt>team@writeinpublic.com</tt></p>\n"
 
 #: nuntium/templates/nuntium/profiles/contacts/contacts-per-writeitinstance.html:36
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:11
@@ -529,7 +533,7 @@ msgstr[0] ""
 #: nuntium/templates/nuntium/profiles/your-instances.html:21
 #: nuntium/templates/nuntium/profiles/your-instances.html:84
 msgid "Name"
-msgstr ""
+msgstr "نام"
 
 #: nuntium/templates/nuntium/profiles/contacts/contacts-per-writeitinstance.html:63
 #: nuntium/templates/nuntium/profiles/your-profile.html:44
@@ -557,7 +561,7 @@ msgstr "بستن"
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:7
 #: nuntium/templates/nuntium/writeitinstance_update_form.html:21
 msgid "About your site"
-msgstr ""
+msgstr "درباره‌ی سایت شما"
 
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:17
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:24
@@ -568,7 +572,7 @@ msgstr "پیام‌ها"
 
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:21
 msgid "Moderation Queue"
-msgstr ""
+msgstr "مدیریت نامه‌ها"
 
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:26
 msgid "Data sources"
@@ -671,17 +675,17 @@ msgid_plural ""
 "\n"
 "    There are <strong>%(message_count)s</strong> messages \n"
 "    "
-msgstr[0] ""
+msgstr[0] "\n<strong>%(message_count)s</strong> نامه موجود است.\n "
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:39
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:38
 msgid "Message"
-msgstr ""
+msgstr "نامه"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:40
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:39
 msgid "Thread"
-msgstr ""
+msgstr "فهرست"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:41
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:40
@@ -730,7 +734,7 @@ msgstr ""
 #: nuntium/templates/nuntium/profiles/webhooks.html:68
 #: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:83
 msgid "Add"
-msgstr "اضافه کردن"
+msgstr "اضافه کن"
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:80
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:75
@@ -798,15 +802,15 @@ msgstr ""
 
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:97
 msgid "No messages awaiting moderation"
-msgstr ""
+msgstr "هیچ نامه‌ای نیازمند مدیریت نیست."
 
 #: nuntium/templates/nuntium/profiles/profile-navigation.html:7
 msgid "Your Sites"
-msgstr ""
+msgstr "سایت‌های شما"
 
 #: nuntium/templates/nuntium/profiles/stats.html:24
 msgid "Statistics"
-msgstr ""
+msgstr "آمار"
 
 #: nuntium/templates/nuntium/profiles/status-bar.html:10
 #, python-format
@@ -828,11 +832,11 @@ msgstr ""
 
 #: nuntium/templates/nuntium/profiles/templates.html:29
 msgid "Mail Template"
-msgstr ""
+msgstr "قالب دریافت ایمیل برای گیرنده"
 
 #: nuntium/templates/nuntium/profiles/templates.html:30
 msgid "This is the mail template that the person gets when a new message exists"
-msgstr ""
+msgstr "این قالب مربوط به زمانی است که فرد گیرنده نامه‌ای دریافت می‌کند."
 
 #: nuntium/templates/nuntium/profiles/templates.html:34
 #: nuntium/templates/nuntium/profiles/templates.html:47
@@ -849,19 +853,19 @@ msgstr "ذخیره تغییرات"
 
 #: nuntium/templates/nuntium/profiles/templates.html:40
 msgid "Confirmation Template"
-msgstr ""
+msgstr "قالب تایید ایمیل"
 
 #: nuntium/templates/nuntium/profiles/templates.html:41
 msgid "This is the mail template that the person who creates a message gets in order to confirm their email"
-msgstr ""
+msgstr "این قالب مربوط به زمانی است که فرستنده ایمیلی دریافت می‌کند تا نامه‌ی خود را تایید کند."
 
 #: nuntium/templates/nuntium/profiles/templates.html:53
 msgid "New answer notification template"
-msgstr ""
+msgstr "قالب دریافت پاسخ از گیرنده"
 
 #: nuntium/templates/nuntium/profiles/templates.html:54
 msgid "When a new answer comes in it will notify all the subscribers with this template"
-msgstr ""
+msgstr "این قالب مربوط به زمانی است که فرستنده پاسخی از طرف گیرنده دریافت می‌کند."
 
 #: nuntium/templates/nuntium/profiles/update_answer.html:8
 #, python-format
@@ -929,7 +933,7 @@ msgid ""
 "\n"
 "    This is your &ldquo;%(name)s&rdquo; message-sending site.\n"
 "  "
-msgstr ""
+msgstr "\n این سایت پیام‌رسانی است که شما ساخته‌اید: &ldquo;%(name)s&rdquo;.\n "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:22
 #, python-format
@@ -941,6 +945,8 @@ msgid ""
 "      restriction lifted and you're ready to send real messages to real people!\n"
 "    "
 msgstr ""
+"\n وبسایت شما فعلا در <strong> وضعیت آزمایشی</strong> است، بنابراین همه‌ی ایمیل‌ها به جای گیرنده‌ها به شما فرستاده می‌شوند.\n"
+"<a href=\"%(contact_page)s\"> با ما تماس بگیرید </a> هنگامی که امکان ایمیل به افراد ایجاد شد، تا این محدودیت را برداریم.\n "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:32
 #, python-format
@@ -955,6 +961,9 @@ msgid_plural ""
 "      That‘s great — now you can test out the process of writing to them!\n"
 "    "
 msgstr[0] ""
+"\n"
+"\nشما به <a href=\"%(url_recipients)s\">%(contactable_count)s  گیرنده‌ی قابل تماس </a> in your database. دسترسی دارید."
+"بسیار خوب! حالا شما می‌توانید نوشتن به آنها را امتحان کنید."
 
 #: nuntium/templates/nuntium/profiles/welcome.html:42
 #, python-format
@@ -1010,7 +1019,7 @@ msgid ""
 "\n"
 "     Here are the things you need to check you've done before everything will work properly.\n"
 "  "
-msgstr ""
+msgstr "\nاینها کارهایی است که شما باید انجام بدهید تا مطمئن شوید همه چیز خوب کار کند.\n "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:83
 #, python-format
@@ -1028,6 +1037,8 @@ msgid ""
 "          <a href=\"%(url_basic_update)s\">set the description and default language</a>\n"
 "        "
 msgstr ""
+"\n"
+"<a href=\"%(url_basic_update)s\"> توضیح و زبان اصلی وبسایت خود را مشخص کنید.</a>\n "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:96
 #, python-format
@@ -1037,13 +1048,16 @@ msgid ""
 "        messages your site sends out are exactly how you want them\n"
 "      "
 msgstr ""
+"\n"
+"<a href=\"%(url_template_update)s\"> قالب‌های ایمیلی وبسایت را به‌روز کنید </a>"
+"تا ایمیل‌های وبسایت شما همان‌طور که می‌خواهید فرستاده شوند.\n "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:104
 msgid ""
 "\n"
 "        pick the right options for things like:\n"
 "      "
-msgstr ""
+msgstr "\nگزینه‌های درست این موارد را مشخص کنید:\n "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:111
 #, python-format
@@ -1053,6 +1067,8 @@ msgid ""
 "            a message can go to (just one, or many?)\n"
 "          "
 msgstr ""
+"\n"
+"<a href=\"%(url_maxrecipients_update)s\"> به حداکثر چند نفر</a> نامه نوشتن ممکن باشد؟\n "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:119
 #, python-format
@@ -1062,7 +1078,7 @@ msgid ""
 "            expect the \n"
 "            <a href=\"%(url_data_sources)s\">data source</a> to change?)\n"
 "          "
-msgstr ""
+msgstr "\nهر چند وقت یک بار اطلاعات‌تان را به‌روز می‌کنید؟ به عبارتی، آیا <a href=\"%(url_data_sources)s\"> منبع اصلی داده‌تان</a> تغییر خواهد یافت؟\n "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:128
 #, python-format
@@ -1072,7 +1088,7 @@ msgid ""
 "             <a href=\"%(url_answernotification_update)s\">receive a notification email</a>\n"
 "             every time someone gets a reply? \n"
 "          "
-msgstr ""
+msgstr "\nآیا شما می‌خواهید هر بار که پاسخی برای یک نامه دریافت کردید <a href=\"%(url_answernotification_update)s\"> از طریق ایمیل </a> باخبر شوید؟\n "
 
 #: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:24
 msgid "Data Sources"
@@ -1098,7 +1114,7 @@ msgstr ""
 #: nuntium/templates/nuntium/profiles/your-instances.html:24
 #: nuntium/templates/nuntium/profiles/your-instances.html:87
 msgid "Edit"
-msgstr ""
+msgstr "ویرایش"
 
 #: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:50
 msgid "Polling interval"
@@ -1134,12 +1150,12 @@ msgstr ""
 
 #: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:76
 msgid "Add a new data source"
-msgstr ""
+msgstr "یک پایگاه داده‌ی جدید اضافه کنید."
 
 #: nuntium/templates/nuntium/profiles/writeitinstance_check_delete.html:23
 #, python-format
 msgid "Are you sure you want to delete %(name)s?"
-msgstr ""
+msgstr "مطمئنید می‌خواهید %(name)s را پاک کنید؟"
 
 #: nuntium/templates/nuntium/profiles/writeitinstance_check_delete.html:25
 msgid "Yes"
@@ -1147,11 +1163,11 @@ msgstr ""
 
 #: nuntium/templates/nuntium/profiles/your-instances.html:14
 msgid "Live Sites"
-msgstr ""
+msgstr "سایت‌‌های زنده"
 
 #: nuntium/templates/nuntium/profiles/your-instances.html:26
 msgid "Disable"
-msgstr ""
+msgstr "حذف"
 
 #: nuntium/templates/nuntium/profiles/your-instances.html:36
 #: nuntium/templates/nuntium/profiles/your-instances.html:97
@@ -1160,12 +1176,12 @@ msgstr ""
 
 #: nuntium/templates/nuntium/profiles/your-instances.html:69
 msgid "Test Sites"
-msgstr ""
+msgstr "سایت‌های آزمایشی"
 
 #: nuntium/templates/nuntium/profiles/your-instances.html:72
 #, python-format
 msgid "Sites are set to Testing Mode by default. Use the 'Edit' link and make sure that your site is set up in the way that you want it. When you are ready, <a href=\"%(contact_page)s\">contact us</a> to let us know and we’ll put your site live."
-msgstr ""
+msgstr "سایت‌ها به صورت پیش‌فرض در وضعیت آزمایشی قرار دارند. لینک ویرایش را انتخاب کنید و مطمئن شوید که سایت شما شرایطی که می‌خواهید را داراست. هنگامی که آماده فرستادن نامه هستید، <a href=\"%(contact_page)s\"> با ما تماس بگیرید </a>  و به ما خبر بدهید تا وبسایت شما را به وضعیت زنده تغییر دهیم."
 
 #: nuntium/templates/nuntium/profiles/your-instances.html:74
 msgid ""
@@ -1184,7 +1200,7 @@ msgstr ""
 
 #: nuntium/templates/nuntium/profiles/your-instances.html:118
 msgid "Create a new Site"
-msgstr ""
+msgstr "یک وبسایت جدید بسازید"
 
 #: nuntium/templates/nuntium/profiles/your-profile.html:22
 msgid "Your profile"
@@ -1198,11 +1214,11 @@ msgstr ""
 
 #: nuntium/templates/nuntium/profiles/your-profile.html:32
 msgid "First Name"
-msgstr ""
+msgstr "نام"
 
 #: nuntium/templates/nuntium/profiles/your-profile.html:38
 msgid "Last Name"
-msgstr ""
+msgstr "نام خانوادگی"
 
 #: nuntium/templates/nuntium/template_list.html:10
 msgid "Current Sites"
@@ -1252,7 +1268,7 @@ msgid ""
 "    If you turn on “Answer Notification”, you will receive copies of all\n"
 "    responses to messages to your email address.\n"
 "    "
-msgstr ""
+msgstr "\nاگر شما گزینه‌ی «نوتیفیکیشن دریافت پاسخ» را فعال کنید، یک کپی از همه‌ی پاسخ‌های دریافتی را در ایمیل‌تان خواهید دید.\n "
 
 #: nuntium/templates/nuntium/writeitinstance_api_docs.html:10
 msgid "Creating a message using the API"
@@ -1326,6 +1342,8 @@ msgid ""
 "        <a href=\"%(contact_page)s\">contact us</a>.\n"
 "        "
 msgstr ""
+"\n"
+"شما در هر ایمیل حداکثر می‌توانید به ۱۰ گیرنده نامه بفرستید. اگر می‌خواهید به افراد بیشتری  در آنِ واحد ایمیل بفرستید، لطفا <a href=\"%(contact_page)s\"> با ما </a> تماس بگیرید.\n "
 
 #: nuntium/templates/nuntium/writeitinstance_moderation_form.html:14
 msgid "Moderation settings"
@@ -1827,7 +1845,7 @@ msgstr ""
 
 #: nuntium/user_section/forms.py:72
 msgid "Write to the people who represent you."
-msgstr ""
+msgstr "به کسانی که شما را نمایندگی می‌کنند نامه بنویسید."
 
 #: nuntium/user_section/forms.py:189
 msgid "WriteIt Instance not present"
@@ -1835,11 +1853,11 @@ msgstr ""
 
 #: nuntium/user_section/forms.py:214
 msgid "The subdomain your site will run at"
-msgstr ""
+msgstr "دامنه اینترنتی یا Subdomain مورد نظر خود را انتخاب کنید."
 
 #: nuntium/user_section/forms.py:215
 msgid "Choose wisely; this can't be changed."
-msgstr ""
+msgstr "خوب فکر کنید، این قابل تغییر نیست."
 
 #: nuntium/user_section/forms.py:241
 msgid "This subdomain has already been taken."
