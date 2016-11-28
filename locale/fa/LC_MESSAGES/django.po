@@ -122,7 +122,7 @@ msgstr "ذکر نام نویسنده ضروری است. "
 
 #: nuntium/forms.py:224 nuntium/user_section/forms.py:282
 msgid "Popolo URL"
-msgstr "لینک فهرست گیرندگان نامه‌ی مورد نظر"
+msgstr "لینک فهرست افراد مورد نظر"
 
 #: nuntium/forms.py:225 nuntium/user_section/forms.py:283
 msgid "Example: https://cdn.rawgit.com/everypolitician/everypolitician-data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"
@@ -572,7 +572,7 @@ msgstr "پیام‌ها"
 
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:21
 msgid "Moderation Queue"
-msgstr "مدیریت نامه‌ها"
+msgstr "نامه‌های بررسی نشده"
 
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:26
 msgid "Data sources"
@@ -802,7 +802,7 @@ msgstr ""
 
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:97
 msgid "No messages awaiting moderation"
-msgstr "هیچ نامه‌ای نیازمند مدیریت نیست."
+msgstr "هیچ نامه‌ای نیازمند بازبینی و تأیید نیست. "
 
 #: nuntium/templates/nuntium/profiles/profile-navigation.html:7
 msgid "Your Sites"
@@ -933,7 +933,7 @@ msgid ""
 "\n"
 "    This is your &ldquo;%(name)s&rdquo; message-sending site.\n"
 "  "
-msgstr "\n این سایت پیام‌رسانی است که شما ساخته‌اید: &ldquo;%(name)s&rdquo;.\n "
+msgstr "\nاین سایت پیام‌رسانی است که شما ساخته‌اید: &ldquo;%(name)s&rdquo.\n "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:22
 #, python-format
@@ -961,9 +961,8 @@ msgid_plural ""
 "      That‘s great — now you can test out the process of writing to them!\n"
 "    "
 msgstr[0] ""
-"\n"
-"\nشما به <a href=\"%(url_recipients)s\">%(contactable_count)s  گیرنده‌ی قابل تماس </a> in your database. دسترسی دارید."
-"بسیار خوب! حالا شما می‌توانید نوشتن به آنها را امتحان کنید."
+"\nشما به ایمیل <a href=\"%(url_recipients)s\">%(contactable_count)s  گیرنده‌ </a>. دسترسی دارید.\n"
+"بسیار خوب! حالا می‌توانید نوشتن به آنها را امتحان کنید.\n "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:42
 #, python-format
@@ -971,7 +970,7 @@ msgid ""
 "Try it out at <a href=\"%(site_root)s\">your test site</a> —\n"
 "      don't worry: any emails you send will be sent to <b>you</b>, not\n"
 "      the politicians."
-msgstr ""
+msgstr "<a href=\"%(site_root)s\"> سایت آزمایشی </a> خود را امتحان کنید و نگران نباشید. هر ایمیلی که بفرستید، به جای گیرنده‌ها به خود شما فرستاده می‌شود."
 
 #: nuntium/templates/nuntium/profiles/welcome.html:46
 #, python-format
@@ -1192,7 +1191,7 @@ msgid_plural ""
 "\n"
 "                These sites are in Test Mode:\n"
 "            "
-msgstr[0] ""
+msgstr[0] "\nاین وبسایت در وضعیت آزمایشی است."
 
 #: nuntium/templates/nuntium/profiles/your-instances.html:88
 msgid "Delete"
@@ -1347,11 +1346,11 @@ msgstr ""
 
 #: nuntium/templates/nuntium/writeitinstance_moderation_form.html:14
 msgid "Moderation settings"
-msgstr "تنظیمات مدیریت"
+msgstr "تنظیمات بازبینی و تأیید"
 
 #: nuntium/templates/nuntium/writeitinstance_moderation_form.html:15
 msgid "back to moderation"
-msgstr "بازگشت به مدیریت"
+msgstr "بازگشت به بازبینی و تأیید"
 
 #: nuntium/templates/nuntium/writeitinstance_moderation_form.html:22
 msgid ""
@@ -1853,15 +1852,16 @@ msgstr ""
 
 #: nuntium/user_section/forms.py:214
 msgid "The subdomain your site will run at"
-msgstr "دامنه اینترنتی یا Subdomain مورد نظر خود را انتخاب کنید."
+msgstr "زیردامنه (Subdomain) مورد نظر خود را انتخاب کنید."
 
 #: nuntium/user_section/forms.py:215
 msgid "Choose wisely; this can't be changed."
-msgstr "خوب فکر کنید، این قابل تغییر نیست."
+msgstr "خوب فکر کنید، این قابل تغییر نخواهد بود."
+
 
 #: nuntium/user_section/forms.py:241
 msgid "This subdomain has already been taken."
-msgstr ""
+msgstr "زیردامنه (Subdomain) مورد نظر گرفته شده است."
 
 #: nuntium/user_section/forms.py:300
 msgid "You have already added this source. But we will fetch the data from it again now."
