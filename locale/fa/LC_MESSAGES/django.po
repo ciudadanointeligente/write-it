@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: writeinpublic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-16 06:49-0600\n"
+"POT-Creation-Date: 2016-11-29 03:51-0600\n"
 "PO-Revision-Date: 2016-09-14 23:01+0000\n"
 "Last-Translator: mySociety <transifex@mysociety.org>\n"
 "Language-Team: Persian (http://www.transifex.com/mysociety/writeinpublic/language/fa/)\n"
@@ -120,11 +120,11 @@ msgstr "sara@majlisnameh.com"
 msgid "Author name is required"
 msgstr "ذکر نام نویسنده ضروری است. "
 
-#: nuntium/forms.py:224 nuntium/user_section/forms.py:282
+#: nuntium/forms.py:224 nuntium/user_section/forms.py:294
 msgid "Popolo URL"
 msgstr "لینک فهرست افراد مورد نظر"
 
-#: nuntium/forms.py:225 nuntium/user_section/forms.py:283
+#: nuntium/forms.py:225 nuntium/user_section/forms.py:295
 msgid "Example: https://cdn.rawgit.com/everypolitician/everypolitician-data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"
 msgstr "مثال: https://cdn.rawgit.com/everypolitician/everypolitician-data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"
 
@@ -594,7 +594,7 @@ msgstr "آمار"
 
 #: nuntium/templates/nuntium/profiles/message_detail.html:22
 #: nuntium/templates/thread/message.html:39
-#: nuntium/templates/write/draft.html:19
+#: nuntium/templates/write/draft.html:19 nuntium/user_section/forms.py:191
 #: writeit/templates/subdomains/infoszab/write/draft.html:20
 #: writeit/templates/subdomains/iran/thread/message.html:33
 #: writeit/templates/subdomains/iran/write/draft.html:24
@@ -1876,20 +1876,19 @@ msgstr "محتوا"
 msgid "WriteIt Instance not present"
 msgstr ""
 
-#: nuntium/user_section/forms.py:214
+#: nuntium/user_section/forms.py:226
 msgid "The subdomain your site will run at"
 msgstr "زیردامنه (Subdomain) مورد نظر خود را انتخاب کنید."
 
-#: nuntium/user_section/forms.py:215
+#: nuntium/user_section/forms.py:227
 msgid "Choose wisely; this can't be changed."
 msgstr "خوب فکر کنید، این قابل تغییر نخواهد بود."
 
-
-#: nuntium/user_section/forms.py:241
+#: nuntium/user_section/forms.py:253
 msgid "This subdomain has already been taken."
 msgstr "زیردامنه (Subdomain) مورد نظر گرفته شده است."
 
-#: nuntium/user_section/forms.py:300
+#: nuntium/user_section/forms.py:312
 msgid "You have already added this source. But we will fetch the data from it again now."
 msgstr ""
 
