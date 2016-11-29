@@ -18,7 +18,7 @@ from django.forms import (
     Select,
     )
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from popolo.models import Person
 
@@ -78,6 +78,10 @@ class WriteItInstanceAnswerNotificationForm(ModelForm):
     class Meta:
         model = WriteItInstanceConfig
         fields = ['notify_owner_when_new_answer', 'real_name_for_site_emails']
+        labels = {
+            'notify_owner_when_new_answer': _('Notify owner on new answers'),
+            'real_name_for_site_emails': _('Real name for site emails'),
+        }
         widgets = {
             'notify_owner_when_new_answer': CheckboxInput(attrs={'class': 'form-control'}),
             'real_name_for_site_emails': TextInput(attrs={'class': 'form-control'}),
@@ -168,7 +172,11 @@ class NewAnswerNotificationTemplateForm(ModelForm):
     class Meta:
         model = NewAnswerNotificationTemplate
         fields = ['subject_template', 'template_text']
+        labels = {
+            'subject_template': _('Subject template'),
+            'template_text': _('Template text'),
 
+        }
         widgets = {
             'subject_template': TextInput(attrs={'class': 'form-control'}),
             'template_text': Textarea(attrs={'class': 'form-control'}),
@@ -179,6 +187,10 @@ class ConfirmationTemplateForm(ModelForm):
     class Meta:
         model = ConfirmationTemplate
         fields = ['subject', 'content_text']
+        labels = {
+            'subject': _('Subject'),
+            'content_text': _('Content text'),
+        }
         widgets = {
             'subject': TextInput(attrs={'class': 'form-control'}),
             'content_text': Textarea(attrs={'class': 'form-control'}),

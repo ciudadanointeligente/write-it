@@ -1870,7 +1870,27 @@ msgstr ""
 msgid "Write to the people who represent you."
 msgstr ""
 
-#: nuntium/user_section/forms.py:189
+#: nuntium/user_section/forms.py:82
+msgid "Notify owner on new answers"
+msgstr ""
+
+#: nuntium/user_section/forms.py:83
+msgid "Real name for site emails"
+msgstr ""
+
+#: nuntium/user_section/forms.py:176
+msgid "Subject template"
+msgstr ""
+
+#: nuntium/user_section/forms.py:177
+msgid "Template text"
+msgstr ""
+
+#: nuntium/user_section/forms.py:192
+msgid "Content text"
+msgstr ""
+
+#: nuntium/user_section/forms.py:201
 msgid "WriteIt Instance not present"
 msgstr ""
 
