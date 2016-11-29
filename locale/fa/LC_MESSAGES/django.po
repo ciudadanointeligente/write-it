@@ -347,7 +347,9 @@ msgid ""
 "\n"
 "<p>You’re going to make a site that enables people to contact their\n"
 "politicians.</p>\n"
-msgstr "\n<p> شما به زودی سایتی خواهید ساخت که امکان تماس مستقیم مردم با سیاست‌مداران را ممکن می‌کند. </p>\n"
+msgstr ""
+"\n"
+"<p> شما به زودی سایتی خواهید ساخت که امکان تماس مستقیم مردم با سیاست‌مداران را ممکن می‌کند. </p>\n"
 
 #: nuntium/templates/nuntium/create_new_writeitinstance.html:39
 #: nuntium/templates/nuntium/profiles/create_answer.html:26
@@ -360,7 +362,10 @@ msgid ""
 "\n"
 "                        Welcome to %(sitename)s\n"
 "                    "
-msgstr "\nبه %(sitename)s خوش آمدید!\n "
+msgstr ""
+"\n"
+"به %(sitename)s خوش آمدید!\n"
+" "
 
 #: nuntium/templates/nuntium/instance_detail.html:16
 msgid "Write to the people who represent you.<br />In public.<br /><br />Get answers.<br />In public."
@@ -498,9 +503,7 @@ msgid ""
 "<p>Just email us at <tt>team@writeinpublic.com</tt></p>\n"
 msgstr ""
 "\n"
-"<p> آیا لازم دارید که وبسایت خود را از وضعیت آزمایشی خارج کنید؟ یا می‌خواهید مشکلی را در وبسایت درست کنید یا اینکه اصلا می‌خواهید از ما تشکر کنید؟! </p>"
-"<p> ما بسیار خوشحال می‌شویم که نظرات شما را بشنویم - از چه چیز وبسایت خوش‌تان آمده، یا از چه ناراحتید، یا اینکه دوست داشتید طور دیگری کار می‌کرد. </p>"
-"<p> به ما از طریق این نشانی ایمیل بفرستید: <tt>team@writeinpublic.com</tt></p>\n"
+"<p> آیا لازم دارید که وبسایت خود را از وضعیت آزمایشی خارج کنید؟ یا می‌خواهید مشکلی را در وبسایت درست کنید یا اینکه اصلا می‌خواهید از ما تشکر کنید؟! </p><p> ما بسیار خوشحال می‌شویم که نظرات شما را بشنویم - از چه چیز وبسایت خوش‌تان آمده، یا از چه ناراحتید، یا اینکه دوست داشتید طور دیگری کار می‌کرد. </p><p> به ما از طریق این نشانی ایمیل بفرستید: <tt>team@writeinpublic.com</tt></p>\n"
 
 #: nuntium/templates/nuntium/profiles/contacts/contacts-per-writeitinstance.html:36
 #: nuntium/templates/nuntium/profiles/manager-navigation.html:11
@@ -675,7 +678,10 @@ msgid_plural ""
 "\n"
 "    There are <strong>%(message_count)s</strong> messages \n"
 "    "
-msgstr[0] "\n<strong>%(message_count)s</strong> نامه موجود است.\n "
+msgstr[0] ""
+"\n"
+"<strong>%(message_count)s</strong> نامه موجود است.\n"
+" "
 
 #: nuntium/templates/nuntium/profiles/messages_per_instance.html:39
 #: nuntium/templates/nuntium/profiles/moderation_queue.html:38
@@ -933,7 +939,10 @@ msgid ""
 "\n"
 "    This is your &ldquo;%(name)s&rdquo; message-sending site.\n"
 "  "
-msgstr "\nاین سایت پیام‌رسانی است که شما ساخته‌اید: &ldquo;%(name)s&rdquo.\n "
+msgstr ""
+"\n"
+"این سایت پیام‌رسانی است که شما ساخته‌اید: &ldquo;%(name)s&rdquo.\n"
+" "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:22
 #, python-format
@@ -945,8 +954,10 @@ msgid ""
 "      restriction lifted and you're ready to send real messages to real people!\n"
 "    "
 msgstr ""
-"\n وبسایت شما فعلا در <strong> وضعیت آزمایشی</strong> است، بنابراین همه‌ی ایمیل‌ها به جای گیرنده‌ها به شما فرستاده می‌شوند.\n"
-"<a href=\"%(contact_page)s\"> با ما تماس بگیرید </a> هنگامی که امکان ایمیل به افراد ایجاد شد، تا این محدودیت را برداریم.\n "
+"\n"
+" وبسایت شما فعلا در <strong> وضعیت آزمایشی</strong> است، بنابراین همه‌ی ایمیل‌ها به جای گیرنده‌ها به شما فرستاده می‌شوند.\n"
+"<a href=\"%(contact_page)s\"> با ما تماس بگیرید </a> هنگامی که امکان ایمیل به افراد ایجاد شد، تا این محدودیت را برداریم.\n"
+" "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:32
 #, python-format
@@ -961,8 +972,10 @@ msgid_plural ""
 "      That‘s great — now you can test out the process of writing to them!\n"
 "    "
 msgstr[0] ""
-"\nشما به ایمیل <a href=\"%(url_recipients)s\">%(contactable_count)s  گیرنده‌ </a>. دسترسی دارید.\n"
-"بسیار خوب! حالا می‌توانید نوشتن به آنها را امتحان کنید.\n "
+"\n"
+"شما به ایمیل <a href=\"%(url_recipients)s\">%(contactable_count)s  گیرنده‌ </a>. دسترسی دارید.\n"
+"بسیار خوب! حالا می‌توانید نوشتن به آنها را امتحان کنید.\n"
+" "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:42
 #, python-format
@@ -1018,7 +1031,10 @@ msgid ""
 "\n"
 "     Here are the things you need to check you've done before everything will work properly.\n"
 "  "
-msgstr "\nاینها کارهایی است که شما باید انجام بدهید تا مطمئن شوید همه چیز خوب کار کند.\n "
+msgstr ""
+"\n"
+"اینها کارهایی است که شما باید انجام بدهید تا مطمئن شوید همه چیز خوب کار کند.\n"
+" "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:83
 #, python-format
@@ -1037,7 +1053,8 @@ msgid ""
 "        "
 msgstr ""
 "\n"
-"<a href=\"%(url_basic_update)s\"> توضیح و زبان اصلی وبسایت خود را مشخص کنید.</a>\n "
+"<a href=\"%(url_basic_update)s\"> توضیح و زبان اصلی وبسایت خود را مشخص کنید.</a>\n"
+" "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:96
 #, python-format
@@ -1048,15 +1065,18 @@ msgid ""
 "      "
 msgstr ""
 "\n"
-"<a href=\"%(url_template_update)s\"> قالب‌های ایمیلی وبسایت را به‌روز کنید </a>"
-"تا ایمیل‌های وبسایت شما همان‌طور که می‌خواهید فرستاده شوند.\n "
+"<a href=\"%(url_template_update)s\"> قالب‌های ایمیلی وبسایت را به‌روز کنید </a>تا ایمیل‌های وبسایت شما همان‌طور که می‌خواهید فرستاده شوند.\n"
+" "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:104
 msgid ""
 "\n"
 "        pick the right options for things like:\n"
 "      "
-msgstr "\nگزینه‌های درست این موارد را مشخص کنید:\n "
+msgstr ""
+"\n"
+"گزینه‌های درست این موارد را مشخص کنید:\n"
+" "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:111
 #, python-format
@@ -1067,7 +1087,8 @@ msgid ""
 "          "
 msgstr ""
 "\n"
-"<a href=\"%(url_maxrecipients_update)s\"> به حداکثر چند نفر</a> نامه نوشتن ممکن باشد؟\n "
+"<a href=\"%(url_maxrecipients_update)s\"> به حداکثر چند نفر</a> نامه نوشتن ممکن باشد؟\n"
+" "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:119
 #, python-format
@@ -1077,7 +1098,10 @@ msgid ""
 "            expect the \n"
 "            <a href=\"%(url_data_sources)s\">data source</a> to change?)\n"
 "          "
-msgstr "\nهر چند وقت یک بار اطلاعات‌تان را به‌روز می‌کنید؟ به عبارتی، آیا <a href=\"%(url_data_sources)s\"> منبع اصلی داده‌تان</a> تغییر خواهد یافت؟\n "
+msgstr ""
+"\n"
+"هر چند وقت یک بار اطلاعات‌تان را به‌روز می‌کنید؟ به عبارتی، آیا <a href=\"%(url_data_sources)s\"> منبع اصلی داده‌تان</a> تغییر خواهد یافت؟\n"
+" "
 
 #: nuntium/templates/nuntium/profiles/welcome.html:128
 #, python-format
@@ -1087,7 +1111,10 @@ msgid ""
 "             <a href=\"%(url_answernotification_update)s\">receive a notification email</a>\n"
 "             every time someone gets a reply? \n"
 "          "
-msgstr "\nآیا شما می‌خواهید هر بار که پاسخی برای یک نامه دریافت کردید <a href=\"%(url_answernotification_update)s\"> از طریق ایمیل </a> باخبر شوید؟\n "
+msgstr ""
+"\n"
+"آیا شما می‌خواهید هر بار که پاسخی برای یک نامه دریافت کردید <a href=\"%(url_answernotification_update)s\"> از طریق ایمیل </a> باخبر شوید؟\n"
+" "
 
 #: nuntium/templates/nuntium/profiles/writeitinstance_and_popit_relations.html:24
 msgid "Data Sources"
@@ -1191,7 +1218,9 @@ msgid_plural ""
 "\n"
 "                These sites are in Test Mode:\n"
 "            "
-msgstr[0] "\nاین وبسایت در وضعیت آزمایشی است."
+msgstr[0] ""
+"\n"
+"این وبسایت در وضعیت آزمایشی است."
 
 #: nuntium/templates/nuntium/profiles/your-instances.html:88
 msgid "Delete"
@@ -1267,7 +1296,10 @@ msgid ""
 "    If you turn on “Answer Notification”, you will receive copies of all\n"
 "    responses to messages to your email address.\n"
 "    "
-msgstr "\nاگر شما گزینه‌ی «نوتیفیکیشن دریافت پاسخ» را فعال کنید، یک کپی از همه‌ی پاسخ‌های دریافتی را در ایمیل‌تان خواهید دید.\n "
+msgstr ""
+"\n"
+"اگر شما گزینه‌ی «نوتیفیکیشن دریافت پاسخ» را فعال کنید، یک کپی از همه‌ی پاسخ‌های دریافتی را در ایمیل‌تان خواهید دید.\n"
+" "
 
 #: nuntium/templates/nuntium/writeitinstance_api_docs.html:10
 msgid "Creating a message using the API"
@@ -1342,7 +1374,8 @@ msgid ""
 "        "
 msgstr ""
 "\n"
-"شما در هر ایمیل حداکثر می‌توانید به ۱۰ گیرنده نامه بفرستید. اگر می‌خواهید به افراد بیشتری  در آنِ واحد ایمیل بفرستید، لطفا <a href=\"%(contact_page)s\"> با ما </a> تماس بگیرید.\n "
+"شما در هر ایمیل حداکثر می‌توانید به ۱۰ گیرنده نامه بفرستید. اگر می‌خواهید به افراد بیشتری  در آنِ واحد ایمیل بفرستید، لطفا <a href=\"%(contact_page)s\"> با ما </a> تماس بگیرید.\n"
+" "
 
 #: nuntium/templates/nuntium/writeitinstance_moderation_form.html:14
 msgid "Moderation settings"
