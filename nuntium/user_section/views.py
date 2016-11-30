@@ -214,7 +214,7 @@ class WriteItInstanceApiAutoconfirmView(WriteItInstanceAdvancedUpdateView):
 
 class WriteItInstanceMaxRecipientsView(WriteItInstanceAdvancedUpdateView):
     form_class = WriteItInstanceMaxRecipientsForm
-    template_name = 'nuntium/writeitinstance_max_recipients_form.html'
+    template_name = 'nuntium/writeitinstance_recipients_settings_form.html'
 
     def get_success_url(self):
         return reverse(
