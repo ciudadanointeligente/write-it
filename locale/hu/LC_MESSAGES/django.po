@@ -1307,32 +1307,6 @@ msgid ""
 "        "
 msgstr ""
 
-#: nuntium/templates/nuntium/writeitinstance_max_recipients_form.html:14
-msgid "Recipients settings"
-msgstr "Címzett beállításai"
-
-#: nuntium/templates/nuntium/writeitinstance_max_recipients_form.html:15
-msgid "back to recipients"
-msgstr "Vissza a címzettekhez"
-
-#: nuntium/templates/nuntium/writeitinstance_max_recipients_form.html:22
-msgid ""
-"\n"
-"        Select the maximum number of recipients any individual message can\n"
-"        be sent to.\n"
-"        "
-msgstr ""
-
-#: nuntium/templates/nuntium/writeitinstance_max_recipients_form.html:28
-#, python-format
-msgid ""
-"\n"
-"        This is limited to a maximum of ten recipients per message. If you\n"
-"        want to enable sending messages to more people at once, please\n"
-"        <a href=\"%(contact_page)s\">contact us</a>.\n"
-"        "
-msgstr ""
-
 #: nuntium/templates/nuntium/writeitinstance_moderation_form.html:14
 msgid "Moderation settings"
 msgstr "Moderálás beállításai"
@@ -1367,6 +1341,32 @@ msgid ""
 "\n"
 "    Set this to zero for to allow unlimited messages.\n"
 "    "
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_recipients_settings_form.html:14
+msgid "Recipients settings"
+msgstr "Címzett beállításai"
+
+#: nuntium/templates/nuntium/writeitinstance_recipients_settings_form.html:15
+msgid "back to recipients"
+msgstr "Vissza a címzettekhez"
+
+#: nuntium/templates/nuntium/writeitinstance_recipients_settings_form.html:22
+msgid ""
+"\n"
+"        Select the maximum number of recipients any individual message can\n"
+"        be sent to.\n"
+"        "
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_recipients_settings_form.html:28
+#, python-format
+msgid ""
+"\n"
+"        This is limited to a maximum of ten recipients per message. If you\n"
+"        want to enable sending messages to more people at once, please\n"
+"        <a href=\"%(contact_page)s\">contact us</a>.\n"
+"        "
 msgstr ""
 
 #: nuntium/templates/nuntium/writeitinstance_update_form.html:15
