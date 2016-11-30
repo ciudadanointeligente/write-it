@@ -23,7 +23,7 @@ from .forms import WriteItInstanceBasicForm, \
     WriteItInstanceApiAutoconfirmForm, \
     WriteItInstanceCreateForm, \
     WriteItInstanceModerationForm, \
-    WriteItInstanceMaxRecipientsForm, \
+    WriteItInstanceRecipientsSettingsForm, \
     WriteItInstanceRateLimiterForm, \
     WriteItInstanceWebBasedForm, \
     AnswerForm, RelatePopitInstanceWithWriteItInstance, \
@@ -213,7 +213,7 @@ class WriteItInstanceApiAutoconfirmView(WriteItInstanceAdvancedUpdateView):
 
 
 class WriteItInstanceRecipientsSettingsView(WriteItInstanceAdvancedUpdateView):
-    form_class = WriteItInstanceMaxRecipientsForm
+    form_class = WriteItInstanceRecipientsSettingsForm
     template_name = 'nuntium/writeitinstance_recipients_settings_form.html'
 
     def get_success_url(self):
