@@ -212,7 +212,7 @@ class WriteItInstanceApiAutoconfirmView(WriteItInstanceAdvancedUpdateView):
             )
 
 
-class WriteItInstanceMaxRecipientsView(WriteItInstanceAdvancedUpdateView):
+class WriteItInstanceRecipientsSettingsView(WriteItInstanceAdvancedUpdateView):
     form_class = WriteItInstanceMaxRecipientsForm
     template_name = 'nuntium/writeitinstance_recipients_settings_form.html'
 
