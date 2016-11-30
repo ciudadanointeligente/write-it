@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: writeinpublic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-30 07:49-0600\n"
+"POT-Creation-Date: 2016-11-30 11:28-0600\n"
 "PO-Revision-Date: 2016-09-14 23:01+0000\n"
 "Last-Translator: mySociety <transifex@mysociety.org>\n"
 "Language-Team: Persian (http://www.transifex.com/mysociety/writeinpublic/language/fa/)\n"
@@ -120,11 +120,11 @@ msgstr "sara@majlisnameh.com"
 msgid "Author name is required"
 msgstr "ذکر نام نویسنده ضروری است. "
 
-#: nuntium/forms.py:234 nuntium/user_section/forms.py:282
+#: nuntium/forms.py:234 nuntium/user_section/forms.py:283
 msgid "Popolo URL"
 msgstr "لینک فهرست افراد مورد نظر"
 
-#: nuntium/forms.py:235 nuntium/user_section/forms.py:283
+#: nuntium/forms.py:235 nuntium/user_section/forms.py:284
 msgid "Example: https://cdn.rawgit.com/everypolitician/everypolitician-data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"
 msgstr "مثال: https://cdn.rawgit.com/everypolitician/everypolitician-data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"
 
@@ -133,7 +133,7 @@ msgstr "مثال: https://cdn.rawgit.com/everypolitician/everypolitician-data/14
 msgid "The message \"%(subject)s\" at %(instance)s turned %(status)s at %(date)s"
 msgstr ""
 
-#: nuntium/models.py:142 nuntium/tests/message_form_tests.py:275
+#: nuntium/models.py:142 nuntium/tests/message_form_tests.py:273
 #: nuntium/tests/rate_limiter_tests.py:148
 msgid "You have reached your limit for today please try again tomorrow"
 msgstr "شما به حداکثر ظرفیت امروز خود رسیدید، لطفاً فراد مجدداً تلاش نمایید. "
@@ -851,7 +851,7 @@ msgstr "این قالب مربوط به زمانی است که فرد گیرند
 #: nuntium/templates/nuntium/writeitinstance_autoconfirm_form.html:36
 #: nuntium/templates/nuntium/writeitinstance_moderation_form.html:34
 #: nuntium/templates/nuntium/writeitinstance_ratelimiter_form.html:35
-#: nuntium/templates/nuntium/writeitinstance_recipients_settings_form.html:41
+#: nuntium/templates/nuntium/writeitinstance_recipients_settings_form.html:57
 #: nuntium/templates/nuntium/writeitinstance_update_form.html:41
 #: nuntium/templates/nuntium/writeitinstance_web_based_form.html:30
 msgid "Save changes"
@@ -1872,11 +1872,11 @@ msgstr[0] ""
 msgid "Invalid subdomain for custom CSS"
 msgstr ""
 
-#: nuntium/tests/writeitinstances_test.py:398
+#: nuntium/tests/writeitinstances_test.py:397
 msgid "Thanks for submitting your message, please check your email and click on the confirmation link"
 msgstr "بابت ثبت نامه سپاسگزاریم. لطفا ایمیل خود را مشاهده و روی لینک تایید کلیک کنید. "
 
-#: nuntium/tests/writeitinstances_test.py:437
+#: nuntium/tests/writeitinstances_test.py:436
 msgid "Thanks for submitting your message, please check your email and click on the confirmation link, after that your message will be waiting form moderation"
 msgstr ""
 
@@ -1910,23 +1910,23 @@ msgstr "قالب‌ها"
 msgid "Content text"
 msgstr "محتوا"
 
-#: nuntium/user_section/forms.py:201
+#: nuntium/user_section/forms.py:190
 msgid "WriteIt Instance not present"
 msgstr ""
 
-#: nuntium/user_section/forms.py:226
+#: nuntium/user_section/forms.py:215
 msgid "The subdomain your site will run at"
 msgstr "زیردامنه (Subdomain) مورد نظر خود را انتخاب کنید."
 
-#: nuntium/user_section/forms.py:227
+#: nuntium/user_section/forms.py:216
 msgid "Choose wisely; this can't be changed."
 msgstr "خوب فکر کنید، این قابل تغییر نخواهد بود."
 
-#: nuntium/user_section/forms.py:253
+#: nuntium/user_section/forms.py:242
 msgid "This subdomain has already been taken."
 msgstr "زیردامنه (Subdomain) مورد نظر گرفته شده است."
 
-#: nuntium/user_section/forms.py:312
+#: nuntium/user_section/forms.py:301
 msgid "You have already added this source. But we will fetch the data from it again now."
 msgstr ""
 
