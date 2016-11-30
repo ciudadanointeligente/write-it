@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: writeinpublic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-29 03:51-0600\n"
+"POT-Creation-Date: 2016-11-30 07:49-0600\n"
 "PO-Revision-Date: 2016-09-07 11:42+0000\n"
 "Last-Translator: mySociety <transifex@mysociety.org>\n"
 "Language-Team: Hungarian (http://www.transifex.com/mysociety/writeinpublic/language/hu/)\n"
@@ -17,75 +17,75 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: contactos/models.py:33 contactos/tests/contacts_tests.py:157
+#: contactos/models.py:32 contactos/tests/contacts_tests.py:134
 #, python-format
 msgid "%(contact)s (%(type)s) for %(person)s"
 msgstr ""
 
-#: contactos/models.py:77
+#: contactos/models.py:76
 #, python-format
 msgid "The contact %(contact)s for %(person)s has bounced"
 msgstr ""
 
-#: contactos/tests/contacts_tests.py:202
+#: contactos/tests/contacts_tests.py:179
 msgid "The contact contact point for Pedro has bounced"
 msgstr ""
 
-#: instance/models.py:45 instance/models.py:75
+#: instance/models.py:298 instance/models.py:319
 #: nuntium/tests/popit_writeit_relation_tests.py:223
-#: nuntium/user_section/tests/popit_instance_update_tests.py:192
+#: nuntium/user_section/tests/popit_instance_update_tests.py:193
 msgid "We could not connect with the URL"
 msgstr ""
 
-#: instance/models.py:146
+#: instance/models.py:390
 msgid "Not doing anything now"
 msgstr ""
 
-#: instance/models.py:147
+#: instance/models.py:391
 msgid "Error"
 msgstr "Hiba"
 
-#: instance/models.py:148
+#: instance/models.py:392
 msgid "Success"
 msgstr "Sikerült"
 
-#: instance/models.py:149
+#: instance/models.py:393
 msgid "Waiting"
 msgstr "Még várunk"
 
-#: instance/models.py:150
+#: instance/models.py:394
 msgid "In Progress"
 msgstr "Folyamatban"
 
-#: instance/models.py:184
+#: instance/models.py:428
 msgid "Every message is going to         have a moderation mail"
 msgstr ""
 
-#: instance/models.py:187
+#: instance/models.py:431
 msgid "Allow the creation of new messages         using the web"
 msgstr ""
 
-#: instance/models.py:191
+#: instance/models.py:435
 msgid "The name that should appear in the From: line of emails sent from this site"
 msgstr ""
 
-#: instance/models.py:197
+#: instance/models.py:441
 msgid "The owner of this instance         should be notified         when a new answer comes in"
 msgstr ""
 
-#: instance/models.py:201
+#: instance/models.py:445
 msgid "Messages pushed to the api should             be confirmed automatically"
 msgstr ""
 
-#: instance/models.py:204
+#: instance/models.py:448
 msgid "Messages can have empty Author             names"
 msgstr ""
 
-#: instance/models.py:208
+#: instance/models.py:452
 msgid "When showing other messages by the same author, the public name must match as well as the hidden email"
 msgstr ""
 
-#: mailit/forms.py:13 nuntium/forms.py:73
+#: mailit/forms.py:13 nuntium/forms.py:83
 msgid "Instance not present"
 msgstr ""
 
@@ -94,119 +94,119 @@ msgstr ""
 msgid "You can use {subject}, {content}, {person}, {author}, {site_url}, {site_name}, and {owner_email}"
 msgstr ""
 
-#: nuntium/forms.py:101
+#: nuntium/forms.py:111
 #, python-format
 msgid "You can send messages to at most %(count)d person"
 msgid_plural "You can send messages to at most %(count)d people"
 msgstr[0] ""
 msgstr[1] ""
 
-#: nuntium/forms.py:128
+#: nuntium/forms.py:138
 #, python-brace-format
 msgid "We have no contact details for the following people: {list_of_names}"
 msgstr ""
 
-#: nuntium/forms.py:152
+#: nuntium/forms.py:162
 msgctxt "An example author name when drafting a message"
 msgid "Alice Smith"
 msgstr ""
 
-#: nuntium/forms.py:160
+#: nuntium/forms.py:170
 msgctxt "An example email address when drafting a message"
 msgid "alice@example.com"
 msgstr ""
 
-#: nuntium/forms.py:171
+#: nuntium/forms.py:181
 msgid "Author name is required"
 msgstr ""
 
-#: nuntium/forms.py:224 nuntium/user_section/forms.py:294
+#: nuntium/forms.py:234 nuntium/user_section/forms.py:282
 msgid "Popolo URL"
 msgstr ""
 
-#: nuntium/forms.py:225 nuntium/user_section/forms.py:295
+#: nuntium/forms.py:235 nuntium/user_section/forms.py:283
 msgid "Example: https://cdn.rawgit.com/everypolitician/everypolitician-data/1460373/data/Abkhazia/Assembly/ep-popolo-v1.0.json"
 msgstr ""
 
-#: nuntium/models.py:60 nuntium/tests/record_system_test.py:31
+#: nuntium/models.py:59 nuntium/tests/record_system_test.py:31
 #, python-format
 msgid "The message \"%(subject)s\" at %(instance)s turned %(status)s at %(date)s"
 msgstr ""
 
-#: nuntium/models.py:143 nuntium/tests/message_form_tests.py:275
+#: nuntium/models.py:142 nuntium/tests/message_form_tests.py:275
 #: nuntium/tests/rate_limiter_tests.py:148
 msgid "You have reached your limit for today please try again tomorrow"
 msgstr ""
 
-#: nuntium/models.py:183 nuntium/templates/thread/message.html:31
+#: nuntium/models.py:182 nuntium/templates/thread/message.html:31
 msgid "Anonymous"
 msgstr ""
 
-#: nuntium/models.py:226
+#: nuntium/models.py:225
 msgid "A message needs persons to be sent"
 msgstr ""
 
-#: nuntium/models.py:262 nuntium/tests/moderation_messages_test.py:208
+#: nuntium/models.py:261 nuntium/tests/moderation_messages_test.py:208
 msgid "The message needs to be confirmated first"
 msgstr ""
 
-#: nuntium/models.py:266
+#: nuntium/models.py:265
 #: nuntium/user_section/tests/manually_create_answers_tests.py:422
 #: nuntium/user_section/tests/manually_create_answers_tests.py:449
 #: nuntium/user_section/views.py:433 nuntium/user_section/views.py:476
 msgid "Cannot moderate an already moderated message"
 msgstr ""
 
-#: nuntium/models.py:281 nuntium/tests/messages_test.py:317
+#: nuntium/models.py:280 nuntium/tests/messages_test.py:317
 #, python-format
 msgid "%(subject)s at %(instance)s"
 msgstr ""
 
-#: nuntium/models.py:306
+#: nuntium/models.py:305
 msgid "This guy does not belong here"
 msgstr ""
 
-#: nuntium/models.py:310 nuntium/tests/answers_test.py:31
+#: nuntium/models.py:309 nuntium/tests/answers_test.py:31
 #, python-format
 msgid "%(person)s said \"%(content)s\" to the message %(message)s"
 msgstr ""
 
-#: nuntium/models.py:402 nuntium/tests/outbound_message_test.py:100
+#: nuntium/models.py:403 nuntium/tests/outbound_message_test.py:101
 msgid "Newly created"
 msgstr "Nemrég létrehozva"
 
-#: nuntium/models.py:403 nuntium/tests/outbound_message_test.py:101
+#: nuntium/models.py:404 nuntium/tests/outbound_message_test.py:102
 msgid "Ready to send"
 msgstr "Küldésre vár"
 
-#: nuntium/models.py:404 nuntium/tests/outbound_message_test.py:102
+#: nuntium/models.py:405 nuntium/tests/outbound_message_test.py:103
 msgid "Sent"
 msgstr "Elküldve"
 
-#: nuntium/models.py:405 nuntium/tests/outbound_message_test.py:103
+#: nuntium/models.py:406 nuntium/tests/outbound_message_test.py:104
 msgid "Error sending it"
 msgstr "Hiba küldéskor"
 
-#: nuntium/models.py:406 nuntium/tests/outbound_message_test.py:104
+#: nuntium/models.py:407 nuntium/tests/outbound_message_test.py:105
 msgid "Needs moderation"
 msgstr "Moderálásra vár"
 
-#: nuntium/models.py:468 nuntium/tests/outbound_message_test.py:41
+#: nuntium/models.py:469 nuntium/tests/outbound_message_test.py:42
 #, python-format
 msgid "%(subject)s sent to %(person)s (%(contact)s) at %(instance)s"
 msgstr ""
 
-#: nuntium/models.py:571 nuntium/models.py:575 nuntium/models.py:580
+#: nuntium/models.py:573 nuntium/models.py:577 nuntium/models.py:582
 #, python-brace-format
 msgid "You can use {author_name}, {site_name}, {subject}, {content}, {recipients}, {confirmation_url}, and {message_url}"
 msgstr ""
 
-#: nuntium/models.py:734 nuntium/models.py:738 nuntium/models.py:743
+#: nuntium/models.py:736 nuntium/models.py:740 nuntium/models.py:745
 #, python-brace-format
 msgid "You can use {author_name}, {person}, {subject}, {content}, {message_url}, and {site_name}"
 msgstr ""
 
-#: nuntium/models.py:747
+#: nuntium/models.py:749
 #, python-format
 msgid "Notification template for %s"
 msgstr ""
@@ -842,9 +842,9 @@ msgstr ""
 #: nuntium/templates/nuntium/profiles/templates.html:59
 #: nuntium/templates/nuntium/writeitinstance_answernotification_form.html:49
 #: nuntium/templates/nuntium/writeitinstance_autoconfirm_form.html:36
-#: nuntium/templates/nuntium/writeitinstance_max_recipients_form.html:41
 #: nuntium/templates/nuntium/writeitinstance_moderation_form.html:34
 #: nuntium/templates/nuntium/writeitinstance_ratelimiter_form.html:35
+#: nuntium/templates/nuntium/writeitinstance_recipients_settings_form.html:41
 #: nuntium/templates/nuntium/writeitinstance_update_form.html:41
 #: nuntium/templates/nuntium/writeitinstance_web_based_form.html:30
 msgid "Save changes"
@@ -1888,11 +1888,11 @@ msgstr ""
 msgid "The message \"%(message)s\" has been rejected"
 msgstr ""
 
-#: nuntium/user_section/views.py:619
+#: nuntium/user_section/views.py:621
 msgid "This message has been marked as public"
 msgstr ""
 
-#: nuntium/user_section/views.py:621
+#: nuntium/user_section/views.py:623
 msgid "This message has been marked as private"
 msgstr ""
 
