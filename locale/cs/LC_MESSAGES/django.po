@@ -1376,6 +1376,14 @@ msgid ""
 "        "
 msgstr ""
 
+#: nuntium/templates/nuntium/writeitinstance_recipients_settings_form.html:41
+msgid "Include area names with representatives"
+msgstr ""
+
+#: nuntium/templates/nuntium/writeitinstance_recipients_settings_form.html:42
+msgid "If this option is enabled, then the areas that the possible recipients represent are also included in parentheses after their names. This is important in cases where multiple representatives have the same name and you can't otherwise tell them apart."
+msgstr ""
+
 #: nuntium/templates/nuntium/writeitinstance_update_form.html:15
 #: nuntium/templates/registration/password_change_form.html:20
 msgid "Please correct the error below."

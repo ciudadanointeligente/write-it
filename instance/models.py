@@ -472,6 +472,7 @@ class WriteItInstanceConfig(models.Model):
     email_use_ssl = models.NullBooleanField()
     can_create_answer = models.BooleanField(default=False, help_text="Can create an answer using the WebUI")
     maximum_recipients = models.PositiveIntegerField(default=5)
+    include_area_names = models.BooleanField(default=False)
     default_language = models.CharField(max_length=10, choices=settings.LANGUAGES)
 
     def get_mail_connection(self):
