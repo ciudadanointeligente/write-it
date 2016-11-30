@@ -218,7 +218,7 @@ class WriteItInstanceMaxRecipientsView(WriteItInstanceAdvancedUpdateView):
 
     def get_success_url(self):
         return reverse(
-            'writeitinstance_maxrecipients_update',
+            'writeitinstance_recipients_settings_update',
             subdomain=self.object.writeitinstance.slug
             )
 
@@ -645,7 +645,7 @@ class WelcomeView(DetailView):
         # that can be quoted within a translation block. *sigh*
         context['url_template_update'] = reverse('writeitinstance_template_update', subdomain=self.request.subdomain)
         context['url_basic_update'] = reverse('writeitinstance_basic_update', subdomain=self.request.subdomain)
-        context['url_maxrecipients_update'] = reverse('writeitinstance_maxrecipients_update', subdomain=self.request.subdomain)
+        context['url_maxrecipients_update'] = reverse('writeitinstance_recipients_settings_update', subdomain=self.request.subdomain)
         context['url_answernotification_update'] = reverse('writeitinstance_answernotification_update', subdomain=self.request.subdomain)
         context['url_recipients'] = reverse('contacts-per-writeitinstance', subdomain=self.request.subdomain)
         context['url_data_sources'] = reverse('relate-writeit-popit', subdomain=self.request.subdomain)
