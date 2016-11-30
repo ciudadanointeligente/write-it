@@ -125,7 +125,7 @@ class WriteItInstanceApiAutoconfirmForm(ModelForm):
         }
 
 
-class WriteItInstanceMaxRecipientsForm(ModelForm):
+class WriteItInstanceRecipientsSettingsForm(ModelForm):
     class Meta:
         model = WriteItInstanceConfig
         fields = ['maximum_recipients']
@@ -134,7 +134,7 @@ class WriteItInstanceMaxRecipientsForm(ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(WriteItInstanceMaxRecipientsForm, self).__init__(*args, **kwargs)
+        super(WriteItInstanceRecipientsSettingsForm, self).__init__(*args, **kwargs)
         self.fields['maximum_recipients'].validators.append(validators.MinValueValidator(1))
         self.fields['maximum_recipients'].validators.append(validators.MaxValueValidator(settings.OVERALL_MAX_RECIPIENTS))
 
