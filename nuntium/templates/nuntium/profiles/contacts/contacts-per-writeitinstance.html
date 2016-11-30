@@ -35,7 +35,7 @@ $(function() {
   <div class="page-header">
     <h2>{% trans "Recipients" %}</h2>
     {% if WEB_BASED %}
-      <a href="{% url 'writeitinstance_maxrecipients_update' subdomain=writeitinstance.slug %}" 
+      <a href="{% url 'writeitinstance_recipients_settings_update' subdomain=writeitinstance.slug %}"
         class="page-header__settings-link btn btn-default btn-sm"><i class="glyphicon glyphicon-wrench"></i> {% trans "Settings" %}</a>
     {% endif %}
   </div>

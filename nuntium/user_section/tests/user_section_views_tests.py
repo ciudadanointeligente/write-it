@@ -214,7 +214,7 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         self.assertFalse(writeitinstance.config.autoconfirm_api_messages)
 
     def test_set_max_recipients_to_7(self):
-        url = reverse('writeitinstance_maxrecipients_update', subdomain=self.writeitinstance.slug)
+        url = reverse('writeitinstance_recipients_settings_update', subdomain=self.writeitinstance.slug)
         modified_data = {'maximum_recipients': 7}
         self.client.login(username=self.owner.username, password='admin')
         self.client.post(url, data=modified_data, follow=True)
@@ -222,7 +222,7 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         self.assertEquals(writeitinstance.config.maximum_recipients, 7)
 
     def test_set_max_recipients_to_1(self):
-        url = reverse('writeitinstance_maxrecipients_update', subdomain=self.writeitinstance.slug)
+        url = reverse('writeitinstance_recipients_settings_update', subdomain=self.writeitinstance.slug)
         modified_data = {'maximum_recipients': 1}
         self.client.login(username=self.owner.username, password='admin')
         self.client.post(url, data=modified_data, follow=True)
@@ -230,7 +230,7 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
         self.assertEquals(writeitinstance.config.maximum_recipients, 1)
 
     def test_set_max_recipients_to_zero(self):
-        url = reverse('writeitinstance_maxrecipients_update', subdomain=self.writeitinstance.slug)
+        url = reverse('writeitinstance_recipients_settings_update', subdomain=self.writeitinstance.slug)
         modified_data = {'maximum_recipients': 0}
         self.client.login(username=self.owner.username, password='admin')
         response = self.client.post(url, data=modified_data, follow=True)
@@ -239,7 +239,7 @@ class WriteitInstanceAdvancedUpdateTestCase(UserSectionTestCase):
 
     @override_settings(OVERALL_MAX_RECIPIENTS=10)
     def test_max_recipients_cannot_rise_more_than_settings(self):
-        url = reverse('writeitinstance_maxrecipients_update', subdomain=self.writeitinstance.slug)
+        url = reverse('writeitinstance_recipients_settings_update', subdomain=self.writeitinstance.slug)
         modified_data = {'maximum_recipients': 11}
         self.client.login(username=self.owner.username, password='admin')
         response = self.client.post(url, data=modified_data, follow=True)
