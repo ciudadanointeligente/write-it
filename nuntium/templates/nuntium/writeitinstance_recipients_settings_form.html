@@ -37,6 +37,22 @@
             {{form.maximum_recipients}}
           </div>
       </div>
+      <div class="settings-group">
+        <h3>{% trans "Include area names with representatives" %}</h3>
+        <p class="help-block">{% blocktrans trimmed %}
+          If this option is enabled, then the areas that the
+          possible recipients represent are also included in
+          parentheses after their names. This is important in
+          cases where multiple representatives have the same
+          name and you can't otherwise tell them apart.
+        {% endblocktrans %}</p>
+
+          <div class="form-group">
+            {{form.include_area_names.errors}}
+            {{form.include_area_names.label_tag}}
+            {{form.include_area_names}}
+          </div>
+      </div>
       <div class="save-bar">
         <input type="submit" class='btn btn-primary' value="{% trans 'Save changes' %}" />
       </div>

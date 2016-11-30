@@ -128,9 +128,10 @@ class WriteItInstanceApiAutoconfirmForm(ModelForm):
 class WriteItInstanceRecipientsSettingsForm(ModelForm):
     class Meta:
         model = WriteItInstanceConfig
-        fields = ['maximum_recipients']
+        fields = ['maximum_recipients', 'include_area_names']
         widgets = {
             'maximum_recipients': NumberInput(attrs={'class': 'form-control'}),
+            'include_area_names': CheckboxInput(),
         }
 
     def __init__(self, *args, **kwargs):
