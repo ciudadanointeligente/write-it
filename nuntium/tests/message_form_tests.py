@@ -114,8 +114,11 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
         # but this assertion at least should catch anyone changing the
         # code back so that there's the N+1 queries problem. As of
         # Django 1.8, there appear to also be 4 queries that create
-        # and release savepoints.
-        with self.assertNumQueries(8):
+        # and release savepoints. There's also one extra query to test
+        # whether there are any memberships for people in this instance,
+        # which is used to decide whether to try to only include people
+        # with current memberships or not.
+        with self.assertNumQueries(9):
             field = PersonMultipleChoiceField(*_get_person_select_args(wii))
             rendered_field = field.widget.render(name='oli', value=None)
             self.assertNotIn('uncontactable', rendered_field)
@@ -142,8 +145,10 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
         # This case is slightly different - when we include area names
         # there's an extra prefetch on Membership, and the three total
         # queries happen twice. As in the previous test, there are
-        # also 4 queries that create and release savepoints.
-        with self.assertNumQueries(10):
+        # also 4 queries that create and release savepoints. In addition,
+        # there's still one extra query to test whether there are any
+        # memberships for people in this instance.
+        with self.assertNumQueries(11):
             field = PersonMultipleChoiceField(*_get_person_select_args(wii))
             rendered_field = field.widget.render(name='oli', value=None)
             self.assertNotIn('uncontactable', rendered_field)

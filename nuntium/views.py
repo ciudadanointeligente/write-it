@@ -92,9 +92,28 @@ def _get_persons_prefetch(writeitinstance):
 
 def _get_person_select_kwargs(writeitinstance):
     prefetch_args = _get_persons_prefetch(writeitinstance)
+    # FIXME: far from ideal. We only want to include current
+    # politicians in the select. Some instances have memberships with
+    # a particular legislative_period_id indicating which term the
+    # person is a member of (although unfortunately django-popolo
+    # doesn't include that attribute). Other instances don't have any
+    # memberships at all, in which case we include all people. We can
+    # get this roughly right by filtering for people with *any*
+    # current membership if the instance has any memberships at all.
+    person_conditions = []
+    if writeitinstance.has_popolo_memberships:
+        today = date.today()
+        person_conditions += [
+            Q(memberships__end_date__gte=today) |
+            Q(memberships__end_date='') |
+            Q(memberships__end_date__isnull=True),
+            Q(memberships__start_date__lte=today) |
+            Q(memberships__start_date='') |
+            Q(memberships__start_date__isnull=True)]
     return {
         'persons_queryset':
         writeitinstance.persons \
+            .filter(*person_conditions) \
             .prefetch_related(*prefetch_args) \
             .order_by('name'),
         'include_area_names':
