@@ -268,6 +268,10 @@ class WriteItInstance(models.Model):
     def persons_with_contacts(self):
         return self.persons.filter(contact__writeitinstance=self, contact__isnull=False).distinct()
 
+    @property
+    def has_popolo_memberships(self):
+        return self.persons.filter(memberships__isnull=False).exists()
+
     def relate_with_persons_from_popolo_json(self, popolo_source):
         try:
             importer = PopoloSourceImporter(
