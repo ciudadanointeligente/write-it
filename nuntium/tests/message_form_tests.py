@@ -112,8 +112,12 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
         # the initializer of PersonSelectMultipleWidget and once when
         # render_options evaluates 'choices'.  So this isn't ideal,
         # but this assertion at least should catch anyone changing the
-        # code back so that there's the N+1 queries problem.
-        with self.assertNumQueries(4):
+        # code back so that there's the N+1 queries problem. There's
+        # also one extra query to test whether there are any
+        # memberships for people in this instance, which is used to
+        # decide whether to try to only include people with current
+        # memberships or not.
+        with self.assertNumQueries(5):
             field = PersonMultipleChoiceField(*_get_person_select_args(wii))
             rendered_field = field.widget.render(name='oli', value=None)
             self.assertNotIn('uncontactable', rendered_field)
@@ -139,8 +143,10 @@ class PersonMultipleChoiceFieldTestCase(TestCase):
                 value=email)
         # This case is slightly different - when we include area names
         # there's an extra prefetch on Membership, and the three total
-        # queries happen twice.
-        with self.assertNumQueries(6):
+        # queries happen twice. There's still one extra query to test
+        # whether there are any memberships for people in this
+        # instance.
+        with self.assertNumQueries(7):
             field = PersonMultipleChoiceField(*_get_person_select_args(wii))
             rendered_field = field.widget.render(name='oli', value=None)
             self.assertNotIn('uncontactable', rendered_field)
