@@ -11,6 +11,10 @@
     {% custom_stylesheet %}
 {% endblock css %}
 
+{% block extrascripttags %}
+    <script src="{% static 'js/survey.js' %}"></script>
+{% endblock %}
+
 {% block header %}
 <header class="header">
   <nav class="navbar">
@@ -27,6 +31,9 @@
     <a class="write-link" href="{% url 'instance_detail' subdomain=writeitinstance.slug %}">{% trans "Write to Majlis" %}</a>
     {% endif %}
   </nav>
+
+  {% include '_survey.html' %}
+
 </header>
 
   {% if writeitinstance and not writeitinstance.config.allow_messages_using_form %}
