@@ -32,17 +32,21 @@
 
 	  {% if message.writeitinstance.config.moderation_needed_in_all_messages %}
 	  	<dt>{% trans "Moderated" %}</dt>
-        {% if message.moderated %}
-          <dd><i class="fa fa-check"></i></dd>
+        {% if message.confirmated %}
+          {% if message.moderated %}
+            <dd><i class="fa fa-check"></i></dd>
+          {% else %}
+            <dd>
+               <form  class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not yet been moderated — click here to accept it' %}" action="{% url 'accept_message' pk=message.pk %}" method="post">{% csrf_token %} <button class="btn btn-default btn-sm moderate">{% trans "Accept"%}</button>
+               </form>
+               <form  class="explanation"  data-toggle="tooltip" data-placement="right" title="{% trans 'This message has not yet been moderated — click here to reject it' %}" action="{% url 'reject_message' pk=message.pk %}" method="post">{% csrf_token %} <button class="btn btn-default btn-sm moderate">{% trans "Reject"%}</button>
+               </form>
+            </dd>
+          {% endif %}
         {% else %}
-          <dd>
-             <form  class="explanation"  data-toggle="tooltip" data-placement="left" title="{% trans 'This message has not yet been moderated — click here to accept it' %}" action="{% url 'accept_message' pk=message.pk %}" method="post">{% csrf_token %} <button class="btn btn-default btn-sm moderate">{% trans "Accept"%}</button>
-             </form>
-             <form  class="explanation"  data-toggle="tooltip" data-placement="right" title="{% trans 'This message has not yet been moderated — click here to reject it' %}" action="{% url 'reject_message' pk=message.pk %}" method="post">{% csrf_token %} <button class="btn btn-default btn-sm moderate">{% trans "Reject"%}</button>
-             </form>
-          </dd>
+          <dd>{% trans "Not applicable; the message not yet been confirmed by the sender" %}</dd>
         {% endif %}
-    {% endif %}
+      {% endif %}
 
 	  {% if message.public %}
 	  <dt>{% trans "Link" %}</dt>
