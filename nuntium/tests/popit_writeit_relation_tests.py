@@ -162,6 +162,29 @@ class PopitWriteitRelationRecord(TestCase):
         self.assertNotEqual(record.created, record.updated)
 
     @popit_load_data()
+    def test_record_updated_should_be_updated_using_inner_function(self):
+        '''It should be able to update all data twice'''
+        # loading data into the popit-api
+        writeitinstance = WriteItInstance.objects.create(
+            name='instance 1',
+            slug='instance-1',
+            owner=self.owner,
+            )
+
+        popolo_source, _ = PopoloSource.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+        writeitinstance._load_persons_from_popolo_json(popolo_source)
+        record = WriteitInstancePopitInstanceRecord.objects.get(
+            writeitinstance=writeitinstance,
+            popolo_source=popolo_source,
+            )
+        updated_after_first = record.updated
+        writeitinstance._load_persons_from_popolo_json(popolo_source)
+        record = WriteitInstancePopitInstanceRecord.objects.get(pk=record.id)
+        updated_after_second = record.updated
+
+        self.assertNotEqual(updated_after_first, updated_after_second)
+
+    @popit_load_data()
     def test_it_should_update_the_date_every_time_it_is_updated(self):
         '''As described in http://github.com/ciudadanointeligente/write-it/issues/412 the updated date is not updated'''
         # loading data into the popit-api

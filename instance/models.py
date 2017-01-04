@@ -312,7 +312,7 @@ class WriteItInstance(models.Model):
 
     def _load_persons_from_popolo_json(self, popolo_source):
         success_relating_people, error = self.relate_with_persons_from_popolo_json(popolo_source)
-        record = WriteitInstancePopitInstanceRecord.objects.get(
+        record, created = WriteitInstancePopitInstanceRecord.objects.get_or_create(
             writeitinstance=self,
             popolo_source=popolo_source
             )
@@ -410,7 +410,7 @@ class WriteitInstancePopitInstanceRecord(models.Model):
         default="nothing",
         )
     status_explanation = models.TextField(default='')
-    updated = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True, editable=False)
 
     def __unicode__(self):
