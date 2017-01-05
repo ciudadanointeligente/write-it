@@ -335,13 +335,10 @@ class WriteItInstance(models.Model):
     def load_persons_from_popolo_json(self, popolo_json_url):
         '''This is an async wrapper for getting people from the api'''
         popolo_source, created = PopoloSource.objects.get_or_create(url=popolo_json_url)
-        record, created = WriteitInstancePopitInstanceRecord.objects.get_or_create(
+        WriteitInstancePopitInstanceRecord.objects.get_or_create(
             writeitinstance=self,
             popolo_source=popolo_source
             )
-        if not created:
-            record.updated = datetime.datetime.today()
-            record.save()
         from nuntium.tasks import pull_from_popolo_json
         return pull_from_popolo_json.delay(self, popolo_source)
 
