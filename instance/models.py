@@ -317,11 +317,12 @@ class WriteItInstance(models.Model):
         pass
 
     def _load_persons_from_popolo_json(self, popolo_source):
-        success_relating_people, error = self.relate_with_persons_from_popolo_json(popolo_source)
         record, created = WriteitInstancePopitInstanceRecord.objects.get_or_create(
             writeitinstance=self,
             popolo_source=popolo_source
             )
+        record.set_status('inprogress')
+        success_relating_people, error = self.relate_with_persons_from_popolo_json(popolo_source)
         if success_relating_people:
             record.set_status('success')
         else:
@@ -341,7 +342,6 @@ class WriteItInstance(models.Model):
         if not created:
             record.updated = datetime.datetime.today()
             record.save()
-        record.set_status('inprogress')
         from nuntium.tasks import pull_from_popolo_json
         return pull_from_popolo_json.delay(self, popolo_source)
 
