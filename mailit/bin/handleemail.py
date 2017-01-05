@@ -12,7 +12,7 @@ from flufl.bounce import all_failures, scan_message
 from mailit.models import RawIncomingEmail
 from nuntium.models import Answer
 from mailit.bin.froide_email_utils import FroideEmailParser
-from mailit.exceptions import CouldNotFindIdentifier
+from mailit.exceptions import CouldNotFindIdentifier, TemporaryFailure
 
 logging.basicConfig(filename='mailing_logger.txt', level=logging.INFO)
 
@@ -152,9 +152,11 @@ class EmailHandler(FroideEmailParser):
         msg = email.message_from_string(msgtxt)
         temporary, permanent = all_failures(msg)
 
-        if temporary or permanent:
+        if permanent:
             answer.is_bounced = True
             answer.email_from = scan_message(msg).pop()
+        elif temporary:
+            raise TemporaryFailure
         else:
             answer.email_from = msg["From"]
 

@@ -1,0 +1,28 @@
+From MAILER-DAEMON Sun Dec 25 22:45:51 2016
+Received: from Debian-exim by localhost with local (Exim 4.82)
+	id 1cLHY7-0006zM-CG
+	for test+91701f6cc88011e6a5f622000ba09833@localhost; Sun, 25 Dec 2016 22:45:51 +0000
+Auto-Submitted: auto-replied
+From: Mail Delivery System <Mailer-Daemon@localhost>
+To: test+91701f6cc88011e6a5f622000ba09833@localhost
+Subject: Warning: message 1cK9kW-0006jE-Hb delayed 72 hours
+Message-Id: <E1cLHY7-0006zM-CG@localhost>
+Date: Sun, 25 Dec 2016 22:45:51 +0000
+
+This message was created automatically by mail delivery software.
+A message that you sent has not yet been delivered to one or more of its
+recipients after more than 72 hours on the queue on ip-10-109-190-211.ec2.internal.
+
+The message identifier is:     1cK9kW-0006jE-Hb
+The subject of the message is: This is a test message
+The date of the message is:    Thu, 22 Dec 2016 20:14:00 -0000
+
+The address to which the message has not yet been delivered is:
+
+  foo@example.com
+
+No action is required on your part. Delivery attempts will continue for
+some time, and this warning may be repeated at intervals if the message
+remains undelivered. Eventually the mail delivery software will give up,
+and when that happens, the message will be returned to you.
+
