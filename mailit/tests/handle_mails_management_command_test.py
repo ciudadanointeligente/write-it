@@ -7,6 +7,8 @@ from mock import patch
 from django.core import mail
 from django.test.utils import override_settings
 from mailit.models import RawIncomingEmail
+from mailit.bin.handleemail import EmailHandler
+from mailit.exceptions import TemporaryFailure
 
 
 class ManagementCommandAnswer(TestCase):
@@ -110,6 +112,10 @@ def readlines4_mock():
     return read_lines('mailit/tests/fixture/mail_from_tony.txt')
 
 
+def temporary_fail_mock():
+    return read_lines('mailit/tests/fixture/temporary.txt')
+
+
 class HandleIncomingEmailCommand(TestCase):
     def setUp(self):
         super(HandleIncomingEmailCommand, self).setUp()
@@ -179,3 +185,8 @@ class HandleIncomingEmailCommand(TestCase):
             self.assertNotIn('Tony', the_answer.content)
             self.assertNotIn('<eduskunta-', the_answer.content)
             self.assertNotIn('>', the_answer.content)
+
+    def test_temporary_failure_raises_temp_fail_error(self):
+        handler = EmailHandler(answer_class=AnswerForManageCommand)
+        with self.assertRaises(TemporaryFailure):
+            handler.handle(temporary_fail_mock())
