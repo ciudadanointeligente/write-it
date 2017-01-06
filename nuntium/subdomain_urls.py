@@ -20,6 +20,7 @@ from nuntium.views import (
     WriteSignView,
     WriteItInstanceDetailView,
     MissingContactsView,
+    VersionView
     )
 from nuntium.user_section.views import (
     AcceptMessageView,
@@ -133,6 +134,7 @@ urlpatterns = i18n_patterns('',
 
     url(r'^help/(?P<section_name>\w+)/?$', HelpView.as_view(), name='help_section'),
     url(r'^help/?$', HelpView.as_view()),
+    url(r'^version.json$', VersionView.as_view(), name='instance_version'),
 )
 
 if settings.DEBUG:
