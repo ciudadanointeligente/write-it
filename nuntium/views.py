@@ -1,9 +1,15 @@
-from datetime import date, datetime
+import json
+import sys
+import subprocess
 
+from datetime import date, datetime
+from os.path import dirname
+
+import django
 from django.db.models import Prefetch
-from django.views.generic import TemplateView, DetailView, RedirectView, ListView
+from django.views.generic import View, TemplateView, DetailView, RedirectView, ListView
 from subdomains.utils import reverse
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from formtools.wizard.views import NamedUrlSessionWizardView
 from django.shortcuts import get_object_or_404, redirect
 
@@ -12,7 +18,7 @@ from itertools import chain
 from django.db.models import Q
 from instance.models import PopoloPerson, WriteItInstance
 from popolo.models import Membership
-from .models import Confirmation, Message, Moderation
+from .models import Confirmation, Message, Moderation, Answer
 from .forms import MessageSearchForm, PerInstanceSearchForm
 
 from nuntium import forms
@@ -428,3 +434,45 @@ class HelpView(TemplateView):
             return ["help/{}.html".format(self.kwargs['section_name'])]
         else:
             return ["help/index.html"]
+
+
+class VersionView(View):
+    def get(self, request, *args, **kwargs):
+        result = {
+            'python_version': sys.version,
+            'django_version': django.get_version(),
+        }
+        # Try to get the object name of HEAD from git:
+        try:
+            git_version = subprocess.check_output(
+                ['git', 'rev-parse', '--verify', 'HEAD'],
+                cwd=dirname(__file__),
+                universal_newlines=True
+            ).strip()
+            result['git_version'] = git_version
+        except (OSError, subprocess.CalledProcessError):
+            pass
+
+        try:
+            writeitinstance = WriteItInstance.objects.get(slug=self.request.subdomain)
+            message_count = Message.objects.filter(
+                Q(moderated=True) | Q(moderated=None),
+                public=True,
+                writeitinstance=writeitinstance,
+                confirmated=True
+            ).count()
+            result['message_count'] = message_count
+            answer_count = Answer.objects.filter(
+                Q(message__moderated=True) | Q(message__moderated=None),
+                message__public=True,
+                message__writeitinstance=writeitinstance,
+                message__confirmated=True
+            ).count()
+            result['answer_count'] = answer_count
+            result['all_transactions'] = answer_count + message_count
+        except WriteItInstance.DoesNotExist:
+            pass
+
+        return HttpResponse(
+            json.dumps(result), content_type='application/json'
+        )

@@ -5,6 +5,7 @@ from nuntium.views import (
     HomeTemplateView,
     MessageSearchView,
     WriteItInstanceListView,
+    VersionView,
     )
 
 from nuntium.user_section.views import (
@@ -21,4 +22,5 @@ urlpatterns = patterns('',
 
     url(r'^help/(?P<section_name>\w+)/?$', HelpView.as_view(), name='help_section'),
     url(r'^help/?$', HelpView.as_view()),
+    url(r'^version.json', VersionView.as_view(), name="version"),
 )
