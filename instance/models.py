@@ -275,7 +275,13 @@ class WriteItInstance(models.Model):
     def relate_with_persons_from_popolo_json(self, popolo_source):
         try:
             importer = PopoloSourceImporter(
-                popolo_source, id_prefix='popolo:', truncate='yes')
+                popolo_source,
+                id_prefix='popolo:',
+                truncate='yes',
+                id_schemes_to_preserve={
+                    'person': {'popit_id', 'popit_url',
+                               'popit_django_person_id', 'popolo_uri'}
+                })
             importer.add_observer(ExtraIdentifierCreator(popolo_source))
             importer.add_observer(InstanceMembershipUpdater(self))
             person_tracker = PersonTracker()
