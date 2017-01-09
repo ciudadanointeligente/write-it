@@ -189,9 +189,9 @@ class ExtraIdentifierCreator(object):
                 collection=collection,
                 popolo_id=popolo_data['id'],
             )
-            django_object.identifiers.create(
+            django_object.identifiers.update_or_create(
                 scheme='popolo_uri',
-                identifier=uri)
+                defaults={'identifier': uri})
 
     def notify_deleted(self, collection, django_object):
         pass
