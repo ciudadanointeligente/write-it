@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 # Django settings for writeit project.
 import sys
 import os
@@ -225,7 +226,6 @@ INSTALLED_APPS = (
     'django_extensions',
     # Searching.
     'haystack',
-    'djcelery',
     'pipeline',
     # Uncomment the next line to enable the admin:
     'django_admin_bootstrapped',
@@ -235,7 +235,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 
     # Multi-page form wizard
-    'django.contrib.formtools',
+    'formtools',
     'subdomains',
 )
 
@@ -335,9 +335,7 @@ SEND_ALL_EMAILS_FROM_DEFAULT_FROM_EMAIL = False
 
 
 # CELERY CONFIGURATION
-import djcelery
 from celery.schedules import crontab
-djcelery.setup_loader()
 
 CELERYBEAT_SCHEDULE = {
     # Sends emails every 2 minutes
@@ -410,7 +408,7 @@ WEB_BASED = True
 API_BASED = False
 
 if TESTING:
-    from testing_settings import *  # noqa
+    from .testing_settings import *  # noqa
 
 try:
     from local_settings import *  # noqa

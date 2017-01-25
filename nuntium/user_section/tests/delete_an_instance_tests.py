@@ -24,7 +24,7 @@ class DeleteAnInstanceTestCase(UserSectionTestCase):
         response = WriteItDeleteView.as_view()(request)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'nuntium/profiles/writeitinstance_check_delete.html')
+        self.assertIn('nuntium/profiles/writeitinstance_check_delete.html', response.template_name)
         # It's not yet deleted
         self.assertTrue(WriteItInstance.objects.get(id=self.writeitinstance.id))
 

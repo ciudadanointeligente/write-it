@@ -566,6 +566,7 @@ class WriteItPopitUpdateView(UpdateView):
 
 class WriteItDeleteView(DeleteView):
     model = WriteItInstance
+    template_name="nuntium/profiles/writeitinstance_check_delete.html"
 
     # @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):

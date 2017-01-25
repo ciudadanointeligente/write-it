@@ -61,7 +61,7 @@ class ManagementCommandAnswerBehaviour(TestCase):
         self.assertEquals(outbound_message.status, 'error')
 
     def test_it_handles_bounces_in_send_back_function(self):
-        #the email is a bounce
+        # the email is a bounce
         self.email_answer.is_bounced = True
         self.email_answer.send_back()
 
@@ -74,7 +74,7 @@ class ManagementCommandAnswerBehaviour(TestCase):
         self.assertEquals(Answer.objects.filter(message=self.outbound_message.message).count(), 0)
 
     def test_it_creates_an_answer_when_is_not_bounced(self):
-        #the email is not a bounce
+        # the email is not a bounce
         self.assertEquals(Answer.objects.filter(message=self.outbound_message.message).count(), 0)
         self.email_answer.send_back()
         the_answer = Answer.objects.get(message=self.outbound_message.message)
@@ -123,7 +123,7 @@ class HandleIncomingEmailCommand(TestCase):
         with patch('sys.stdin') as stdin:
             stdin.attach_mock(readlines1_mock, 'readlines')
 
-            call_command('handleemail', 'mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+            call_command('handleemail', verbosity=0)
 
             the_answers = Answer.objects.filter(message=identifier.outbound_message.message)
             self.assertEquals(the_answers.count(), 1)
@@ -137,7 +137,7 @@ class HandleIncomingEmailCommand(TestCase):
         with patch('sys.stdin') as stdin:
             stdin.attach_mock(readlines2_mock, 'readlines')
 
-            call_command('handleemail', 'mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+            call_command('handleemail', verbosity=0)
 
             the_answers = Answer.objects.filter(message=identifier.outbound_message.message)
             self.assertEquals(the_answers.count(), 1)
@@ -147,7 +147,7 @@ class HandleIncomingEmailCommand(TestCase):
     def test_it_sends_an_email_to_the_admin_if_any_failure(self):
         with patch('sys.stdin') as stdin:
             stdin.attach_mock(readlines3_mock, 'readlines')
-            call_command('handleemail', 'mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+            call_command('handleemail', verbosity=0)
             content_text = ''
             for line in readlines3_mock():
                 content_text += line
@@ -161,7 +161,7 @@ class HandleIncomingEmailCommand(TestCase):
     def test_mail_admins_if_theres_a_problem(self):
         with patch('sys.stdin') as stdin:
             stdin.attach_mock(killer_mail, 'readlines')
-            call_command('handleemail', 'mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+            call_command('handleemail', verbosity=0)
             self.assertEquals(len(mail.outbox), 1)
             self.assertNotIn(killer_mail(), mail.outbox[0].body)
             self.assertEquals(mail.outbox[0].to[0], 'falvarez@admins.org')
@@ -174,7 +174,7 @@ class HandleIncomingEmailCommand(TestCase):
         identifier.save()
         with patch('sys.stdin') as stdin:
             stdin.attach_mock(readlines4_mock, 'readlines')
-            call_command('handleemail', 'mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+            call_command('handleemail', verbosity=0)
             the_answer = Answer.objects.get(message=identifier.outbound_message.message)
             self.assertNotIn('Tony', the_answer.content)
             self.assertNotIn('<eduskunta-', the_answer.content)

@@ -28,7 +28,7 @@ class LoggingTests(TestCase):
         with patch('sys.stdin') as stdin:
             stdin.attach_mock(readlines1_mock, 'readlines')
 
-            call_command('handleemail', 'mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+            call_command('handleemail', verbosity=0)
 
             self.assertEquals(len(mail.outbox), 1)
             self.assertEquals(mail.outbox[0].to[0], 'falvarez@admins.org')
@@ -46,6 +46,6 @@ class LoggingTests(TestCase):
         with patch('sys.stdin') as stdin:
             stdin.attach_mock(readlines1_mock, 'readlines')
 
-            call_command('handleemail', 'mailit.tests.handle_mails_management_command.StdinMock', verbosity=0)
+            call_command('handleemail', verbosity=0)
 
             self.assertEquals(len(mail.outbox), 0)
