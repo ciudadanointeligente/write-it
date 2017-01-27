@@ -63,7 +63,7 @@ class SearchAnswerAccess(SearchIndexTestCase):
         response = self.client.get(url_with_parameters)
         self.assertEquals(response.status_code, 200)
 
-        #the first one the one that says "Public Answer" in example_data.yml
+        # the first one the one that says "Public Answer" in example_data.yml
         expected_answer = Answer.objects.get(id=1)
         self.assertIn('page', response.context)
         results = response.context['page'].object_list

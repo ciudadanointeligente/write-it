@@ -6,6 +6,7 @@ from contactos.models import Contact
 # from djangoplugins.models import Plugin
 from django.contrib.auth.models import User
 from popolo.models import Person
+from django.core.management import call_command
 '''
 This testcase is intented to test the OutboundMessageRecord model
 and it's creation when sending an outbound_message, the calculation of
@@ -14,6 +15,9 @@ attempts and the status of the outbound_message at the end
 The class tested in this file has the responsability of recording to
 what plugin an outbound message has been sent
 '''
+
+
+call_command('syncplugins')
 
 
 class OutboundMessageRecordTestCase(TestCase):
