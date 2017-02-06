@@ -21,10 +21,14 @@ class DeleteAnInstanceTestCase(UserSectionTestCase):
         url = reverse('delete_an_instance', subdomain=self.writeitinstance.slug)
         request = self.factory.get(url)
         request.user = self.writeitinstance.owner
-        response = WriteItDeleteView.as_view()(request)
+        view = WriteItDeleteView.as_view(
+            template_name="nuntium/profiles/writeitinstance_check_delete.html")
+        response = view(request)
 
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'nuntium/profiles/writeitinstance_check_delete.html')
+        self.assertEqual(
+            response.template_name,
+            ['nuntium/profiles/writeitinstance_check_delete.html'])
         # It's not yet deleted
         self.assertTrue(WriteItInstance.objects.get(id=self.writeitinstance.id))
 
