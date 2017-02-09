@@ -407,12 +407,16 @@ class SmtpErrorHandling(TestCase):
         # I'm taking it as if we should not try to send this
         # message again, but for example
 
-    def test_any_other_exception(self):
+    @patch('mailit.mail_admins')
+    def test_any_other_exception(self, mail_admins):
         with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = Exception(401, "Something very bad")
             result_of_sending, fatal_error = self.channel.send(self.outbound_message1)
             self.assertFalse(result_of_sending)
             self.assertTrue(fatal_error)
+            mail_admins.assert_called_with(
+                'Problem sending an email',
+                u"Error with outbound id 1, contact 'pdaire@ciudadanointeligente.org' and message 'Subject 1 at instance 1' and the error was '(401, 'Something very bad')'")
 
     def test_smpt_error_code_501(self):
         # to handle this kind of error
@@ -493,14 +497,16 @@ class SmtpErrorHandling(TestCase):
             self.assertFalse(result_of_sending)
             self.assertFalse(fatal_error)
 
-    def test_extra_logging(self):
+    @patch('logging.info')
+    @patch('mailit.mail_admins')
+    def test_extra_logging(self, mail_admins, info):
         with patch("django.core.mail.EmailMultiAlternatives.send") as send_mail:
             send_mail.side_effect = Exception("Hey this is an exception")
-            with patch('logging.info') as info:
-                expected_log = u"Error with outbound id 1, contact 'pdaire@ciudadanointeligente.org' and message 'Subject 1 at instance 1' and the error was 'Hey this is an exception'"
-                self.channel.send(self.outbound_message1)
+            expected_log = u"Error with outbound id 1, contact 'pdaire@ciudadanointeligente.org' and message 'Subject 1 at instance 1' and the error was 'Hey this is an exception'"
+            self.channel.send(self.outbound_message1)
 
-                info.assert_called_with(expected_log)
+            info.assert_called_with(expected_log)
+            mail_admins.assert_called_with('Problem sending an email', expected_log)
 
 
 class MailitTemplateUpdateTestCase(UserSectionTestCase):

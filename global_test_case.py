@@ -1,7 +1,7 @@
 import re
 
 from django.test import TestCase
-from django.utils.unittest import skipUnless
+from unittest import skipUnless
 from django.core.management import call_command
 from tastypie.test import ResourceTestCase
 from django.conf import settings
