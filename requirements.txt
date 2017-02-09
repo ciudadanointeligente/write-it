@@ -1,7 +1,7 @@
 amqp==1.4.9
 anyjson==0.3.3
 backport-collections==0.1
-billiard==3.3.0.19
+billiard==3.3.0.23
 celery==3.1.25
 celery-haystack==0.10
 cffi==1.7.0
@@ -37,7 +37,7 @@ futures==3.0.5
 gunicorn==19.6.0
 idna==2.1
 ipaddress==1.0.16
-kombu==3.0.35
+kombu==3.0.37
 libsass==0.11.1
 markdown2==2.3.1
 mock==1.0.1
