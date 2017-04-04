@@ -21,6 +21,12 @@ fi
 
 source "$virtualenv_activate"
 
+# Upgrade pip to a secure version
+# curl -L -s https://raw.github.com/pypa/pip/master/contrib/get-pip.py | python
+# Revert to the line above once we can get a newer setuptools from Debian, or
+# pip ceases to need such a recent one.
+curl -L -s https://raw.github.com/mysociety/commonlib/master/bin/get_pip.bash | bash
+
 pip install --requirement requirements.txt
 pip install --requirement requirements-mysociety.txt
 
