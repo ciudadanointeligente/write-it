@@ -7,11 +7,20 @@ set -e
 cd `dirname $0`/..
 
 # create/update the virtual environment
-# NOTE: some packages are difficult to install if they are not site packages,
-# for example xapian. If using these you might want to add the
-# '--enable-site-packages' argument.
-virtualenv --no-site-packages ../virtualenv-writeit
-source ../virtualenv-writeit/bin/activate
+
+virtualenv_dir=../virtualenv-writeit
+virtualenv_activate="$virtualenv_dir/bin/activate"
+
+if [ ! -f "$virtualenv_activate" ]
+then
+    # NOTE: some packages are difficult to install if they are not site packages,
+    # for example xapian. If using these you might want to add the
+    # '--enable-site-packages' argument.
+    virtualenv --no-site-packages "$virtualenv_dir"
+fi
+
+source "$virtualenv_activate"
+
 pip install --requirement requirements.txt
 pip install --requirement requirements-mysociety.txt
 
