@@ -1,6 +1,8 @@
 You write it, and we deliver it.
 ================================
 
+[![Join the chat at https://gitter.im/ciudadanointeligente/write-it](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ciudadanointeligente/write-it?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/ciudadanointeligente/write-it.png?branch=master)](https://travis-ci.org/ciudadanointeligente/write-it)
 [![Coverage Status](https://coveralls.io/repos/ciudadanointeligente/write-it/badge.png?branch=master)](https://coveralls.io/r/ciudadanointeligente/write-it)
 [![Code Health](https://landscape.io/github/ciudadanointeligente/write-it/master/landscape.png)](https://landscape.io/github/ciudadanointeligente/write-it/master)
