@@ -122,6 +122,8 @@ class WriteMessageView(NamedUrlSessionWizardView):
     def get_form_kwargs(self, step):
         if step == 'who':
             return {'persons_queryset': self.writeitinstance.persons_with_contacts.order_by('name')}
+        elif step == 'draft':
+            return {'allow_anonymous_messages': self.writeitinstance.config.allow_anonymous_messages}
         else:
             return {}
 
@@ -257,6 +259,8 @@ class MessagesFromPersonView(ListView):
     def dispatch(self, *args, **kwargs):
         self.writeitinstance = get_object_or_404(WriteItInstance, slug=self.request.subdomain)
         self.message = get_object_or_404(Message, slug=self.kwargs['message_slug'])
+        if self.message.author_name == '':
+            raise Http404
         return super(MessagesFromPersonView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
@@ -264,6 +268,10 @@ class MessagesFromPersonView(ListView):
         qs = qs.filter(writeitinstance=self.writeitinstance).\
             filter(public=True).filter(confirmated=True).\
             filter(author_email=self.message.author_email)
+        if self.message.author_name == '':
+            qs = qs.filter(author_name='')
+        else:
+            qs = qs.exclude(author_name='')
         return qs
 
     def get_context_data(self, **kwargs):

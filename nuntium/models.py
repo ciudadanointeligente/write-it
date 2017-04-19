@@ -108,7 +108,7 @@ class Message(models.Model):
     """Message: Class that contain the info for a model, \
     despite of the input and the output channels. Subject \
     and content are mandatory fields"""
-    author_name = models.CharField(max_length=512)
+    author_name = models.CharField(max_length=512, default='', blank=True)
     author_email = models.EmailField()
     subject = models.CharField(max_length=255)
     content = models.TextField()
@@ -174,6 +174,13 @@ class Message(models.Model):
             ).distinct()
 
         return people
+
+    @property
+    def author_name_for_display(self):
+        name = self.author_name
+        if name == '':
+            name = _('Anonymous')
+        return name
 
     @property
     def outbound_messages(self):
@@ -264,7 +271,7 @@ class Message(models.Model):
 
         context = {
             'owner_name': self.writeitinstance.owner.username,
-            'author_name': self.author_name,
+            'author_name': self.author_name_for_display,
             'author_email': self.author_email,
             'recipients': u', '.join([x.name for x in self.people]),
             'subject': self.subject,
@@ -348,7 +355,7 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
             message_url = reverse('thread_read', subdomain=writeitinstance.slug, kwargs={'slug': answer.message.slug})
 
         context = {
-            'author_name': answer.message.author_name,
+            'author_name': answer.message.author_name_for_display,
             'person': answer.person.name,
             'subject': answer.message.subject,
             'content': answer.content,
@@ -641,7 +648,7 @@ def send_confirmation_email(sender, instance, created, **kwargs):
         subject = subject.rstrip()
 
         context = {
-            'author_name': confirmation.message.author_name,
+            'author_name': confirmation.message.author_name_for_display,
             'site_name': confirmation.message.writeitinstance.name,
             'subject': confirmation.message.subject,
             'content': confirmation.message.content,

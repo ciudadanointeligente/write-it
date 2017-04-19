@@ -108,9 +108,18 @@ class DraftForm(ModelForm):
         widgets = {
             'content': Textarea(attrs={'class': 'form-control', 'required': 'True'}),
             'subject': TextInput(attrs={'class': 'form-control', 'required': 'True'}),
-            'author_name': TextInput(attrs={'class': 'form-control', 'required': 'True'}),
+            'author_name': TextInput(attrs={'class': 'form-control'}),
             'author_email': EmailInput(attrs={'class': 'form-control', 'required': 'True'}),
         }
+
+    def __init__(self, allow_anonymous_messages, *args, **kwargs):
+        super(DraftForm, self).__init__(*args, **kwargs)
+        self.allow_anonymous_messages = allow_anonymous_messages
+
+    def clean_author_name(self):
+        if not self.allow_anonymous_messages and self.cleaned_data['author_name'] == '':
+            raise ValidationError(_('Author name is required'), code='name_required')
+        return self.cleaned_data['author_name']
 
 
 class PreviewForm(ModelForm):
