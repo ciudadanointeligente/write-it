@@ -29,7 +29,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
   python-dev python-pip python-virtualenv \
   rabbitmq-server \
   openjdk-7-jre elasticsearch \
-  mongodb-org nodejs
+  mongodb-org nodejs gettext
 
 # Set virtualenv directory and create it if needed.
 virtualenv_dir="/home/vagrant/writeit-virtualenv"
