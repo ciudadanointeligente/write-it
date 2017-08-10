@@ -174,6 +174,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'subdomains.middleware.SubdomainURLRoutingMiddleware',
+    'writeit.middleware.SubdomainInThreadLocalStorageMiddleware',
     'nuntium.middleware.InstanceLocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'pagination.middleware.PaginationMiddleware',
