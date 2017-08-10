@@ -179,7 +179,6 @@ MIDDLEWARE_CLASSES = (
     'pagination.middleware.PaginationMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'writeit.middleware.SubdomainTemplateOverrideMiddleware',
 )
 
 ROOT_URLCONF = 'nuntium.subdomain_urls'
