@@ -13,8 +13,16 @@ class SubdomainInThreadLocalStorageMiddleware(object):
             self.tls.subdomain = None
 
     def process_response(self, request, response):
-        # Unset the subdomain in thread-local storage on the way back
-        # up the middleware processing, just before returning the
-        # response to the browser.
-        self.tls.subdomain = None
+        # Remove the subdomain attribute from thread-local storage on
+        # the way back up the middleware processing, just before
+        # returning the response to the browser. This looks like it
+        # shouldn't make any difference (since the subdomain attribute
+        # is created again on each process_request) but in fact it
+        # does for tests: if the subdomain attribute still exists in
+        # the thread-local storage, tests that use templates outside
+        # of HTTP requests might pass when they should fail.
+        try:
+            delattr(self.tls, 'subdomain')
+        except AttributeError:
+            pass
         return response
