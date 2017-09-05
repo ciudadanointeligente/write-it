@@ -19,7 +19,10 @@ class SubdomainFilesystemLoader(Loader):
         Any paths that don't lie inside one of the template dirs are excluded
         from the result set, for security reasons.
         """
-        subdomain = SubdomainInThreadLocalStorageMiddleware.tls.subdomain
+        try:
+            subdomain = SubdomainInThreadLocalStorageMiddleware.tls.subdomain
+        except AttributeError:
+            return
         if not subdomain:
             return
         if not template_dirs:
