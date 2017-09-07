@@ -2,18 +2,18 @@ from subdomains.utils import reverse
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.test.client import RequestFactory
-from popit.models import Person
+from popolo.models import Person
 from mailit.forms import MailitTemplateForm
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 
 from instance.models import WriteItInstance, WriteitInstancePopitInstanceRecord
+from popolo_sources.models import PopoloSource
 from nuntium.user_section.views import WriteItInstanceUpdateView, WriteItInstanceApiDocsView
 from nuntium.user_section.forms import WriteItInstanceBasicForm, \
     WriteItInstanceCreateForm, \
     NewAnswerNotificationTemplateForm, ConfirmationTemplateForm
 from django.test.utils import override_settings
 from urlparse import urlparse
-from nuntium.popit_api_instance import PopitApiInstance
 import json
 from nuntium.user_section.views import WriteItInstanceCreateView
 
@@ -247,10 +247,10 @@ class WriteItInstancePullingDetailViewTestCase(UserSectionTestCase):
         super(WriteItInstancePullingDetailViewTestCase, self).setUp()
         self.writeitinstance = WriteItInstance.objects.get(id=1)
         self.owner = self.writeitinstance.owner
-        self.popit_api_instance = PopitApiInstance.objects.get(id=1)
+        self.popolo_source = PopoloSource.objects.get(id=1)
         self.record = WriteitInstancePopitInstanceRecord.objects.get_or_create(
             writeitinstance=self.writeitinstance,
-            popitapiinstance=self.popit_api_instance)
+            popolo_source=self.popolo_source)
 
     def test_theres_a_url_to_check_whats_happening(self):
         '''There is a url to let the user know what's happening with her/his instance'''
@@ -538,6 +538,8 @@ class CreateUserSectionInstanceTestCase(UserSectionTestCase):
         response = c.get(url)
         self.assertRedirectToLogin(response)
 
+    # FIXME: this should mock
+    # http://everypolitician.github.io/everypolitician-writeinpublic/countries.json
     def test_get_url(self):
         '''Get the url for creating a new instance (it doesn't redrect anywhere)'''
         url = reverse('create_writeit_instance')

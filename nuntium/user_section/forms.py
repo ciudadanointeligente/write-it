@@ -20,7 +20,7 @@ from django.forms import (
 
 from django.utils.translation import ugettext as _
 
-from popit.models import Person
+from popolo.models import Person
 
 from instance.models import (
     WriteItInstance,
@@ -277,14 +277,14 @@ class RelatePopitInstanceWithWriteItInstance(Form, PopitParsingFormMixin):
         super(RelatePopitInstanceWithWriteItInstance, self).__init__(*args, **kwargs)
 
     def relate(self):
-        result = self.writeitinstance.load_persons_from_a_popit_api(
+        result = self.writeitinstance.load_persons_from_popolo_json(
             self.cleaned_data['popit_url']
             )
         return result
 
     def clean(self, *args, **kwargs):
         cleaned_data = super(RelatePopitInstanceWithWriteItInstance, self).clean(*args, **kwargs)
-        if self.writeitinstance.writeitinstancepopitinstancerecord_set.filter(popitapiinstance__url=cleaned_data.get('popit_url')):
+        if self.writeitinstance.writeitinstancepopitinstancerecord_set.filter(popolo_source__url=cleaned_data.get('popit_url')):
             self.relate()
             raise ValidationError(_("You have already added this source. But we will fetch the data from it again now."))
         return cleaned_data

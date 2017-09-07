@@ -5,7 +5,6 @@ from django.db.models.signals import post_save, pre_save
 from django.db import models
 from django.utils.translation import override, ugettext_lazy as _
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from popit.models import Person
 from contactos.models import Contact
 from .plugins import OutputPlugin
 from django.contrib.contenttypes.models import ContentType
@@ -29,7 +28,7 @@ from itertools import chain
 import os
 import codecs
 
-from instance.models import WriteItInstance
+from instance.models import PopoloPerson, WriteItInstance
 from writeit_utils import escape_dictionary_values
 
 
@@ -168,7 +167,7 @@ class Message(models.Model):
 
     @property
     def people(self):
-        people = Person.objects.filter(
+        people = PopoloPerson.objects.filter(
             Q(contact__outboundmessage__message=self) |
             Q(nocontactom__message=self)
             ).distinct()
@@ -317,12 +316,12 @@ pre_save.connect(slugify_message, sender=Message)
 class Answer(models.Model):
     content = models.TextField()
     content_html = models.TextField()
-    person = models.ForeignKey(Person)
+    person = models.ForeignKey(PopoloPerson)
     message = models.ForeignKey(Message, related_name='answers')
     created = models.DateTimeField(auto_now=True, null=True)
 
     def save(self, *args, **kwargs):
-        memberships = self.message.writeitinstance.membership_set.filter(person=self.person)
+        memberships = self.message.writeitinstance.instancemembership_set.filter(person=self.person)
         if memberships.count() == 0:
             raise AttributeError(_("This guy does not belong here"))
         super(Answer, self).save(*args, **kwargs)
@@ -391,8 +390,10 @@ def send_new_answer_payload(sender, instance, created, **kwargs):
             'message_id': '/api/v1/message/{0}/'.format(answer.message.id),
             'content': answer.content,
             'person': answer.person.name,
-            'person_id': answer.person.popit_url,
-            }
+            'person_id': answer.person.uri_for_api(),
+            'person_id_in_popolo_source': answer.person.id_in_popolo_source,
+            'person_popolo_source_url': answer.person.popolo_source_url,
+        }
 
         for webhook in writeitinstance.answer_webhooks.all():
             requests.post(webhook.url, data=payload)
@@ -435,7 +436,7 @@ class AbstractOutboundMessage(models.Model):
 
 
 class NoContactOM(AbstractOutboundMessage):
-    person = models.ForeignKey(Person)
+    person = models.ForeignKey(PopoloPerson)
 
 
 # This will happen everytime a contact is created
@@ -544,8 +545,9 @@ class OutboundMessageIdentifier(models.Model):
         identifier = cls.objects.get(key=identifier_key)
         message = identifier.outbound_message.message
         person = identifier.outbound_message.contact.person
+        popolo_person = PopoloPerson.create_from_base_instance(person)
         the_created_answer = Answer.objects.create(message=message,
-            person=person,
+            person=popolo_person,
             content=content,
             content_html=content_html)
         return the_created_answer

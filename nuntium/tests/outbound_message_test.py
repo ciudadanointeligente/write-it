@@ -4,13 +4,14 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from contactos.models import Contact, ContactType
 from instance.models import WriteItInstance
+from popolo_sources.models import PopoloSource
 from ..models import Message, OutboundMessage, \
     MessageRecord, OutboundMessagePluginRecord, \
     OutboundMessageIdentifier, Answer, \
     NoContactOM, AbstractOutboundMessage
 from django.contrib.sites.models import Site
 
-from popit.models import Person, ApiInstance
+from popolo.models import Person
 from mock import patch
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -21,7 +22,7 @@ from plugin_mock.mental_message_plugin import MentalMessage, FatalException, Try
 class OutboundMessageTestCase(TestCase):
     def setUp(self):
         super(OutboundMessageTestCase, self).setUp()
-        self.api_instance1 = ApiInstance.objects.get(id=1)
+        self.popolo_source = PopoloSource.objects.get(id=1)
         self.contact1 = Contact.objects.get(id=1)
         self.message = Message.objects.get(id=1)
 

@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from subdomains.utils import reverse
 from instance.models import WriteItInstance
-from popit.models import Person
+from popolo.models import Person
 from django.http import Http404
 
 

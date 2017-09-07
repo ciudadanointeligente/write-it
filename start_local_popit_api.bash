@@ -13,9 +13,8 @@ set -e
 # just checkout the mysociety-deploy branch
 # http://stackoverflow.com/a/7349740/5349
 export DIR=popit-api-for-testing
-export BRANCH=mysociety-deploy
+export BRANCH=master
 export REMOTE_REPO=https://github.com/mysociety/popit-api.git
-export PORT=3000
 
 if [ ! -e $DIR ]; then mkdir $DIR; fi
 cd $DIR;
@@ -26,10 +25,9 @@ if [ ! -e done.txt ]; then
   git remote add -t $BRANCH -f origin $REMOTE_REPO;
   git checkout $BRANCH;
 
-  echo "{ \"serverPort\": $PORT }" > config/general.json
+  echo "{}" > config/general.json
 
   # install the required node modules
-  npm install pow-mongodb-fixtures --quiet
   npm install --quiet
 
   touch done.txt;
@@ -37,7 +35,7 @@ fi
 
 
 # Run the server in the background. Send access logging to file.
-node server.js > access.log &
+node test-server.js > access.log &
 
 # give it a chance to start and then print out the url to it
 sleep 2

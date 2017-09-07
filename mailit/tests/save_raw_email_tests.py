@@ -121,7 +121,7 @@ class IncomingEmailAutomaticallySavesRawMessage(TestCase, IncomingRawEmailMixin)
 
     def mock_request_to_api(self):
         person = self.outbound_message.message.people.get(
-            membership__writeitinstance=self.outbound_message.message.writeitinstance,
+            instancemembership__writeitinstance=self.outbound_message.message.writeitinstance,
             )
 
         answer = Answer.objects.create(

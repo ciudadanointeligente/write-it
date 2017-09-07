@@ -1,5 +1,5 @@
 from django.db import models
-from popit.models import Person
+from popolo.models import Person as Person
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.db.models.signals import pre_save
@@ -26,7 +26,6 @@ class Contact(models.Model):
     is_bounced = models.BooleanField(default=False)
     owner = models.ForeignKey(User, related_name="contacts", null=True)
     writeitinstance = models.ForeignKey('instance.WriteItInstance', related_name="contacts", null=True)
-    popit_identifier = models.CharField(max_length=512, null=True)
     enabled = models.BooleanField(default=True)
 
     def __unicode__(self):

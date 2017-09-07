@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.core.management import call_command
-from instance.models import WriteItInstance
+from instance.models import WriteItInstance, PopoloPerson
+from popolo_sources.models import PopoloSource
 from ...models import Message, Confirmation
 from tastypie.test import ResourceTestCase, TestApiClient
 from django.contrib.auth.models import User
-from popit.models import Person
 from global_test_case import popit_load_data
 from django.conf import settings
 import re
 from django.utils.encoding import force_text
-from nuntium.popit_api_instance import PopitApiInstance
 
 
 class InstanceResourceTestCase(ResourceTestCase):
@@ -60,8 +59,8 @@ class InstanceResourceTestCase(ResourceTestCase):
         response = self.api_client.get(url, data=self.data)
         instance = self.deserialize(response)
         self.assertIn('persons', instance)
-        pedro = Person.objects.get(id=1)
-        self.assertIn(pedro.popit_url, instance['persons'])
+        pedro = PopoloPerson.objects.get(id=1)
+        self.assertIn(pedro.uri_for_api(), instance['persons'])
 
     def test_create_a_new_instance(self):
         instance_data = {
@@ -127,8 +126,8 @@ class InstanceResourceTestCase(ResourceTestCase):
         instance = WriteItInstance.objects.get(id=match_id.group('id'))
         self.assertEquals(instance.persons.count(), 2)
         #this should not break
-        raton = Person.objects.get(name=u'Ratón Inteligente')
-        fiera = Person.objects.get(name=u"Fiera Feroz")
+        raton = PopoloPerson.objects.get(name=u'Ratón Inteligente')
+        fiera = PopoloPerson.objects.get(name=u"Fiera Feroz")
 
         self.assertIn(raton, [r for r in instance.persons.all()])
         self.assertIn(fiera, [r for r in instance.persons.all()])
@@ -144,7 +143,7 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
         self.data = {'format': 'json', 'username': self.user.username, 'api_key': self.user.api_key.key}
 
         # creating messages
-        self.pedro = Person.objects.get(id=1)
+        self.pedro = PopoloPerson.objects.get(id=1)
         self.writeitinstance.add_person(self.pedro)
         # Setting that the contact is related to self.writeitinstance rather than to the user
         self.contact = self.pedro.contact_set.all()[0]
@@ -165,7 +164,7 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
         self.message1.recently_confirmated()
         # Confirmating
 
-        self.marcel = Person.objects.get(id=2)
+        self.marcel = PopoloPerson.objects.get(id=2)
         self.message2 = Message.objects.create(
             content='Content 1',
             author_name='Felipe',
@@ -211,7 +210,7 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
             'writeitinstance_id': self.writeitinstance.id,
         }
         data = self.data
-        data['person__popit_id'] = self.pedro.popit_id
+        data['person__popit_id'] = self.pedro.old_popit_id
         response = self.api_client.get(url, data=data)
         self.assertValidJSONResponse(response)
         messages = self.deserialize(response)['objects']
@@ -219,19 +218,24 @@ class MessagesPerInstanceTestCase(ResourceTestCase):
         self.assertEquals(len(messages), 1)
         self.assertEquals(messages[0]['id'], self.message1.id)
 
-    def test_create_a_message_with_a_person_that_is_in_2_api_instances(self):
-        api = PopitApiInstance.objects.create(id=3,
-                                              url="https://popit.org/api/v1")
-        p = Person.objects.create(api_instance=api,
-                                  name="Otro",
-                                  popit_url="https://popit.org/api/v1/persons/1",
-                                  popit_id="52bc7asdasd34567"
-                                  )
+    def test_create_a_message_with_a_person_that_is_in_2_popolo_sources(self):
+        popolo_source = PopoloSource.objects.create(
+            id=3,
+            url="https://popit.org/api/v1"
+        )
+        p = PopoloPerson.objects.create(name="Otro")
+        p.identifiers.create(
+            scheme='popit_url',
+            identifier="https://popit.org/api/v1/persons/1")
+        p.identifiers.create(
+            scheme='popit_id',
+            identifier='52bc7asdasd34567')
+        p.add_link_to_popolo_source(popolo_source)
         url = '/api/v1/instance/%(writeitinstance_id)i/messages/' % {
             'writeitinstance_id': self.writeitinstance.id,
         }
         data = self.data
-        data['person__popit_id'] = p.popit_id
+        data['person__popit_id'] = p.old_popit_id
         response = self.api_client.get(url, data=data)
         self.assertValidJSONResponse(response)
 

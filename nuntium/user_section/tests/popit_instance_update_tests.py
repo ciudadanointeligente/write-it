@@ -1,18 +1,18 @@
 from global_test_case import popit_load_data
 from subdomains.utils import reverse
 from instance.models import (
-    Membership, WriteItInstance, WriteitInstancePopitInstanceRecord)
+    InstanceMembership, WriteItInstance, WriteitInstancePopitInstanceRecord,
+    PopoloPerson)
+from popolo_sources.models import PopoloSource
 from django.contrib.auth.models import User
 from django.forms import Form, URLField
 from django.conf import settings
 from django.core.management import call_command
-from popit.models import Person, ApiInstance
 from django.utils.unittest import skip
 from user_section_views_tests import UserSectionTestCase
 from django.utils.translation import ugettext as _
 from nuntium.user_section.forms import RelatePopitInstanceWithWriteItInstance
 from nuntium.management.commands.back_fill_writeit_popit_records import WPBackfillRecords
-from nuntium.popit_api_instance import PopitApiInstance
 
 
 class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
@@ -29,10 +29,10 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
     def test_creates_records_only_once(self):
         '''It creates the records only once'''
         w = WriteItInstance.objects.first()
-        a = ApiInstance.objects.first()
+        p = PopoloSource.objects.first()
         WriteitInstancePopitInstanceRecord.objects.create(
             writeitinstance=w,
-            popitapiinstance=a,
+            popolo_source=p,
             )
         WPBackfillRecords.back_fill_popit_records(writeitinstance=w)
         records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
@@ -44,11 +44,12 @@ class RecreateWriteitInstancePopitInstanceRecord(UserSectionTestCase):
         no matter if there are two persons related
         '''
         w = WriteItInstance.objects.first()
-        another_person = Person.objects.create(
-            api_instance=w.persons.first().api_instance,
-            name="Another Person but with the same api Instance",
+        popolo_source = w.persons.first().popolo_source
+        another_person = PopoloPerson.objects.create(
+            name="Another Person but with the same Popolo source",
             )
-        Membership.objects.create(writeitinstance=w, person=another_person)
+        another_person.add_link_to_popolo_source(popolo_source)
+        InstanceMembership.objects.create(writeitinstance=w, person=another_person)
         WPBackfillRecords.back_fill_popit_records(writeitinstance=w)
         records = WriteitInstancePopitInstanceRecord.objects.filter(writeitinstance=w)
         self.assertEquals(records.count(), 1)
@@ -140,9 +141,9 @@ class RelateMyWriteItInstanceWithAPopitInstance(UserSectionTestCase):
     def test_the_form_is_not_valid_if_there_is_another_popit(self):
         '''The form is not valid if there is already another popit api instance related'''
 
-        popit_api_instance = PopitApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
+        popolo_source = PopoloSource.objects.create(url=settings.TEST_POPIT_API_URL)
         WriteitInstancePopitInstanceRecord.objects.create(writeitinstance=self.writeitinstance,
-            popitapiinstance=popit_api_instance)
+            popolo_source=popolo_source)
 
         data = {"popit_url": settings.TEST_POPIT_API_URL}
         form = RelatePopitInstanceWithWriteItInstance(data=data, writeitinstance=self.writeitinstance)

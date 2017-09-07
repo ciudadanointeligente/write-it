@@ -18,7 +18,7 @@
 {% for rec in writeitinstance.writeitinstancepopitinstancerecord_set.all %}
     {% if rec.status == 'inprogress' %}
         <div class="alert alert-warning" role="alert">
-            {% blocktrans with url=rec.popitapiinstance.url %}
+            {% blocktrans with url=rec.popolo_source.url %}
             Currently we are pulling people from {{ url }}
             {% endblocktrans %}
         </div>

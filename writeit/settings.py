@@ -211,7 +211,13 @@ INSTALLED_APPS = (
     'nuntium',
     'djangoplugins',
     'pagination',
+
+    # Although django-popit is unused now, we need to keep it
+    # installed because the earlier migrations depend on its presence.
     'popit',
+
+    'popolo',
+    'popolo_sources',
     'contactos',
     'mailit',
     'tastypie',
@@ -309,9 +315,9 @@ LOGGING = {
 # POPIT TESTING RELATED
 TEST_POPIT_API_HOST_IP = '127.0.0.1'
 TEST_POPIT_API_PORT = '3000'
-TEST_POPIT_API_SUBDOMAIN = 'popit-django-test'
+TEST_POPIT_API_SUBDOMAIN = 'whatever'
 
-TEST_POPIT_API_URL = "http://%s.%s.xip.io:%s/api" % (
+TEST_POPIT_API_URL = "http://%s.%s.xip.io:%s/api/v0.1/export.json" % (
     TEST_POPIT_API_SUBDOMAIN,
     TEST_POPIT_API_HOST_IP,
     TEST_POPIT_API_PORT,
@@ -341,7 +347,7 @@ CELERYBEAT_SCHEDULE = {
     },
     # Resyncs popit every week
     'resync-popit-apis-every-week': {
-        'task': 'nuntium.tasks.pull_from_popit',
+        'task': 'nuntium.tasks.pull_from_popolo_json',
         'kwargs': {
             'periodicity': '1W'
         },
@@ -349,7 +355,7 @@ CELERYBEAT_SCHEDULE = {
     },
     # Resyncs popit every day
     'resync-popit-apis-every-day': {
-        'task': 'nuntium.tasks.pull_from_popit',
+        'task': 'nuntium.tasks.pull_from_popolo_json',
         'kwargs': {
             'periodicity': '1D'
         },
@@ -357,7 +363,7 @@ CELERYBEAT_SCHEDULE = {
     },
     # Resyncs popit twice every day
     'resync-popit-apis-twice-every-day': {
-        'task': 'nuntium.tasks.pull_from_popit',
+        'task': 'nuntium.tasks.pull_from_popolo_json',
         'kwargs': {
             'periodicity': '2D'
         },

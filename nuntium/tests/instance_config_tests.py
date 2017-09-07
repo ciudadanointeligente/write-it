@@ -1,8 +1,8 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from instance.models import Membership, WriteItInstance, WriteItInstanceConfig
+from instance.models import InstanceMembership, PopoloPerson, WriteItInstance, WriteItInstanceConfig
+from popolo_sources.models import PopoloSource
 from nuntium.models import Message
-from popit.models import ApiInstance, Person
 from django.contrib.auth.models import User
 from mailit import MailChannel
 from contactos.models import Contact
@@ -12,9 +12,9 @@ from django.core import mail
 class WriteItInstanceConfigTestCase(TestCase):
     def setUp(self):
         super(WriteItInstanceConfigTestCase, self).setUp()
-        self.api_instance1 = ApiInstance.objects.get(id=1)
-        self.api_instance2 = ApiInstance.objects.get(id=2)
-        self.person1 = Person.objects.get(id=1)
+        self.popolo_source1 = PopoloSource.objects.get(id=1)
+        self.popolo_source2 = PopoloSource.objects.get(id=2)
+        self.person1 = PopoloPerson.objects.get(id=1)
 
         self.owner = User.objects.get(id=1)
 
@@ -75,7 +75,7 @@ class WriteItInstanceConfigTestCase(TestCase):
 class TestingModeTestCase(TestCase):
     def setUp(self):
         super(TestingModeTestCase, self).setUp()
-        self.person1 = Person.objects.get(id=1)
+        self.person1 = PopoloPerson.objects.get(id=1)
 
         self.owner = User.objects.get(id=1)
         self.owner.email = "owner@ciudadanoi.org"
@@ -85,7 +85,7 @@ class TestingModeTestCase(TestCase):
             name='instance 1',
             slug='instance-1',
             owner=self.owner)
-        Membership.objects.create(writeitinstance=self.writeitinstance, person=self.person1)
+        InstanceMembership.objects.create(writeitinstance=self.writeitinstance, person=self.person1)
 
         self.channel = MailChannel()
         self.contact = Contact.objects.create(

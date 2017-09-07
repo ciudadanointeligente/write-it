@@ -1,9 +1,8 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase
-from instance.models import WriteItInstance
+from instance.models import PopoloPerson, WriteItInstance
 from nuntium.models import Message
 from subdomains.utils import reverse
-from popit.models import Person
 from nuntium.forms import WhoForm, DraftForm
 
 
@@ -11,8 +10,8 @@ class MessageCreationTestCase(TestCase):
     def setUp(self):
         super(MessageCreationTestCase, self).setUp()
         self.writeitinstance = WriteItInstance.objects.get(id=1)
-        self.person1 = Person.objects.get(id=1)
-        self.person2 = Person.objects.get(id=2)
+        self.person1 = PopoloPerson.objects.get(id=1)
+        self.person2 = PopoloPerson.objects.get(id=2)
         self.writeitinstance.add_person(self.person1)
         self.writeitinstance.add_person(self.person2)
 
@@ -24,7 +23,9 @@ class MessageCreationTestCase(TestCase):
             subdomain=self.writeitinstance.slug,
             kwargs={'step': 'draft'})
 
-        response = self.client.get(url, {'person_id': self.person1.popit_id})
+        person_id = self.person1.identifiers.get(scheme='popolo:person').identifier
+
+        response = self.client.get(url, {'person_id': person_id})
         self.assertRedirects(response, url2)
         response = self.client.get(url2)
         self.assertEquals(response.context['message']['persons'][0].id, self.person1.id)
@@ -117,7 +118,7 @@ class MessageCreationTestCase(TestCase):
     def test_passing_non_valid_forms_across_instances(self):
         '''Described at #715'''
         first_instance = WriteItInstance.objects.first()
-        first_recipient = Person.objects.get(id=2)
+        first_recipient = PopoloPerson.objects.get(id=2)
 
         second_instance = WriteItInstance.objects.last()
 

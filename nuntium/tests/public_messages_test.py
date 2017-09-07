@@ -3,7 +3,7 @@ from django.core.management import call_command
 from global_test_case import GlobalTestCase as TestCase
 from instance.models import WriteItInstance
 from ..models import Message, Confirmation
-from popit.models import Person
+from popolo.models import Person
 from django.contrib.auth.models import User
 from tastypie.test import ResourceTestCase, TestApiClient
 

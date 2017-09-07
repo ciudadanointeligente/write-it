@@ -1,14 +1,14 @@
 # coding=utf-8
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from instance.models import WriteItInstance, WriteitInstancePopitInstanceRecord
+from popolo_sources.models import PopoloSource
 from nuntium.models import OutboundMessage
 from ..tasks import send_mails_task
 from mock import patch
-from popit.models import Person
-from nuntium.popit_api_instance import PopitApiInstance
+from popolo.models import Person
 from django.contrib.auth.models import User
 from django.conf import settings
-from nuntium.tasks import pull_from_popit, update_all_popits
+from nuntium.tasks import pull_from_popolo_json, update_all_instances
 
 
 class TasksTestCase(TestCase):
@@ -72,14 +72,14 @@ class TasksTestCase(TestCase):
 class PullFromPopitTask(TestCase):
     def setUp(self):
         super(PullFromPopitTask, self).setUp()
-        self.api_instance1 = PopitApiInstance.objects.create(url=settings.TEST_POPIT_API_URL)
+        self.popolo_source = PopoloSource.objects.create(url=settings.TEST_POPIT_API_URL)
         self.person1 = Person.objects.get(id=1)
 
         self.owner = User.objects.get(id=1)
 
     def test_the_pulling_task_name(self):
         '''The pulling from Popit Task has a name'''
-        self.assertEquals(pull_from_popit.name, 'nuntium.tasks.pull_from_popit')
+        self.assertEquals(pull_from_popolo_json.name, 'nuntium.tasks.pull_from_popolo_json')
 
     @popit_load_data()
     def test_do_the_pulling(self):
@@ -88,9 +88,9 @@ class PullFromPopitTask(TestCase):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
         WriteitInstancePopitInstanceRecord.objects.create(
             writeitinstance=writeitinstance,
-            popitapiinstance=self.api_instance1
+            popolo_source=self.popolo_source
             )
-        pull_from_popit.delay(writeitinstance, self.api_instance1)  # Returns result
+        pull_from_popolo_json.delay(writeitinstance, self.popolo_source)  # Returns result
         self.assertTrue(writeitinstance.persons.all())
 
 
@@ -98,17 +98,17 @@ class PeriodicallyPullFromPopitClass(TestCase):
     def setUp(self):
         super(PeriodicallyPullFromPopitClass, self).setUp()
         self.owner = User.objects.get(id=1)
-        #this is the popit_api_instance created based on the previous load
+        #this is the popolo_source created based on the previous load
         self.writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
 
-        self.popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+        self.popolo_source, created = PopoloSource.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         WriteitInstancePopitInstanceRecord.objects.create(
             writeitinstance=self.writeitinstance,
-            popitapiinstance=self.popit_api_instance
+            popolo_source=self.popolo_source
             )
         #loading data from popit in a sync way
         with popit_load_data():
-            self.writeitinstance._load_persons_from_a_popit_api(self.popit_api_instance)
+            self.writeitinstance._load_persons_from_popolo_json(self.popolo_source)
         self.previously_created_persons = list(self.writeitinstance.persons.all())
 
     @popit_load_data("other_persons")
@@ -117,7 +117,7 @@ class PeriodicallyPullFromPopitClass(TestCase):
 
         # This means that if I run the task then it should update the persons
         # I'm running the weekly job by default
-        update_all_popits.delay()
+        update_all_instances.delay()
 
         persons_after_updating = list(self.writeitinstance.persons.all())
         self.assertNotEquals(self.previously_created_persons, persons_after_updating)
@@ -127,14 +127,14 @@ class PeriodicallyPullFromPopitClass(TestCase):
         '''If the instance has autosync disabled then it does not sync'''
         writeitinstance_popit_record = WriteitInstancePopitInstanceRecord.objects.get(
             writeitinstance=self.writeitinstance,
-            popitapiinstance=self.popit_api_instance
+            popolo_source=self.popolo_source
         )
         # Periodicity = 0  means that it is never going to send anything
         writeitinstance_popit_record.periodicity = 0
         writeitinstance_popit_record.save()
 
         # The record has been set to autosync False
-        update_all_popits.delay()
+        update_all_instances.delay()
         # Loading new data
         persons_after_updating = list(self.writeitinstance.persons.all())
         # It should not have updated our writeit instance
@@ -145,20 +145,20 @@ class PeriodicallyPullFromPopitClass(TestCase):
         '''It can receive a parameter refering to the periodicity'''
         writeitinstance_popit_record = WriteitInstancePopitInstanceRecord.objects.get(
             writeitinstance=self.writeitinstance,
-            popitapiinstance=self.popit_api_instance
+            popolo_source=self.popolo_source
         )
         writeitinstance_popit_record.periodicity = '1D'  # Daily
         writeitinstance_popit_record.save()
 
         # Now because it is receiving the default value = '1W'
         # it should not pull anyone
-        update_all_popits.delay()
+        update_all_instances.delay()
 
         persons_after_updating = list(self.writeitinstance.persons.all())
         self.assertEquals(self.previously_created_persons, persons_after_updating)
 
         # But If I tell the runner that I'm running the daily
         # process then it should change it
-        update_all_popits.delay(periodicity="1D")
+        update_all_instances.delay(periodicity="1D")
         persons_after_updating = list(self.writeitinstance.persons.all())
         self.assertNotEquals(self.previously_created_persons, persons_after_updating)

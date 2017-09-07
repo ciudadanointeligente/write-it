@@ -5,56 +5,21 @@
             "request": {
                 "body": null,
                 "headers": {
-                    "content-type": [
-                        "application/json"
+                    "Connection": [
+                        "keep-alive"
                     ],
                     "Accept-Encoding": [
                         "gzip, deflate"
                     ],
-                    "accept": [
-                        "application/json"
+                    "Accept": [
+                        "*/*"
                     ],
                     "User-Agent": [
-                        "python-requests/2.3.0 CPython/2.7.6 Linux/3.13.0-49-generic"
+                        "python-requests/2.10.0"
                     ]
                 },
                 "method": "GET",
-                "uri": "http://popit-django-test.127.0.0.1.xip.io:3000/api"
-            },
-            "response": {
-                "status": {
-                    "message": "OK",
-                    "code": 200
-                },
-                "headers": {
-                    "content-type": [
-                        "application/json; charset=utf-8"
-                    ]
-                },
-                "body": {
-                    "string": "{\n \"note\": \"This is the API entry point - use a '*_api_url' link in 'meta' to search a collection.\",\n \"info\": {\n \"databaseName\": \"popit_django_test\",\n \"version\": \"0.0.14\" },\n \"meta\": {\n \"persons_api_url\": \"http://popit-django-test.127.0.0.1.xip.io:3000/api/persons\",\n \"organizations_api_url\": \"http://popit-django-test.127.0.0.1.xip.io:3000/api/organizations\",\n \"memberships_api_url\": \"http://popit-django-test.127.0.0.1.xip.io:3000/api/memberships\",\n \"posts_api_url\": \"http://popit-django-test.127.0.0.1.xip.io:3000/api/posts\"\n }\n }"
-                }
-            }
-        },
-        {
-            "request": {
-                "body": null,
-                "headers": {
-                    "content-type": [
-                        "application/json"
-                    ],
-                    "Accept-Encoding": [
-                        "gzip, deflate"
-                    ],
-                    "accept": [
-                        "application/json"
-                    ],
-                    "User-Agent": [
-                        "python-requests/2.3.0 CPython/2.7.6 Linux/3.13.0-49-generic"
-                    ]
-                },
-                "method": "GET",
-                "uri": "http://popit-django-test.127.0.0.1.xip.io:3000/api/persons/?per_page=50&page=1"
+                "uri": "http://whatever.127.0.0.1.xip.io:3000/api/v0.1/export.json"
             },
             "response": {
                 "status": {
@@ -63,28 +28,19 @@
                 },
                 "headers": {
                     "content-length": [
-                        "937"
-                    ],
-                    "x-content-type-options": [
-                        "nosniff"
+                        "606"
                     ],
                     "x-powered-by": [
                         "Express"
                     ],
-                    "set-cookie": [
-                        "connect.sess=s%3Aj%3A%7B%22passport%22%3A%7B%7D%7D.x0Zr68Ve2M6fQjuaaiR0w0ShFrSKrrunIzT%2Fh19jUbM; Domain=.127.0.0.1.xip.io; Path=/; HttpOnly"
-                    ],
-                    "vary": [
-                        "X-HTTP-Method-Override, Origin"
-                    ],
                     "connection": [
-                        "close"
+                        "keep-alive"
                     ],
                     "etag": [
-                        "W/\"3a9-449682be\""
+                        "W/\"25e-1736e4de\""
                     ],
                     "date": [
-                        "Mon, 24 Aug 2015 14:45:25 GMT"
+                        "Thu, 25 Aug 2016 13:19:29 GMT"
                     ],
                     "access-control-allow-origin": [
                         "*"
@@ -94,7 +50,7 @@
                     ]
                 },
                 "body": {
-                        "string": "{\n  \"total\": 2,\n  \"page\": 1,\n  \"per_page\": 30,\n  \"has_more\": false,\n  \"result\": [\n    {\n      \"html_url\": \"http://fiera.127.0.0.1.xip.io:3000/persons/raton-inteligente\",\n      \"url\": \"http://fiera.127.0.0.1.xip.io:3000/api/v0.1/persons/raton-inteligente\",\n      \"name\": \"Rat\u00f3n Inteligente\",\n      \"images\": [],\n      \"memberships\": [],\n      \"links\": [],\n      \"contact_details\": [],\n      \"identifiers\": [],\n      \"other_names\": [],\n      \"id\": \"raton-inteligente\"\n    },\n    {\n      \"html_url\": \"http://fiera.127.0.0.1.xip.io:3000/persons/fiera-feroz\",\n      \"url\": \"http://fiera.127.0.0.1.xip.io:3000/api/v0.1/persons/fiera-feroz\",\n      \"name\": \"Fiera Feroz\",\n      \"summary\": \"Fiera es una perra buena onda\",\n       \"email\": null,\n      \"images\": [],\n      \"memberships\": [],\n      \"links\": [],\n      \"contact_details\": [],\n      \"identifiers\": [],\n      \"other_names\": [],\n      \"id\": \"fiera-feroz\"\n    }\n  ]\n}"
+                    "string": "{\n  \"persons\": [\n    {\n      \"name\": \"Rat\u00f3n Inteligente\",\n      \"images\": [],\n      \"links\": [],\n      \"contact_details\": [],\n      \"identifiers\": [],\n      \"other_names\": [],\n      \"id\": \"raton-inteligente\"\n    },\n    {\n      \"name\": \"Fiera Feroz\",\n      \"summary\": \"Fiera es una perra buena onda\",\n      \"email\": null,\n      \"images\": [],\n      \"links\": [],\n      \"contact_details\": [],\n      \"identifiers\": [],\n      \"other_names\": [],\n      \"id\": \"fiera-feroz\"\n    }\n  ],\n  \"organizations\": [],\n  \"memberships\": [],\n  \"posts\": []\n}"
                 }
             }
         }

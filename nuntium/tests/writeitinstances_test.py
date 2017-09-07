@@ -2,16 +2,15 @@
 from urlparse import urlsplit, urlunsplit
 from global_test_case import GlobalTestCase as TestCase, popit_load_data
 from subdomains.utils import reverse
-from instance.models import Membership, WriteItInstance
+from instance.models import InstanceMembership, PopoloPerson, WriteItInstance
+from popolo_sources.models import PopoloSource
 from nuntium.models import Message, Confirmation
-from popit.models import ApiInstance, Person
 from django.utils.unittest import skip
 from django.contrib.auth.models import User
 from django.utils.translation import activate
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from mock import patch
-from nuntium.popit_api_instance import PopitApiInstance
 from requests.exceptions import ConnectionError
 from contactos.models import Contact, ContactType
 
@@ -19,9 +18,9 @@ from contactos.models import Contact, ContactType
 class InstanceTestCase(TestCase):
     def setUp(self):
         super(InstanceTestCase, self).setUp()
-        self.api_instance1 = ApiInstance.objects.get(id=1)
-        self.api_instance2 = ApiInstance.objects.get(id=2)
-        self.person1 = Person.objects.get(id=1)
+        self.popolo_source1 = PopoloSource.objects.get(id=1)
+        self.popolo_source2 = PopoloSource.objects.get(id=2)
+        self.person1 = PopoloPerson.objects.get(id=1)
 
         self.owner = User.objects.get(id=1)
 
@@ -108,7 +107,7 @@ class InstanceTestCase(TestCase):
     def test_membership(self):
         writeitinstance = WriteItInstance.objects.create(name=u'instance 1', slug=u'instance-1', owner=self.owner)
 
-        Membership.objects.create(writeitinstance=writeitinstance, person=self.person1)
+        InstanceMembership.objects.create(writeitinstance=writeitinstance, person=self.person1)
         self.assertEquals(writeitinstance.persons.get(id=self.person1.id), self.person1)
         self.assertEquals(self.person1.writeit_instances.get(id=writeitinstance.id), writeitinstance)
 
@@ -116,12 +115,12 @@ class InstanceTestCase(TestCase):
     def test_create_an_instance_and_load_persons_from_an_api(self):
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
 
-        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        writeitinstance.load_persons_from_popolo_json(settings.TEST_POPIT_API_URL)
 
         self.assertEquals(writeitinstance.persons.all().count(), 2)
 
-        raton = Person.objects.get(name='Ratón Inteligente')
-        fiera = Person.objects.get(name="Fiera Feroz")
+        raton = PopoloPerson.objects.get(name='Ratón Inteligente')
+        fiera = PopoloPerson.objects.get(name="Fiera Feroz")
 
         self.assertIn(raton, [r for r in writeitinstance.persons.all()])
         self.assertIn(fiera, [r for r in writeitinstance.persons.all()])
@@ -129,14 +128,14 @@ class InstanceTestCase(TestCase):
     def test_it_uses_the_async_task_to_pull_people_from_popit(self):
         '''It uses the async task to pull people from popit'''
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
-        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+        popit_api_instance, created = PopoloSource.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
 
         '''
         I'm going to patch the method to know that it was run, I could do some other properties but I'm thinking that
         this is the easyest to know if the method was used.
         '''
-        with patch('nuntium.tasks.pull_from_popit.delay') as async_pulling_from_popit:
-            writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        with patch('nuntium.tasks.pull_from_popolo_json.delay') as async_pulling_from_popit:
+            writeitinstance.load_persons_from_popolo_json(settings.TEST_POPIT_API_URL)
             async_pulling_from_popit.assert_called_with(writeitinstance, popit_api_instance)
 
     @popit_load_data()
@@ -147,7 +146,7 @@ class InstanceTestCase(TestCase):
             'inprogress': 0,
             'success': 0,
             'error': 0})
-        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        writeitinstance.load_persons_from_popolo_json(settings.TEST_POPIT_API_URL)
         self.assertEquals(writeitinstance.pulling_from_popit_status,
             {
                 'nothing': 0,
@@ -156,7 +155,7 @@ class InstanceTestCase(TestCase):
                 'error': 0
             })
 
-        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+        popit_api_instance, created = PopoloSource.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
 
     @popit_load_data()
     def test_can_create_messages(self):
@@ -164,10 +163,10 @@ class InstanceTestCase(TestCase):
 
         self.assertTrue(writeitinstance.config.allow_messages_using_form)
         self.assertFalse(writeitinstance.can_create_messages)
-        writeitinstance.load_persons_from_a_popit_api(settings.TEST_POPIT_API_URL)
+        writeitinstance.load_persons_from_popolo_json(settings.TEST_POPIT_API_URL)
 
         email_type = ContactType.objects.get(id=1)
-        person = Person.objects.get(id=1)
+        person = PopoloPerson.objects.get(id=1)
         Contact.objects.create(
             person=person,
             contact_type=email_type,
@@ -190,8 +189,8 @@ class PersonsWithContactsTestCase(TestCase):
             name='instance 1',
             slug='instance-1',
             owner=self.owner)
-        self.person1 = Person.objects.get(id=1)
-        self.person2 = Person.objects.get(id=2)
+        self.person1 = PopoloPerson.objects.get(id=1)
+        self.person2 = PopoloPerson.objects.get(id=2)
 
     def test_instance_add_person(self):
         self.writeitinstance.add_person(self.person1)
@@ -228,23 +227,23 @@ class PersonsWithContactsTestCase(TestCase):
 class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
     def setUp(self):
         super(WriteItInstanceLoadingPeopleFromAPopitApiTestCase, self).setUp()
-        self.api_instance1 = ApiInstance.objects.get(id=1)
-        self.api_instance2 = ApiInstance.objects.get(id=2)
-        self.person1 = Person.objects.get(id=1)
+        self.popolo_source1 = PopoloSource.objects.get(id=1)
+        self.popolo_source2 = PopoloSource.objects.get(id=2)
+        self.person1 = PopoloPerson.objects.get(id=1)
 
         self.owner = User.objects.get(id=1)
 
     @popit_load_data()
-    def test_load_persons_from_a_popit_api(self):
+    def test_load_persons_from_popolo_json(self):
         '''Loading persons from a popit api'''
-        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+        popit_api_instance, created = PopoloSource.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
-        writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        writeitinstance.relate_with_persons_from_popolo_json(popit_api_instance)
 
         self.assertEquals(writeitinstance.persons.all().count(), 2)
 
-        raton = Person.objects.get(name='Ratón Inteligente')
-        fiera = Person.objects.get(name="Fiera Feroz")
+        raton = PopoloPerson.objects.get(name='Ratón Inteligente')
+        fiera = PopoloPerson.objects.get(name="Fiera Feroz")
 
         self.assertIn(raton, [r for r in writeitinstance.persons.all()])
         self.assertIn(fiera, [r for r in writeitinstance.persons.all()])
@@ -252,9 +251,9 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
     @popit_load_data()
     def test_it_returns_a_tuple(self):
         '''Returns a tuple'''
-        popit_api_instance, created = PopitApiInstance.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
+        popit_api_instance, created = PopoloSource.objects.get_or_create(url=settings.TEST_POPIT_API_URL)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
-        result = writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        result = writeitinstance.relate_with_persons_from_popolo_json(popit_api_instance)
         self.assertIsInstance(result, tuple)
         self.assertTrue(result[0])
         self.assertIsNone(result[1])
@@ -262,9 +261,9 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
     def test_it_returns_false_when_theres_a_problem(self):
         '''When there's a problem it returns false and the problem in the tuple'''
         non_existing_url = "http://nonexisting.url"
-        popit_api_instance = PopitApiInstance.objects.create(url=non_existing_url)
+        popit_api_instance = PopoloSource.objects.create(url=non_existing_url)
         writeitinstance = WriteItInstance.objects.create(name='instance 1', slug='instance-1', owner=self.owner)
-        result = writeitinstance.relate_with_persons_from_popit_api_instance(popit_api_instance)
+        result = writeitinstance.relate_with_persons_from_popolo_json(popit_api_instance)
         self.assertIsInstance(result, tuple)
         self.assertFalse(result[0])
         self.assertIsInstance(result[1], ConnectionError)
@@ -273,9 +272,9 @@ class WriteItInstanceLoadingPeopleFromAPopitApiTestCase(TestCase):
 class InstanceDetailView(TestCase):
     def setUp(self):
         super(InstanceDetailView, self).setUp()
-        self.api_instance1 = ApiInstance.objects.get(id=1)
-        self.api_instance2 = ApiInstance.objects.get(id=2)
-        self.person1 = Person.objects.get(id=1)
+        self.popolo_source1 = PopoloSource.objects.get(id=1)
+        self.popolo_source2 = PopoloSource.objects.get(id=2)
+        self.person1 = PopoloPerson.objects.get(id=1)
         self.writeitinstance1 = WriteItInstance.objects.get(id=1)
         self.url = self.writeitinstance1.get_absolute_url()
 

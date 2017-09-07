@@ -1,7 +1,7 @@
 from django.template import Context, Template
 from global_test_case import GlobalTestCase as TestCase
 from contactos.models import Contact
-from popit.models import Person
+from popolo.models import Person
 from subdomains.utils import reverse
 from django.template import TemplateSyntaxError
 

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from django.views.generic import TemplateView, DetailView, RedirectView, ListView
 from subdomains.utils import reverse
@@ -8,9 +8,8 @@ from django.shortcuts import get_object_or_404, redirect
 
 from haystack.views import SearchView
 from itertools import chain
-from popit.models import Person
 from django.db.models import Q
-from instance.models import WriteItInstance
+from instance.models import PopoloPerson, WriteItInstance
 from .models import Confirmation, Message, Moderation
 from .forms import MessageSearchForm, PerInstanceSearchForm
 
@@ -20,7 +19,7 @@ from nuntium import forms
 class HomeTemplateView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(HomeTemplateView, self).get_context_data(**kwargs)
-        all_instances = WriteItInstance.objects.all()
+        all_instances = WriteItInstance.objects.order_by('slug')
 
         context['writeitinstances'] = all_instances
         return context
@@ -92,8 +91,10 @@ class WriteMessageView(NamedUrlSessionWizardView):
         if kwargs.get('step') == 'who' and 'person_id' in self.request.GET:
             person_id = self.request.GET['person_id']
             try:
-                the_person = self.writeitinstance.persons.get(popit_id=person_id)
-            except Person.DoesNotExist:
+                the_person = self.writeitinstance.persons.get(
+                    identifiers__scheme='popit_id',
+                    identifiers__identifier=person_id)
+            except PopoloPerson.DoesNotExist:
                 pass
 
         # If we've come to /who but there is only one person possible to
@@ -231,8 +232,10 @@ class MessagesPerPersonView(ListView):
         if 'pk' in self.kwargs:
             params = {'pk': self.kwargs['pk']}
         elif 'person_id' in self.kwargs:
-            params = {'popit_id': self.kwargs['person_id']}
-        self.person = get_object_or_404(Person, **params)
+            params = {
+                'identifiers__scheme': 'popit_id',
+                'identifiers__identifier': self.kwargs['person_id']}
+        self.person = get_object_or_404(PopoloPerson, **params)
         self.writeitinstance = get_object_or_404(WriteItInstance, slug=request.subdomain)
         return super(MessagesPerPersonView, self).dispatch(request, *args, **kwargs)
 
