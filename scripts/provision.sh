@@ -55,10 +55,17 @@ Welcome to the WriteIt vagrant machine
 Run the web server with:
   ./manage.py runserver 0.0.0.0:8000
 
-Then visit http://127.0.0.1.xip.io:8000/ to use WriteIt
-
 Add some seed data to your instance with:
   ./manage.py loaddata example_data.yaml
+
+Then visit one of these URLs to use WriteIt:
+  * http://127.0.0.1.xip.io:8000/
+  * http://instance1.127.0.0.1.xip.io:8000/
+  * http://instance2.127.0.0.1.xip.io:8000/
+
+Use the following credentials to login:
+username: admin
+password: admin
 
 Run a celery worker with:
   ./manage.py celery worker
